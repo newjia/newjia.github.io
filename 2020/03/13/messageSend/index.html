@@ -417,14 +417,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2k
+                    2.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    8 分
+                    9 分
                 </div>
                 
 
@@ -764,11 +764,16 @@ NS_ASSUME_NONNULL_END
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 </ul>
-<h3 id="6、查找失败"><a href="#6、查找失败" class="headerlink" title="6、查找失败"></a>6、查找失败</h3><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>doesNotRecognizeSelector<span class="token operator">:</span><span class="token punctuation">(</span>SEL<span class="token punctuation">)</span>sel
-<span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 消息没有得到处理 崩溃退出</span>
-    <span class="token punctuation">[</span>super doesNotRecognizeSelector<span class="token operator">:</span>aSelector<span class="token punctuation">]</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="6、查找失败"><a href="#6、查找失败" class="headerlink" title="6、查找失败"></a>6、查找失败</h3><p>消息没有得到处理 崩溃退出，这里从<code>forwardInvocation</code> 的实现，可以追踪到相关的代码：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>forwardInvocation<span class="token operator">:</span><span class="token punctuation">(</span>NSInvocation <span class="token operator">*</span><span class="token punctuation">)</span>invocation <span class="token punctuation">{</span>
+    <span class="token punctuation">[</span>self doesNotRecognizeSelector<span class="token operator">:</span><span class="token punctuation">(</span>invocation <span class="token operator">?</span> <span class="token punctuation">[</span>invocation selector<span class="token punctuation">]</span> <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// Replaced by CF (throws an NSException)</span>
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>doesNotRecognizeSelector<span class="token operator">:</span><span class="token punctuation">(</span>SEL<span class="token punctuation">)</span>sel <span class="token punctuation">{</span>
+    <span class="token function">_objc_fatal</span><span class="token punctuation">(</span><span class="token string">"-[%s %s]: unrecognized selector sent to instance %p"</span><span class="token punctuation">,</span> 
+                <span class="token function">object_getClassName</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_getName</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">,</span> self<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="7、-总结"><a href="#7、-总结" class="headerlink" title="7、 总结"></a>7、 总结</h3><p>又到了最受欢迎的总结时间。</p>
 <h4 id="回答文章开头的问题："><a href="#回答文章开头的问题：" class="headerlink" title="回答文章开头的问题："></a>回答文章开头的问题：</h4><blockquote>
 <ul>
