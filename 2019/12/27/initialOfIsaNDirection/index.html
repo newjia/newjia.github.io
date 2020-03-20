@@ -1,0 +1,1305 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="OC底层研究3--isa的初始化和指向分析, 李佳的技术博客">
+    <meta name="description" content="
+本页所使用的objc runtime 756.2，来自GITHUB
+
+开始继续学习研究OC源码，这次研究的是isa的初始化和指向分析。
+1. 概念什么是isa看看苹果文档的介绍：
+
+isa
+A Pointer to the class d">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>OC底层研究3--isa的初始化和指向分析 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            我就是我，
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/19.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">OC底层研究3--isa的初始化和指向分析</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/ios/">
+                                <span class="chip bg-color">ios</span>
+                            </a>
+                        
+                            <a href="/tags/源码/">
+                                <span class="chip bg-color">源码</span>
+                            </a>
+                        
+                            <a href="/tags/底层/">
+                                <span class="chip bg-color">底层</span>
+                            </a>
+                        
+                            <a href="/tags/对齐/">
+                                <span class="chip bg-color">对齐</span>
+                            </a>
+                        
+                            <a href="/tags/内存/">
+                                <span class="chip bg-color">内存</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-12-27
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.9k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    7 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>本页所使用的objc runtime 756.2，来自<a href="https://github.com/RetVal/objc-runtime" target="_blank" rel="noopener">GITHUB</a></p>
+</blockquote>
+<p>开始继续学习研究OC源码，这次研究的是isa的初始化和指向分析。</p>
+<h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h3><h4 id="什么是isa"><a href="#什么是isa" class="headerlink" title="什么是isa"></a>什么是isa</h4><p>看看苹果文档的介绍：</p>
+<blockquote>
+<p>isa</p>
+<p>A Pointer to the class definition of which this object is an instance.</p>
+</blockquote>
+<p><strong>isa</strong> ： 一个指向该对象的类的指针。</p>
+<p>打开Xcode，找到objc.h，我们可以看看到如下代码</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">if</span> !OBJC_TYPES_DEFINED</span>
+<span class="token comment" spellcheck="true">/// An opaque type that represents an Objective-C class.</span>
+<span class="token comment" spellcheck="true">/// 一个展示OC类的未知的类型</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> objc_class <span class="token operator">*</span>Class<span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">/// Represents an instance of a class.</span>
+<span class="token comment" spellcheck="true">/// 展示一个类的实例</span>
+<span class="token keyword">struct</span> objc_object <span class="token punctuation">{</span>
+    Class <span class="token class-name">_Nonnull</span> isa  OBJC_ISA_AVAILABILITY<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">/// A pointer to an instance of a class.</span>
+<span class="token comment" spellcheck="true">/// 一个指向类的实例的指针</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> objc_object <span class="token operator">*</span>id<span class="token punctuation">;</span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看出，Class 是一个objc_class 类型的结构体。</p>
+<p>而id类型，则是objc_object 类型的结构体.</p>
+<a id="more"></a>
+
+<h3 id="2-isa-的初始化"><a href="#2-isa-的初始化" class="headerlink" title="2. isa 的初始化"></a>2. isa 的初始化</h3><p>在此之前，先回顾一下对象初始化的流程图</p>
+<img src="/2019/12/27/initialOfIsaNDirection/0001.png" style="zoom:67%;">
+
+<p>在这里，初始化实例的isa，其中 <code>cls</code> 为初始化的类对象，<code>hasCxxDtor</code> 即为是否含有C++的析构器。</p>
+<p>我们进入 <code>initIsa(cls, true, hasCxxDtor)</code> 这个函数，看看内部实现了什么</p>
+<h4 id="2-1-isa非nonpointer"><a href="#2-1-isa非nonpointer" class="headerlink" title="2.1 isa非nonpointer"></a>2.1 isa非<strong>nonpointer</strong></h4><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>nonpointer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    isa<span class="token punctuation">.</span>cls <span class="token operator">=</span> cls<span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><p><strong>nonpointer概念:</strong>  </p>
+<p>表示是否对isa 指针开启指针优化</p>
+</li>
+</ul>
+<p>​    <strong>0: 纯isa指针</strong></p>
+<p>​    <strong>1: 不止是类对象的地址，还包含类信息、对象的引用计数等。</strong></p>
+<p>此时，如果为纯isa指针，将当前类 <code>cls</code> 赋值给 <code>isa</code> 的绑定属性 <code>cls</code></p>
+<p>为什么有这个<strong>绑定属性</strong>，而<code>isa</code>究竟是什么看结构呢？</p>
+<p>点击<code>isa.cls = cls;</code>中的<code>cls</code>查看它的结构，如下：</p>
+<pre class="line-numbers language-​cpp"><code class="language-​cpp">union isa_t {
+    isa_t() { }                    // isa 初始化方法
+    isa_t(uintptr_t value) : bits(value) { }
+
+    Class cls;
+    uintptr_t bits;
+#if defined(ISA_BITFIELD)
+    struct {
+         ISA_BITFIELD;  // defined in isa.h
+    };
+#endif
+};<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看见isa 是一个 union，联合体，里面包含了</p>
+<ul>
+<li><code>isa_t</code>  初始化方法</li>
+<li><code>isa_t(uintptr_t value)</code> 工厂方法</li>
+<li><code>Class cls</code>  <strong>绑定属性</strong></li>
+<li>结构体<code>ISA_BITFIELD</code>位域</li>
+</ul>
+<ol>
+<li><p><strong>ISA_BITFIELD概念</strong></p>
+<p>我们点开类型为<code>struct</code>的<code>ISA_BITFIELD</code>，结构如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property"># <span class="token directive keyword">if</span> __arm64__</span>
+<span class="token macro property">#   <span class="token directive keyword">define</span> ISA_MASK        0x0000000ffffffff8ULL</span>
+<span class="token macro property">#   <span class="token directive keyword">define</span> ISA_MAGIC_MASK  0x000003f000000001ULL</span>
+<span class="token macro property">#   <span class="token directive keyword">define</span> ISA_MAGIC_VALUE 0x000001a000000001ULL</span>
+<span class="token macro property">#   <span class="token directive keyword">define</span> ISA_BITFIELD                                                      \
+      uintptr_t nonpointer        : 1;                                       \
+      uintptr_t has_assoc         : 1;                                       \
+      uintptr_t has_cxx_dtor      : 1;                                       \
+      uintptr_t shiftcls          : 33; </span><span class="token comment" spellcheck="true">/*MACH_VM_MAX_ADDRESS 0x1000000000*/</span> \
+      uintptr_t magic             <span class="token operator">:</span> <span class="token number">6</span><span class="token punctuation">;</span>                                       \
+      uintptr_t weakly_referenced <span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>                                       \
+      uintptr_t deallocating      <span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>                                       \
+      uintptr_t has_sidetable_rc  <span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>                                       \
+      uintptr_t extra_rc          <span class="token operator">:</span> <span class="token number">19</span>
+<span class="token macro property">#   <span class="token directive keyword">define</span> RC_ONE   (1ULL&lt;&lt;45)</span>
+<span class="token macro property">#   <span class="token directive keyword">define</span> RC_HALF  (1ULL&lt;&lt;18)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><strong>NONPOINTER_ISA</strong>效果图（手绘中，待补全……）</p>
+</li>
+<li><p>还原isa_t 的结构</p>
+<p>我们这时发现，isa的整体结构可以替换为如下的样子:</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">union</span> isa_t <span class="token punctuation">{</span>
+    <span class="token function">isa_t</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+    <span class="token function">isa_t</span><span class="token punctuation">(</span>uintptr_t value<span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token function">bits</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+
+    Class <span class="token class-name">cls</span><span class="token punctuation">;</span>
+    uintptr_t bits<span class="token punctuation">;</span>
+<span class="token macro property">#<span class="token directive keyword">if</span> defined(ISA_BITFIELD)</span>
+    <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+        uintptr_t nonpointer        <span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>                                       \
+        uintptr_t has_assoc         <span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>                                       \
+        uintptr_t has_cxx_dtor      <span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>                                       \
+        uintptr_t shiftcls          <span class="token operator">:</span> <span class="token number">33</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/*MACH_VM_MAX_ADDRESS 0x1000000000*/</span> \
+        uintptr_t magic             <span class="token operator">:</span> <span class="token number">6</span><span class="token punctuation">;</span>                                       \
+        uintptr_t weakly_referenced <span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>                                       \
+        uintptr_t deallocating      <span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>                                       \
+        uintptr_t has_sidetable_rc  <span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">;</span>                                       \
+        uintptr_t extra_rc          <span class="token operator">:</span> <span class="token number">19</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//         ISA_BITFIELD;  // defined in isa.h</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+<ul>
+<li><p><strong>nonpointer</strong>: 表示是否对 <strong>isa</strong> 指针开启指针优化 <strong>0</strong>:纯<strong>isa</strong>指针，<strong>1</strong>:不止是类对象地址<strong>,isa</strong> 中包含了类信息、对象的引用计数等（占1位）</p>
+</li>
+<li><p><strong>has_assoc</strong>: 关联对象标志位，<strong>0</strong>没有，<strong>1</strong>存在（占1位）</p>
+</li>
+<li><p><strong>has_cxx_dtor</strong>: 该对象是否有 <strong>C++</strong> 或者 <strong>Objc</strong> 的析构器<strong>,</strong>如果有析构函数<strong>,</strong>则需要做析构逻辑<strong>,</strong> 如果没有<strong>,</strong>则可以更快的释放对象（占1位）</p>
+</li>
+<li><p><strong>shiftcls:</strong>存储类指针的值。开启指针优化的情况下，在 <strong>arm64</strong> 架构中有 <strong>33</strong> 位用来存储类指针。（占33位）</p>
+</li>
+<li><p><strong>magic</strong>:用于调试器判断当前对象是真的对象还是没有初始化的空间 <strong>weakly_referenced</strong>:志对象是否被指向或者曾经指向一个 <strong>ARC</strong> 的弱变量，没有弱引用的对象可以更快释放。（占6位）</p>
+</li>
+<li><p><strong>deallocating</strong>:标志对象是否正在释放内存（占1位）</p>
+</li>
+<li><p><strong>has_sidetable_rc</strong>:当对象引用计数大于 <strong>10</strong> 时，则需要借用该变量存储进位（占1位）</p>
+</li>
+<li><p><strong>extra_rc</strong>:当表示该对象的引用计数值，实际上是引用计数值减 <strong>1</strong>， 例如，如果对象的引用计数为 <strong>10</strong>，那么 <strong>extra_rc</strong> 为 <strong>9</strong>。如果引用计数大于 <strong>10</strong>， 则需要使用到下面的 <strong>has_sidetable_rc</strong>。（占1位）</p>
+</li>
+</ul>
+<h4 id="2-2-isa是nonpointer类型"><a href="#2-2-isa是nonpointer类型" class="headerlink" title="2.2 isa是nonpointer类型"></a>2.2 isa<strong>是</strong>nonpointer类型</h4><pre class="line-numbers language-cpp"><code class="language-cpp">        isa_t <span class="token function">newisa</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token macro property">#<span class="token directive keyword">if</span> SUPPORT_INDEXED_ISA</span>
+        <span class="token function">assert</span><span class="token punctuation">(</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">classArrayIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        newisa<span class="token punctuation">.</span>bits <span class="token operator">=</span> ISA_INDEX_MAGIC_VALUE<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// isa.magic is part of ISA_MAGIC_VALUE</span>
+        <span class="token comment" spellcheck="true">// isa.nonpointer is part of ISA_MAGIC_VALUE</span>
+        newisa<span class="token punctuation">.</span>has_cxx_dtor <span class="token operator">=</span> hasCxxDtor<span class="token punctuation">;</span>
+        newisa<span class="token punctuation">.</span>indexcls <span class="token operator">=</span> <span class="token punctuation">(</span>uintptr_t<span class="token punctuation">)</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">classArrayIndex</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token macro property">#<span class="token directive keyword">else</span></span>
+        newisa<span class="token punctuation">.</span>bits <span class="token operator">=</span> ISA_MAGIC_VALUE<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// isa.magic is part of ISA_MAGIC_VALUE</span>
+        <span class="token comment" spellcheck="true">// isa.nonpointer is part of ISA_MAGIC_VALUE</span>
+        newisa<span class="token punctuation">.</span>has_cxx_dtor <span class="token operator">=</span> hasCxxDtor<span class="token punctuation">;</span>
+        newisa<span class="token punctuation">.</span>shiftcls <span class="token operator">=</span> <span class="token punctuation">(</span>uintptr_t<span class="token punctuation">)</span>cls <span class="token operator">>></span> <span class="token number">3</span><span class="token punctuation">;</span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><p>生成新的<code>isa</code>:</p>
+<p><code>isa_t newisa(0);</code></p>
+</li>
+<li><p>c++ 析构器：</p>
+<p>newisa.has_cxx_dtor = hasCxxDtor;` 表示当前对象是否有C++的析构函数（destructor）,如果没有，释放时会快速的释放内存。</p>
+</li>
+<li><p>位域赋值</p>
+<p><code>newisa.shiftcls = (uintptr_t)cls &gt;&gt; 3;</code>对存储指针的值进行右移动3位赋值。</p>
+</li>
+<li><p>返回isa</p>
+<p><code>isa = newisa;</code></p>
+</li>
+</ul>
+<h3 id="3-isa-的指向"><a href="#3-isa-的指向" class="headerlink" title="3. isa 的指向"></a>3. isa 的指向</h3><h4 id="3-1-指向图："><a href="#3-1-指向图：" class="headerlink" title="3.1 指向图："></a>3.1 指向图：</h4><p>关于isa的指向以及子类父类的关系，苹果官方给出了一张图如下所示：</p>
+<img src="/2019/12/27/initialOfIsaNDirection/007.png" style="zoom:80%;">
+
+<h4 id="3-2-代码分析"><a href="#3-2-代码分析" class="headerlink" title="3.2 代码分析"></a>3.2 代码分析</h4><h5 id="3-2-1-对象的isa"><a href="#3-2-1-对象的isa" class="headerlink" title="3.2.1 对象的isa"></a>3.2.1 对象的<strong>isa</strong></h5><p>我们执行一项代码如下，并对该行打断点：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">Person <span class="token operator">*</span>object <span class="token operator">=</span> <span class="token punctuation">[</span>Person alloc<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>我们知道：<strong>对象里的 isa ——指向——&gt; 类</strong>。</p>
+<h5 id="3-2-2类的isa"><a href="#3-2-2类的isa" class="headerlink" title="3.2.2类的isa"></a>3.2.2类的<strong>isa</strong></h5><p>现在我们想知道类的内存空间结构，在控制台执行如下指令<code>x/4gx Person.class</code>，结果如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token punctuation">(</span>lldb<span class="token punctuation">)</span> x<span class="token operator">/</span>4gx Person<span class="token punctuation">.</span><span class="token keyword">class</span>
+<span class="token class-name">0x100001130</span><span class="token operator">:</span> <span class="token number">0x001d800100001109</span> <span class="token number">0x0000000100b39140</span>
+<span class="token number">0x100001140</span><span class="token operator">:</span> <span class="token number">0x0000000101a46ed0</span> <span class="token number">0x0000000200000007</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>由于<code>isa</code>是类对象的第一个属性，我们知道<code>0x001d800100001109</code>是改对象的isa，我们看看他指向哪里呢，使用<code>p/x</code> 指令试试:</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token punctuation">(</span>lldb<span class="token punctuation">)</span> p<span class="token operator">/</span>x <span class="token function">0x001d800100001109</span>
+<span class="token punctuation">(</span><span class="token keyword">long</span><span class="token punctuation">)</span> $<span class="token number">16</span> <span class="token operator">=</span> <span class="token number">0x001d800100001109</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>糟糕，查看不到结果？怎么回事？类的isa 格式需要强转，可以退一步，打印类的地址试试：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">po <span class="token number">0x100001130</span>
+Person<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>原来如此，在内存空间里，名为Person的类的第一个位置，指向Person类，岂不是循环指向了？</p>
+<p>非也非也，这里指向的类，我们把它称为元类（meta-class）</p>
+<p><strong>类的isa ——指向——&gt; 元类</strong></p>
+<h5 id="3-2-3-元类的isa"><a href="#3-2-3-元类的isa" class="headerlink" title="3.2.3 元类的isa"></a>3.2.3 元类的<strong>isa</strong></h5><p>我们现在获得元类的具体地址，找到<code>isa</code> 的<code>MASK</code>（掩码），值为<code>0x00007ffffffffff8</code>，</p>
+<p>输入以下指令：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token punctuation">(</span>lldb<span class="token punctuation">)</span> p<span class="token operator">/</span>x <span class="token number">0x001d800100001109</span> <span class="token operator">&amp;</span> <span class="token function">0x00007ffffffffff8</span>
+<span class="token punctuation">(</span><span class="token keyword">long</span><span class="token punctuation">)</span> $<span class="token number">17</span> <span class="token operator">=</span> <span class="token function">0x0000000100001108</span>
+<span class="token punctuation">(</span>lldb<span class="token punctuation">)</span> po <span class="token number">0x0000000100001108</span>
+Person<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>得到元类地址为：<strong>0x0000000100001108</strong>，16进制打印一下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token punctuation">(</span>lldb<span class="token punctuation">)</span> x<span class="token operator">/</span>4gx <span class="token number">0x0000000100001108</span>
+<span class="token number">0x100001108</span><span class="token operator">:</span> <span class="token number">0x001d800100b390f1</span> <span class="token number">0x0000000100b390f0</span>
+<span class="token number">0x100001118</span><span class="token operator">:</span> <span class="token number">0x0000000100f5a480</span> <span class="token number">0x0000000400000007</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可以看到元类结构里，isa指针为 <strong>0x001d800100b390f1</strong>，继续获取它的指向，我们通过与掩码来计算：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token punctuation">(</span>lldb<span class="token punctuation">)</span> p<span class="token operator">/</span>x <span class="token number">0x001d800100b390f1</span> <span class="token operator">&amp;</span> <span class="token function">0x00007ffffffffff8</span>
+<span class="token punctuation">(</span><span class="token keyword">long</span><span class="token punctuation">)</span> $<span class="token number">21</span> <span class="token operator">=</span> <span class="token number">0x0000000100b390f0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>好嘞，拿到内存指针地址为<strong>0x0000000100b390f0</strong>， 打印一下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">po <span class="token number">0x0000000100b390f0</span>
+NSObject<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>至此，我们可以看到元类的<code>isa</code>指向它的上一级元类，也就是跟元类(root meta-class)，为NSObject。</p>
+<p>所以得出: <strong>元类的isa ——指向——&gt; 根元类</strong></p>
+<h5 id="3-2-4-根元类的isa"><a href="#3-2-4-根元类的isa" class="headerlink" title="3.2.4 根元类的isa"></a>3.2.4 根元类的<strong>isa</strong></h5><p>我们打印下根元类结构：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">x<span class="token operator">/</span>4gx <span class="token number">0x0000000100b390f0</span>
+<span class="token number">0x100b390f0</span><span class="token operator">:</span> <span class="token number">0x001d800100b390f1</span> <span class="token number">0x0000000100b39140</span>
+<span class="token number">0x100b39100</span><span class="token operator">:</span> <span class="token number">0x0000000101a47020</span> <span class="token number">0x0000000500000007</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>拿到它的isa，与掩码继续进行与运算</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">p<span class="token operator">/</span>x <span class="token number">0x001d800100b390f1</span> <span class="token operator">&amp;</span> <span class="token function">0x00007ffffffffff8</span>
+<span class="token punctuation">(</span><span class="token keyword">long</span><span class="token punctuation">)</span> $<span class="token number">27</span> <span class="token operator">=</span> <span class="token number">0x0000000100b390f0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>得到的结果<strong>0x0000000100b390f0</strong>，与根元类<strong>0x0000000100b390f0</strong>，完全吻合。</p>
+<p>至此，我们得出结论：<strong>根元类的isa ——指向——&gt; 根类NSObject</strong>。    </p>
+<p>什么？你不信，这些都是猜测，证实一下？</p>
+<p>好的，创建如下代码</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token function">TestNSObject</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// NSObject实例对象</span>
+    NSObject <span class="token operator">*</span>object1 <span class="token operator">=</span> <span class="token punctuation">[</span>NSObject alloc<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// NSObject类</span>
+    Class <span class="token class-name">class</span> <span class="token operator">=</span> <span class="token function">object_getClass</span><span class="token punctuation">(</span>object1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// NSObject元类</span>
+    Class <span class="token class-name">metaClass</span> <span class="token operator">=</span> <span class="token function">object_getClass</span><span class="token punctuation">(</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// NSObject根元类</span>
+    Class <span class="token class-name">rootMetaClass</span> <span class="token operator">=</span> <span class="token function">object_getClass</span><span class="token punctuation">(</span>metaClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// NSObject根根元类</span>
+    Class <span class="token class-name">rootRootMetaClass</span> <span class="token operator">=</span> <span class="token function">object_getClass</span><span class="token punctuation">(</span>rootMetaClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"\n%p 实例对象\n%p 类\n%p 元类\n%p 根元类\n%p 根根元类"</span><span class="token punctuation">,</span>object1<span class="token punctuation">,</span><span class="token keyword">class</span><span class="token punctuation">,</span>metaClass<span class="token punctuation">,</span>rootMetaClass<span class="token punctuation">,</span>rootRootMetaClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>打印结果如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token number">0x10066ddc0</span> 实例对象
+<span class="token number">0x7fff9294a118</span> 类
+<span class="token number">0x7fff9294a0f0</span> 元类
+<span class="token number">0x7fff9294a0f0</span> 根元类
+<span class="token number">0x7fff9294a0f0</span> 根根元类<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可见，除了NSObject 类是独有的创建，其他元类、根元类、根根元类，都是一样的，因为都是NSObject，所以结果得到了证明。</p>
+<h4 id="3-3-总结："><a href="#3-3-总结：" class="headerlink" title="3.3 总结："></a>3.3 总结：</h4><p>我们再回到这幅图，最红是这样的：</p>
+<img src="/2019/12/27/initialOfIsaNDirection/007.png" style="zoom:80%;">
+
+<ul>
+<li><p>isa指向：</p>
+<blockquote>
+<ul>
+<li>对象中的isa——&gt; 类</li>
+<li>类中的isa ——&gt; 元类</li>
+<li>元类中的isa —-&gt; 根元类</li>
+<li>根元类中的isa —-&gt; 根元类</li>
+</ul>
+</blockquote>
+</li>
+<li><p>类继承关系：</p>
+<blockquote>
+<ul>
+<li>子类 ———superClass——— 父类</li>
+<li>父类 ———superClass——— 根元类</li>
+<li>根元类 ———superClass———  NSObject</li>
+<li>NSObject  ———superClass——— nil</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/2019/12/27/initialOfIsaNDirection/">http://nilsli.com/2019/12/27/initialOfIsaNDirection/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/ios/">
+                                    <span class="chip bg-color">ios</span>
+                                </a>
+                            
+                                <a href="/tags/源码/">
+                                    <span class="chip bg-color">源码</span>
+                                </a>
+                            
+                                <a href="/tags/底层/">
+                                    <span class="chip bg-color">底层</span>
+                                </a>
+                            
+                                <a href="/tags/对齐/">
+                                    <span class="chip bg-color">对齐</span>
+                                </a>
+                            
+                                <a href="/tags/内存/">
+                                    <span class="chip bg-color">内存</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'edbea41d4435fd297c8b',
+        clientSecret: 'b17f455a79f3ec625d2424da1184772883e1adee',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2019-12-27T15-05-19',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2020/01/02/newyearnote/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/12.jpg" class="responsive-img" alt="2020新年感想">
+                        
+                        <span class="card-title">2020新年感想</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+2020年是一个闰年，第一天从星期三开始。
+
+
+今天看了小羊肖恩大电影，故事讲得真好看，小朋友全程开心，全情投入，大朋友也觉得耳目一新，深受感动。
+这是我们带他看的第一部电影，新的一年，从第一开始。
+用一句涂鸦来鼓舞自己
+
+宁愿最后徒劳无
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-01-02
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/2020/">
+                        <span class="chip bg-color">2020</span>
+                    </a>
+                    
+                    <a href="/tags/感想/">
+                        <span class="chip bg-color">感想</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/12/22/memoryAlignPrinciple/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/16.jpg" class="responsive-img" alt="OC底层研究2--内存对齐原理">
+                        
+                        <span class="card-title">OC底层研究2--内存对齐原理</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+本页所使用的objc runtime 756.2，来自GITHUB
+
+开始继续学习研究OC源码，今天看的是OC的内存原理，以及对齐原理的分析。
+1.概念内存对齐在数据结构中，是比较基础也比较重要的一环，对于iOS开发，研究底层更免不了要了
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-22
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/ios/">
+                        <span class="chip bg-color">ios</span>
+                    </a>
+                    
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                    <a href="/tags/底层/">
+                        <span class="chip bg-color">底层</span>
+                    </a>
+                    
+                    <a href="/tags/对齐/">
+                        <span class="chip bg-color">对齐</span>
+                    </a>
+                    
+                    <a href="/tags/内存/">
+                        <span class="chip bg-color">内存</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aplayer/APlayer.min.css">
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="12459601"
+                   fixed='true'
+                   autoplay='false'
+                   theme:='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aplayer/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

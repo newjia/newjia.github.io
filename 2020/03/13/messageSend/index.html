@@ -1,0 +1,1281 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="方法的本质4_消息转发机制, 李佳的技术博客">
+    <meta name="description" content="
+本页所使用的objc runtime 756.2，来自GITHUB
+
+1、回顾上文消息方法的本质3_消息查找流程 一文总结了方法查找的流程，得到结论如下:
+
+
+类的缓存里查找——找到——结束查找
+类的方法列表里查找——找到——结束查找
+递">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>方法的本质4_消息转发机制 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            我就是我，
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">方法的本质4_消息转发机制</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/ios/">
+                                <span class="chip bg-color">ios</span>
+                            </a>
+                        
+                            <a href="/tags/源码/">
+                                <span class="chip bg-color">源码</span>
+                            </a>
+                        
+                            <a href="/tags/底层/">
+                                <span class="chip bg-color">底层</span>
+                            </a>
+                        
+                            <a href="/tags/结构/">
+                                <span class="chip bg-color">结构</span>
+                            </a>
+                        
+                            <a href="/tags/消息转发/">
+                                <span class="chip bg-color">消息转发</span>
+                            </a>
+                        
+                            <a href="/tags/objc/">
+                                <span class="chip bg-color">objc</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-03-13
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.4k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    6 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>本页所使用的objc runtime 756.2，来自<a href="https://github.com/RetVal/objc-runtime" target="_blank" rel="noopener">GITHUB</a></p>
+</blockquote>
+<h3 id="1、回顾"><a href="#1、回顾" class="headerlink" title="1、回顾"></a>1、回顾</h3><p>上文消息<a href="http://nilsli.com/2020/03/06/wayOfCheckingMethod/">方法的本质3_消息查找流程</a> 一文总结了方法查找的流程，得到结论如下:</p>
+<blockquote>
+<ol>
+<li>类的缓存里查找——找到——结束查找</li>
+<li>类的方法列表里查找——找到——结束查找</li>
+<li>递归父类缓存、方法列表查找——找到——结束查找</li>
+<li>动态方法解析——（未分析）</li>
+<li>以上未解决——异常崩溃——结束</li>
+</ol>
+</blockquote>
+<p>下面继续学习源码，结合业务代码，深挖第四步 <strong>动态方法决议</strong>，来更深一步的学习<strong>消息转发机制</strong>。</p>
+<h3 id="2、问题"><a href="#2、问题" class="headerlink" title="2、问题"></a>2、问题</h3><p>这篇文章，希望弄清楚下面的问题</p>
+<ul>
+<li><p>消息转发是什么</p>
+</li>
+<li><p>消息转发的场景</p>
+</li>
+<li><p>如何进行消息转发</p>
+<h3 id="3、动态方法决议"><a href="#3、动态方法决议" class="headerlink" title="3、动态方法决议"></a>3、动态方法决议</h3></li>
+</ul>
+<h4 id="3-1-入口-class-resolveMethod"><a href="#3-1-入口-class-resolveMethod" class="headerlink" title="3.1 入口 - class_resolveMethod"></a>3.1 入口 - class_resolveMethod</h4><p>之前的分析，知道了当查找缓存未命中后，会执行<code>objc_msgSend_uncached</code> 的方法，进行方法查找。</p>
+<p>具体执行的是方法 <code>_class_lookupMethodAndLoadCache3</code> 。</p>
+<p>runtime 源码如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">/***********************************************************************
+* _class_lookupMethodAndLoadCache.
+* Method lookup for dispatchers ONLY. OTHER CODE SHOULD USE lookUpImp().
+* This lookup avoids optimistic cache scan because the dispatcher 
+* already tried that.
+**********************************************************************/</span>
+IMP <span class="token function">_class_lookupMethodAndLoadCache3</span><span class="token punctuation">(</span>id obj<span class="token punctuation">,</span> SEL sel<span class="token punctuation">,</span> Class <span class="token class-name">cls</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">lookUpImpOrForward</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> 
+                              YES<span class="token comment" spellcheck="true">/*initialize*/</span><span class="token punctuation">,</span> NO<span class="token comment" spellcheck="true">/*cache*/</span><span class="token punctuation">,</span> YES<span class="token comment" spellcheck="true">/*resolver*/</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在源码中，知道了具体执行的方法是 <code>lookUpImpOrForward</code>，这个方法执行了众多流程，缓存、递归查找等。</p>
+<p>如果都未命中，则会找到<strong>方法决议</strong>实现，代码如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// No implementation found. Try method resolver once.</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>resolver  <span class="token operator">&amp;&amp;</span>  <span class="token operator">!</span>triedResolver<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        runtimeLock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">_class_resolveMethod</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> inst<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        runtimeLock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// Don't cache the result; we don't hold the lock so it may have </span>
+        <span class="token comment" spellcheck="true">// changed already. Re-do the search from scratch instead.</span>
+        triedResolver <span class="token operator">=</span> YES<span class="token punctuation">;</span>
+        <span class="token keyword">goto</span> retry<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注意到执行 <code>_class_resolveMethod(cls, sel, inst)</code> 前后，使用了runtimeLock 进行了锁定与解锁，具体实现时互斥锁（参见Cooci老师的<a href="https://www.jianshu.com/p/32068ffa6136" target="_blank" rel="noopener">互斥锁-读写锁-条件锁</a>），来保证内存安全。</p>
+<p>查看一下class_resolveMethod 方法</p>
+<blockquote>
+<p><strong>Summary</strong></p>
+<p> _class_resolveMethod Call +resolveClassMethod or +resolveInstanceMethod. Returns nothing; any result would be potentially out-of-date already. Does not check if the method already exists.</p>
+<p>class_resolveMethod 调用  +resolveClassMethod 或 +resolveInstanceMethod。</p>
+<p>返回值为空；任何结果将可能已经过期。</p>
+<p>如果方法已经存在，不会检查/执行。</p>
+</blockquote>
+<p>由此可见resolveMethod 只是一个入口，会具体调用如下方法：</p>
+<ul>
+<li>类方法：+resolveInstanceMethod</li>
+<li>实例方法：+resolveInstanceMethod</li>
+</ul>
+<p>具体的源码，见下面的：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token function">_class_resolveMethod</span><span class="token punctuation">(</span>Class <span class="token class-name">cls</span><span class="token punctuation">,</span> SEL sel<span class="token punctuation">,</span> id inst<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span> cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">isMetaClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// try [cls resolveInstanceMethod:sel]</span>
+
+        <span class="token function">_class_resolveInstanceMethod</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> inst<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> 
+    <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// try [nonMetaClass resolveClassMethod:sel]</span>
+        <span class="token comment" spellcheck="true">// and [cls resolveInstanceMethod:sel]</span>
+        <span class="token function">_class_resolveClassMethod</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> inst<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">lookUpImpOrNil</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> inst<span class="token punctuation">,</span> 
+                            NO<span class="token comment" spellcheck="true">/*initialize*/</span><span class="token punctuation">,</span> YES<span class="token comment" spellcheck="true">/*cache*/</span><span class="token punctuation">,</span> NO<span class="token comment" spellcheck="true">/*resolver*/</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+        <span class="token punctuation">{</span>
+            <span class="token function">_class_resolveInstanceMethod</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> inst<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<table>
+<thead>
+<tr>
+<th>代码</th>
+<th>分析</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>! cls-&gt;isMetaClass()</td>
+<td>是否元类</td>
+<td>否，说明主体是实例</td>
+</tr>
+<tr>
+<td>_class_resolveInstanceMethod</td>
+<td>实例方法决议实现</td>
+<td></td>
+</tr>
+<tr>
+<td>_class_resolveClassMethod</td>
+<td>类方法决议实现</td>
+<td></td>
+</tr>
+<tr>
+<td>_class_resolveInstanceMethod</td>
+<td>[第2个] 查看NSObject 决议实现</td>
+<td>发生在lookUpImpOrNil 失败后</td>
+</tr>
+</tbody></table>
+<p><strong>分析:</strong> </p>
+<blockquote>
+<p>进入决议后，先确定是否是元类；</p>
+<p>如果是元类，由于已知类方法存储在元类里，知道该方法主体是类，则会进入类方法决议</p>
+<p>如果不是元类，即方法主题是实例，进入实例方法决议。</p>
+<p>如果元类方法决议查找失败，根元类亦查找失败，由于根元类的isa 是指向自身的，所以用到了 <code>_class_resolveInstanceMethod</code> 的实例决议方法。</p>
+</blockquote>
+<p>具体逻辑见下图：</p>
+<p><img src="/2020/03/13/messageSend/01.png" alt="001"></p>
+<h4 id="3-2-类方法决议-class-resolveClassMethod"><a href="#3-2-类方法决议-class-resolveClassMethod" class="headerlink" title="3.2 类方法决议 - _class_resolveClassMethod"></a>3.2 类方法决议 - _class_resolveClassMethod</h4><p>捋清楚入口后，继续看类方法的决议，源码如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">/***********************************************************************
+* _class_resolveClassMethod
+* Call +resolveClassMethod, looking for a method to be added to class cls.
+* cls should be a metaclass.
+* Does not check if the method already exists.
+**********************************************************************/</span>
+<span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">_class_resolveClassMethod</span><span class="token punctuation">(</span>Class <span class="token class-name">cls</span><span class="token punctuation">,</span> SEL sel<span class="token punctuation">,</span> id inst<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">assert</span><span class="token punctuation">(</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">isMetaClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span> <span class="token function">lookUpImpOrNil</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> SEL_resolveClassMethod<span class="token punctuation">,</span> inst<span class="token punctuation">,</span> 
+                         NO<span class="token comment" spellcheck="true">/*initialize*/</span><span class="token punctuation">,</span> YES<span class="token comment" spellcheck="true">/*cache*/</span><span class="token punctuation">,</span> NO<span class="token comment" spellcheck="true">/*resolver*/</span><span class="token punctuation">)</span><span class="token punctuation">)</span> 
+    <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Resolver not implemented.</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token function">BOOL</span> <span class="token punctuation">(</span><span class="token operator">*</span>msg<span class="token punctuation">)</span><span class="token punctuation">(</span>Class<span class="token punctuation">,</span> SEL<span class="token punctuation">,</span> SEL<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token function">typeof</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">)</span>objc_msgSend<span class="token punctuation">;</span>
+    <span class="token keyword">bool</span> resolved <span class="token operator">=</span> <span class="token function">msg</span><span class="token punctuation">(</span><span class="token function">_class_getNonMetaClass</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> inst<span class="token punctuation">)</span><span class="token punctuation">,</span> 
+                        SEL_resolveClassMethod<span class="token punctuation">,</span> sel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Cache the result (good or bad) so the resolver doesn't fire next time.</span>
+    <span class="token comment" spellcheck="true">// +resolveClassMethod adds to self->ISA() a.k.a. cls</span>
+    IMP imp <span class="token operator">=</span> <span class="token function">lookUpImpOrNil</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> inst<span class="token punctuation">,</span> 
+                             NO<span class="token comment" spellcheck="true">/*initialize*/</span><span class="token punctuation">,</span> YES<span class="token comment" spellcheck="true">/*cache*/</span><span class="token punctuation">,</span> NO<span class="token comment" spellcheck="true">/*resolver*/</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>resolved  <span class="token operator">&amp;&amp;</span>  PrintResolving<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>imp<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">_objc_inform</span><span class="token punctuation">(</span><span class="token string">"RESOLVE: method %c[%s %s] "</span>
+                         <span class="token string">"dynamically resolved to %p"</span><span class="token punctuation">,</span> 
+                         cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">isMetaClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'+'</span> <span class="token operator">:</span> <span class="token string">'-'</span><span class="token punctuation">,</span> 
+                         cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">nameForLogging</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_getName</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">,</span> imp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Method resolver didn't add anything?</span>
+            <span class="token function">_objc_inform</span><span class="token punctuation">(</span><span class="token string">"RESOLVE: +[%s resolveClassMethod:%s] returned YES"</span>
+                         <span class="token string">", but no new implementation of %c[%s %s] was found"</span><span class="token punctuation">,</span>
+                         cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">nameForLogging</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_getName</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">,</span> 
+                         cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">isMetaClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'+'</span> <span class="token operator">:</span> <span class="token string">'-'</span><span class="token punctuation">,</span> 
+                         cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">nameForLogging</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_getName</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>分析上文的源码，除了一些断言、异常的保护代码外，关键语句来到了这一句</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token function">BOOL</span> <span class="token punctuation">(</span><span class="token operator">*</span>msg<span class="token punctuation">)</span><span class="token punctuation">(</span>Class<span class="token punctuation">,</span> SEL<span class="token punctuation">,</span> SEL<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token function">typeof</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">)</span>objc_msgSend<span class="token punctuation">;</span>
+    <span class="token keyword">bool</span> resolved <span class="token operator">=</span> <span class="token function">msg</span><span class="token punctuation">(</span><span class="token function">_class_getNonMetaClass</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> inst<span class="token punctuation">)</span><span class="token punctuation">,</span> 
+                        SEL_resolveClassMethod<span class="token punctuation">,</span> sel<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这里的函数<code>msg</code> 调用了3个参数</p>
+<ul>
+<li>_class_getNonMetaClass(cls, inst) ：即类的本身 </li>
+<li>SEL_resolveClassMethod ： 决议的类方法</li>
+<li>sel ：需要查找的方法编号</li>
+</ul>
+<p>所以，关键的行为就是<code>SEL_resolveClassMethod</code> 方法，通过搜索，源码代码中均找不到。</p>
+<p>回头看苹果给该方法写的注释：</p>
+<blockquote>
+<p>_class_resolveClassMethod</p>
+<p>Call +resolveClassMethod, looking for a method to be added to class cls.</p>
+</blockquote>
+<p>意思是C 源码里写的方法，在OC 实现里，会执行+resolveClassMethod 的方法，即通过resolveClassMethod 来对该类进行决议——添加相应的类方法。</p>
+<p>在OC里的实现即这个方法</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">+</span> <span class="token punctuation">(</span>BOOL<span class="token punctuation">)</span>resolveClassMethod<span class="token operator">:</span><span class="token punctuation">(</span>SEL<span class="token punctuation">)</span>sel<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> NO<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>至此，已经大概明白了决议的意义——当方法找不到实现时，转发到类/实例决议方法里，看看开发者是否有自行实现。其最大的意义，恐怕是收集各种崩溃了。</p>
+<h4 id="3-3-实例方法决议-class-resolveInstanceMethod"><a href="#3-3-实例方法决议-class-resolveInstanceMethod" class="headerlink" title="3.3 实例方法决议 - class_resolveInstanceMethod"></a>3.3 实例方法决议 - class_resolveInstanceMethod</h4><p>实例方法决议的源码实现，与类方法决议类似，差别仅仅在决议执行方法，换成了<code>SEL_resolveInstanceMethod</code>，源码如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token function">BOOL</span> <span class="token punctuation">(</span><span class="token operator">*</span>msg<span class="token punctuation">)</span><span class="token punctuation">(</span>Class<span class="token punctuation">,</span> SEL<span class="token punctuation">,</span> SEL<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token function">typeof</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">)</span>objc_msgSend<span class="token punctuation">;</span>
+    <span class="token keyword">bool</span> resolved <span class="token operator">=</span> <span class="token function">msg</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> SEL_resolveInstanceMethod<span class="token punctuation">,</span> sel<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>当决议方法得到实现后，会提示，方法XX 已经被决议成为新的实现YY—— 否则会提示决议未找到:</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token keyword">if</span> <span class="token punctuation">(</span>resolved  <span class="token operator">&amp;&amp;</span>  PrintResolving<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>imp<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">_objc_inform</span><span class="token punctuation">(</span><span class="token string">"RESOLVE: method %c[%s %s] "</span>
+                         <span class="token string">"dynamically resolved to %p"</span><span class="token punctuation">,</span> 
+                         cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">isMetaClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'+'</span> <span class="token operator">:</span> <span class="token string">'-'</span><span class="token punctuation">,</span> 
+                         cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">nameForLogging</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_getName</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">,</span> imp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Method resolver didn't add anything?</span>
+            <span class="token function">_objc_inform</span><span class="token punctuation">(</span><span class="token string">"RESOLVE: +[%s resolveInstanceMethod:%s] returned YES"</span>
+                         <span class="token string">", but no new implementation of %c[%s %s] was found"</span><span class="token punctuation">,</span>
+                         cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">nameForLogging</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_getName</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">,</span> 
+                         cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">isMetaClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'+'</span> <span class="token operator">:</span> <span class="token string">'-'</span><span class="token punctuation">,</span> 
+                         cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">nameForLogging</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_getName</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4、快速转发阶段"><a href="#4、快速转发阶段" class="headerlink" title="4、快速转发阶段"></a>4、快速转发阶段</h3><h3 id="5、-慢速转发阶段"><a href="#5、-慢速转发阶段" class="headerlink" title="5、 慢速转发阶段"></a>5、 慢速转发阶段</h3><h3 id="6、失败报错"><a href="#6、失败报错" class="headerlink" title="6、失败报错"></a>6、失败报错</h3><h3 id="7、总结"><a href="#7、总结" class="headerlink" title="7、总结"></a>7、总结</h3>
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/2020/03/13/messageSend/">http://nilsli.com/2020/03/13/messageSend/</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/ios/">
+                                    <span class="chip bg-color">ios</span>
+                                </a>
+                            
+                                <a href="/tags/源码/">
+                                    <span class="chip bg-color">源码</span>
+                                </a>
+                            
+                                <a href="/tags/底层/">
+                                    <span class="chip bg-color">底层</span>
+                                </a>
+                            
+                                <a href="/tags/结构/">
+                                    <span class="chip bg-color">结构</span>
+                                </a>
+                            
+                                <a href="/tags/消息转发/">
+                                    <span class="chip bg-color">消息转发</span>
+                                </a>
+                            
+                                <a href="/tags/objc/">
+                                    <span class="chip bg-color">objc</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'edbea41d4435fd297c8b',
+        clientSecret: 'b17f455a79f3ec625d2424da1184772883e1adee',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-03-13T18-16-42',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2020/03/13/messageSend/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg" class="responsive-img" alt="方法的本质4_消息转发机制">
+                        
+                        <span class="card-title">方法的本质4_消息转发机制</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+本页所使用的objc runtime 756.2，来自GITHUB
+
+1、回顾上文消息方法的本质3_消息查找流程 一文总结了方法查找的流程，得到结论如下:
+
+
+类的缓存里查找——找到——结束查找
+类的方法列表里查找——找到——结束查找
+递
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-13
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/ios/">
+                        <span class="chip bg-color">ios</span>
+                    </a>
+                    
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                    <a href="/tags/底层/">
+                        <span class="chip bg-color">底层</span>
+                    </a>
+                    
+                    <a href="/tags/结构/">
+                        <span class="chip bg-color">结构</span>
+                    </a>
+                    
+                    <a href="/tags/消息转发/">
+                        <span class="chip bg-color">消息转发</span>
+                    </a>
+                    
+                    <a href="/tags/objc/">
+                        <span class="chip bg-color">objc</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/03/09/glance-at-WestLake/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/20.jpg" class="responsive-img" alt="【休闲】西湖一瞥">
+                        
+                        <span class="card-title">【休闲】西湖一瞥</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            逛次逛次的西湖今天过来平海路的Apple 直营店给电脑做大保健，顺便看了一眼西湖。
+湖边景色依旧宜人，可惜游人寥寥。
+期待一切顺利，然后恢复到游人如织的景色。
+
+
+
+
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-09
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/休闲/">
+                        <span class="chip bg-color">休闲</span>
+                    </a>
+                    
+                    <a href="/tags/杭州/">
+                        <span class="chip bg-color">杭州</span>
+                    </a>
+                    
+                    <a href="/tags/西湖/">
+                        <span class="chip bg-color">西湖</span>
+                    </a>
+                    
+                    <a href="/tags/Apple/">
+                        <span class="chip bg-color">Apple</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aplayer/APlayer.min.css">
+<div class="">
+    
+    <div class="row">
+        <meting-js class="col l8 offset-l2 m10 offset-m1 s12"
+                   server="netease"
+                   type="playlist"
+                   id="12459601"
+                   fixed='true'
+                   autoplay='false'
+                   theme:='#42b983'
+                   loop='all'
+                   order='random'
+                   preload='auto'
+                   volume='0.7'
+                   list-folded='true'
+        >
+        </meting-js>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aplayer/APlayer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/meting@2/dist/Meting.min.js"></script>
+
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=1181062873" class="tooltipped" target="_blank" data-tooltip="QQ联系我: 1181062873" data-position="top" data-delay="50">
+        <i class="fab fa-qq"></i>
+    </a>
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

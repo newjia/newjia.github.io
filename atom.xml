@@ -1,0 +1,702 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>李佳的技术博客</title>
+  
+  <subtitle>「疾如風，徐如林，侵掠如火，不動如山」</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://nilsli.com/"/>
+  <updated>2020-03-20T07:39:37.921Z</updated>
+  <id>http://nilsli.com/</id>
+  
+  <author>
+    <name>李佳</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>方法的本质4_消息转发机制</title>
+    <link href="http://nilsli.com/2020/03/13/messageSend/"/>
+    <id>http://nilsli.com/2020/03/13/messageSend/</id>
+    <published>2020-03-13T10:16:42.000Z</published>
+    <updated>2020-03-20T07:39:37.921Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
+    
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+    
+      <category term="结构" scheme="http://nilsli.com/tags/%E7%BB%93%E6%9E%84/"/>
+    
+      <category term="消息转发" scheme="http://nilsli.com/tags/%E6%B6%88%E6%81%AF%E8%BD%AC%E5%8F%91/"/>
+    
+      <category term="objc" scheme="http://nilsli.com/tags/objc/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【休闲】西湖一瞥</title>
+    <link href="http://nilsli.com/2020/03/09/glance-at-WestLake/"/>
+    <id>http://nilsli.com/2020/03/09/glance-at-WestLake/</id>
+    <published>2020-03-09T12:11:20.000Z</published>
+    <updated>2020-03-17T15:07:11.496Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="休闲" scheme="http://nilsli.com/tags/%E4%BC%91%E9%97%B2/"/>
+    
+      <category term="杭州" scheme="http://nilsli.com/tags/%E6%9D%AD%E5%B7%9E/"/>
+    
+      <category term="西湖" scheme="http://nilsli.com/tags/%E8%A5%BF%E6%B9%96/"/>
+    
+      <category term="Apple" scheme="http://nilsli.com/tags/Apple/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>方法的本质3_消息查找流程[慢速查找]</title>
+    <link href="http://nilsli.com/2020/03/06/wayOfCheckingMethod/"/>
+    <id>http://nilsli.com/2020/03/06/wayOfCheckingMethod/</id>
+    <published>2020-03-06T08:33:26.000Z</published>
+    <updated>2020-03-17T15:07:11.627Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
+    
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+    
+      <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
+    
+      <category term="结构" scheme="http://nilsli.com/tags/%E7%BB%93%E6%9E%84/"/>
+    
+      <category term="objc" scheme="http://nilsli.com/tags/objc/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>方法的本质2_从objc_msgSend谈起</title>
+    <link href="http://nilsli.com/2020/02/24/startToLearnObjcSend/"/>
+    <id>http://nilsli.com/2020/02/24/startToLearnObjcSend/</id>
+    <published>2020-02-24T02:47:05.000Z</published>
+    <updated>2020-03-17T15:07:11.581Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
+    
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+    
+      <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
+    
+      <category term="结构" scheme="http://nilsli.com/tags/%E7%BB%93%E6%9E%84/"/>
+    
+      <category term="objc" scheme="http://nilsli.com/tags/objc/"/>
+    
+      <category term="msgSend" scheme="http://nilsli.com/tags/msgSend/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>方法的本质1--cache_t方法缓存分析</title>
+    <link href="http://nilsli.com/2020/01/21/analyzeOfCacheT/"/>
+    <id>http://nilsli.com/2020/01/21/analyzeOfCacheT/</id>
+    <published>2020-01-20T17:18:38.000Z</published>
+    <updated>2020-03-17T15:07:11.487Z</updated>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;本页所使用的objc runtime 756.2，来自&lt;a href=&quot;https://github.com/RetVal/objc-runtime&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GITHUB&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;1-概念&quot;&gt;&lt;a href=&quot;#1-概念&quot; class=&quot;headerlink&quot; title=&quot;1.概念&quot;&gt;&lt;/a&gt;1.概念&lt;/h3&gt;&lt;h4 id=&quot;1-1-objc-class-结构&quot;&gt;&lt;a href=&quot;#1-1-objc-class-结构&quot; class=&quot;headerlink&quot; title=&quot;1.1 objc_class 结构&quot;&gt;&lt;/a&gt;1.1 objc_class 结构&lt;/h4&gt;&lt;p&gt;前面探索了类的结构，知道了类的结构本质上是&lt;strong&gt;objc_class&lt;/strong&gt;的结构体，而在 &lt;strong&gt;C&lt;/strong&gt; 源码例， &lt;strong&gt;objc_class&lt;/strong&gt; 结构体的结构如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;cpp&quot;&gt;struct objc_class : objc_object {
+    // Class ISA;                 // 指向类的isa
+    Class superclass;         // 父类
+    cache_t cache;            // 缓存的方法列表         // formerly cache pointer and vtable
+    class_data_bits_t bits;    // 缓存的属性和变量  // class_rw_t * plus custom rr/alloc flags
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;上一篇文章，具体分析了class_data_bits_t，那么上面的缓存&lt;strong&gt;cache_t&lt;/strong&gt; 还没有展开学习，下面就继续进行讲解。&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
+    
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+    
+      <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
+    
+      <category term="结构" scheme="http://nilsli.com/tags/%E7%BB%93%E6%9E%84/"/>
+    
+      <category term="cache_t" scheme="http://nilsli.com/tags/cache-t/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OC底层研究4--类的结构分析</title>
+    <link href="http://nilsli.com/2020/01/12/StructOfClass/"/>
+    <id>http://nilsli.com/2020/01/12/StructOfClass/</id>
+    <published>2020-01-12T06:00:53.000Z</published>
+    <updated>2020-03-17T15:07:11.485Z</updated>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;本页所使用的objc runtime 756.2，来自&lt;a href=&quot;https://github.com/RetVal/objc-runtime&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GITHUB&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;1-概念&quot;&gt;&lt;a href=&quot;#1-概念&quot; class=&quot;headerlink&quot; title=&quot;1.概念&quot;&gt;&lt;/a&gt;1.概念&lt;/h3&gt;&lt;h4 id=&quot;1-1-类Class-的类型&quot;&gt;&lt;a href=&quot;#1-1-类Class-的类型&quot; class=&quot;headerlink&quot; title=&quot;1.1 类Class 的类型&quot;&gt;&lt;/a&gt;1.1 类&lt;strong&gt;Class&lt;/strong&gt; 的类型&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;Class在源码里的真正类型为&lt;strong&gt;objc_class&lt;/strong&gt;的&lt;strong&gt;结构体&lt;/strong&gt;。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;先查看源码——在Xcode按下&lt;strong&gt;Shift+Command+O&lt;/strong&gt;，选择&lt;strong&gt;objc-runtime-new.h&lt;/strong&gt;，搜索objc_class，可以得知，Class底层编译实现的前4行如下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2020/01/12/StructOfClass/01.png&quot; alt&gt;&lt;/p&gt;
+&lt;p&gt;可知类结构如下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;A. //&lt;strong&gt;Class ISA&lt;/strong&gt;                                &lt;/p&gt;
+&lt;p&gt;​    继承自父类 &lt;strong&gt;objc_class&lt;/strong&gt; 的 &lt;strong&gt;isa&lt;/strong&gt; ，指向类的指针不需显示（内存占8位），这里它返回一个&lt;strong&gt;nonpointer&lt;/strong&gt;的指针，相关源码如下：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;cpp&quot;&gt;/// Represents an instance of a class.
+struct objc_object {
+    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
+};&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;B. &lt;strong&gt;Class superclass;&lt;/strong&gt;                    &lt;/p&gt;
+&lt;p&gt;​    指向本类的父类（内存占8位）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;C. &lt;strong&gt;cache_t cache;&lt;/strong&gt;                        &lt;/p&gt;
+&lt;p&gt;​    存储指针和vtable，加速方法调用（内存占8位）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;D. &lt;strong&gt;class_data_bits_t bits;&lt;/strong&gt;             &lt;/p&gt;
+&lt;p&gt;​    存储类的方法、属性、遵循的协议等信息的地方（内存占8位） &lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;E. 其他方法/函数 – &lt;strong&gt;不占内存&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;为何cache_t cache 这个变量占位位16，而不是8？&lt;/p&gt;
+&lt;p&gt;原因是因为这里的&lt;strong&gt;cache_t&lt;/strong&gt;是结构体，其占内存为根据内部属性结构而定，为防止溢出，给予&lt;strong&gt;16位字节&lt;/strong&gt;，而不是指针所需的8位。&lt;/p&gt;
+&lt;p&gt;Talk is cheap, show me the code, 伸伸手指，点开cache_t 的内部结构&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2020/01/12/StructOfClass/02.png&quot; alt&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
+    
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+    
+      <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
+    
+      <category term="结构" scheme="http://nilsli.com/tags/%E7%BB%93%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2020新年感想</title>
+    <link href="http://nilsli.com/2020/01/02/newyearnote/"/>
+    <id>http://nilsli.com/2020/01/02/newyearnote/</id>
+    <published>2020-01-01T16:39:53.000Z</published>
+    <updated>2020-03-17T15:07:11.554Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="2020" scheme="http://nilsli.com/tags/2020/"/>
+    
+      <category term="感想" scheme="http://nilsli.com/tags/%E6%84%9F%E6%83%B3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OC底层研究3--isa的初始化和指向分析</title>
+    <link href="http://nilsli.com/2019/12/27/initialOfIsaNDirection/"/>
+    <id>http://nilsli.com/2019/12/27/initialOfIsaNDirection/</id>
+    <published>2019-12-27T07:05:19.000Z</published>
+    <updated>2020-03-17T15:07:11.535Z</updated>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;本页所使用的objc runtime 756.2，来自&lt;a href=&quot;https://github.com/RetVal/objc-runtime&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GITHUB&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;开始继续学习研究OC源码，这次研究的是isa的初始化和指向分析。&lt;/p&gt;
+&lt;h3 id=&quot;1-概念&quot;&gt;&lt;a href=&quot;#1-概念&quot; class=&quot;headerlink&quot; title=&quot;1. 概念&quot;&gt;&lt;/a&gt;1. 概念&lt;/h3&gt;&lt;h4 id=&quot;什么是isa&quot;&gt;&lt;a href=&quot;#什么是isa&quot; class=&quot;headerlink&quot; title=&quot;什么是isa&quot;&gt;&lt;/a&gt;什么是isa&lt;/h4&gt;&lt;p&gt;看看苹果文档的介绍：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;isa&lt;/p&gt;
+&lt;p&gt;A Pointer to the class definition of which this object is an instance.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;isa&lt;/strong&gt; ： 一个指向该对象的类的指针。&lt;/p&gt;
+&lt;p&gt;打开Xcode，找到objc.h，我们可以看看到如下代码&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;cpp&quot;&gt;#if !OBJC_TYPES_DEFINED
+/// An opaque type that represents an Objective-C class.
+/// 一个展示OC类的未知的类型
+typedef struct objc_class *Class;
+
+/// Represents an instance of a class.
+/// 展示一个类的实例
+struct objc_object {
+    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
+};
+
+/// A pointer to an instance of a class.
+/// 一个指向类的实例的指针
+typedef struct objc_object *id;
+#endif&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看出，Class 是一个objc_class 类型的结构体。&lt;/p&gt;
+&lt;p&gt;而id类型，则是objc_object 类型的结构体.&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
+    
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+    
+      <category term="对齐" scheme="http://nilsli.com/tags/%E5%AF%B9%E9%BD%90/"/>
+    
+      <category term="内存" scheme="http://nilsli.com/tags/%E5%86%85%E5%AD%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OC底层研究2--内存对齐原理</title>
+    <link href="http://nilsli.com/2019/12/22/memoryAlignPrinciple/"/>
+    <id>http://nilsli.com/2019/12/22/memoryAlignPrinciple/</id>
+    <published>2019-12-22T03:05:11.000Z</published>
+    <updated>2020-03-17T15:07:11.543Z</updated>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;本页所使用的objc runtime 756.2，来自&lt;a href=&quot;https://github.com/RetVal/objc-runtime&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GITHUB&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;开始继续学习研究OC源码，今天看的是OC的内存原理，以及对齐原理的分析。&lt;/p&gt;
+&lt;h4 id=&quot;1-概念&quot;&gt;&lt;a href=&quot;#1-概念&quot; class=&quot;headerlink&quot; title=&quot;1.概念&quot;&gt;&lt;/a&gt;1.概念&lt;/h4&gt;&lt;p&gt;内存对齐在数据结构中，是比较基础也比较重要的一环，对于iOS开发，研究底层更免不了要了解他们的原理，方便我们更透彻的学习iOS的原理。&lt;/p&gt;
+&lt;p&gt;我们先来一段维基百科的&lt;a href=&quot;https://en.wikipedia.org/wiki/Data_structure_alignment&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;数据结构对齐&lt;/a&gt;的相关知识。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;内存对齐，也可以理解为数据结构对齐（Data structure alignment），是代码编译后在内存的布局与使用方式。包括三方面内容：&lt;strong&gt;数据对齐&lt;/strong&gt;、&lt;strong&gt;数据结构填充&lt;/strong&gt;（padding）与&lt;strong&gt;包入&lt;/strong&gt;（packing）。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;下图是内存中各类型属性所占的空间大小：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/2019/12/22/memoryAlignPrinciple/010.png&quot; alt&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
+    
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+    
+      <category term="对齐" scheme="http://nilsli.com/tags/%E5%AF%B9%E9%BD%90/"/>
+    
+      <category term="内存" scheme="http://nilsli.com/tags/%E5%86%85%E5%AD%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>OC 底层研究1--alloc和init原理</title>
+    <link href="http://nilsli.com/2019/12/16/pricipleofalloc/"/>
+    <id>http://nilsli.com/2019/12/16/pricipleofalloc/</id>
+    <published>2019-12-16T07:31:51.000Z</published>
+    <updated>2020-03-17T15:07:11.572Z</updated>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;本页所使用的objc runtime 756.2，来自&lt;a href=&quot;https://github.com/RetVal/objc-runtime&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GITHUB&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;1-题目&quot;&gt;&lt;a href=&quot;#1-题目&quot; class=&quot;headerlink&quot; title=&quot;1. 题目&quot;&gt;&lt;/a&gt;1. 题目&lt;/h3&gt;&lt;p&gt;开始学习研究OC源码，今天看的是对象的初始化，也就是alloc以及init的分析。&lt;/p&gt;
+&lt;h3 id=&quot;2-附流程图如下&quot;&gt;&lt;a href=&quot;#2-附流程图如下&quot; class=&quot;headerlink&quot; title=&quot;2. 附流程图如下&quot;&gt;&lt;/a&gt;2. 附流程图如下&lt;/h3&gt;&lt;p&gt; &lt;img src=&quot;/2019/12/16/pricipleofalloc/121601.png&quot; alt&gt;&lt;/p&gt;
+&lt;h3 id=&quot;3-内容&quot;&gt;&lt;a href=&quot;#3-内容&quot; class=&quot;headerlink&quot; title=&quot;3. 内容&quot;&gt;&lt;/a&gt;3. 内容&lt;/h3&gt;&lt;h4 id=&quot;3-1引子&quot;&gt;&lt;a href=&quot;#3-1引子&quot; class=&quot;headerlink&quot; title=&quot;3.1引子&quot;&gt;&lt;/a&gt;3.1引子&lt;/h4&gt;&lt;p&gt;我们先看一段代码，Person类的初始化，打印p1,p2,p3对象，以及指向他们的指针：&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;objective-c&quot;&gt;    Person *p1 = [Person alloc];
+    Person *p2 = [p1 init];
+    Person *p3 = [p1 init];
+
+    NSLog(@&amp;quot;%@ -- %p&amp;quot;, p1, &amp;amp;p1);
+    NSLog(@&amp;quot;%@ -- %p&amp;quot;, p2, &amp;amp;p2);
+    NSLog(@&amp;quot;%@ -- %p&amp;quot;, p3, &amp;amp;p3);&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;打印结果是：&lt;/p&gt;
+&lt;img src=&quot;/2019/12/16/pricipleofalloc/121602.png&quot; style=&quot;zoom:50%;&quot;&gt;
+
+&lt;p&gt;这里为什么p1相同的情况下，经过init后的p2，p3 的地址都不一样呢，我们要用这个图来分析:&lt;/p&gt;
+&lt;img src=&quot;/2019/12/16/pricipleofalloc/121603.png&quot; style=&quot;zoom:50%;&quot;&gt;
+
+&lt;p&gt;在这里，我们&lt;strong&gt;[Person alloc]&lt;/strong&gt;创建了一个p 对象的内存空间，而&lt;strong&gt;[p1 init]&lt;/strong&gt;则是创建同样是指向p1的指针p2，p3，因为和p1 内存空间一致，所以地址均为0x6000024f4950，但是指向该3个指针的指针不一样，所以&amp;amp;p1, &amp;amp;p2, &amp;amp;p3 地址不一致。 &lt;/p&gt;
+&lt;h4 id=&quot;3-2源码分析：&quot;&gt;&lt;a href=&quot;#3-2源码分析：&quot; class=&quot;headerlink&quot; title=&quot;3.2源码分析：&quot;&gt;&lt;/a&gt;3.2源码分析：&lt;/h4&gt;&lt;p&gt;alloc 步骤如下&lt;/p&gt;
+&lt;h6 id=&quot;1-alloc&quot;&gt;&lt;a href=&quot;#1-alloc&quot; class=&quot;headerlink&quot; title=&quot;1. alloc&quot;&gt;&lt;/a&gt;&lt;strong&gt;1. alloc&lt;/strong&gt;&lt;/h6&gt;&lt;p&gt;该步骤主要为创建对象，&lt;strong&gt;申请内存空间&lt;/strong&gt;。相关objc源代码如下&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;cpp&quot;&gt;+ (id)alloc {
+    return _objc_rootAlloc(self);
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
+    
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+    
+      <category term="alloc" scheme="http://nilsli.com/tags/alloc/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用Runtime获取第三方成员变量</title>
+    <link href="http://nilsli.com/2019/12/12/runtimes/"/>
+    <id>http://nilsli.com/2019/12/12/runtimes/</id>
+    <published>2019-12-12T07:04:43.000Z</published>
+    <updated>2020-03-17T15:07:11.581Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="runtime" scheme="http://nilsli.com/tags/runtime/"/>
+    
+      <category term="进阶" scheme="http://nilsli.com/tags/%E8%BF%9B%E9%98%B6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Flutter 深入学习</title>
+    <link href="http://nilsli.com/2019/10/31/Flutter-beginer/"/>
+    <id>http://nilsli.com/2019/10/31/Flutter-beginer/</id>
+    <published>2019-10-31T10:00:19.000Z</published>
+    <updated>2020-03-17T15:07:11.485Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h3&gt;&lt;p&gt;Flutter是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。 Flutter可以与现有的代码一起工作。在全世界，Flutter正在被越来越多的开发者和组织使用，并且Flutter是完全免费、开源的。&lt;/p&gt;
+&lt;h5 id=&quot;1-快速开发&quot;&gt;&lt;a href=&quot;#1-快速开发&quot; class=&quot;headerlink&quot; title=&quot;1.快速开发&quot;&gt;&lt;/a&gt;1.快速开发&lt;/h5&gt;&lt;p&gt;毫秒级的热重载，修改后，您的应用界面会立即更新。使用丰富的、完全可定制的widget在几分钟内构建原生界面。&lt;/p&gt;
+&lt;h5 id=&quot;2-富有表现力和灵活的UI&quot;&gt;&lt;a href=&quot;#2-富有表现力和灵活的UI&quot; class=&quot;headerlink&quot; title=&quot;2.富有表现力和灵活的UI&quot;&gt;&lt;/a&gt;2.富有表现力和灵活的UI&lt;/h5&gt;&lt;p&gt;快速发布聚焦于原生体验的功能。分层的架构允许您完全自定义，从而实现难以置信的快速渲染和富有表现力、灵活的设计。&lt;/p&gt;
+&lt;h5 id=&quot;3-原生性能&quot;&gt;&lt;a href=&quot;#3-原生性能&quot; class=&quot;headerlink&quot; title=&quot;3.原生性能&quot;&gt;&lt;/a&gt;3.原生性能&lt;/h5&gt;&lt;p&gt;Flutter包含了许多核心的widget，如滚动、导航、图标和字体等，这些都可以在iOS和Android上达到原生应用一样的性能。&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="Flutter" scheme="http://nilsli.com/tags/Flutter/"/>
+    
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+    
+      <category term="大前端，跨栈" scheme="http://nilsli.com/tags/%E5%A4%A7%E5%89%8D%E7%AB%AF%EF%BC%8C%E8%B7%A8%E6%A0%88/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【译】产品经理vs项目经理：如何区别他们</title>
+    <link href="http://nilsli.com/2019/08/23/pmvspm/"/>
+    <id>http://nilsli.com/2019/08/23/pmvspm/</id>
+    <published>2019-08-23T07:16:02.000Z</published>
+    <updated>2020-03-17T15:07:11.571Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h6 id=&quot;（原链接在此）&quot;&gt;&lt;a href=&quot;#（原链接在此）&quot; class=&quot;headerlink&quot; title=&quot;（原链接在此）&quot;&gt;&lt;/a&gt;（&lt;a href=&quot;https://habr.com/en/company/hygger/blog/462919/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;原链接在此&lt;/a&gt;）&lt;/h6&gt;&lt;h3 id=&quot;序言&quot;&gt;&lt;a href=&quot;#序言&quot; class=&quot;headerlink&quot; title=&quot;序言&quot;&gt;&lt;/a&gt;序言&lt;/h3&gt;&lt;p&gt;大公司和较大的团队常常存在许多战略部门与角色。因此，人们往往会对其中众多角色岗位一脸懵逼不足为奇。&lt;/p&gt;
+&lt;p&gt;不同的经理在团队中的关键职责是否那么容易区分呢？举个栗子，一个产品经理和项目经理的角色就有很多共同点。据说，这些经理中每一个人在他的生命中起码听过这样直接的问题：他们（产品经理、项目经理）有区别吗？不过，也别急着埋怨他们或者觉得难堪，就因为他们对这些职能弄不清楚。产品经理和项目经理是完全不同的角色。这篇文章的目标是定义清楚这两种在软件开发公司里的关键位置的区别，让你彻底甩掉疑惑。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://habrastorage.org/getpro/habr/post_images/eda/55f/a19/eda55fa19804f2f0d2fd819a7cf17ad8.jpg&quot; alt&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="项目经理" scheme="http://nilsli.com/tags/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86/"/>
+    
+      <category term="产品经理" scheme="http://nilsli.com/tags/%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86/"/>
+    
+      <category term="IT" scheme="http://nilsli.com/tags/IT/"/>
+    
+      <category term="产品" scheme="http://nilsli.com/tags/%E4%BA%A7%E5%93%81/"/>
+    
+      <category term="项目" scheme="http://nilsli.com/tags/%E9%A1%B9%E7%9B%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>iOS开发中的问题集锦</title>
+    <link href="http://nilsli.com/2019/07/28/tips-on-swift/"/>
+    <id>http://nilsli.com/2019/07/28/tips-on-swift/</id>
+    <published>2019-07-28T07:33:22.000Z</published>
+    <updated>2020-03-18T05:01:21.521Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+    
+      <category term="swift" scheme="http://nilsli.com/tags/swift/"/>
+    
+      <category term="小问题" scheme="http://nilsli.com/tags/%E5%B0%8F%E9%97%AE%E9%A2%98/"/>
+    
+      <category term="git" scheme="http://nilsli.com/tags/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【译】从阿波罗7号卫星上俯瞰加州南部</title>
+    <link href="http://nilsli.com/2019/07/24/view-from-south-cali/"/>
+    <id>http://nilsli.com/2019/07/24/view-from-south-cali/</id>
+    <published>2019-07-24T07:03:19.000Z</published>
+    <updated>2020-03-17T15:07:11.605Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="NASA" scheme="http://nilsli.com/tags/NASA/"/>
+    
+      <category term="太空" scheme="http://nilsli.com/tags/%E5%A4%AA%E7%A9%BA/"/>
+    
+      <category term="卫星" scheme="http://nilsli.com/tags/%E5%8D%AB%E6%98%9F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【译】SaaS发展历程</title>
+    <link href="http://nilsli.com/2019/07/24/journey-of-SaaS/"/>
+    <id>http://nilsli.com/2019/07/24/journey-of-SaaS/</id>
+    <published>2019-07-24T06:48:02.000Z</published>
+    <updated>2020-03-17T15:07:11.543Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;撰稿人：&lt;a href=&quot;https://www.linkedin.com/in/neerajagrawal2000/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Neeraj Agrawal&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;梗概：&quot;&gt;&lt;a href=&quot;#梗概：&quot; class=&quot;headerlink&quot; title=&quot;梗概：&quot;&gt;&lt;/a&gt;&lt;strong&gt;梗概：&lt;/strong&gt;&lt;/h3&gt;&lt;p&gt;　　总结了成功的SaaS公司上市前的发展轨迹：找到 product-market fit，年入$200万（ARR），然后进入T2D3阶段 - 连续两年ARR翻三倍，然后连续三年翻两倍。ARR至少$1亿，然后上市。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;所谓T2D3：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;　　连续两年 triple（三倍），然后连续三年 double（两倍）。&lt;br&gt;　　&lt;br&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="创业" scheme="http://nilsli.com/tags/%E5%88%9B%E4%B8%9A/"/>
+    
+      <category term="SaaS" scheme="http://nilsli.com/tags/SaaS/"/>
+    
+      <category term="科技" scheme="http://nilsli.com/tags/%E7%A7%91%E6%8A%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何在苹果AppStore 上下架应用</title>
+    <link href="http://nilsli.com/2018/07/24/offline-app-from-app-store/"/>
+    <id>http://nilsli.com/2018/07/24/offline-app-from-app-store/</id>
+    <published>2018-07-24T07:46:11.000Z</published>
+    <updated>2020-03-17T15:07:11.555Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;序言：&quot;&gt;&lt;a href=&quot;#序言：&quot; class=&quot;headerlink&quot; title=&quot;序言：&quot;&gt;&lt;/a&gt;序言：&lt;/h3&gt;&lt;h6 id=&quot;作为开发者，如何快捷的在苹果商店下架上架App，请看图吧&quot;&gt;&lt;a href=&quot;#作为开发者，如何快捷的在苹果商店下架上架App，请看图吧&quot; class=&quot;headerlink&quot; title=&quot;作为开发者，如何快捷的在苹果商店下架上架App，请看图吧&quot;&gt;&lt;/a&gt;作为开发者，如何快捷的在苹果商店下架上架App，请看图吧&lt;/h6&gt;&lt;h3 id=&quot;如何下架&quot;&gt;&lt;a href=&quot;#如何下架&quot; class=&quot;headerlink&quot; title=&quot;如何下架&quot;&gt;&lt;/a&gt;如何下架&lt;/h3&gt;&lt;h4 id=&quot;1-进入开发者中心-itunesConnect&quot;&gt;&lt;a href=&quot;#1-进入开发者中心-itunesConnect&quot; class=&quot;headerlink&quot; title=&quot;1. 进入开发者中心 itunesConnect&quot;&gt;&lt;/a&gt;1. 进入开发者中心 itunesConnect&lt;/h4&gt;&lt;p&gt;&lt;img src=&quot;/2018/07/24/offline-app-from-app-store/1.png&quot; alt&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="appstore" scheme="http://nilsli.com/tags/appstore/"/>
+    
+      <category term="上架" scheme="http://nilsli.com/tags/%E4%B8%8A%E6%9E%B6/"/>
+    
+      <category term="下架" scheme="http://nilsli.com/tags/%E4%B8%8B%E6%9E%B6/"/>
+    
+      <category term="苹果商店" scheme="http://nilsli.com/tags/%E8%8B%B9%E6%9E%9C%E5%95%86%E5%BA%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>图解SDWebImage(读sdwebimage源码分析)</title>
+    <link href="http://nilsli.com/2018/02/24/pic-of-sdwebimage/"/>
+    <id>http://nilsli.com/2018/02/24/pic-of-sdwebimage/</id>
+    <published>2018-02-24T07:33:15.000Z</published>
+    <updated>2020-03-17T15:07:11.560Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近在看一些第三方库的源码，其中SDWebImage 尤其让人惊叹，尝试用XMind 画出原理，以后有机会， 会增加更多的细节图。&lt;/p&gt;
+&lt;h4 id=&quot;大纲如下：&quot;&gt;&lt;a href=&quot;#大纲如下：&quot; class=&quot;headerlink&quot; title=&quot;大纲如下：&quot;&gt;&lt;/a&gt;大纲如下：&lt;/h4&gt;&lt;p&gt;&lt;img src=&quot;/2018/02/24/pic-of-sdwebimage/sd1.png&quot; alt&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="开发" scheme="http://nilsli.com/tags/%E5%BC%80%E5%8F%91/"/>
+    
+      <category term="SDWebImage" scheme="http://nilsli.com/tags/SDWebImage/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>通过Universal Link在微信页面中唤起原生App</title>
+    <link href="http://nilsli.com/2017/06/24/wake-up-app-with-universal-link/"/>
+    <id>http://nilsli.com/2017/06/24/wake-up-app-with-universal-link/</id>
+    <published>2017-06-24T07:39:05.000Z</published>
+    <updated>2020-03-17T15:07:11.605Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;因微信封杀，已失效，微信大刀威武！&lt;/p&gt;
+&lt;p&gt;在某些电商项目，或者是社交媒体的分享页面中，我们经常会看到在页面的顶端或者底部遇到有【打开App】或者【下载App】这样的按钮。比较友好的产品经理，会做设备识别，以及检测APP是否安装，来做打开或者下载App 的需求。&lt;br&gt;这些功能在Safari下使用location.href=”scheme://example” 即可实现。&lt;br&gt;但是在微信中，这方面做的比较恶心，微信下面几乎是全面屏蔽了唤起原生App 的功能，所有的启动都需要通过应用宝。&lt;/p&gt;
+&lt;p&gt;在iOS 9以后，苹果推出了Universal Link 这个概念，解决了使用A标签，以及iFrame 的弊端。WWDC2015 Session 509 有介绍,通过Universal Link，将App 与网页端建立连接桥，可以从Safari 或者其他前端浏览器来识别并唤醒App，甚至是微信环境下也可以冲破障碍。&lt;/p&gt;
+    
+    </summary>
+    
+    
+    
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+    
+      <category term="原生" scheme="http://nilsli.com/tags/%E5%8E%9F%E7%94%9F/"/>
+    
+      <category term="微信" scheme="http://nilsli.com/tags/%E5%BE%AE%E4%BF%A1/"/>
+    
+      <category term="universallink" scheme="http://nilsli.com/tags/universallink/"/>
+    
+      <category term="hyper" scheme="http://nilsli.com/tags/hyper/"/>
+    
+      <category term="混合交互" scheme="http://nilsli.com/tags/%E6%B7%B7%E5%90%88%E4%BA%A4%E4%BA%92/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>下棋</title>
+    <link href="http://nilsli.com/2016/03/24/play-chess/"/>
+    <id>http://nilsli.com/2016/03/24/play-chess/</id>
+    <published>2016-03-24T07:52:01.000Z</published>
+    <updated>2020-03-17T15:07:11.571Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="休闲" scheme="http://nilsli.com/tags/%E4%BC%91%E9%97%B2/"/>
+    
+      <category term="人生哲理" scheme="http://nilsli.com/tags/%E4%BA%BA%E7%94%9F%E5%93%B2%E7%90%86/"/>
+    
+  </entry>
+  
+</feed>
