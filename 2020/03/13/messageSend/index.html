@@ -417,14 +417,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.4k
+                    1.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    7 分
                 </div>
                 
 
@@ -647,7 +647,68 @@ IMP <span class="token function">_class_lookupMethodAndLoadCache3</span><span cl
                          cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">nameForLogging</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_getName</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="4、快速转发阶段"><a href="#4、快速转发阶段" class="headerlink" title="4、快速转发阶段"></a>4、快速转发阶段</h3><h3 id="5、-慢速转发阶段"><a href="#5、-慢速转发阶段" class="headerlink" title="5、 慢速转发阶段"></a>5、 慢速转发阶段</h3><h3 id="6、失败报错"><a href="#6、失败报错" class="headerlink" title="6、失败报错"></a>6、失败报错</h3><h3 id="7、总结"><a href="#7、总结" class="headerlink" title="7、总结"></a>7、总结</h3>
+<h3 id="4、快速转发阶段"><a href="#4、快速转发阶段" class="headerlink" title="4、快速转发阶段"></a>4、快速转发阶段</h3><h4 id="4-1-快速查找方法"><a href="#4-1-快速查找方法" class="headerlink" title="4.1 快速查找方法"></a>4.1 快速查找方法</h4><p><strong>forwardingTargetForSelector</strong> ：即将本类未实现的方法，交由指定的其他类来实现。</p>
+<h4 id="4-2-业务代码"><a href="#4-2-业务代码" class="headerlink" title="4.2 业务代码"></a>4.2 业务代码</h4><p>实现如下：</p>
+<ul>
+<li><p>类<code>Person</code>, 与未实现的方法<code>teach</code>：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">@interface Person <span class="token operator">:</span> NSObject
+
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>teach<span class="token punctuation">;</span>
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>类的转发方法——指定<code>Teacher</code> 这个类来执行</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span>forwardingTargetForSelector<span class="token operator">:</span><span class="token punctuation">(</span>SEL<span class="token punctuation">)</span>aSelector <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>aSelector <span class="token operator">==</span> @<span class="token function">selector</span><span class="token punctuation">(</span>teach<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span>Teacher alloc<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token punctuation">[</span>super forwardingTargetForSelector<span class="token operator">:</span>aSelector<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<ul>
+<li><p>类<code>Teacher</code>  以及实现的方法<code>teach</code></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">NS_ASSUME_NONNULL_BEGIN
+
+@interface Teacher <span class="token operator">:</span> NSObject
+
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>teach<span class="token punctuation">;</span>
+
+@end
+
+NS_ASSUME_NONNULL_END
+
+@implementation Teacher
+
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>teach<span class="token punctuation">{</span>
+    <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"%s"</span><span class="token punctuation">,</span> <span class="token constant">__func__</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>主业务执行，使类执行它为实现的方法<code>teach</code>:</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    @autoreleasepool <span class="token punctuation">{</span>
+
+        Person <span class="token operator">*</span>person <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>Person alloc<span class="token punctuation">]</span> init<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">[</span>person teach<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>执行结果，<code>teacher</code>类实现了<code>teach</code>：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token number">2020</span><span class="token operator">-</span><span class="token number">03</span><span class="token operator">-</span><span class="token number">20</span> <span class="token number">16</span><span class="token operator">:</span><span class="token number">12</span><span class="token operator">:</span><span class="token number">51.477020</span><span class="token operator">+</span><span class="token number">0800</span> debug<span class="token operator">-</span>objc<span class="token punctuation">[</span><span class="token number">8565</span><span class="token operator">:</span><span class="token number">349779</span><span class="token punctuation">]</span> <span class="token operator">-</span><span class="token punctuation">[</span>Teacher teach<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>由此可见，forwardingTargetForSelector 的作用，是自身无法处理，交由其他对象（可能是类）来处理。</p>
+</li>
+</ul>
+<h3 id="5、慢速转发阶段"><a href="#5、慢速转发阶段" class="headerlink" title="5、慢速转发阶段"></a>5、慢速转发阶段</h3><h4 id="5-1-慢速转发方法"><a href="#5-1-慢速转发方法" class="headerlink" title="5.1 慢速转发方法"></a>5.1 慢速转发方法</h4><p><strong>methodSignatureForSelector</strong>，看看开发文档的描述：</p>
+<blockquote>
+<h1 id="methodSignatureForSelector"><a href="#methodSignatureForSelector" class="headerlink" title="methodSignatureForSelector:"></a>methodSignatureForSelector:</h1><p>Returns an <code>NSMethodSignature</code> object that contains a description of the method identified by a given selector.</p>
+<p>返回一个<code>NSMethodSignature</code> 的签名对象，包含一个给定选择器的方法的描述</p>
+</blockquote>
+<h4 id="5-2-业务代码实现"><a href="#5-2-业务代码实现" class="headerlink" title="5.2 业务代码实现:"></a>5.2 业务代码实现:</h4><h3 id="6、失败报错"><a href="#6、失败报错" class="headerlink" title="6、失败报错"></a>6、失败报错</h3><h3 id="7、总结"><a href="#7、总结" class="headerlink" title="7、总结"></a>7、总结</h3>
             </div>
             <hr/>
 
