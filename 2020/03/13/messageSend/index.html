@@ -417,14 +417,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.7k
+                    2.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    9 分
                 </div>
                 
 
@@ -560,7 +560,7 @@ IMP <span class="token function">_class_lookupMethodAndLoadCache3</span><span cl
 <p>如果元类方法决议查找失败，根元类亦查找失败，由于根元类的isa 是指向自身的，所以用到了 <code>_class_resolveInstanceMethod</code> 的实例决议方法。</p>
 </blockquote>
 <p>具体逻辑见下图：</p>
-<p><img src="/2020/03/13/messageSend/01.png" alt="001"></p>
+<p><img src="/2020/03/13/messageSend/001.png" alt="001"></p>
 <h4 id="3-2-类方法决议-class-resolveClassMethod"><a href="#3-2-类方法决议-class-resolveClassMethod" class="headerlink" title="3.2 类方法决议 - _class_resolveClassMethod"></a>3.2 类方法决议 - _class_resolveClassMethod</h4><p>捋清楚入口后，继续看类方法的决议，源码如下：</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">/***********************************************************************
 * _class_resolveClassMethod
@@ -647,7 +647,7 @@ IMP <span class="token function">_class_lookupMethodAndLoadCache3</span><span cl
                          cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">nameForLogging</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_getName</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="4、快速转发阶段"><a href="#4、快速转发阶段" class="headerlink" title="4、快速转发阶段"></a>4、快速转发阶段</h3><h4 id="4-1-快速查找方法"><a href="#4-1-快速查找方法" class="headerlink" title="4.1 快速查找方法"></a>4.1 快速查找方法</h4><p><strong>forwardingTargetForSelector</strong> ：即将本类未实现的方法，交由指定的其他类来实现。</p>
+<h3 id="4、快速转发阶段"><a href="#4、快速转发阶段" class="headerlink" title="4、快速转发阶段"></a>4、快速转发阶段</h3><h4 id="4-1-快速转发方法"><a href="#4-1-快速转发方法" class="headerlink" title="4.1 快速转发方法"></a>4.1 快速转发方法</h4><p><strong>forwardingTargetForSelector</strong> ：即将本类未实现的方法，交由指定的其他类来实现。</p>
 <h4 id="4-2-业务代码"><a href="#4-2-业务代码" class="headerlink" title="4.2 业务代码"></a>4.2 业务代码</h4><p>实现如下：</p>
 <ul>
 <li><p>类<code>Person</code>, 与未实现的方法<code>teach</code>：</p>
@@ -708,7 +708,97 @@ NS_ASSUME_NONNULL_END
 <h1 id="methodSignatureForSelector"><a href="#methodSignatureForSelector" class="headerlink" title="methodSignatureForSelector:"></a>methodSignatureForSelector:</h1><p>Returns an <code>NSMethodSignature</code> object that contains a description of the method identified by a given selector.</p>
 <p>返回一个<code>NSMethodSignature</code> 的签名对象，包含一个给定选择器的方法的描述</p>
 </blockquote>
-<h4 id="5-2-业务代码实现"><a href="#5-2-业务代码实现" class="headerlink" title="5.2 业务代码实现:"></a>5.2 业务代码实现:</h4><h3 id="6、失败报错"><a href="#6、失败报错" class="headerlink" title="6、失败报错"></a>6、失败报错</h3><h3 id="7、总结"><a href="#7、总结" class="headerlink" title="7、总结"></a>7、总结</h3>
+<ul>
+<li>获取方法签名： <code>methodSignatureForSelector</code></li>
+<li>通过获取的签名，转发信息 –<br>执行方法是 <code>forwardInvocation</code>往指定的对象传递方法和参数</li>
+</ul>
+<h4 id="5-2-业务代码实现"><a href="#5-2-业务代码实现" class="headerlink" title="5.2 业务代码实现:"></a>5.2 业务代码实现:</h4><p>基础代码与快速转发一致，只是删除了<strong>forwardingTargetForSelector</strong> 的实现代码。</p>
+<p>并在<code>Person</code> 类里实现如下代码</p>
+<ul>
+<li><p>实现方法签名</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// 获得方法签名</span>
+<span class="token operator">-</span> <span class="token punctuation">(</span>NSMethodSignature <span class="token operator">*</span><span class="token punctuation">)</span>methodSignatureForSelector<span class="token operator">:</span><span class="token punctuation">(</span>SEL<span class="token punctuation">)</span>aSelector
+<span class="token punctuation">{</span>
+    NSString <span class="token operator">*</span>sel <span class="token operator">=</span> <span class="token function">NSStringFromSelector</span><span class="token punctuation">(</span>aSelector<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//生成签名</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>sel isEqualToString<span class="token operator">:</span>@<span class="token string">"run"</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span>NSMethodSignature signatureWithObjCTypes<span class="token operator">:</span><span class="token string">"v@:"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span>super methodSignatureForSelector<span class="token operator">:</span>aSelector<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<ul>
+<li><p>获取签名，进行配发信息 </p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>forwardInvocation<span class="token operator">:</span><span class="token punctuation">(</span>NSInvocation <span class="token operator">*</span><span class="token punctuation">)</span>anInvocation
+<span class="token punctuation">{</span>
+    <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"-----%@-----"</span><span class="token punctuation">,</span>anInvocation<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//取得消息</span>
+    SEL selector <span class="token operator">=</span> <span class="token punctuation">[</span>anInvocation selector<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//转发</span>
+    SomePerson <span class="token operator">*</span>someP <span class="token operator">=</span> <span class="token punctuation">[</span>SomePerson <span class="token keyword">new</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>someP respondsToSelector<span class="token operator">:</span>selector<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//调用对象，进行转发</span>
+        <span class="token punctuation">[</span>anInvocation invokeWithTarget<span class="token operator">:</span>someP<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">return</span> <span class="token punctuation">[</span>super forwardInvocation<span class="token operator">:</span>anInvocation<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<ul>
+<li><p>执行<code>teach</code> 结果</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token number">2020</span><span class="token operator">-</span><span class="token number">03</span><span class="token operator">-</span><span class="token number">20</span> <span class="token number">16</span><span class="token operator">:</span><span class="token number">37</span><span class="token operator">:</span><span class="token number">41.639718</span><span class="token operator">+</span><span class="token number">0800</span> debug<span class="token operator">-</span>objc<span class="token punctuation">[</span><span class="token number">9325</span><span class="token operator">:</span><span class="token number">370827</span><span class="token punctuation">]</span> <span class="token operator">-</span><span class="token punctuation">[</span>Teacher teach<span class="token punctuation">]</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ul>
+<h3 id="6、查找失败"><a href="#6、查找失败" class="headerlink" title="6、查找失败"></a>6、查找失败</h3><p>在objc-msg-arm64.s 的汇编里，找到如下代码：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">
+    STATIC_ENTRY __objc_msgForward_impcache
+
+    <span class="token comment" spellcheck="true">// No stret specialization.</span>
+    b    __objc_msgForward
+
+    END_ENTRY __objc_msgForward_impcache<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><code>__objc_msgForward</code> 的执行，则是下面一行汇编代码，使用的方法是<code>objc_forward_handler</code></p>
+<pre><code>    ENTRY __objc_msgForward
+
+    adrp    x17, __objc_forward_handler@PAGE
+    ldr    p17, [x17, __objc_forward_handler@PAGEOFF]
+    TailCallFunctionPointer x17
+
+    END_ENTRY __objc_msgForward</code></pre><p>当以上的流程——缓存查找、动态决议、转发均失败后，返回方法<code>objc_forward_handler</code></p>
+<p>而<code>objc_forward_handler</code> 的父类 即是 <code>objc_defaultForwardHandler</code></p>
+<p>而objc_forward_handler 是我们在查找中实现的方法，如果不实现，默认返回的就是下面的崩溃代码</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token comment" spellcheck="true">// Default forward handler halts the process.</span>
+<span class="token function">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>noreturn<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">void</span> 
+<span class="token function">objc_defaultForwardHandler</span><span class="token punctuation">(</span>id self<span class="token punctuation">,</span> SEL sel<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">_objc_fatal</span><span class="token punctuation">(</span><span class="token string">"%c[%s %s]: unrecognized selector sent to instance %p "</span>
+                <span class="token string">"(no message forward handler is installed)"</span><span class="token punctuation">,</span> 
+                <span class="token function">class_isMetaClass</span><span class="token punctuation">(</span><span class="token function">object_getClass</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'+'</span> <span class="token punctuation">:</span> <span class="token string">'-'</span><span class="token punctuation">,</span> 
+                <span class="token function">object_getClassName</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_getName</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">,</span> self<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">void</span> <span class="token operator">*</span>_objc_forward_handler <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span>objc_defaultForwardHandler<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>返回崩溃如上代码，得到熟悉的<code>unrecognized selector</code></p>
+<h3 id="7、-总结"><a href="#7、-总结" class="headerlink" title="7、 总结"></a>7、 总结</h3><p>又到了最受欢迎的总结时间。</p>
+<h4 id="回答文章开头的问题："><a href="#回答文章开头的问题：" class="headerlink" title="回答文章开头的问题："></a>回答文章开头的问题：</h4><blockquote>
+<ul>
+<li>消息转发是什么：向指定的对象或类，发送需要消息，请求交由对方执行</li>
+<li>消息转发的场景：自我无法实现的场景下。</li>
+<li>如何进行消息转发 <ul>
+<li>快速转发：使用 <code>forwardingTargetForSelector</code> 进行定向转发</li>
+<li>慢速转发：获取签名，使用<code>forwardInvocation</code> 转发</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="有图"><a href="#有图" class="headerlink" title="有图"></a>有图</h4><p>另外，总结经验再多，不如有图有真相……</p>
+<p><img src="/2020/03/13/messageSend/002.png" alt="消息转发流程简图"></p>
+
             </div>
             <hr/>
 
