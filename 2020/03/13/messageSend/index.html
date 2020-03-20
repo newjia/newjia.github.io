@@ -417,14 +417,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.2k
+                    2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    9 分
+                    8 分
                 </div>
                 
 
@@ -728,9 +728,18 @@ NS_ASSUME_NONNULL_END
     <span class="token punctuation">}</span>
 
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>“v” 是方法描述，更多的在这里：</p>
+<blockquote>
+<p>*                     代表 char * </p>
+<p>char BOOL     代表 c</p>
+<p>:                       代表 SEL </p>
+<p>^type               代表 type *</p>
+<p>@                     代表 NSObject * 或 id</p>
+<p>^@                   代表 NSError ** </p>
+<p>#                      代表 NSObject </p>
+<p>v                       代表 void</p>
+</blockquote>
 </li>
-</ul>
-<ul>
 <li><p>获取签名，进行配发信息 </p>
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>forwardInvocation<span class="token operator">:</span><span class="token punctuation">(</span>NSInvocation <span class="token operator">*</span><span class="token punctuation">)</span>anInvocation
 <span class="token punctuation">{</span>
@@ -755,35 +764,11 @@ NS_ASSUME_NONNULL_END
 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 </ul>
-<h3 id="6、查找失败"><a href="#6、查找失败" class="headerlink" title="6、查找失败"></a>6、查找失败</h3><p>在objc-msg-arm64.s 的汇编里，找到如下代码：</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp">
-    STATIC_ENTRY __objc_msgForward_impcache
-
-    <span class="token comment" spellcheck="true">// No stret specialization.</span>
-    b    __objc_msgForward
-
-    END_ENTRY __objc_msgForward_impcache<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><code>__objc_msgForward</code> 的执行，则是下面一行汇编代码，使用的方法是<code>objc_forward_handler</code></p>
-<pre><code>    ENTRY __objc_msgForward
-
-    adrp    x17, __objc_forward_handler@PAGE
-    ldr    p17, [x17, __objc_forward_handler@PAGEOFF]
-    TailCallFunctionPointer x17
-
-    END_ENTRY __objc_msgForward</code></pre><p>当以上的流程——缓存查找、动态决议、转发均失败后，返回方法<code>objc_forward_handler</code></p>
-<p>而<code>objc_forward_handler</code> 的父类 即是 <code>objc_defaultForwardHandler</code></p>
-<p>而objc_forward_handler 是我们在查找中实现的方法，如果不实现，默认返回的就是下面的崩溃代码</p>
-<pre class="line-numbers language-c"><code class="language-c"><span class="token comment" spellcheck="true">// Default forward handler halts the process.</span>
-<span class="token function">__attribute__</span><span class="token punctuation">(</span><span class="token punctuation">(</span>noreturn<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">void</span> 
-<span class="token function">objc_defaultForwardHandler</span><span class="token punctuation">(</span>id self<span class="token punctuation">,</span> SEL sel<span class="token punctuation">)</span>
+<h3 id="6、查找失败"><a href="#6、查找失败" class="headerlink" title="6、查找失败"></a>6、查找失败</h3><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>doesNotRecognizeSelector<span class="token operator">:</span><span class="token punctuation">(</span>SEL<span class="token punctuation">)</span>sel
 <span class="token punctuation">{</span>
-    <span class="token function">_objc_fatal</span><span class="token punctuation">(</span><span class="token string">"%c[%s %s]: unrecognized selector sent to instance %p "</span>
-                <span class="token string">"(no message forward handler is installed)"</span><span class="token punctuation">,</span> 
-                <span class="token function">class_isMetaClass</span><span class="token punctuation">(</span><span class="token function">object_getClass</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">?</span> <span class="token string">'+'</span> <span class="token punctuation">:</span> <span class="token string">'-'</span><span class="token punctuation">,</span> 
-                <span class="token function">object_getClassName</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_getName</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">,</span> self<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token keyword">void</span> <span class="token operator">*</span>_objc_forward_handler <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span>objc_defaultForwardHandler<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>返回崩溃如上代码，得到熟悉的<code>unrecognized selector</code></p>
+    <span class="token comment" spellcheck="true">// 消息没有得到处理 崩溃退出</span>
+    <span class="token punctuation">[</span>super doesNotRecognizeSelector<span class="token operator">:</span>aSelector<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="7、-总结"><a href="#7、-总结" class="headerlink" title="7、 总结"></a>7、 总结</h3><p>又到了最受欢迎的总结时间。</p>
 <h4 id="回答文章开头的问题："><a href="#回答文章开头的问题：" class="headerlink" title="回答文章开头的问题："></a>回答文章开头的问题：</h4><blockquote>
 <ul>
