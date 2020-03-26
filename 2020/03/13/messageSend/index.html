@@ -934,18 +934,17 @@ NS_ASSUME_NONNULL_END
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2020/03/13/messageSend/">
+                <a href="/2020/03/23/dyld-analyze/">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg" class="responsive-img" alt="方法的本质4_消息转发机制">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg" class="responsive-img" alt="类的加载">
                         
-                        <span class="card-title">方法的本质4_消息转发机制</span>
+                        <span class="card-title">类的加载</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -954,18 +953,15 @@ NS_ASSUME_NONNULL_END
                             
 本页所使用的objc runtime 756.2，来自GITHUB
 
-1、回顾上文消息方法的本质3_消息查找流程 一文总结了方法查找的流程，得到结论如下:
+一、引言前文研究了对象、方法的基础，知道了对象/类的结构，类方法的生成和传递原理。下面该进入到核心环节，就是类的加载了，在这一个模块，需要了解的有下面几点：
 
-
-类的缓存里查找——找到——结束查找
-类的方法列表里查找——找到——结束查找
-递
+OC 的
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-13
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-23
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -974,13 +970,8 @@ NS_ASSUME_NONNULL_END
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
-                    
-                    <a href="/tags/ios/">
-                        <span class="chip bg-color">ios</span>
-                    </a>
                     
                     <a href="/tags/源码/">
                         <span class="chip bg-color">源码</span>
@@ -990,16 +981,8 @@ NS_ASSUME_NONNULL_END
                         <span class="chip bg-color">底层</span>
                     </a>
                     
-                    <a href="/tags/结构/">
-                        <span class="chip bg-color">结构</span>
-                    </a>
-                    
-                    <a href="/tags/消息转发/">
-                        <span class="chip bg-color">消息转发</span>
-                    </a>
-                    
-                    <a href="/tags/objc/">
-                        <span class="chip bg-color">objc</span>
+                    <a href="/tags/dyld/">
+                        <span class="chip bg-color">dyld</span>
                     </a>
                     
                 </div>

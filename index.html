@@ -481,6 +481,123 @@
             
             <div class="article col s12 m6 l4" data-aos="zoom-in">
                 <div class="card">
+                    <a href="/2020/03/24/loadingClass/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/5.jpg" class="responsive-img" alt="底层探索——类的加载">
+                            
+                            <span class="card-title">底层探索——类的加载</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                
+本页所使用的objc runtime 756.2，来自 Apple 开源文档
+
+1、objc_init 流程类的加载，初始化来自objc_init 这个步骤，查看一下源码，得到
+void _objc_init(void)
+{
+    st
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-24
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-user fa-fw"></i>
+                                李佳
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/iOS/">
+                            <span class="chip bg-color">iOS</span>
+                        </a>
+                        
+                        <a href="/tags/源码/">
+                            <span class="chip bg-color">源码</span>
+                        </a>
+                        
+                        <a href="/tags/底层/">
+                            <span class="chip bg-color">底层</span>
+                        </a>
+                        
+                        <a href="/tags/Class/">
+                            <span class="chip bg-color">Class</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2020/03/23/dyld-analyze/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg" class="responsive-img" alt="类的加载">
+                            
+                            <span class="card-title">类的加载</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary block-with-text">
+                            
+                                
+本页所使用的objc runtime 756.2，来自GITHUB
+
+一、引言前文研究了对象、方法的基础，知道了对象/类的结构，类方法的生成和传递原理。下面该进入到核心环节，就是类的加载了，在这一个模块，需要了解的有下面几点：
+
+OC 的
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-23
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fas fa-user fa-fw"></i>
+                                李佳
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/源码/">
+                            <span class="chip bg-color">源码</span>
+                        </a>
+                        
+                        <a href="/tags/底层/">
+                            <span class="chip bg-color">底层</span>
+                        </a>
+                        
+                        <a href="/tags/dyld/">
+                            <span class="chip bg-color">dyld</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
                     <a href="/2020/03/13/messageSend/">
                         <div class="card-image">
                             
@@ -1006,129 +1123,6 @@ A Pointer to the class d
                 </div>
             </div>
             
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2019/12/22/memoryAlignPrinciple/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/16.jpg" class="responsive-img" alt="OC底层研究2--内存对齐原理">
-                            
-                            <span class="card-title">OC底层研究2--内存对齐原理</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-本页所使用的objc runtime 756.2，来自GITHUB
-
-开始继续学习研究OC源码，今天看的是OC的内存原理，以及对齐原理的分析。
-1.概念内存对齐在数据结构中，是比较基础也比较重要的一环，对于iOS开发，研究底层更免不了要了
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-22
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/ios/">
-                            <span class="chip bg-color">ios</span>
-                        </a>
-                        
-                        <a href="/tags/源码/">
-                            <span class="chip bg-color">源码</span>
-                        </a>
-                        
-                        <a href="/tags/底层/">
-                            <span class="chip bg-color">底层</span>
-                        </a>
-                        
-                        <a href="/tags/对齐/">
-                            <span class="chip bg-color">对齐</span>
-                        </a>
-                        
-                        <a href="/tags/内存/">
-                            <span class="chip bg-color">内存</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/2019/12/16/pricipleofalloc/">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg" class="responsive-img" alt="OC 底层研究1--alloc和init原理">
-                            
-                            <span class="card-title">OC 底层研究1--alloc和init原理</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-本页所使用的objc runtime 756.2，来自GITHUB
-
-1. 题目开始学习研究OC源码，今天看的是对象的初始化，也就是alloc以及init的分析。
-2. 附流程图如下 
-3. 内容3.1引子我们先看一段代码，Person类
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-16
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/ios/">
-                            <span class="chip bg-color">ios</span>
-                        </a>
-                        
-                        <a href="/tags/源码/">
-                            <span class="chip bg-color">源码</span>
-                        </a>
-                        
-                        <a href="/tags/底层/">
-                            <span class="chip bg-color">底层</span>
-                        </a>
-                        
-                        <a href="/tags/alloc/">
-                            <span class="chip bg-color">alloc</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
         </div>
     </article>
 
@@ -1145,7 +1139,7 @@ A Pointer to the class d
             
         </div>
         <div class="page-info col m4 l4 hide-on-small-only">
-            <div class="center-align b-text-gray">1 / 2</div>
+            <div class="center-align b-text-gray">1 / 3</div>
         </div>
         <div class="col s6 m4 l4">
             

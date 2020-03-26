@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2020-03-21T04:03:41.414Z</updated>
+  <updated>2020-03-26T17:13:52.456Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -15,6 +15,66 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>底层探索——类的加载</title>
+    <link href="http://nilsli.com/2020/03/24/loadingClass/"/>
+    <id>http://nilsli.com/2020/03/24/loadingClass/</id>
+    <published>2020-03-24T07:18:34.000Z</published>
+    <updated>2020-03-26T17:13:52.456Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+    
+      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
+    
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+    
+      <category term="Class" scheme="http://nilsli.com/tags/Class/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>类的加载</title>
+    <link href="http://nilsli.com/2020/03/23/dyld-analyze/"/>
+    <id>http://nilsli.com/2020/03/23/dyld-analyze/</id>
+    <published>2020-03-23T04:30:29.000Z</published>
+    <updated>2020-03-26T05:10:14.451Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
+    
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+    
+      <category term="dyld" scheme="http://nilsli.com/tags/dyld/"/>
+    
+  </entry>
   
   <entry>
     <title>方法的本质4_消息转发机制</title>
@@ -509,7 +569,7 @@ typedef struct objc_object *id;
     <link href="http://nilsli.com/2019/07/28/tips-on-swift/"/>
     <id>http://nilsli.com/2019/07/28/tips-on-swift/</id>
     <published>2019-07-28T07:33:22.000Z</published>
-    <updated>2020-03-18T05:01:21.521Z</updated>
+    <updated>2020-03-24T10:07:21.370Z</updated>
     
     <summary type="html">
     
@@ -638,64 +698,6 @@ typedef struct objc_object *id;
       <category term="开发" scheme="http://nilsli.com/tags/%E5%BC%80%E5%8F%91/"/>
     
       <category term="SDWebImage" scheme="http://nilsli.com/tags/SDWebImage/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>通过Universal Link在微信页面中唤起原生App</title>
-    <link href="http://nilsli.com/2017/06/24/wake-up-app-with-universal-link/"/>
-    <id>http://nilsli.com/2017/06/24/wake-up-app-with-universal-link/</id>
-    <published>2017-06-24T07:39:05.000Z</published>
-    <updated>2020-03-17T15:07:11.605Z</updated>
-    
-    <summary type="html">
-    
-      &lt;p&gt;因微信封杀，已失效，微信大刀威武！&lt;/p&gt;
-&lt;p&gt;在某些电商项目，或者是社交媒体的分享页面中，我们经常会看到在页面的顶端或者底部遇到有【打开App】或者【下载App】这样的按钮。比较友好的产品经理，会做设备识别，以及检测APP是否安装，来做打开或者下载App 的需求。&lt;br&gt;这些功能在Safari下使用location.href=”scheme://example” 即可实现。&lt;br&gt;但是在微信中，这方面做的比较恶心，微信下面几乎是全面屏蔽了唤起原生App 的功能，所有的启动都需要通过应用宝。&lt;/p&gt;
-&lt;p&gt;在iOS 9以后，苹果推出了Universal Link 这个概念，解决了使用A标签，以及iFrame 的弊端。WWDC2015 Session 509 有介绍,通过Universal Link，将App 与网页端建立连接桥，可以从Safari 或者其他前端浏览器来识别并唤醒App，甚至是微信环境下也可以冲破障碍。&lt;/p&gt;
-    
-    </summary>
-    
-    
-    
-      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
-    
-      <category term="原生" scheme="http://nilsli.com/tags/%E5%8E%9F%E7%94%9F/"/>
-    
-      <category term="微信" scheme="http://nilsli.com/tags/%E5%BE%AE%E4%BF%A1/"/>
-    
-      <category term="universallink" scheme="http://nilsli.com/tags/universallink/"/>
-    
-      <category term="hyper" scheme="http://nilsli.com/tags/hyper/"/>
-    
-      <category term="混合交互" scheme="http://nilsli.com/tags/%E6%B7%B7%E5%90%88%E4%BA%A4%E4%BA%92/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>下棋</title>
-    <link href="http://nilsli.com/2016/03/24/play-chess/"/>
-    <id>http://nilsli.com/2016/03/24/play-chess/</id>
-    <published>2016-03-24T07:52:01.000Z</published>
-    <updated>2020-03-17T15:07:11.571Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          
-        
-      
-    
-    </summary>
-    
-    
-    
-      <category term="休闲" scheme="http://nilsli.com/tags/%E4%BC%91%E9%97%B2/"/>
-    
-      <category term="人生哲理" scheme="http://nilsli.com/tags/%E4%BA%BA%E7%94%9F%E5%93%B2%E7%90%86/"/>
     
   </entry>
   

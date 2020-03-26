@@ -404,7 +404,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    215
+                    270
                 </div>
                 
 
@@ -428,22 +428,33 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <p>开发中难免遇到各式各样的小问题，平时收集一下，汇总如下，按Q（问题）和 A（解决方法）。</p>
-<h4 id="Q1-git-add-时出错-unable-to-index-file"><a href="#Q1-git-add-时出错-unable-to-index-file" class="headerlink" title="Q1 git add . 时出错 unable to index file"></a>Q1 git add . 时出错 unable to index file</h4><p>​        详细内容：</p>
+<h4 id="Q1遇到unable-to-index-file"><a href="#Q1遇到unable-to-index-file" class="headerlink" title="Q1遇到unable to index file"></a>Q1遇到unable to index file</h4><p>详细内容：</p>
+<p>​        详细内容：</p>
 <pre class="line-numbers language-bash"><code class="language-bash">        unable to index <span class="token function">file</span> 
 
         fatal: updating files failed<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h5 id="A-解决："><a href="#A-解决：" class="headerlink" title="A 解决："></a>A 解决：</h5><pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> reset HEAD qooxdoo<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>A 解决：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> reset HEAD qooxdoo<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h4 id="Q2-hexo部署后，CNAME会被自动删除"><a href="#Q2-hexo部署后，CNAME会被自动删除" class="headerlink" title="Q2  hexo部署后，CNAME会被自动删除"></a>Q2  hexo部署后，CNAME会被自动删除</h4><p>推送上去后，包含域名内容的CNAME 被删除，博客无法用域名解析。</p>
-<h5 id="A-解决：-1"><a href="#A-解决：-1" class="headerlink" title="A 解决："></a><strong>A 解决：</strong></h5><p>出现这样的问题一般是CNAME 放在blog根目录下，正确是放在source 目录下。</p>
+<p><strong>A 解决：</strong></p>
+<p>出现这样的问题一般是CNAME 放在blog根目录下，正确是放在source 目录下。</p>
 <p>然后执行 部署推送</p>
 <p><code>hexo d -g</code></p>
 <p>问题得到解决。</p>
-<p><strong>Q3 This copy of libswiftCore.dylib requires an OS version prior to 10.14.4.</strong></p>
-<p>问题:</p>
+<h4 id="Q3-This-copy-of-libswiftCore-dylib-requires-an-OS-version-prior-to-10-14-4"><a href="#Q3-This-copy-of-libswiftCore-dylib-requires-an-OS-version-prior-to-10-14-4" class="headerlink" title="Q3 This copy of libswiftCore.dylib requires an OS version prior to 10.14.4."></a>Q3 This copy of libswiftCore.dylib requires an OS version prior to 10.14.4.</h4><p>问题:</p>
 <p>在掘金<a href="https://juejin.im/post/5a3cc9a351882560b76c5ddf" target="_blank" rel="noopener">这篇文章</a>, 尝试配置SPM，通过命令创建包时，执行<code>swift run</code> 后，出现如下问题</p>
 <p><strong><img src="/2019/07/28/tips-on-swift/0806-001.png" alt="0806-001"></strong></p>
 <p><strong>A 解决：</strong></p>
 <pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">cp</span> -r /usr/lib/swift/*.dylib /Applications/Xcode.app/Contents/Frameworks<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h4 id="Q4-Git-遇到了-early-EOF-index-pack-failed"><a href="#Q4-Git-遇到了-early-EOF-index-pack-failed" class="headerlink" title="Q4: Git 遇到了 early EOF index-pack failed"></a>Q4: Git 遇到了 early EOF index-pack failed</h4><pre class="line-numbers language-cpp"><code class="language-cpp">$ git clone https<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>github<span class="token punctuation">.</span>com<span class="token operator">/</span>boostorg<span class="token operator">/</span>boost<span class="token punctuation">.</span>git
+Cloning into <span class="token string">'boost'</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+remote<span class="token operator">:</span> Counting objects<span class="token operator">:</span> <span class="token number">183543</span><span class="token punctuation">,</span> done<span class="token punctuation">.</span>
+remote<span class="token operator">:</span> Compressing objects<span class="token operator">:</span> <span class="token number">100</span><span class="token operator">%</span> <span class="token punctuation">(</span><span class="token number">69361</span><span class="token operator">/</span><span class="token number">69361</span><span class="token punctuation">)</span><span class="token punctuation">,</span> done<span class="token punctuation">.</span>
+fatal<span class="token operator">:</span> The remote end hung up unexpectedly
+fatal<span class="token operator">:</span> early <span class="token constant">EOF</span>
+fatal<span class="token operator">:</span> index<span class="token operator">-</span>pack failed<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>解决：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> config --add core.compression -1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>————————</p>
 <p>持续添加中</p>
 <p><img src="https://s3.amazonaws.com/com.twilio.prod.twilio-docs/images/iOSUsernotificationsSwift.width-1616.jpg" alt></p>
