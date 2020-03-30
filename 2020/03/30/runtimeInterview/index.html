@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="类的加载, 李佳的技术博客">
+    <meta name="keywords" content="runtime 面试题, 李佳的技术博客">
     <meta name="description" content="我就是我，">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>类的加载 | 李佳的技术博客</title>
+    <title>runtime 面试题 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/21.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">类的加载</h1>
+                    <h1 class="description center-align post-title">runtime 面试题</h1>
                 </div>
             </div>
         </div>
@@ -367,16 +367,24 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/dyld/">
-                                <span class="chip bg-color">dyld</span>
+                            <a href="/tags/类/">
+                                <span class="chip bg-color">类</span>
                             </a>
                         
-                            <a href="/tags/底层/">
-                                <span class="chip bg-color">底层</span>
+                            <a href="/tags/2020/">
+                                <span class="chip bg-color">2020</span>
                             </a>
                         
-                            <a href="/tags/源码/">
-                                <span class="chip bg-color">源码</span>
+                            <a href="/tags/runtime/">
+                                <span class="chip bg-color">runtime</span>
+                            </a>
+                        
+                            <a href="/tags/面试/">
+                                <span class="chip bg-color">面试</span>
+                            </a>
+                        
+                            <a href="/tags/成员变量/">
+                                <span class="chip bg-color">成员变量</span>
                             </a>
                         
                     </div>
@@ -391,7 +399,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-03-23
+                    2020-03-30
                 </div>
                 
 
@@ -400,7 +408,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    347
+                    258
                 </div>
                 
 
@@ -423,41 +431,25 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <blockquote>
-<p>本页所使用的objc runtime 756.2，来自<a href="https://github.com/RetVal/objc-runtime" target="_blank" rel="noopener">GITHUB</a></p>
-</blockquote>
-<h2 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h2><p>前文研究了对象、方法的基础，知道了对象/类的结构，类方法的生成和传递原理。下面该进入到核心环节，就是类的加载了，在这一个模块，需要了解的有下面几点：</p>
-<ul>
-<li>OC 的库</li>
-<li>app 的加载流程</li>
-<li>image 的结构</li>
-<li>回调函数</li>
-<li>image 的加载流程</li>
-</ul>
-<h2 id="二、库"><a href="#二、库" class="headerlink" title="二、库"></a>二、库</h2><h3 id="2-1、静态库"><a href="#2-1、静态库" class="headerlink" title="2.1、静态库"></a>2.1、静态库</h3><blockquote>
-<p>是一个外部函数与变量的集合体</p>
-<p>iOS 在<strong>编译时</strong>执行静态库，链接到相应代码</p>
-</blockquote>
-<p>静态库的文件内容，通常包含一堆程序员自定的变量与函数，其内容不像动态链接库那么复杂，在编译期间由编译器与链接器将它集成至应用程序内，并制作成目标文件以及可以独立运作的可执行文件。</p>
-<p>常见的iOS 环境下的静态库由 <code>.a</code> 文件，<code>.framework</code> 文件。java 环境下有<code>.so</code> 静态库</p>
-<h3 id="2-2、动态库"><a href="#2-2、动态库" class="headerlink" title="2.2、动态库"></a>2.2、动态库</h3><blockquote>
-<p>iOS 在<strong>运行时</strong>执行动态库，链接到相应的代码里。</p>
-</blockquote>
-<p> .dylib 库文件</p>
-<h2 id="三、App-启动流程"><a href="#三、App-启动流程" class="headerlink" title="三、App 启动流程"></a>三、App 启动流程</h2><h3 id="1-dyld-start"><a href="#1-dyld-start" class="headerlink" title="1. dyld start"></a>1. dyld start</h3><pre class="line-numbers language-cpp"><code class="language-cpp">libdyld<span class="token punctuation">.</span>dylib`start<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="2-加载镜像"><a href="#2-加载镜像" class="headerlink" title="2. 加载镜像"></a>2. 加载镜像</h3><pre><code>reloadAllImages:</code></pre><h3 id="3-加载链接"><a href="#3-加载链接" class="headerlink" title="3. 加载链接"></a>3. 加载链接</h3><pre><code>loadInsertedDylib</code></pre><ul>
-<li>插入（insert）： 插入网线</li>
-<li>链接（link）： 接通网络</li>
-</ul>
-<h2 id="四、dyld"><a href="#四、dyld" class="headerlink" title="四、dyld"></a>四、dyld</h2><h3 id="4-1-start"><a href="#4-1-start" class="headerlink" title="4.1 start"></a>4.1 start</h3><h3 id="4-2-递归初始化"><a href="#4-2-递归初始化" class="headerlink" title="4.2 递归初始化"></a>4.2 递归初始化</h3><h3 id="4-3-objc-init"><a href="#4-3-objc-init" class="headerlink" title="4.3 objc_init"></a>4.3 objc_init</h3><h2 id="五、镜像-images"><a href="#五、镜像-images" class="headerlink" title="五、镜像 - images"></a>五、镜像 - images</h2><ul>
-<li>dyld</li>
-<li>Objc_init</li>
-</ul>
-<h2 id="六、回调函数"><a href="#六、回调函数" class="headerlink" title="六、回调函数"></a>六、回调函数</h2><ul>
-<li>指针</li>
-<li>注册</li>
-<li>*snotif</li>
-</ul>
+                <p>最近看到一道runtime 面试题，觉得有意思</p>
+<h3 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h3><p>Q：已经注册好的类，能否再动态添加成员变量？为什么？</p>
+<h3 id="分析："><a href="#分析：" class="headerlink" title="分析："></a>分析：</h3><p>我们通过Runtime还原一下场景。</p>
+<p>注册好的类，实现的方法是，注册到内存里：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">objc_registerClassPair</span><span class="token punctuation">(</span>LGPerson<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>而实现<code>objc_registerClassPair</code> 这个方法，又实现了下面的内容:</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// Clear "under construction" bit, set "done constructing" bit</span>
+cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">ISA</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">changeInfo</span><span class="token punctuation">(</span>RW_CONSTRUCTED<span class="token punctuation">,</span> RW_CONSTRUCTING <span class="token operator">|</span> RW_REALIZING<span class="token punctuation">)</span><span class="token punctuation">;</span>
+cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">changeInfo</span><span class="token punctuation">(</span>RW_CONSTRUCTED<span class="token punctuation">,</span> RW_CONSTRUCTING <span class="token operator">|</span> RW_REALIZING<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>即对类更改了状态，更改了什么状态？<strong>RW_CONSTRUCTED</strong>这个状态，即让类处于内存开辟&amp;注册到内存中——</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// class allocated and registered</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> RW_CONSTRUCTED        (1&lt;&lt;25)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>接下来，根据创建成员变量的函数为<code>addIvar</code>，创建业务代码如下</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">class_addIvar</span><span class="token punctuation">(</span>LGPerson<span class="token punctuation">,</span> <span class="token string">"lgName"</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>NSString <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">log2</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>NSString <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"@"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在源码中找到相对应的函数：</p>
+<p><img src="/2020/03/30/runtimeInterview/001.png" alt="001"></p>
+<p>走到这一步，就戛然而止了……添加ivars 被拒绝——因为内存已固定，无法再添加新属性了。</p>
+<h3 id="回答："><a href="#回答：" class="headerlink" title="回答："></a>回答：</h3><p>答案是否。</p>
+<p>因为注册好的类，内存容量已经固定，无法动态添加了。</p>
 
             </div>
             <hr/>
@@ -483,7 +475,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/2020/03/23/dyld-analyze/">http://nilsli.com/2020/03/23/dyld-analyze/</a>
+                    <a href="http://nilsli.com/2020/03/30/runtimeInterview/">http://nilsli.com/2020/03/30/runtimeInterview/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -521,16 +513,24 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/dyld/">
-                                    <span class="chip bg-color">dyld</span>
+                                <a href="/tags/类/">
+                                    <span class="chip bg-color">类</span>
                                 </a>
                             
-                                <a href="/tags/底层/">
-                                    <span class="chip bg-color">底层</span>
+                                <a href="/tags/2020/">
+                                    <span class="chip bg-color">2020</span>
                                 </a>
                             
-                                <a href="/tags/源码/">
-                                    <span class="chip bg-color">源码</span>
+                                <a href="/tags/runtime/">
+                                    <span class="chip bg-color">runtime</span>
+                                </a>
+                            
+                                <a href="/tags/面试/">
+                                    <span class="chip bg-color">面试</span>
+                                </a>
+                            
+                                <a href="/tags/成员变量/">
+                                    <span class="chip bg-color">成员变量</span>
                                 </a>
                             
                         </div>
@@ -576,7 +576,7 @@
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2020-03-23T12-30-29',
+        id: '2020-03-30T16-24-38',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -597,9 +597,76 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2020/03/30/runtimeInterview/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/21.jpg" class="responsive-img" alt="runtime 面试题">
+                        
+                        <span class="card-title">runtime 面试题</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            最近看到一道runtime 面试题，觉得有意思
+问题：Q：已经注册好的类，能否再动态添加成员变量？为什么？
+分析：我们通过Runtime还原一下场景。
+注册好的类，实现的方法是，注册到内存里：
+objc_registerClassPair(
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-30
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/类/">
+                        <span class="chip bg-color">类</span>
+                    </a>
+                    
+                    <a href="/tags/2020/">
+                        <span class="chip bg-color">2020</span>
+                    </a>
+                    
+                    <a href="/tags/runtime/">
+                        <span class="chip bg-color">runtime</span>
+                    </a>
+                    
+                    <a href="/tags/面试/">
+                        <span class="chip bg-color">面试</span>
+                    </a>
+                    
+                    <a href="/tags/成员变量/">
+                        <span class="chip bg-color">成员变量</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
             <div class="card">
                 <a href="/2020/03/24/loadingClass/">
                     <div class="card-image">
@@ -622,9 +689,9 @@ void _objc_init(void)
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-24
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-24
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -650,79 +717,6 @@ void _objc_init(void)
                     
                     <a href="/tags/Class/">
                         <span class="chip bg-color">Class</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/2020/03/13/messageSend/">
-                    <div class="card-image">
-                        
-                        
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg" class="responsive-img" alt="方法的本质4_消息转发机制">
-                        
-                        <span class="card-title">方法的本质4_消息转发机制</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-本页所使用的objc runtime 756.2，来自GITHUB
-
-1、回顾上文消息方法的本质3_消息查找流程 一文总结了方法查找的流程，得到结论如下:
-
-
-类的缓存里查找——找到——结束查找
-类的方法列表里查找——找到——结束查找
-递
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-13
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            李佳
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/底层/">
-                        <span class="chip bg-color">底层</span>
-                    </a>
-                    
-                    <a href="/tags/源码/">
-                        <span class="chip bg-color">源码</span>
-                    </a>
-                    
-                    <a href="/tags/ios/">
-                        <span class="chip bg-color">ios</span>
-                    </a>
-                    
-                    <a href="/tags/结构/">
-                        <span class="chip bg-color">结构</span>
-                    </a>
-                    
-                    <a href="/tags/消息转发/">
-                        <span class="chip bg-color">消息转发</span>
-                    </a>
-                    
-                    <a href="/tags/objc/">
-                        <span class="chip bg-color">objc</span>
                     </a>
                     
                 </div>

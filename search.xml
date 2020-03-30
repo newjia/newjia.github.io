@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>runtime 面试题</title>
+      <link href="/2020/03/30/runtimeInterview/"/>
+      <url>/2020/03/30/runtimeInterview/</url>
+      
+        <content type="html"><![CDATA[<p>最近看到一道runtime 面试题，觉得有意思</p><h3 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h3><p>Q：已经注册好的类，能否再动态添加成员变量？为什么？</p><h3 id="分析："><a href="#分析：" class="headerlink" title="分析："></a>分析：</h3><p>我们通过Runtime还原一下场景。</p><p>注册好的类，实现的方法是，注册到内存里：</p><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">objc_registerClassPair</span><span class="token punctuation">(</span>LGPerson<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>而实现<code>objc_registerClassPair</code> 这个方法，又实现了下面的内容:</p><pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// Clear "under construction" bit, set "done constructing" bit</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">ISA</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">changeInfo</span><span class="token punctuation">(</span>RW_CONSTRUCTED<span class="token punctuation">,</span> RW_CONSTRUCTING <span class="token operator">|</span> RW_REALIZING<span class="token punctuation">)</span><span class="token punctuation">;</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">changeInfo</span><span class="token punctuation">(</span>RW_CONSTRUCTED<span class="token punctuation">,</span> RW_CONSTRUCTING <span class="token operator">|</span> RW_REALIZING<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><p>即对类更改了状态，更改了什么状态？<strong>RW_CONSTRUCTED</strong>这个状态，即让类处于内存开辟&amp;注册到内存中——</p><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// class allocated and registered</span><span class="token macro property">#<span class="token directive keyword">define</span> RW_CONSTRUCTED        (1&lt;&lt;25)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre><p>接下来，根据创建成员变量的函数为<code>addIvar</code>，创建业务代码如下</p><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">class_addIvar</span><span class="token punctuation">(</span>LGPerson<span class="token punctuation">,</span> <span class="token string">"lgName"</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>NSString <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">log2</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>NSString <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"@"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>在源码中找到相对应的函数：</p><p><img src="/2020/03/30/runtimeInterview/001.png" alt="001"></p><p>走到这一步，就戛然而止了……添加ivars 被拒绝——因为内存已固定，无法再添加新属性了。</p><h3 id="回答："><a href="#回答：" class="headerlink" title="回答："></a>回答：</h3><p>答案是否。</p><p>因为注册好的类，内存容量已经固定，无法动态添加了。</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 类 </tag>
+            
+            <tag> 2020 </tag>
+            
+            <tag> runtime </tag>
+            
+            <tag> 面试 </tag>
+            
+            <tag> 成员变量 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>底层探索——类的加载</title>
       <link href="/2020/03/24/loadingClass/"/>
       <url>/2020/03/24/loadingClass/</url>
@@ -14,9 +41,9 @@
       
         <tags>
             
-            <tag> 源码 </tag>
-            
             <tag> 底层 </tag>
+            
+            <tag> 源码 </tag>
             
             <tag> iOS </tag>
             
@@ -39,11 +66,11 @@
       
         <tags>
             
-            <tag> 源码 </tag>
+            <tag> dyld </tag>
             
             <tag> 底层 </tag>
             
-            <tag> dyld </tag>
+            <tag> 源码 </tag>
             
         </tags>
       
@@ -62,11 +89,11 @@
       
         <tags>
             
-            <tag> ios </tag>
+            <tag> 底层 </tag>
             
             <tag> 源码 </tag>
             
-            <tag> 底层 </tag>
+            <tag> ios </tag>
             
             <tag> 结构 </tag>
             
@@ -116,11 +143,11 @@
       
         <tags>
             
-            <tag> ios </tag>
+            <tag> 底层 </tag>
             
             <tag> 源码 </tag>
             
-            <tag> 底层 </tag>
+            <tag> ios </tag>
             
             <tag> 类 </tag>
             
@@ -145,11 +172,11 @@
       
         <tags>
             
-            <tag> ios </tag>
+            <tag> 底层 </tag>
             
             <tag> 源码 </tag>
             
-            <tag> 底层 </tag>
+            <tag> ios </tag>
             
             <tag> 类 </tag>
             
@@ -176,11 +203,11 @@
       
         <tags>
             
-            <tag> ios </tag>
+            <tag> 底层 </tag>
             
             <tag> 源码 </tag>
             
-            <tag> 底层 </tag>
+            <tag> ios </tag>
             
             <tag> 类 </tag>
             
@@ -205,11 +232,11 @@
       
         <tags>
             
-            <tag> ios </tag>
+            <tag> 底层 </tag>
             
             <tag> 源码 </tag>
             
-            <tag> 底层 </tag>
+            <tag> ios </tag>
             
             <tag> 类 </tag>
             
@@ -253,11 +280,11 @@
       
         <tags>
             
-            <tag> ios </tag>
+            <tag> 底层 </tag>
             
             <tag> 源码 </tag>
             
-            <tag> 底层 </tag>
+            <tag> ios </tag>
             
             <tag> 对齐 </tag>
             
@@ -280,11 +307,11 @@
       
         <tags>
             
-            <tag> ios </tag>
+            <tag> 底层 </tag>
             
             <tag> 源码 </tag>
             
-            <tag> 底层 </tag>
+            <tag> ios </tag>
             
             <tag> 对齐 </tag>
             
@@ -307,11 +334,11 @@
       
         <tags>
             
-            <tag> ios </tag>
+            <tag> 底层 </tag>
             
             <tag> 源码 </tag>
             
-            <tag> 底层 </tag>
+            <tag> ios </tag>
             
             <tag> alloc </tag>
             
