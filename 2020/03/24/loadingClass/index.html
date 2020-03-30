@@ -367,16 +367,16 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/iOS/">
-                                <span class="chip bg-color">iOS</span>
-                            </a>
-                        
                             <a href="/tags/源码/">
                                 <span class="chip bg-color">源码</span>
                             </a>
                         
                             <a href="/tags/底层/">
                                 <span class="chip bg-color">底层</span>
+                            </a>
+                        
+                            <a href="/tags/iOS/">
+                                <span class="chip bg-color">iOS</span>
                             </a>
                         
                             <a href="/tags/Class/">
@@ -404,14 +404,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2k
+                    3.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    9 分
+                    15 分
                 </div>
                 
 
@@ -815,7 +815,194 @@ recursive_mutex_t loadMethodLock<span class="token punctuation">;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>addMeta<span class="token punctuation">)</span>
         <span class="token function">addClassTableEntry</span><span class="token punctuation">(</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">ISA</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="3-2-swift-相关-realizeClassWithoutSwift"><a href="#3-2-swift-相关-realizeClassWithoutSwift" class="headerlink" title="3.2 swift 相关 - realizeClassWithoutSwift"></a>3.2 swift 相关 - realizeClassWithoutSwift</h3>
+<h3 id="3-2-realizeClassWithoutSwift"><a href="#3-2-realizeClassWithoutSwift" class="headerlink" title="3.2 realizeClassWithoutSwift"></a>3.2 realizeClassWithoutSwift</h3><blockquote>
+<p>实现类的初次初始化，包括开辟rw数据的内存空间。</p>
+</blockquote>
+<h4 id="3-2-1-取出类里的-ro-部分（data）"><a href="#3-2-1-取出类里的-ro-部分（data）" class="headerlink" title="3.2.1 取出类里的 ro 部分（data）"></a>3.2.1 取出类里的 ro 部分（data）</h4><pre class="line-numbers language-cpp"><code class="language-cpp">ro <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">const</span> class_ro_t <span class="token operator">*</span><span class="token punctuation">)</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h4 id="3-2-2-开辟rw-内存空间"><a href="#3-2-2-开辟rw-内存空间" class="headerlink" title="3.2.2 开辟rw 内存空间"></a>3.2.2 开辟rw 内存空间</h4><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// Normal class. Allocate writeable class data.</span>
+rw <span class="token operator">=</span> <span class="token punctuation">(</span>class_rw_t <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">calloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>class_rw_t<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+rw<span class="token operator">-</span><span class="token operator">></span>ro <span class="token operator">=</span> ro<span class="token punctuation">;</span>
+rw<span class="token operator">-</span><span class="token operator">></span>flags <span class="token operator">=</span> RW_REALIZED<span class="token operator">|</span>RW_REALIZING<span class="token punctuation">;</span>
+cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">setData</span><span class="token punctuation">(</span>rw<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>最终通过<code>cls-&gt;setData(rw)</code> , 将rw 作为data赋值给类 cls。</p>
+<p>但是到这里，cls 仅仅是对数据部分做了<strong>初始化</strong>，里面的方法都没有写入。</p>
+<p>如何验证？</p>
+<p>通过lldb 来进行验证吧：</p>
+<ol>
+<li>通过p/x 获取cls指针</li>
+<li>偏移16位获得bits 的指针</li>
+<li>将bits 强转为<code>class_data_bits_t</code> 的类型$2</li>
+<li>读取$2点data() 方法。</li>
+</ol>
+<p>过程可见下图，methods 属性下的list 为空，并没有方法列表的写入。</p>
+<p><img src="/2020/03/24/loadingClass/002.png" alt="通过lldb 得到的rw 部分"></p>
+<p>可见该过程，仅仅对<code>cls</code> 下<code>rw</code> 的属性的<code>ro</code> 、<code>flags</code>进行了赋值，而<code>rw</code> 并没有得到赋值</p>
+<h4 id="3-2-3-实现父类和元类关联"><a href="#3-2-3-实现父类和元类关联" class="headerlink" title="3.2.3 实现父类和元类关联"></a>3.2.3 实现父类和元类关联</h4><h5 id="3-2-3-1-子类链接父类"><a href="#3-2-3-1-子类链接父类" class="headerlink" title="3.2.3.1 子类链接父类"></a>3.2.3.1 子类链接父类</h5><p>上面的流程都是在初始化类的各种属性后，而类的结构最重要的一点是它与父类的关联，以及与元类的isa 指向。</p>
+<p>所以下面的操作是</p>
+<ul>
+<li>通过<code>remapClass(cls-&gt;superclass)</code>对父类进行映射查找</li>
+<li>通过<code>remapClass(cls-&gt;ISA)</code>对元类进行查找</li>
+</ul>
+<p>然后通过<code>realizeClassWithoutSwift</code> 进行递归，逐步得到相应的<code>supercls</code>以及<code>metacls</code> 的指针。</p>
+<p>步骤依然是：<strong>类——元类——根元类——NSObject——nil</strong>（跳出）</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">supercls <span class="token operator">=</span> <span class="token function">realizeClassWithoutSwift</span><span class="token punctuation">(</span><span class="token function">remapClass</span><span class="token punctuation">(</span>cls<span class="token operator">-</span><span class="token operator">></span>superclass<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+metacls <span class="token operator">=</span> <span class="token function">realizeClassWithoutSwift</span><span class="token punctuation">(</span><span class="token function">remapClass</span><span class="token punctuation">(</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">ISA</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>这两个失踪人口进行搜寻成功后，就可以将其指针对类进行关联</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// Update superclass and metaclass in case of remapping</span>
+cls<span class="token operator">-</span><span class="token operator">></span>superclass <span class="token operator">=</span> supercls<span class="token punctuation">;</span>
+cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">initClassIsa</span><span class="token punctuation">(</span>metacls<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h5 id="3-2-3-2-父类链接子类"><a href="#3-2-3-2-父类链接子类" class="headerlink" title="3.2.3.2 父类链接子类"></a>3.2.3.2 父类链接子类</h5><p>如果找到父类，在父类添加双向链表的引用，将子类引用添加到父类的子类列表里，最终实现父类和子类建立关联</p>
+<pre><code>    // Connect this class to its superclass&#39;s subclass lists
+    if (supercls) {
+        addSubclass(supercls, cls);
+    } else {
+        addRootClass(cls);
+    }</code></pre><p>结论是：子类里添加父类链接，父类里也添加子类链接，你中有我，我中有你。</p>
+<p><img src="/2020/03/24/loadingClass/003.png" alt="子类——父类关联图"></p>
+<p>接下来看一下父类链接的具体实现：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">addSubclass</span><span class="token punctuation">(</span>Class <span class="token class-name">supercls</span><span class="token punctuation">,</span> Class <span class="token class-name">subcls</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    runtimeLock<span class="token punctuation">.</span><span class="token function">assertLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>supercls  <span class="token operator">&amp;&amp;</span>  subcls<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">assert</span><span class="token punctuation">(</span>supercls<span class="token operator">-</span><span class="token operator">></span><span class="token function">isRealized</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assert</span><span class="token punctuation">(</span>subcls<span class="token operator">-</span><span class="token operator">></span><span class="token function">isRealized</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        subcls<span class="token operator">-</span><span class="token operator">></span><span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>nextSiblingClass <span class="token operator">=</span> supercls<span class="token operator">-</span><span class="token operator">></span><span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>firstSubclass<span class="token punctuation">;</span>
+        supercls<span class="token operator">-</span><span class="token operator">></span><span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>firstSubclass <span class="token operator">=</span> subcls<span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>supercls<span class="token operator">-</span><span class="token operator">></span><span class="token function">hasCxxCtor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            subcls<span class="token operator">-</span><span class="token operator">></span><span class="token function">setHasCxxCtor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>supercls<span class="token operator">-</span><span class="token operator">></span><span class="token function">hasCxxDtor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            subcls<span class="token operator">-</span><span class="token operator">></span><span class="token function">setHasCxxDtor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>supercls<span class="token operator">-</span><span class="token operator">></span><span class="token function">hasCustomRR</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            subcls<span class="token operator">-</span><span class="token operator">></span><span class="token function">setHasCustomRR</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>supercls<span class="token operator">-</span><span class="token operator">></span><span class="token function">hasCustomAWZ</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            subcls<span class="token operator">-</span><span class="token operator">></span><span class="token function">setHasCustomAWZ</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">// Special case: instancesRequireRawIsa does not propagate </span>
+        <span class="token comment" spellcheck="true">// from root class to root metaclass</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>supercls<span class="token operator">-</span><span class="token operator">></span><span class="token function">instancesRequireRawIsa</span><span class="token punctuation">(</span><span class="token punctuation">)</span>  <span class="token operator">&amp;&amp;</span>  supercls<span class="token operator">-</span><span class="token operator">></span>superclass<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            subcls<span class="token operator">-</span><span class="token operator">></span><span class="token function">setInstancesRequireRawIsa</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>实现为：</p>
+<p>父类的第一个子类，赋值给子类的下一个兄弟类：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">subcls<span class="token operator">-</span><span class="token operator">></span><span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>nextSiblingClass <span class="token operator">=</span> supercls<span class="token operator">-</span><span class="token operator">></span><span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>firstSubclass<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>子类赋值给父类的第一个子类：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">supercls<span class="token operator">-</span><span class="token operator">></span><span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>firstSubclass <span class="token operator">=</span> subcls<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>同时，子类继承父类的各种能力</p>
+<ul>
+<li>hasCxxCtor</li>
+<li>hasCxxDtor</li>
+<li>hasCustomRR</li>
+<li>hasCustomAWZ</li>
+<li>instancesRequireRawIsa（适用NONPOINTER_ISA）</li>
+</ul>
+<h4 id="3-2-4-methodizeClass-rw-内容的填充"><a href="#3-2-4-methodizeClass-rw-内容的填充" class="headerlink" title="3.2.4 methodizeClass - rw 内容的填充"></a>3.2.4 methodizeClass - rw 内容的填充</h4><blockquote>
+<ol>
+<li><p>对之前创建的rw 进行方法、属性，协议的填充实现</p>
+</li>
+<li><p>对分类的实现</p>
+</li>
+</ol>
+</blockquote>
+<ul>
+<li><p>方法的填充实现</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    method_list_t <span class="token operator">*</span>list <span class="token operator">=</span> ro<span class="token operator">-</span><span class="token operator">></span><span class="token function">baseMethods</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>list<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">prepareMethodLists</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> <span class="token operator">&amp;</span>list<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> YES<span class="token punctuation">,</span> <span class="token function">isBundleClass</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        rw<span class="token operator">-</span><span class="token operator">></span>methods<span class="token punctuation">.</span><span class="token function">attachLists</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>list<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>属性填充实现</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    property_list_t <span class="token operator">*</span>proplist <span class="token operator">=</span> ro<span class="token operator">-</span><span class="token operator">></span>baseProperties<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>proplist<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        rw<span class="token operator">-</span><span class="token operator">></span>properties<span class="token punctuation">.</span><span class="token function">attachLists</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>proplist<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>协议填充实现</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    protocol_list_t <span class="token operator">*</span>protolist <span class="token operator">=</span> ro<span class="token operator">-</span><span class="token operator">></span>baseProtocols<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>protolist<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        rw<span class="token operator">-</span><span class="token operator">></span>protocols<span class="token punctuation">.</span><span class="token function">attachLists</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>protolist<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<ul>
+<li><p>根元类额外的实现</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">if</span> <span class="token punctuation">(</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">isRootMetaclass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// root metaclass</span>
+        <span class="token function">addMethod</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> SEL_initialize<span class="token punctuation">,</span> <span class="token punctuation">(</span>IMP<span class="token punctuation">)</span><span class="token operator">&amp;</span>objc_noop_imp<span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">,</span> NO<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>添加分类</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// Attach categories.</span>
+    category_list <span class="token operator">*</span>cats <span class="token operator">=</span> <span class="token function">unattachedCategoriesForClass</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> <span class="token boolean">true</span> <span class="token comment" spellcheck="true">/*realizing*/</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">attachCategories</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> cats<span class="token punctuation">,</span> <span class="token boolean">false</span> <span class="token comment" spellcheck="true">/*don't flush caches*/</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<p>提一下上面的方法实现中添加的机制，究竟是如何的？继续看源码，可以看到添加情况有3种</p>
+<ul>
+<li><p>多对多 - 方法原已有多个，在需要添加多个</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">hasArray</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// many lists -> many lists</span>
+            uint32_t oldCount <span class="token operator">=</span> <span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>count<span class="token punctuation">;</span>
+            uint32_t newCount <span class="token operator">=</span> oldCount <span class="token operator">+</span> addedCount<span class="token punctuation">;</span>
+            <span class="token function">setArray</span><span class="token punctuation">(</span><span class="token punctuation">(</span>array_t <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">realloc</span><span class="token punctuation">(</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> array_t<span class="token operator">::</span><span class="token function">byteSize</span><span class="token punctuation">(</span>newCount<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>count <span class="token operator">=</span> newCount<span class="token punctuation">;</span>
+            <span class="token function">memmove</span><span class="token punctuation">(</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>lists <span class="token operator">+</span> addedCount<span class="token punctuation">,</span> <span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>lists<span class="token punctuation">,</span> 
+                    oldCount <span class="token operator">*</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>lists<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">memcpy</span><span class="token punctuation">(</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>lists<span class="token punctuation">,</span> addedLists<span class="token punctuation">,</span> 
+                   addedCount <span class="token operator">*</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>lists<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里经历了3个步骤：</p>
+<ul>
+<li>获取原方法数： <code>array()-&gt;count</code></li>
+<li>获取原方法数+新方法的总方法数： <code>oldCount + addedCount</code></li>
+<li>内存扩容：<code>realloc</code></li>
+<li>字节移动：内存中原方法平移：<code>memmove</code></li>
+<li>字节移动：新方法拷贝进入：<code>memcpy</code></li>
+</ul>
+</li>
+<li><p>0 对多 - 方法原没有，在需要添加多个</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">list <span class="token operator">=</span> addedLists<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>1 对多</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// 1 list -> many lists</span>
+List<span class="token operator">*</span> oldList <span class="token operator">=</span> list<span class="token punctuation">;</span>
+uint32_t oldCount <span class="token operator">=</span> oldList <span class="token operator">?</span> <span class="token number">1</span> <span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+uint32_t newCount <span class="token operator">=</span> oldCount <span class="token operator">+</span> addedCount<span class="token punctuation">;</span>
+<span class="token function">setArray</span><span class="token punctuation">(</span><span class="token punctuation">(</span>array_t <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span>array_t<span class="token operator">::</span><span class="token function">byteSize</span><span class="token punctuation">(</span>newCount<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>count <span class="token operator">=</span> newCount<span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>oldList<span class="token punctuation">)</span> <span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>lists<span class="token punctuation">[</span>addedCount<span class="token punctuation">]</span> <span class="token operator">=</span> oldList<span class="token punctuation">;</span>
+<span class="token function">memcpy</span><span class="token punctuation">(</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>lists<span class="token punctuation">,</span> addedLists<span class="token punctuation">,</span> 
+                   addedCount <span class="token operator">*</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span>lists<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<p>另外，可以观察到无论是方法<code>methods</code>、属性<code>properties</code>、协议<code>protocols</code>，在添加时，使用的同样的方法<code>attachLists</code>， 这是因为作为同为<code>class_rw_t</code>类型下的属性，他们拥有同样的数据结构：二维数组。</p>
+<p>其中方法列表和属性列表的根类型，均为<code>entsize_list_tt</code></p>
+<p>方法列表结构：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">method_array_t</span> <span class="token operator">:</span> 
+    <span class="token keyword">public</span> list_array_tt<span class="token operator">&lt;</span>method_t<span class="token punctuation">,</span> method_list_t<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>属性列表结构：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">property_array_t</span> <span class="token operator">:</span> <span class="token keyword">public</span> list_array_tt<span class="token operator">&lt;</span>property_t<span class="token punctuation">,</span> property_list_t<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>协议列表结构：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">protocol_array_t</span> <span class="token operator">:</span> 
+    <span class="token keyword">public</span> list_array_tt<span class="token operator">&lt;</span>protocol_ref_t<span class="token punctuation">,</span> protocol_list_t<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>方法列表设计成二维数组，方便分类方法的批量插入：</p>
+<p><img src="/2020/03/24/loadingClass/004.png" alt="method_array_t 结构图"></p>
+<h2 id="4、小结"><a href="#4、小结" class="headerlink" title="4、小结"></a>4、小结</h2><blockquote>
+<p>类的加载，流程分为环境的启动配置、加载镜像、读取类方法、对类内存空间初始化、子类-父类建立连接，以及最终rw填充方法，并对分类方法加入进行实现。</p>
+</blockquote>
+
             </div>
             <hr/>
 
@@ -878,16 +1065,16 @@ recursive_mutex_t loadMethodLock<span class="token punctuation">;</span>
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/iOS/">
-                                    <span class="chip bg-color">iOS</span>
-                                </a>
-                            
                                 <a href="/tags/源码/">
                                     <span class="chip bg-color">源码</span>
                                 </a>
                             
                                 <a href="/tags/底层/">
                                     <span class="chip bg-color">底层</span>
+                                </a>
+                            
+                                <a href="/tags/iOS/">
+                                    <span class="chip bg-color">iOS</span>
                                 </a>
                             
                                 <a href="/tags/Class/">
@@ -1000,16 +1187,16 @@ void _objc_init(void)
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/iOS/">
-                        <span class="chip bg-color">iOS</span>
-                    </a>
-                    
                     <a href="/tags/源码/">
                         <span class="chip bg-color">源码</span>
                     </a>
                     
                     <a href="/tags/底层/">
                         <span class="chip bg-color">底层</span>
+                    </a>
+                    
+                    <a href="/tags/iOS/">
+                        <span class="chip bg-color">iOS</span>
                     </a>
                     
                     <a href="/tags/Class/">
