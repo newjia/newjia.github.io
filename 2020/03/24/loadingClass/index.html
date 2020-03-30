@@ -430,7 +430,7 @@
                 <blockquote>
 <p>本页所使用的objc runtime 756.2，来自 <a href="https://opensource.apple.com/tarballs/objc4" target="_blank" rel="noopener">Apple 开源文档</a></p>
 </blockquote>
-<h2 id="1、objc-init-流程"><a href="#1、objc-init-流程" class="headerlink" title="1、objc_init 流程"></a>1、objc_init 流程</h2><p>类的加载，初始化来自objc_init 这个步骤，查看一下源码，得到</p>
+<h2 id="1、objc-init-流程"><a href="#1、objc-init-流程" class="headerlink" title="1、objc_init 流程"></a>1、objc_init 流程</h2><p>类的加载，初始化来自dyld 中的objc_init 这个步骤，查看一下源码，得到</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token function">_objc_init</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
     <span class="token keyword">static</span> <span class="token keyword">bool</span> initialized <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
@@ -1165,10 +1165,9 @@ uint32_t newCount <span class="token operator">=</span> oldCount <span class="to
                             
 本页所使用的objc runtime 756.2，来自 Apple 开源文档
 
-1、objc_init 流程类的加载，初始化来自objc_init 这个步骤，查看一下源码，得到
+1、objc_init 流程类的加载，初始化来自dyld 中的objc_init 这个步骤，查看一下源码，得到
 void _objc_init(void)
 {
-    st
                         
                     </div>
                     <div class="publish-info">
