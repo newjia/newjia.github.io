@@ -29,9 +29,9 @@
 
     <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
     
-<link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
 <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+</head>
 
 
 <body>
@@ -405,14 +405,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    687
+                    945
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    3 分
                 </div>
                 
 
@@ -433,7 +433,7 @@
 </blockquote>
 <p>我们先讨论的是单向循环链表，示意图如下所示:</p>
 <p><img src="/2020/04/02/circularList/001.png" alt="单向循环链表结构图"></p>
-<h3 id="2、单向循环链表操作"><a href="#2、单向循环链表操作" class="headerlink" title="2、单向循环链表操作"></a>2、单向循环链表操作</h3><h4 id="2-1-创建单向循环链表"><a href="#2-1-创建单向循环链表" class="headerlink" title="2.1 创建单向循环链表"></a>2.1 创建单向循环链表</h4><p>创建逻辑主要有下面的步骤:</p>
+<h4 id="2-1-创建单向循环链表"><a href="#2-1-创建单向循环链表" class="headerlink" title="2.1 创建单向循环链表"></a>2.1 创建单向循环链表</h4><p>创建逻辑主要有下面的步骤:</p>
 <p>先判断是否<strong>第一次</strong>创建？</p>
 <ol>
 <li>是（空链表）：创建一个结点，使新结点next 指向自身</li>
@@ -526,7 +526,42 @@ temp<span class="token operator">-></span>next <span class="token operator">=</s
 <p><img src="/2020/04/02/circularList/002.png" alt></p>
 </li>
 </ol>
-<h4 id="2-2-单向循环链表插入数据"><a href="#2-2-单向循环链表插入数据" class="headerlink" title="2.2 单向循环链表插入数据"></a>2.2 单向循环链表插入数据</h4><h4 id="2-3-单向循环链表的删除"><a href="#2-3-单向循环链表的删除" class="headerlink" title="2.3 单向循环链表的删除"></a>2.3 单向循环链表的删除</h4>
+<h4 id="2-2-单向循环链表插入数据"><a href="#2-2-单向循环链表插入数据" class="headerlink" title="2.2 单向循环链表插入数据"></a>2.2 单向循环链表插入数据</h4><p>分两种情况，插入点是否为首元结点</p>
+<h5 id="2-2-1-插入点位首元结点"><a href="#2-2-1-插入点位首元结点" class="headerlink" title="2.2.1 插入点位首元结点"></a>2.2.1 插入点位首元结点</h5><ol>
+<li>创建新结点并进行赋值</li>
+<li>找到链表最后的结点——尾结点</li>
+<li>让新结点的<code>next</code> 指向头结点</li>
+<li>让尾结点的 <code>next</code> 指向新的头结点</li>
+<li>让头结点指向<code>temp</code> ——临时的新结点</li>
+</ol>
+<p>具体代码实现如下：</p>
+<pre class="line-numbers language-c"><code class="language-c">temp <span class="token operator">=</span> <span class="token punctuation">(</span>LinkList<span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>Node<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>temp <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> ERROR<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+temp<span class="token operator">-></span>data <span class="token operator">=</span> num<span class="token punctuation">;</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span>target <span class="token operator">=</span> <span class="token operator">*</span>L<span class="token punctuation">;</span> target<span class="token operator">-></span>next <span class="token operator">!=</span> <span class="token operator">*</span>L<span class="token punctuation">;</span> target <span class="token operator">=</span> target<span class="token operator">-></span>next<span class="token punctuation">)</span><span class="token punctuation">;</span>
+temp<span class="token operator">-></span>next <span class="token operator">=</span> <span class="token operator">*</span>L<span class="token punctuation">;</span>
+target<span class="token operator">-></span>next <span class="token operator">=</span> temp<span class="token punctuation">;</span>
+<span class="token operator">*</span>L <span class="token operator">=</span> temp<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如图所示：<br><img src="/2020/04/02/circularList/003.png" alt></p>
+<h5 id="2-2-2-插入点非首元结点"><a href="#2-2-2-插入点非首元结点" class="headerlink" title="2.2.2 插入点非首元结点"></a>2.2.2 插入点非首元结点</h5><ol>
+<li>创建新结点 <code>temp</code>，并判断成功与否</li>
+<li>找到插入的位置，如果超过链表长度，则自动插入队尾</li>
+<li>通过工具<code>target</code> 找到要插入位置的前一个结点，让 <code>target-&gt;next = temp</code></li>
+<li>插入结点的前一个结点<code>next</code> 指向新结点，新结点<code>next</code>指向<code>target</code>原来的next 位</li>
+</ol>
+<p>具体代码实现如下：</p>
+<pre class="line-numbers language-c"><code class="language-c">temp <span class="token operator">=</span> <span class="token punctuation">(</span>LinkList<span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>Node<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>temp <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token keyword">return</span> ERROR<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+temp<span class="token operator">-></span>data <span class="token operator">=</span> num<span class="token punctuation">;</span>
+<span class="token keyword">for</span> <span class="token punctuation">(</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>target <span class="token operator">=</span> <span class="token operator">*</span>L<span class="token punctuation">;</span> target<span class="token operator">-></span>next <span class="token operator">!=</span> <span class="token operator">*</span>L <span class="token operator">&amp;&amp;</span> i <span class="token operator">!=</span> place <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> target <span class="token operator">=</span> target<span class="token operator">-></span>next<span class="token punctuation">,</span>i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">;</span>
+temp<span class="token operator">-></span>next <span class="token operator">=</span> target<span class="token operator">-></span>next<span class="token punctuation">;</span>
+target<span class="token operator">-></span>next <span class="token operator">=</span> temp<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/2020/04/02/circularList/004.png" alt></p>
+<h4 id="2-3-单向循环链表的删除"><a href="#2-3-单向循环链表的删除" class="headerlink" title="2.3 单向循环链表的删除"></a>2.3 单向循环链表的删除</h4>
             </div>
             <hr/>
 
@@ -808,7 +843,7 @@ temp<span class="token operator">-></span>next <span class="token operator">=</s
 
 我们先讨论的是单向循环链表，示意图如下所示:
 
-2、单向
+2.1 
                         
                     </div>
                     <div class="publish-info">
