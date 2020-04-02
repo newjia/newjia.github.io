@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2020-04-01T15:06:03.733Z</updated>
+  <updated>2020-04-02T15:20:40.055Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -17,11 +17,40 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>【数据结构与算法】- 线性表一</title>
+    <title>【数据结构与算法】-循环链表(单向)</title>
+    <link href="http://nilsli.com/2020/04/02/circularList/"/>
+    <id>http://nilsli.com/2020/04/02/circularList/</id>
+    <published>2020-04-02T08:06:27.000Z</published>
+    <updated>2020-04-02T15:20:40.055Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+      <category term="ios" scheme="http://nilsli.com/categories/ios/"/>
+    
+    
+      <category term="链表" scheme="http://nilsli.com/tags/%E9%93%BE%E8%A1%A8/"/>
+    
+      <category term="循环" scheme="http://nilsli.com/tags/%E5%BE%AA%E7%8E%AF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【数据结构与算法】- 线性表基础</title>
     <link href="http://nilsli.com/2020/04/01/linearlist/"/>
     <id>http://nilsli.com/2020/04/01/linearlist/</id>
     <published>2020-04-01T09:19:38.000Z</published>
-    <updated>2020-04-01T15:06:03.733Z</updated>
+    <updated>2020-04-02T08:09:20.551Z</updated>
     
     <summary type="html">
     
@@ -687,37 +716,6 @@ typedef struct objc_object *id;
       <category term="产品" scheme="http://nilsli.com/tags/%E4%BA%A7%E5%93%81/"/>
     
       <category term="项目" scheme="http://nilsli.com/tags/%E9%A1%B9%E7%9B%AE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>iOS开发中的问题集锦</title>
-    <link href="http://nilsli.com/2019/07/28/tips-on-swift/"/>
-    <id>http://nilsli.com/2019/07/28/tips-on-swift/</id>
-    <published>2019-07-28T07:33:22.000Z</published>
-    <updated>2020-04-01T15:06:03.744Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          
-        
-      
-    
-    </summary>
-    
-    
-    
-      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
-    
-      <category term="swift" scheme="http://nilsli.com/tags/swift/"/>
-    
-      <category term="小问题" scheme="http://nilsli.com/tags/%E5%B0%8F%E9%97%AE%E9%A2%98/"/>
-    
-      <category term="git" scheme="http://nilsli.com/tags/git/"/>
     
   </entry>
   
