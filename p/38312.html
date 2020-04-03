@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="如何在苹果AppStore 上下架应用, 李佳的技术博客">
+    <meta name="keywords" content="【底层探索】-懒加载与分类, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>如何在苹果AppStore 上下架应用 | 李佳的技术博客</title>
+    <title>【底层探索】-懒加载与分类 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/5.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">如何在苹果AppStore 上下架应用</h1>
+                    <h1 class="description center-align post-title">【底层探索】-懒加载与分类</h1>
                 </div>
             </div>
         </div>
@@ -367,24 +367,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/ios/">
-                                <span class="chip bg-color">ios</span>
-                            </a>
-                        
-                            <a href="/tags/appstore/">
-                                <span class="chip bg-color">appstore</span>
-                            </a>
-                        
-                            <a href="/tags/上架/">
-                                <span class="chip bg-color">上架</span>
-                            </a>
-                        
-                            <a href="/tags/下架/">
-                                <span class="chip bg-color">下架</span>
-                            </a>
-                        
-                            <a href="/tags/苹果商店/">
-                                <span class="chip bg-color">苹果商店</span>
+                            <a href="/tags/底层，源码，懒加载，分类/">
+                                <span class="chip bg-color">底层，源码，懒加载，分类</span>
                             </a>
                         
                     </div>
@@ -399,7 +383,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2018-07-24
+                    2020-03-31
                 </div>
                 
 
@@ -408,7 +392,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    157
+                    7
                 </div>
                 
 
@@ -431,17 +415,7 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="序言："><a href="#序言：" class="headerlink" title="序言："></a>序言：</h3><h6 id="作为开发者，如何快捷的在苹果商店下架上架App，请看图吧"><a href="#作为开发者，如何快捷的在苹果商店下架上架App，请看图吧" class="headerlink" title="作为开发者，如何快捷的在苹果商店下架上架App，请看图吧"></a>作为开发者，如何快捷的在苹果商店下架上架App，请看图吧</h6><h3 id="如何下架"><a href="#如何下架" class="headerlink" title="如何下架"></a>如何下架</h3><h4 id="1-进入开发者中心-itunesConnect"><a href="#1-进入开发者中心-itunesConnect" class="headerlink" title="1. 进入开发者中心 itunesConnect"></a>1. 进入开发者中心 itunesConnect</h4><p><img src="/posts/51950/1.png" alt></p>
- <a id="more"></a>
-
-<h4 id="2-选择相应的App"><a href="#2-选择相应的App" class="headerlink" title="2. 选择相应的App"></a>2. 选择相应的App</h4><p><img src="/posts/51950/2.png" alt></p>
-<h4 id="3-如图，选择价格与销售范围——-下架"><a href="#3-如图，选择价格与销售范围——-下架" class="headerlink" title="3. 如图，选择价格与销售范围—— 下架"></a>3. 如图，选择价格与销售范围—— 下架</h4><p><img src="/posts/51950/3.png" alt></p>
-<h4 id="4-等等10分钟左右，再次搜索，此时AppStore-已经搜索不到该App了"><a href="#4-等等10分钟左右，再次搜索，此时AppStore-已经搜索不到该App了" class="headerlink" title="4. 等等10分钟左右，再次搜索，此时AppStore 已经搜索不到该App了"></a>4. 等等10分钟左右，再次搜索，此时AppStore 已经搜索不到该App了</h4><p><img src="/posts/51950/4.png" alt></p>
-<p>此时的状态是：</p>
-<p><img src="/posts/51950/5.png" alt></p>
-<h3 id="重新上架"><a href="#重新上架" class="headerlink" title="重新上架"></a>重新上架</h3><h4 id="1-此时，也是选择-该应用的-价格与销售范围，选择【在所有地区供应】–-存储"><a href="#1-此时，也是选择-该应用的-价格与销售范围，选择【在所有地区供应】–-存储" class="headerlink" title="1. 此时，也是选择 该应用的 价格与销售范围，选择【在所有地区供应】– 存储"></a>1. 此时，也是选择 该应用的 价格与销售范围，选择【在所有地区供应】– 存储</h4><p><img src="/posts/51950/6.png" alt></p>
-<h4 id="2-此时是立即上架，AppStore也是需要5-10分钟可以搜索到"><a href="#2-此时是立即上架，AppStore也是需要5-10分钟可以搜索到" class="headerlink" title="2. 此时是立即上架，AppStore也是需要5-10分钟可以搜索到"></a>2. 此时是立即上架，AppStore也是需要5-10分钟可以搜索到</h4><p><img src="/posts/51950/7.png" alt></p>
-<h6 id="就是这么简单，希望可以帮到你。"><a href="#就是这么简单，希望可以帮到你。" class="headerlink" title="就是这么简单，希望可以帮到你。"></a>就是这么简单，希望可以帮到你。</h6>
+                <h2 id="一、懒加载"><a href="#一、懒加载" class="headerlink" title="一、懒加载"></a>一、懒加载</h2><h2 id="二、分类"><a href="#二、分类" class="headerlink" title="二、分类"></a>二、分类</h2>
             </div>
             <hr/>
 
@@ -466,7 +440,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/posts/51950.html">http://nilsli.com/posts/51950.html</a>
+                    <a href="http://nilsli.com/p/38312.html">http://nilsli.com/p/38312.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -504,24 +478,8 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/ios/">
-                                    <span class="chip bg-color">ios</span>
-                                </a>
-                            
-                                <a href="/tags/appstore/">
-                                    <span class="chip bg-color">appstore</span>
-                                </a>
-                            
-                                <a href="/tags/上架/">
-                                    <span class="chip bg-color">上架</span>
-                                </a>
-                            
-                                <a href="/tags/下架/">
-                                    <span class="chip bg-color">下架</span>
-                                </a>
-                            
-                                <a href="/tags/苹果商店/">
-                                    <span class="chip bg-color">苹果商店</span>
+                                <a href="/tags/底层，源码，懒加载，分类/">
+                                    <span class="chip bg-color">底层，源码，懒加载，分类</span>
                                 </a>
                             
                         </div>
@@ -692,7 +650,7 @@
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2018-07-24T15-46-11',
+        id: '2020-03-31T12-58-01',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -717,25 +675,24 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/59473.html">
+                <a href="/p/43384.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/23.jpg" class="responsive-img" alt="【译】SaaS发展历程">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/10.jpg" class="responsive-img" alt="【数据结构与算法】- 基础篇">
                         
-                        <span class="card-title">【译】SaaS发展历程</span>
+                        <span class="card-title">【数据结构与算法】- 基础篇</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            撰稿人：Neeraj Agrawal
-梗概：　　总结了成功的SaaS公司上市前的发展轨迹：找到 product-market fit，年入$200万（ARR），然后进入T2D3阶段 - 连续两年ARR翻三倍，然后连续三年翻两倍。ARR至少$
+                            算法是解决特定问题对求解步骤的描述，在计算机中表现为指令的有限序列，并且每条指令表示一个或多个操作。
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2019-07-24
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-31
                         </span>
                         <span class="publish-author">
                             
@@ -748,16 +705,24 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/创业/">
-                        <span class="chip bg-color">创业</span>
+                    <a href="/tags/iOS/">
+                        <span class="chip bg-color">iOS</span>
                     </a>
                     
-                    <a href="/tags/SaaS/">
-                        <span class="chip bg-color">SaaS</span>
+                    <a href="/tags/数据结构/">
+                        <span class="chip bg-color">数据结构</span>
                     </a>
                     
-                    <a href="/tags/科技/">
-                        <span class="chip bg-color">科技</span>
+                    <a href="/tags/算法/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/理论/">
+                        <span class="chip bg-color">理论</span>
+                    </a>
+                    
+                    <a href="/tags/基础/">
+                        <span class="chip bg-color">基础</span>
                     </a>
                     
                 </div>
@@ -771,32 +736,28 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/14198.html">
+                <a href="/p/41032.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/6.jpg" class="responsive-img" alt="图解SDWebImage(读sdwebimage源码分析)">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/21.jpg" class="responsive-img" alt="runtime 面试题">
                         
-                        <span class="card-title">图解SDWebImage(读sdwebimage源码分析)</span>
+                        <span class="card-title">runtime 面试题</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            最近在看一些第三方库的源码，其中SDWebImage 尤其让人惊叹，尝试用XMind 画出原理，以后有机会， 会增加更多的细节图。
-大纲如下：
-
-
-
-
-图片缓存的实现如下：
-以下为异步下载部分：
-
+                            最近看到一道runtime 面试题，觉得有意思
+问题：Q：已经注册好的类，能否再动态添加成员变量？为什么？
+分析：我们通过Runtime还原一下场景。
+注册好的类，实现的方法是，注册到内存里：
+objc_registerClassPair(
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2018-02-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-30
                             </span>
                         <span class="publish-author">
                             
@@ -809,16 +770,24 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/ios/">
-                        <span class="chip bg-color">ios</span>
+                    <a href="/tags/类/">
+                        <span class="chip bg-color">类</span>
                     </a>
                     
-                    <a href="/tags/开发/">
-                        <span class="chip bg-color">开发</span>
+                    <a href="/tags/2020/">
+                        <span class="chip bg-color">2020</span>
                     </a>
                     
-                    <a href="/tags/SDWebImage/">
-                        <span class="chip bg-color">SDWebImage</span>
+                    <a href="/tags/runtime/">
+                        <span class="chip bg-color">runtime</span>
+                    </a>
+                    
+                    <a href="/tags/面试/">
+                        <span class="chip bg-color">面试</span>
+                    </a>
+                    
+                    <a href="/tags/成员变量/">
+                        <span class="chip bg-color">成员变量</span>
                     </a>
                     
                 </div>

@@ -438,7 +438,7 @@
 <p>Class在源码里的真正类型为<strong>objc_class</strong>的<strong>结构体</strong>。</p>
 </blockquote>
 <p>先查看源码——在Xcode按下<strong>Shift+Command+O</strong>，选择<strong>objc-runtime-new.h</strong>，搜索objc_class，可以得知，Class底层编译实现的前4行如下：</p>
-<p><img src="/posts/8549/01.png" alt></p>
+<p><img src="/p/8549/01.png" alt></p>
 <p>可知类结构如下：</p>
 <ul>
 <li><p>A. //<strong>Class ISA</strong>                                </p>
@@ -463,7 +463,7 @@
 <p>为何cache_t cache 这个变量占位位16，而不是8？</p>
 <p>原因是因为这里的<strong>cache_t</strong>是结构体，其占内存为根据内部属性结构而定，为防止溢出，给予<strong>16位字节</strong>，而不是指针所需的8位。</p>
 <p>Talk is cheap, show me the code, 伸伸手指，点开cache_t 的内部结构</p>
-<p><img src="/posts/8549/02.png" alt></p>
+<p><img src="/p/8549/02.png" alt></p>
 <a id="more"></a>
 
 <p>我们来看看属性：</p>
@@ -771,7 +771,7 @@
 <li>类的类方法，存在父类的class_ro_t 里的methods里</li>
 </ul>
 <p>如下图示：</p>
-<p><img src="/posts/8549/03.png" alt></p>
+<p><img src="/p/8549/03.png" alt></p>
 
             </div>
             <hr/>
@@ -797,7 +797,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/posts/8549.html">http://nilsli.com/posts/8549.html</a>
+                    <a href="http://nilsli.com/p/8549.html">http://nilsli.com/p/8549.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -1048,7 +1048,7 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/40097.html">
+                <a href="/p/40097.html">
                     <div class="card-image">
                         
                         
@@ -1116,7 +1116,7 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/63353.html">
+                <a href="/p/63353.html">
                     <div class="card-image">
                         
                         

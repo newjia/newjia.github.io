@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="OC底层研究2--内存对齐原理, 李佳的技术博客">
+    <meta name="keywords" content="方法的本质2_从objc_msgSend谈起, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>OC底层研究2--内存对齐原理 | 李佳的技术博客</title>
+    <title>方法的本质2_从objc_msgSend谈起 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/16.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">OC底层研究2--内存对齐原理</h1>
+                    <h1 class="description center-align post-title">方法的本质2_从objc_msgSend谈起</h1>
                 </div>
             </div>
         </div>
@@ -379,12 +379,20 @@
                                 <span class="chip bg-color">底层</span>
                             </a>
                         
-                            <a href="/tags/对齐/">
-                                <span class="chip bg-color">对齐</span>
+                            <a href="/tags/类/">
+                                <span class="chip bg-color">类</span>
                             </a>
                         
-                            <a href="/tags/内存/">
-                                <span class="chip bg-color">内存</span>
+                            <a href="/tags/结构/">
+                                <span class="chip bg-color">结构</span>
+                            </a>
+                        
+                            <a href="/tags/objc/">
+                                <span class="chip bg-color">objc</span>
+                            </a>
+                        
+                            <a href="/tags/msgSend/">
+                                <span class="chip bg-color">msgSend</span>
                             </a>
                         
                     </div>
@@ -399,7 +407,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-12-22
+                    2020-02-24
                 </div>
                 
 
@@ -408,14 +416,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.4k
+                    1.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    7 分
                 </div>
                 
 
@@ -432,128 +440,285 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <blockquote>
+<p><em>方法的本质，就是消息传递…</em></p>
+</blockquote>
+<blockquote>
 <p>本页所使用的objc runtime 756.2，来自<a href="https://github.com/RetVal/objc-runtime" target="_blank" rel="noopener">GITHUB</a></p>
 </blockquote>
-<p>开始继续学习研究OC源码，今天看的是OC的内存原理，以及对齐原理的分析。</p>
-<h4 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h4><p>内存对齐在数据结构中，是比较基础也比较重要的一环，对于iOS开发，研究底层更免不了要了解他们的原理，方便我们更透彻的学习iOS的原理。</p>
-<p>我们先来一段维基百科的<a href="https://en.wikipedia.org/wiki/Data_structure_alignment" target="_blank" rel="noopener">数据结构对齐</a>的相关知识。</p>
+<h3 id="一、引子：Runtime"><a href="#一、引子：Runtime" class="headerlink" title="一、引子：Runtime"></a>一、引子：Runtime</h3><h4 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h4><p>我们都知道，在运行<strong>OC</strong>代码时，类或者对象在调用方法时会用到<u><strong>runtime</strong></u>，那么，到底什么是运行时呢？</p>
+<p>寻找一些资料后可以给出概念：</p>
 <blockquote>
-<p>内存对齐，也可以理解为数据结构对齐（Data structure alignment），是代码编译后在内存的布局与使用方式。包括三方面内容：<strong>数据对齐</strong>、<strong>数据结构填充</strong>（padding）与<strong>包入</strong>（packing）。</p>
+<p>In computer science, runtime, run time or execution time is the time when the CPU is executing the machine code.<br>在计算机科学里，runtime，run time 或execution time 是指CPU 执行机器语言的期间。<br>—— 维基百科</p>
 </blockquote>
-<p>下图是内存中各类型属性所占的空间大小：</p>
-<p><img src="/posts/43162/010.png" alt></p>
-<a id="more"></a>
-
 <blockquote>
-<p>列举一下各数据类型所占字节（32位）：</p>
-<ul>
-<li>A <strong>char</strong> (one byte) will be 1-byte aligned.</li>
-<li>A <strong>short</strong> (two bytes) will be 2-byte aligned.</li>
-<li>An <strong>int</strong> (four bytes) will be 4-byte aligned.</li>
-<li>A <strong>long</strong> (four bytes) will be 4-byte aligned.</li>
-<li>A <strong>float</strong> (four bytes) will be 4-byte aligned.</li>
-<li>A <strong>double</strong> (eight bytes) will be 8-byte aligned on Windows and 4-byte aligned on Linux (8-byte with <em>-malign-double</em> compile time option).</li>
-<li>A <strong>long long</strong> (eight bytes) will be 4-byte aligned.</li>
-<li>A <strong>long double</strong> (ten bytes with C++Builder and DMC, eight bytes with Visual C++, twelve bytes with GCC) will be 8-byte aligned with C++Builder, 2-byte aligned with DMC, 8-byte aligned with Visual C++, and 4-byte aligned with GCC.</li>
-<li>Any <strong>pointer</strong> (four bytes) will be 4-byte aligned. (e.g.: char<em>, int</em>)</li>
-</ul>
+<p>Runtime 是一套由C、C++、汇编混合写成的为OC提供运行时功能的api。</p>
 </blockquote>
-<p>需要注意的是，在64位机上，有以下不同</p>
+<p>先看苹果<a href="https://developer.apple.com/documentation/objectivec/objective-c_runtime" target="_blank" rel="noopener">开发者文档</a>里对runtime 的介绍的介绍：</p>
 <blockquote>
-<ul>
-<li>A <strong>long</strong> (eight bytes) will be 8-byte aligned.</li>
-<li>A <strong>double</strong> (eight bytes) will be 8-byte aligned.</li>
-<li>A <strong>long long</strong> (eight bytes) will be 8-byte aligned.</li>
-<li>A <strong>long double</strong> (eight bytes with Visual C++, sixteen bytes with GCC) will be 8-byte aligned with Visual C++ and 16-byte aligned with GCC.</li>
-<li>Any <strong>pointer</strong> (eight bytes) will be 8-byte aligned.</li>
-</ul>
+<p>The Objective-C runtime is a runtime library that provides support for the dynamic properties of the Objective-C language, and as such is linked to by all Objective-C apps. Objective-C runtime library support functions are implemented in the shared library found at <code>/usr/lib/libobjc.A.dylib</code>.</p>
+<p>OC runtime 是一个给OC语言动态属性提供支持的运行时库，这些属性链接到所有的OC应用 。OC runtime库支持在shared library里实现的函数，这些函数库名为<code>/usr/lib/libobjc.A.dylib</code></p>
 </blockquote>
-<h4 id="2-原则"><a href="#2-原则" class="headerlink" title="2. 原则"></a>2. 原则</h4><ol>
-<li><p><strong>数据成员对齐规则：</strong>结构(struct)(或联合(union))的数据成员，第一个数据成员放在offset为0的地方，以后每个数据成员存储的起始位置要从该成员大小或者成员的子成员大小（只要该成员有子成员，比如说是数组，结构体等）的整数倍开始(比如int在32位机为４字节,则要从４的整数倍地址开始存储。</p>
-</li>
-<li><p><strong>结构体作为成员:</strong> 如果一个结构里有某些结构体成员,则结构体成员要从其内部最大元素大小的整数倍地址开始存储.(struct a里存有struct b,b里有char,int ,double等元素,那b应该从8的整数倍开始存储.)</p>
-</li>
-<li><p><strong>收尾工作:</strong>结构体的总大小,也就是sizeof的结果,.必须是其内部最大成员的整数倍.不足的要补齐.</p>
-</li>
-</ol>
-<h4 id="3-实践"><a href="#3-实践" class="headerlink" title="3. 实践"></a>3. 实践</h4><h5 id="3-1-属性8字节对齐："><a href="#3-1-属性8字节对齐：" class="headerlink" title="3.1 属性8字节对齐："></a>3.1 属性8字节对齐：</h5><p>当创建对象时，其属性的按类型占据不同的内存空间，但是由于大小不一，需要进行补齐；原则则是以第一位补齐为8的倍数（64位系统是8为对齐，而32位系统是4位对齐）。</p>
-<p>以下面的代码举例子</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">struct</span> MyStruct <span class="token punctuation">{</span>
-    <span class="token keyword">double</span> a<span class="token punctuation">;</span>
-    <span class="token keyword">char</span> b<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">// 第2行 char 在前 int 在后</span>
-    <span class="token keyword">int</span> c<span class="token punctuation">;</span>
-    <span class="token keyword">short</span> d<span class="token punctuation">;</span>
-<span class="token punctuation">}</span> MyStr1<span class="token punctuation">;</span>                
+<h4 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h4><blockquote>
+<p>legacy：经典版</p>
+<p>modern：现代版，即objc2.0，我们目前用到的版本。</p>
+</blockquote>
+<h3 id="二、方法的本质"><a href="#二、方法的本质" class="headerlink" title="二、方法的本质"></a>二、方法的本质</h3><h4 id="概念-1"><a href="#概念-1" class="headerlink" title="概念"></a>概念</h4><p>方法的本质，就是objc_msgSend  的消息传递。先看苹果<a href="https://developer.apple.com/documentation/objectivec/1456712-objc_msgsend" target="_blank" rel="noopener">开发者文档</a>里对objc_msgSend的介绍：</p>
+<blockquote>
+<p>Function</p>
+<h1 id="objc-msgSend"><a href="#objc-msgSend" class="headerlink" title="objc_msgSend"></a>objc_msgSend</h1><p>Sends a message with a simple return value to an instance of a class.</p>
+<p><strong>发送一个有简单返回值的消息给类的实例</strong></p>
+</blockquote>
+<p>相关源码如下: </p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">objc_msgSend</span><span class="token punctuation">(</span>id _Nullable self<span class="token punctuation">,</span> SEL _Nonnull op<span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>其中两个关键参数<code>self</code> 和 <code>op</code> 的解释如下:</p>
+<blockquote>
+<p> * <strong>@param</strong> self A pointer to the instance of the class that is to receive the message.</p>
+<p>​                    self  一个指向由类生产的实例的指针，用来接收消息</p>
+<p> * <strong>@param</strong> op The selector of the method that handles the message.</p>
+<p>​                    op 方法： 处理消息的方法的选择器</p>
+</blockquote>
+<p>可见，objc_msgSend 的核心信息，<u><strong>就是向对象主体（self）传递相应的方法/消息（op）</strong></u>。</p>
+<p>但是<strong>消息传递的机制</strong>到底怎样，还是用源码来解释。</p>
+<h4 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h4><p>开始生成一个main.m 内代码如下</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    @autoreleasepool <span class="token punctuation">{</span>
+        LGPerson <span class="token operator">*</span>person <span class="token operator">=</span> <span class="token punctuation">[</span>LGPerson alloc<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">[</span>person sayHello<span class="token punctuation">]</span><span class="token punctuation">;</span>
 
-<span class="token keyword">struct</span> MyStruct2 <span class="token punctuation">{</span>
-    <span class="token keyword">double</span> a<span class="token punctuation">;</span>
-    <span class="token keyword">int</span> c<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">// 第2行 int 在前 char 在后</span>
-    <span class="token keyword">char</span> b<span class="token punctuation">;</span>
-    <span class="token keyword">short</span> d<span class="token punctuation">;</span>
-<span class="token punctuation">}</span> MyStr2<span class="token punctuation">;</span>                <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>// 我们打印一下各自的所占空间</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"%lu -- %lu"</span><span class="token punctuation">,</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>MyStr1<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>MyStr2<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>结果如下:</p>
-<img src="/posts/43162/001.png" style="zoom:50%;">
+        <span class="token comment" spellcheck="true">// Setup code that might create autoreleased objects goes here.</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token function">NSApplicationMain</span><span class="token punctuation">(</span>argc<span class="token punctuation">,</span> argv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中LGPerson 的内部实现如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">@interface LGPerson <span class="token operator">:</span> NSObject
 
-<p>为何两者不一致?</p>
-<p>我们来看第一个结构体对象的内部结构，排第一的属性double占8位，而char需要补齐7位成为8位，而剩余的int，short 则分别占4位，不需补齐，可以灵活堆在同一个内存区域。</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">struct</span> MyStruct <span class="token punctuation">{</span>
-    <span class="token keyword">double</span> a<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">// 8位</span>
-    <span class="token keyword">char</span> b<span class="token punctuation">;</span>                <span class="token comment" spellcheck="true">// 1位  + 7 补齐  = 8</span>
-    <span class="token keyword">int</span> c<span class="token punctuation">;</span>                <span class="token comment" spellcheck="true">// 4位</span>
-    <span class="token keyword">short</span> d<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">// 4位</span>
-<span class="token punctuation">}</span> MyStr1<span class="token punctuation">;</span>            <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>总计是 8 + 8 + 4 + 4 = 24；</p>
-<p>而第二个结构体对象，排第一的属性double占8位，而剩余的int，short ，short 总计都，不需补齐，可以灵活堆在同一个内存区域。</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">struct</span> MyStruct2 <span class="token punctuation">{</span>
-    <span class="token keyword">double</span> a<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">// 8 </span>
-    <span class="token keyword">int</span> c<span class="token punctuation">;</span>                <span class="token comment" spellcheck="true">// 4        </span>
-    <span class="token keyword">char</span> b<span class="token punctuation">;</span>                <span class="token comment" spellcheck="true">// 1  补齐1位 </span>
-    <span class="token keyword">short</span> d<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">// 2   </span>
-<span class="token punctuation">}</span> MyStr2<span class="token punctuation">;</span>    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这里后3位，可以放到一个8位内存区间，即4 + 1 + 2，只需补齐1位至8位，可以灵活排列在一个内存空间内，所以本结构体对象总占内存为8+4+1+2 + 1（补齐1位） = 16。</p>
-<p>如果没有弄懂，我们找出源码来读一读：(/objc/Private Headers/Project Headers/objc-os.h) </p>
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>sayHello<span class="token punctuation">;</span>
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>sayNB<span class="token punctuation">;</span>
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在这里，着重查看<strong>LGPerson</strong> <code>alloc</code> 方法，以及其实例 person sayHello` 在汇编里的实现 : </p>
+<p>进入到目录下，输入编译代码：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">clang <span class="token operator">-</span>rewrite<span class="token operator">-</span>objc main<span class="token punctuation">.</span>m<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>得到main.cpp 的文件</p>
+<p><img src="/p/23281/001.png" alt="编译c++ 指令"></p>
+<p><img src="/p/23281/002.png" alt="cpp 生成后的结构图"></p>
+<p>打开main.cpp 结构如下:</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">pragma</span> clang assume_nonnull end</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">/* @autoreleasepool */</span> <span class="token punctuation">{</span> __AtAutoreleasePool __autoreleasepool<span class="token punctuation">;</span> 
+        LGPerson <span class="token operator">*</span>person <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>LGPerson <span class="token operator">*</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> SEL<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>objc_msgSend<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token function">objc_getClass</span><span class="token punctuation">(</span><span class="token string">"LGPerson"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_registerName</span><span class="token punctuation">(</span><span class="token string">"alloc"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> SEL<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>objc_msgSend<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>person<span class="token punctuation">,</span> <span class="token function">sel_registerName</span><span class="token punctuation">(</span><span class="token string">"sayHello"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token function">NSApplicationMain</span><span class="token punctuation">(</span>argc<span class="token punctuation">,</span> argv<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上文代码中，可以简化为, </p>
+<table>
+<thead>
+<tr>
+<th>Runtime 语法</th>
+<th>OC 语法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(LGPerson <em>(</em>)(id, SEL))(void *)</td>
+<td>–</td>
+</tr>
+<tr>
+<td>(id)objc_getClass(“LGPerson”)</td>
+<td>[LGPerson class]</td>
+</tr>
+<tr>
+<td>sel_registerName(“alloc”)</td>
+<td>@selector(alloc)</td>
+</tr>
+</tbody></table>
+<p>即代码为：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">LGPerson <span class="token operator">*</span>person <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>LGPerson <span class="token operator">*</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>id<span class="token punctuation">,</span> SEL<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>objc_msgSend<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token function">objc_getClass</span><span class="token punctuation">(</span><span class="token string">"LGPerson"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">sel_registerName</span><span class="token punctuation">(</span><span class="token string">"alloc"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 转换后</span>
+LGPerson <span class="token operator">*</span>person <span class="token operator">=</span> <span class="token function">objc_msgSend</span><span class="token punctuation">(</span><span class="token punctuation">[</span>LGPerson <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> @<span class="token function">selector</span><span class="token punctuation">(</span>alloc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>解释为: 向<code>LGPerson</code> 的类，发送了<code>alloc</code> 方法</p>
+<h4 id="扩展代码实践"><a href="#扩展代码实践" class="headerlink" title="扩展代码实践"></a>扩展代码实践</h4><p>开始设定一个类<code>Student</code> </p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">import</span> "Student.h"</span>
+interface Student <span class="token operator">:</span> Person
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>sayCode<span class="token punctuation">;</span>
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="OC语法"><a href="#OC语法" class="headerlink" title="OC语法"></a>OC语法</h5><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">import</span> "Student.h"</span>
+
+Student <span class="token operator">*</span>student <span class="token operator">=</span> <span class="token punctuation">[</span>Student <span class="token keyword">new</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">[</span>student sayCode<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="NSObject-写法"><a href="#NSObject-写法" class="headerlink" title="NSObject 写法"></a>NSObject 写法</h5><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">objc_msgSend</span><span class="token punctuation">(</span>student<span class="token punctuation">,</span> <span class="token function">NSSelectorFromString</span><span class="token punctuation">(</span>@<span class="token string">"sayCode"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h5 id="sel-registerName-的函数API"><a href="#sel-registerName-的函数API" class="headerlink" title="sel_registerName 的函数API"></a>sel_registerName 的函数API</h5><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">objc_msgSend</span><span class="token punctuation">(</span>student<span class="token punctuation">,</span> <span class="token function">sel_registerName</span><span class="token punctuation">(</span><span class="token string">"sayCode"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="三、底层分析"><a href="#三、底层分析" class="headerlink" title="三、底层分析"></a>三、底层分析</h3><h4 id="汇编源码"><a href="#汇编源码" class="headerlink" title="汇编源码"></a>汇编源码</h4><blockquote>
+<p>我们现在分析，当类对象发送消息是，底层发生了什么。</p>
+</blockquote>
+<h5 id="1、方法入口"><a href="#1、方法入口" class="headerlink" title="1、方法入口"></a>1、方法入口</h5><p>新建工程，输入如下代码，进行断点检测；</p>
+<p>另外在Xcode 的Debug–Debug Workflow—Always show Disassembly</p>
+<p><img src="/p/23281/m0.png" alt="配置：打开汇编监视"></p>
+<p><img src="/p/23281/m1.png" alt="OC方法调用，打开断点"></p>
+<p><img src="/p/23281/m2.png" alt="按住Control 逐渐获得汇编函数"><img src="/p/23281/m3.png" alt="得到第一个方法传递函数：objc_msgSend"></p>
+<p>很明显，这里的<strong>Student sayCode</strong> 在汇编里，执行了 <strong>objc_msgSend</strong> 方法，继续查看</p>
+<p>打开<strong>Xcode</strong>, 搜索<strong>objc_msgSend</strong>，找到相关结果如下：</p>
+<p><img src="/p/23281/003.png" alt="objc_msgSend 搜索结果"></p>
+<p>由于研究的环境是移动平台，选择<strong>arm64</strong>，通过<code>ENTRY _objc_msgSend</code>结果进入</p>
+<p>首先看到的代码如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    ENTRY _objc_msgSend
+    UNWIND _objc_msgSend<span class="token punctuation">,</span> NoFrame
+
+<span class="token number">1</span>    cmp    p0<span class="token punctuation">,</span> #<span class="token number">0</span>            <span class="token comment" spellcheck="true">// nil check and tagged pointer check</span>
+<span class="token macro property">#<span class="token directive keyword">if</span> SUPPORT_TAGGED_POINTERS</span>
+<span class="token number">2</span>    b<span class="token punctuation">.</span>le    LNilOrTagged        <span class="token comment" spellcheck="true">//  (MSB tagged pointer looks negative)</span>
+<span class="token macro property">#<span class="token directive keyword">else</span></span>
+<span class="token number">3</span>    b<span class="token punctuation">.</span>eq    LReturnZero
+<span class="token macro property">#<span class="token directive keyword">endif</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="2、类Tagged-Pointer-检查"><a href="#2、类Tagged-Pointer-检查" class="headerlink" title="2、类Tagged Pointer 检查"></a>2、类Tagged Pointer 检查</h5><p>代码解析：</p>
+<table>
+<thead>
+<tr>
+<th align="center">序号</th>
+<th>代码</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td>cmp p0 #0</td>
+<td>cmp = compare<br>检测0位寄存器 = 空？，以及tagged point 检测</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>b.le    LNilOrTagged</td>
+<td>// 即1代码成立，跳转至LNilOrTagged的宏（下文叙述）</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td>b.eq    LReturnZero</td>
+<td>// <code>b.eq</code> 即不成立，结果为空，返回并跳出</td>
+</tr>
+</tbody></table>
+<p>这一小节，主要是用来判断 tagged pointer 是否存在，存在则继续进行，否则跳出。</p>
+<p>Tagged point是苹果推出的针对64位机器的特定的指针，概念如下：</p>
+<blockquote>
+<p>苹果对于Tagged Pointer特点的介绍：</p>
 <ol>
-<li><p>创建对象 alloc<br><img src="/posts/43162/1.png" alt></p>
-</li>
-<li><p>alloc方法的实现——返回rootAlloc方法<br><img src="/posts/43162/2.png" alt></p>
-</li>
-<li><p>返回callAlloc的实现<br><img src="/posts/43162/3.png" alt></p>
-</li>
-<li><p>当缓存区没有对象时，创建对象<br><img src="/posts/43162/4.png" alt></p>
-</li>
-<li><p>去内存区域创建对象<br><img src="/posts/43162/5.png" alt></p>
-</li>
-<li><p>执行类的属性方法，确定创建的空间大小<br><img src="/posts/43162/6.png" alt></p>
-</li>
-<li><p>对齐内存<br><img src="/posts/43162/7.png" alt></p>
-</li>
-<li><p>内存对齐的返回：类的属性大小取决于指针大小<br><img src="/posts/43162/8.png" alt></p>
-</li>
-<li><p>8字节对齐：实现方法<br><img src="/posts/43162/9.png" alt></p>
-</li>
+<li>Tagged Pointer专门用来存储小的对象，例如NSNumber和NSDate</li>
+<li>Tagged Pointer指针的值不再是地址了，而是真正的值。所以，实际上它不再是一个对象了，它只是一个披着对象皮的普通变量而已。所以，它的内存并不存储在堆中，也不需要malloc和free。</li>
+<li>在内存读取上有着3倍的效率，创建时比以前快106倍。</li>
 </ol>
-<h5 id="3-2-对象16字节对齐"><a href="#3-2-对象16字节对齐" class="headerlink" title="3.2 对象16字节对齐"></a>3.2 对象16字节对齐</h5><p>在<a href="http://nilsli.com/2019/12/16/pricipleofalloc/">OC 底层研究1–alloc和init原理 </a>我们分析过，iOS环境下，为了容错处理，创建。</p>
-<p>在 libmalloc/src/nano_malloc.c 第193行，我们发现如下的代码:</p>
-<p><img src="/posts/43162/002.png" alt></p>
-<p>而其中<code>NANO_REGIME_QUANTA_SIZE</code> 为16，</p>
-<p><code>SHIFT_NANO_QUANTUM</code> 为4</p>
-<p>那可以开始分析源码如下：</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token number">0</span> <span class="token operator">==</span> size<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    size <span class="token operator">=</span> NANO_REGIME_QUANTA_SIZE<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// Historical behavior</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>这里的意思是，如果size为0，即创建空对象，返回16位默认空间。</p>
-<p>而 </p>
-<pre class="line-numbers language-cpp"><code class="language-cpp">k <span class="token operator">=</span> <span class="token punctuation">(</span>size <span class="token operator">+</span> NANO_REGIME_QUANTA_SIZE <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">>></span> SHIFT_NANO_QUANTUM<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>是向右移动4位，即16字节对齐，那究竟是怎么实现的，我们不妨来看下，假定给定申请的内存size 为40，那么</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">40</span><span class="token punctuation">(</span>size<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">16</span> <span class="token operator">-</span> <span class="token number">1</span> <span class="token operator">=</span>  <span class="token number">55</span>
-<span class="token number">0011</span> <span class="token number">0111</span>                        <span class="token comment" spellcheck="true">// 55 的2进制显示</span>
-<span class="token number">0000</span> <span class="token number">0011</span>                        <span class="token comment" spellcheck="true">// >> 右移动4位  == 3</span>
-<span class="token number">0011</span> <span class="token number">0000</span>                        <span class="token comment" spellcheck="true">// 执行 slot_bytes = k &lt;&lt; SHIFT_NANO_QUANTUM; 左移动4位</span>
-slot_bytes <span class="token operator">=</span> <span class="token function">48</span><span class="token punctuation">(</span><span class="token number">0011</span> <span class="token number">0000</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>er,  第205行中返回的slot_bytes 即是最终对齐后的内存空间位，即给入40，最终系统对齐后，返回48位(16的整数位)。</p>
-<h4 id="4-结论"><a href="#4-结论" class="headerlink" title="4 结论"></a>4 结论</h4><p>在iOS环境下，我们创建的对象和指针遵循16位对齐的原则，而其属性位8字节对齐。</p>
+</blockquote>
+<h5 id="3、加载isa"><a href="#3、加载isa" class="headerlink" title="3、加载isa"></a>3、加载isa</h5><p>这一部分主要是通过加载的isa，获取当前底层的类的实现</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">  <span class="token comment" spellcheck="true">// person - isa - 类</span>
+    ldr    p13<span class="token punctuation">,</span> <span class="token punctuation">[</span>x0<span class="token punctuation">]</span>                            <span class="token comment" spellcheck="true">// p13 = isa</span>
+    GetClassFromIsa_p16 p13        <span class="token comment" spellcheck="true">// p16 = class</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<table>
+<thead>
+<tr>
+<th align="center">序号</th>
+<th>代码</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td>ldr    p13,  [x0]</td>
+<td>将13位存储器isa 字，加载到0位寄存器<br>LDR = LoaD woRd</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>GetClassFromIsa_p16 p13</td>
+<td>通过加载的isa，宏逻辑获取到当前的类<br>GetClassFromIsa_p16 是一个汇编宏</td>
+</tr>
+</tbody></table>
+<p><strong>GetClassFromIsa_p16</strong> 的汇编实现如下:</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token punctuation">.</span>macro GetClassFromIsa_p16 <span class="token comment" spellcheck="true">/* src */</span>
+
+<span class="token macro property">#<span class="token directive keyword">if</span> SUPPORT_INDEXED_ISA</span>
+    <span class="token comment" spellcheck="true">// Indexed isa</span>
+    mov    p16<span class="token punctuation">,</span> $<span class="token number">0</span>            <span class="token comment" spellcheck="true">// optimistically set dst = src</span>
+    tbz    p16<span class="token punctuation">,</span> #ISA_INDEX_IS_NPI_BIT<span class="token punctuation">,</span> <span class="token number">1f</span>    <span class="token comment" spellcheck="true">// done if not non-pointer isa</span>
+    <span class="token comment" spellcheck="true">// isa in p16 is indexed</span>
+    adrp    x10<span class="token punctuation">,</span> _objc_indexed_classes@PAGE
+    add    x10<span class="token punctuation">,</span> x10<span class="token punctuation">,</span> _objc_indexed_classes@PAGEOFF
+    ubfx    p16<span class="token punctuation">,</span> p16<span class="token punctuation">,</span> #ISA_INDEX_SHIFT<span class="token punctuation">,</span> #ISA_INDEX_BITS  <span class="token comment" spellcheck="true">// extract index</span>
+    ldr    p16<span class="token punctuation">,</span> <span class="token punctuation">[</span>x10<span class="token punctuation">,</span> p16<span class="token punctuation">,</span> UXTP #PTRSHIFT<span class="token punctuation">]</span>    <span class="token comment" spellcheck="true">// load class from array</span>
+<span class="token number">1</span><span class="token operator">:</span>
+
+<span class="token macro property">#<span class="token directive keyword">elif</span> __LP64__</span>
+    <span class="token comment" spellcheck="true">// 64-bit packed isa</span>
+    <span class="token operator">and</span>    p16<span class="token punctuation">,</span> $<span class="token number">0</span><span class="token punctuation">,</span> #ISA_MASK
+
+<span class="token macro property">#<span class="token directive keyword">else</span></span>
+    <span class="token comment" spellcheck="true">// 32-bit raw isa</span>
+    mov    p16<span class="token punctuation">,</span> $<span class="token number">0</span>
+
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+
+<span class="token punctuation">.</span>endmacro<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>分析流程图如下：</p>
+<p><img src="/p/23281/004.png" alt="GetClassFromIsa_p16 流程图"></p>
+<h5 id="4、用isa查询方法缓存"><a href="#4、用isa查询方法缓存" class="headerlink" title="4、用isa查询方法缓存"></a>4、用isa查询方法缓存</h5><p>当在3步，isa 拿到之后，现在要做的事情，就是对当前要执行的方法进行缓存查找。</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">LGetIsaDone<span class="token operator">:</span>
+    CacheLookup NORMAL        <span class="token comment" spellcheck="true">// calls imp or objc_msgSend_uncached</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><strong>CacheLookup</strong> 在这里的做法是查询类里是否含有方法到缓存。 一般有两种结果：拿到缓存IMP，或者未曾缓存。</p>
+<p>查询可以得到有三种查询方式:</p>
+<ul>
+<li>NORMAL    正常查找</li>
+<li>GETIMP      获取IMP</li>
+<li>LOOKUP     慢速查询方法</li>
+</ul>
+<p>根据源码，做了一些注释：</p>
+<p><img src="/p/23281/005.png" alt="CacheLookup宏的流程"></p>
+<p>其中多次出现<strong>CheckMiss</strong> ,也是个汇编宏，使用在缓存查找失败后。</p>
+<p>源码如下:</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token punctuation">.</span>macro CheckMiss
+    <span class="token comment" spellcheck="true">// miss if bucket->sel == 0</span>
+<span class="token punctuation">.</span><span class="token keyword">if</span> $<span class="token number">0</span> <span class="token operator">==</span> GETIMP
+    cbz    p9<span class="token punctuation">,</span> LGetImpMiss
+<span class="token punctuation">.</span>elseif $<span class="token number">0</span> <span class="token operator">==</span> NORMAL
+    cbz    p9<span class="token punctuation">,</span> __objc_msgSend_uncached
+<span class="token punctuation">.</span>elseif $<span class="token number">0</span> <span class="token operator">==</span> LOOKUP
+    cbz    p9<span class="token punctuation">,</span> __objc_msgLookup_uncached
+<span class="token punctuation">.</span><span class="token keyword">else</span>
+<span class="token punctuation">.</span>abort oops
+<span class="token punctuation">.</span>endif
+<span class="token punctuation">.</span>endmacro<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p> 根据查找的模式位NORMAL, 对应的*<em>__objc_msgSend_uncached *</em>。</p>
+<p>在源码中搜索，得到相关逻辑如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    STATIC_ENTRY __objc_msgSend_uncached
+    UNWIND __objc_msgSend_uncached<span class="token punctuation">,</span> FrameWithNoSaves
+
+    <span class="token comment" spellcheck="true">// THIS IS NOT A CALLABLE C FUNCTION</span>
+    <span class="token comment" spellcheck="true">// Out-of-band p16 is the class to search</span>
+
+    MethodTableLookup
+    TailCallFunctionPointer x17
+
+    END_ENTRY __objc_msgSend_uncached<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>执行方法查找的<strong>核心方法</strong>，就是<strong>MethodTableLookup</strong>， 继续点开查看，得到的是<img src="/p/23281/006.png" alt="方法列表查找"></p>
+<p>这里的内容，则是到<strong>objc_class</strong> 的 <strong>class_data_bits_t</strong> 里寻找方法的具体实现了，下一篇文章我们来讲。</p>
+<h3 id="四、小结"><a href="#四、小结" class="headerlink" title="四、小结"></a>四、小结</h3><p>这一篇，主要是开始从汇编的角度，来实现方法查找流程，流程草写了一下，图一定补。。。</p>
+<ul>
+<li><input disabled type="checkbox"> 拿到isa</li>
+<li><input disabled type="checkbox"> 查找Class</li>
+<li><input disabled type="checkbox"> 在Cache_t 查找bucket<ul>
+<li><input disabled type="checkbox"> bucket 相同，返回IMP</li>
+<li><input disabled type="checkbox"> 否则 跳到BITS</li>
+</ul>
+</li>
+<li><input disabled type="checkbox"> BITS 中<ul>
+<li><input disabled type="checkbox"> 查找Rw <ul>
+<li><input disabled type="checkbox"> 查找ro<ul>
+<li><input disabled type="checkbox"> 查找methodList</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
             </div>
             <hr/>
@@ -579,7 +744,7 @@ slot_bytes <span class="token operator">=</span> <span class="token function">48
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/posts/43162.html">http://nilsli.com/posts/43162.html</a>
+                    <a href="http://nilsli.com/p/23281.html">http://nilsli.com/p/23281.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -629,12 +794,20 @@ slot_bytes <span class="token operator">=</span> <span class="token function">48
                                     <span class="chip bg-color">底层</span>
                                 </a>
                             
-                                <a href="/tags/对齐/">
-                                    <span class="chip bg-color">对齐</span>
+                                <a href="/tags/类/">
+                                    <span class="chip bg-color">类</span>
                                 </a>
                             
-                                <a href="/tags/内存/">
-                                    <span class="chip bg-color">内存</span>
+                                <a href="/tags/结构/">
+                                    <span class="chip bg-color">结构</span>
+                                </a>
+                            
+                                <a href="/tags/objc/">
+                                    <span class="chip bg-color">objc</span>
+                                </a>
+                            
+                                <a href="/tags/msgSend/">
+                                    <span class="chip bg-color">msgSend</span>
                                 </a>
                             
                         </div>
@@ -805,7 +978,7 @@ slot_bytes <span class="token operator">=</span> <span class="token function">48
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2019-12-22T11-05-11',
+        id: '2020-02-24T10-47-05',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -830,13 +1003,13 @@ slot_bytes <span class="token operator">=</span> <span class="token function">48
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/64820.html">
+                <a href="/p/64205.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/19.jpg" class="responsive-img" alt="OC底层研究3--isa的初始化和指向分析">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/22.jpg" class="responsive-img" alt="方法的本质3_消息查找流程">
                         
-                        <span class="card-title">OC底层研究3--isa的初始化和指向分析</span>
+                        <span class="card-title">方法的本质3_消息查找流程</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -845,16 +1018,15 @@ slot_bytes <span class="token operator">=</span> <span class="token function">48
                             
 本页所使用的objc runtime 756.2，来自GITHUB
 
-开始继续学习研究OC源码，这次研究的是isa的初始化和指向分析。
-1. 概念什么是isa看看苹果文档的介绍：
-
-isa
-A Pointer to the class d
+1. 概念在前文中，已经总结了方法查找的流程，今天从代码层面上继续阐述。
+isa 的指向图如下所示：
+   
+2. 方法查找流程2.1 从业务代码分析配置代码环境：，先
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2019-12-27
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-06
                         </span>
                         <span class="publish-author">
                             
@@ -879,12 +1051,16 @@ A Pointer to the class d
                         <span class="chip bg-color">底层</span>
                     </a>
                     
-                    <a href="/tags/对齐/">
-                        <span class="chip bg-color">对齐</span>
+                    <a href="/tags/类/">
+                        <span class="chip bg-color">类</span>
                     </a>
                     
-                    <a href="/tags/内存/">
-                        <span class="chip bg-color">内存</span>
+                    <a href="/tags/结构/">
+                        <span class="chip bg-color">结构</span>
+                    </a>
+                    
+                    <a href="/tags/objc/">
+                        <span class="chip bg-color">objc</span>
                     </a>
                     
                 </div>
@@ -898,13 +1074,13 @@ A Pointer to the class d
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/19251.html">
+                <a href="/p/40097.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg" class="responsive-img" alt="OC 底层研究1--alloc和init原理">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/5.jpg" class="responsive-img" alt="方法的本质1--cache_t方法缓存分析">
                         
-                        <span class="card-title">OC 底层研究1--alloc和init原理</span>
+                        <span class="card-title">方法的本质1--cache_t方法缓存分析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -913,14 +1089,12 @@ A Pointer to the class d
                             
 本页所使用的objc runtime 756.2，来自GITHUB
 
-1. 题目开始学习研究OC源码，今天看的是对象的初始化，也就是alloc以及init的分析。
-2. 附流程图如下 
-3. 内容3.1引子我们先看一段代码，Person类
+1.概念1.1 objc_class 结构前面探索了类的结构，知道了类的结构本质上是objc_class的结构体，而在 C 源码例， objc_class 结构体的结构
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-16
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-21
                             </span>
                         <span class="publish-author">
                             
@@ -945,8 +1119,16 @@ A Pointer to the class d
                         <span class="chip bg-color">底层</span>
                     </a>
                     
-                    <a href="/tags/alloc/">
-                        <span class="chip bg-color">alloc</span>
+                    <a href="/tags/类/">
+                        <span class="chip bg-color">类</span>
+                    </a>
+                    
+                    <a href="/tags/结构/">
+                        <span class="chip bg-color">结构</span>
+                    </a>
+                    
+                    <a href="/tags/cache-t/">
+                        <span class="chip bg-color">cache_t</span>
                     </a>
                     
                 </div>

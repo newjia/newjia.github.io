@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="【底层探索】dyld浅析, 李佳的技术博客">
+    <meta name="keywords" content="下棋, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>【底层探索】dyld浅析 | 李佳的技术博客</title>
+    <title>下棋 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">【底层探索】dyld浅析</h1>
+                    <h1 class="description center-align post-title">下棋</h1>
                 </div>
             </div>
         </div>
@@ -367,16 +367,12 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/源码/">
-                                <span class="chip bg-color">源码</span>
+                            <a href="/tags/休闲/">
+                                <span class="chip bg-color">休闲</span>
                             </a>
                         
-                            <a href="/tags/底层/">
-                                <span class="chip bg-color">底层</span>
-                            </a>
-                        
-                            <a href="/tags/dyld/">
-                                <span class="chip bg-color">dyld</span>
+                            <a href="/tags/人生哲理/">
+                                <span class="chip bg-color">人生哲理</span>
                             </a>
                         
                     </div>
@@ -391,7 +387,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-03-23
+                    2016-03-24
                 </div>
                 
 
@@ -400,7 +396,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    347
+                    64
                 </div>
                 
 
@@ -423,41 +419,8 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <blockquote>
-<p>本页所使用的objc runtime 756.2，来自<a href="https://github.com/RetVal/objc-runtime" target="_blank" rel="noopener">GITHUB</a></p>
-</blockquote>
-<h2 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h2><p>前文研究了对象、方法的基础，知道了对象/类的结构，类方法的生成和传递原理。下面该进入到核心环节，就是类的加载了，在这一个模块，需要了解的有下面几点：</p>
-<ul>
-<li>OC 的库</li>
-<li>app 的加载流程</li>
-<li>image 的结构</li>
-<li>回调函数</li>
-<li>image 的加载流程</li>
-</ul>
-<h2 id="二、库"><a href="#二、库" class="headerlink" title="二、库"></a>二、库</h2><h3 id="2-1、静态库"><a href="#2-1、静态库" class="headerlink" title="2.1、静态库"></a>2.1、静态库</h3><blockquote>
-<p>是一个外部函数与变量的集合体</p>
-<p>iOS 在<strong>编译时</strong>执行静态库，链接到相应代码</p>
-</blockquote>
-<p>静态库的文件内容，通常包含一堆程序员自定的变量与函数，其内容不像动态链接库那么复杂，在编译期间由编译器与链接器将它集成至应用程序内，并制作成目标文件以及可以独立运作的可执行文件。</p>
-<p>常见的iOS 环境下的静态库由 <code>.a</code> 文件，<code>.framework</code> 文件。java 环境下有<code>.so</code> 静态库</p>
-<h3 id="2-2、动态库"><a href="#2-2、动态库" class="headerlink" title="2.2、动态库"></a>2.2、动态库</h3><blockquote>
-<p>iOS 在<strong>运行时</strong>执行动态库，链接到相应的代码里。</p>
-</blockquote>
-<p> .dylib 库文件</p>
-<h2 id="三、App-启动流程"><a href="#三、App-启动流程" class="headerlink" title="三、App 启动流程"></a>三、App 启动流程</h2><h3 id="1-dyld-start"><a href="#1-dyld-start" class="headerlink" title="1. dyld start"></a>1. dyld start</h3><pre class="line-numbers language-cpp"><code class="language-cpp">libdyld<span class="token punctuation">.</span>dylib`start<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h3 id="2-加载镜像"><a href="#2-加载镜像" class="headerlink" title="2. 加载镜像"></a>2. 加载镜像</h3><pre><code>reloadAllImages:</code></pre><h3 id="3-加载链接"><a href="#3-加载链接" class="headerlink" title="3. 加载链接"></a>3. 加载链接</h3><pre><code>loadInsertedDylib</code></pre><ul>
-<li>插入（insert）： 插入网线</li>
-<li>链接（link）： 接通网络</li>
-</ul>
-<h2 id="四、dyld"><a href="#四、dyld" class="headerlink" title="四、dyld"></a>四、dyld</h2><h3 id="4-1-start"><a href="#4-1-start" class="headerlink" title="4.1 start"></a>4.1 start</h3><h3 id="4-2-递归初始化"><a href="#4-2-递归初始化" class="headerlink" title="4.2 递归初始化"></a>4.2 递归初始化</h3><h3 id="4-3-objc-init"><a href="#4-3-objc-init" class="headerlink" title="4.3 objc_init"></a>4.3 objc_init</h3><h2 id="五、镜像-images"><a href="#五、镜像-images" class="headerlink" title="五、镜像 - images"></a>五、镜像 - images</h2><ul>
-<li>dyld</li>
-<li>Objc_init</li>
-</ul>
-<h2 id="六、回调函数"><a href="#六、回调函数" class="headerlink" title="六、回调函数"></a>六、回调函数</h2><ul>
-<li>指针</li>
-<li>注册</li>
-<li>*snotif</li>
-</ul>
+                <p>在公园和大爷下象棋，有点紧张。<br>走了第一步后，大爷沉默了很久说：<br>“你是新手吧？”<br>“大爷你怎么知道？”<br>“我在这玩了几年，第一步走帅的真不多。”<br>“不应该让领导先走吗？”</p>
+<p> <img src="http://puui.qpic.cn/qqvideo_ori/0/l0626p7lcr5_496_280/0" alt></p>
 
             </div>
             <hr/>
@@ -483,7 +446,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/posts/62973.html">http://nilsli.com/posts/62973.html</a>
+                    <a href="http://nilsli.com/p/31557.html">http://nilsli.com/p/31557.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -521,16 +484,12 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/源码/">
-                                    <span class="chip bg-color">源码</span>
+                                <a href="/tags/休闲/">
+                                    <span class="chip bg-color">休闲</span>
                                 </a>
                             
-                                <a href="/tags/底层/">
-                                    <span class="chip bg-color">底层</span>
-                                </a>
-                            
-                                <a href="/tags/dyld/">
-                                    <span class="chip bg-color">dyld</span>
+                                <a href="/tags/人生哲理/">
+                                    <span class="chip bg-color">人生哲理</span>
                                 </a>
                             
                         </div>
@@ -701,7 +660,7 @@
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2020-03-23T12-30-29',
+        id: '2016-03-24T15-52-01',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -726,29 +685,25 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/29664.html">
+                <a href="/p/7421.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/5.jpg" class="responsive-img" alt="底层探索——类的加载">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/21.jpg" class="responsive-img" alt="通过Universal Link在微信页面中唤起原生App">
                         
-                        <span class="card-title">底层探索——类的加载</span>
+                        <span class="card-title">通过Universal Link在微信页面中唤起原生App</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
-本页所使用的objc runtime 756.2，来自 Apple 开源文档
-
-1、objc_init 流程类的加载，初始化来自dyld 中的objc_init 这个步骤，查看一下源码，得到
-void _objc_init(void)
-{
+                            因微信封杀，已失效，微信大刀威武！
+在某些电商项目，或者是社交媒体的分享页面中，我们经常会看到在页面的顶端或者底部遇到有【打开App】或者【下载App】这样的按钮。比较友好的产品经理，会做设备识别，以及检测APP是否安装，来做打开或者下载A
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-24
+                            <i class="far fa-clock fa-fw icon-date"></i>2017-06-24
                         </span>
                         <span class="publish-author">
                             
@@ -765,16 +720,24 @@ void _objc_init(void)
                         <span class="chip bg-color">iOS</span>
                     </a>
                     
-                    <a href="/tags/源码/">
-                        <span class="chip bg-color">源码</span>
+                    <a href="/tags/原生/">
+                        <span class="chip bg-color">原生</span>
                     </a>
                     
-                    <a href="/tags/底层/">
-                        <span class="chip bg-color">底层</span>
+                    <a href="/tags/微信/">
+                        <span class="chip bg-color">微信</span>
                     </a>
                     
-                    <a href="/tags/Class/">
-                        <span class="chip bg-color">Class</span>
+                    <a href="/tags/universallink/">
+                        <span class="chip bg-color">universallink</span>
+                    </a>
+                    
+                    <a href="/tags/hyper/">
+                        <span class="chip bg-color">hyper</span>
+                    </a>
+                    
+                    <a href="/tags/混合交互/">
+                        <span class="chip bg-color">混合交互</span>
                     </a>
                     
                 </div>
@@ -785,35 +748,29 @@ void _objc_init(void)
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+                本篇&nbsp;<i class="far fa-dot-circle"></i>
             </div>
             <div class="card">
-                <a href="/posts/59010.html">
+                <a href="/p/31557.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg" class="responsive-img" alt="方法的本质4_消息转发机制">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/0.jpg" class="responsive-img" alt="下棋">
                         
-                        <span class="card-title">方法的本质4_消息转发机制</span>
+                        <span class="card-title">下棋</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
-本页所使用的objc runtime 756.2，来自GITHUB
+                            在公园和大爷下象棋，有点紧张。走了第一步后，大爷沉默了很久说：“你是新手吧？”“大爷你怎么知道？”“我在这玩了几年，第一步走帅的真不多。”“不应该让领导先走吗？”
+ 
 
-1、回顾上文消息方法的本质3_消息查找流程 一文总结了方法查找的流程，得到结论如下:
-
-
-类的缓存里查找——找到——结束查找
-类的方法列表里查找——找到——结束查找
-递
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-13
+                                <i class="far fa-clock fa-fw icon-date"></i>2016-03-24
                             </span>
                         <span class="publish-author">
                             
@@ -823,31 +780,16 @@ void _objc_init(void)
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/ios/">
-                        <span class="chip bg-color">ios</span>
+                    <a href="/tags/休闲/">
+                        <span class="chip bg-color">休闲</span>
                     </a>
                     
-                    <a href="/tags/源码/">
-                        <span class="chip bg-color">源码</span>
-                    </a>
-                    
-                    <a href="/tags/底层/">
-                        <span class="chip bg-color">底层</span>
-                    </a>
-                    
-                    <a href="/tags/结构/">
-                        <span class="chip bg-color">结构</span>
-                    </a>
-                    
-                    <a href="/tags/消息转发/">
-                        <span class="chip bg-color">消息转发</span>
-                    </a>
-                    
-                    <a href="/tags/objc/">
-                        <span class="chip bg-color">objc</span>
+                    <a href="/tags/人生哲理/">
+                        <span class="chip bg-color">人生哲理</span>
                     </a>
                     
                 </div>

@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="【译】产品经理vs项目经理：如何区别他们, 李佳的技术博客">
+    <meta name="keywords" content="图解SDWebImage(读sdwebimage源码分析), 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>【译】产品经理vs项目经理：如何区别他们 | 李佳的技术博客</title>
+    <title>图解SDWebImage(读sdwebimage源码分析) | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/6.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">【译】产品经理vs项目经理：如何区别他们</h1>
+                    <h1 class="description center-align post-title">图解SDWebImage(读sdwebimage源码分析)</h1>
                 </div>
             </div>
         </div>
@@ -367,24 +367,16 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/项目经理/">
-                                <span class="chip bg-color">项目经理</span>
+                            <a href="/tags/ios/">
+                                <span class="chip bg-color">ios</span>
                             </a>
                         
-                            <a href="/tags/产品经理/">
-                                <span class="chip bg-color">产品经理</span>
+                            <a href="/tags/开发/">
+                                <span class="chip bg-color">开发</span>
                             </a>
                         
-                            <a href="/tags/IT/">
-                                <span class="chip bg-color">IT</span>
-                            </a>
-                        
-                            <a href="/tags/产品/">
-                                <span class="chip bg-color">产品</span>
-                            </a>
-                        
-                            <a href="/tags/项目/">
-                                <span class="chip bg-color">项目</span>
+                            <a href="/tags/SDWebImage/">
+                                <span class="chip bg-color">SDWebImage</span>
                             </a>
                         
                     </div>
@@ -399,7 +391,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-08-23
+                    2018-02-24
                 </div>
                 
 
@@ -408,14 +400,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.6k
+                    66
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    1 分
                 </div>
                 
 
@@ -431,73 +423,14 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h6 id="（原链接在此）"><a href="#（原链接在此）" class="headerlink" title="（原链接在此）"></a>（<a href="https://habr.com/en/company/hygger/blog/462919/" target="_blank" rel="noopener">原链接在此</a>）</h6><h3 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h3><p>大公司和较大的团队常常存在许多战略部门与角色。因此，人们往往会对其中众多角色岗位一脸懵逼不足为奇。</p>
-<p>不同的经理在团队中的关键职责是否那么容易区分呢？举个栗子，一个产品经理和项目经理的角色就有很多共同点。据说，这些经理中每一个人在他的生命中起码听过这样直接的问题：他们（产品经理、项目经理）有区别吗？不过，也别急着埋怨他们或者觉得难堪，就因为他们对这些职能弄不清楚。产品经理和项目经理是完全不同的角色。这篇文章的目标是定义清楚这两种在软件开发公司里的关键位置的区别，让你彻底甩掉疑惑。</p>
-<p><img src="https://habrastorage.org/getpro/habr/post_images/eda/55f/a19/eda55fa19804f2f0d2fd819a7cf17ad8.jpg" alt></p>
+                <p>最近在看一些第三方库的源码，其中SDWebImage 尤其让人惊叹，尝试用XMind 画出原理，以后有机会， 会增加更多的细节图。</p>
+<h4 id="大纲如下："><a href="#大纲如下：" class="headerlink" title="大纲如下："></a>大纲如下：</h4><p><img src="/p/14198/sd1.png" alt></p>
 <a id="more"></a>
 
 
 
-<p>想象一下，你的组织需要进行人力资源优化以及一些人员裁减。如果你不得不决定团队里谁会留下，而谁该友好说再见。哪个经理你会选择留下？</p>
-<p>显然，做出选择并不容易。如果你被问到，说出谁对团队更重要，你肯定会发现难以回答。</p>
-<p>这个问题有正确答案吗？让我们试着理清楚。</p>
-<h3 id="产品经理-vs-项目经理：谁的负担更重"><a href="#产品经理-vs-项目经理：谁的负担更重" class="headerlink" title="产品经理 vs 项目经理：谁的负担更重"></a>产品经理 vs 项目经理：谁的负担更重</h3><ul>
-<li><strong>产品</strong> 是你给客户或用户提出的最终结果。产品可以是可以触摸到的实物；也可能是软件平台或者服务。</li>
-<li><strong>项目</strong> 是一个包含着后续活动的计划。这些活动有设定好的启动和截止时间，以及一个结果。只有在最终结果达成后，项目才算完成。</li>
-</ul>
-<p>举个栗子，你的产品是一个约会app。开发这个应用意味着不同的项目。其中一个是编写一个内容计划以及运行一个公司博客。这个项目有自己的截止时间和结束点。</p>
-<p>比较两种角色最无聊（但并不正确！）的方式是去观察他们的薪资收入。下图显示了详细数据：</p>
-<p><img src="https://habrastorage.org/getpro/habr/post_images/2be/bac/2db/2bebac2db9299bdfad99da90e7b7d00f.jpg" alt></p>
-<p>软件行业产品经理年收入（年份未知）</p>
-<p><img src="https://habrastorage.org/getpro/habr/post_images/acb/312/75c/acb31275ce31fe44cc00238c5e695505.jpg" alt></p>
-<p>IT行业产品项目经理年收入（年份未知）</p>
-<h3 id="产品经理和项目经理关键职能是什么？"><a href="#产品经理和项目经理关键职能是什么？" class="headerlink" title="产品经理和项目经理关键职能是什么？"></a>产品经理和项目经理关键职能是什么？</h3><p><strong>产品经理</strong></p>
-<p>在IT领域，产品经理负责管理软件开发。他们通常负责定义产品战略、功能有限顺序以及产品的最终交付上线。</p>
-<p>他们负责创造想法和主动性来帮助实现战略和目标，促进内部和外部的相关部门交流；他们会访问潜在的和现有的客户，获取可能会对未来版本有帮助的反馈；他们也会和经销商一起工作，有成效地向用户展示产品细节；他们战略路线下工作，处理产品积压。</p>
-<p>产品经理通常参加工业事件和会议，以停留在当前行业最前沿。因此，他们的核心职能列表如下：</p>
-<ul>
-<li>产品战略</li>
-<li>市场调研</li>
-<li>期望与主动性</li>
-<li>发布</li>
-<li>损益问题</li>
-</ul>
-<p><strong>项目经理</strong></p>
-<p>在软件开发中行业，项目经理的职责与计划固定类型公司里的项目紧密相连。这些专家保证他们在正轨上运行，通过所有执行阶段，他们关心可能的制约和资源风险。</p>
-<p>通常，他们较少关心具体的产品目标。他们分析所有的主动性和特性，来开发一个项目时间表。</p>
-<p>作为一份工作，项目经理可能需要每天评估员工，他们的积极性来达成具体的目标。</p>
-<p>项目经理管控项目知道他们完成，然后会评估要继续跟进的必要性。</p>
-<p>他们的主要职责关联如下：</p>
-<ul>
-<li>项目交付</li>
-<li>资源</li>
-<li>利用软件生命周期方法</li>
-<li>状态更新</li>
-<li>项目预算</li>
-<li>产能</li>
-<li>团队合作成功</li>
-<li>问题解决方案</li>
-</ul>
-<h4 id="两种岗位可能的职业路线是什么？"><a href="#两种岗位可能的职业路线是什么？" class="headerlink" title="两种岗位可能的职业路线是什么？"></a>两种岗位可能的职业路线是什么？</h4><p>这些管理们毫无疑问的寻求职业成长。从一个工作（提升）到下一个水平的行动，需要坚强的经理技能和足够的经验。</p>
-<p>典型的来说，产品经理李正成为高级产品经理或者产品管理负责人。项目经理们的职业路线通常说升级到高级项目经理和项目负责人角色。</p>
-<h4 id="在公司里哪一种角色更重要？"><a href="#在公司里哪一种角色更重要？" class="headerlink" title="在公司里哪一种角色更重要？"></a>在公司里哪一种角色更重要？</h4><p>如果你的公司同时需要产品经理和项目经理，那么组织结构上是完全合理的。如何定义，谁说更重要呢？</p>
-<p>可能，下面的问题会帮助你：</p>
-<ul>
-<li>如果没有产品经理，团队能否运行良好？</li>
-<li>如果项目经理离开团队，会发生什么？</li>
-</ul>
-<p>很有可能，你的答案会显示两个角色都是重要且不可取代。他们的紧密合作是迈向成功的关键。</p>
-<h4 id="项目管理和产品管理工具"><a href="#项目管理和产品管理工具" class="headerlink" title="项目管理和产品管理工具"></a>项目管理和产品管理工具</h4><p>选择项目管理和产品管理一个专业工具，需要考虑明确的公司需求、团队相关成员的数量、相关行业，以及其他的因素。</p>
-<p>当下你可以尝试小型在线管理解决方案，它能满足经理们的必要需求。</p>
-<p>一些流行的软件方案如Trello，Wrike, Hygger或Aha提供了所有产品管理和项目管理领域的强大的工具套装。</p>
-<p>大部分这些工具会提供用户便利便利的tas面板（为看板和敏捷开发适配），跟踪系统，待办事项列表，确定优先事项，高级别评估，有用时间线，等等等等。</p>
-<h4 id="最后一句话"><a href="#最后一句话" class="headerlink" title="最后一句话"></a>最后一句话</h4><p>让我们简单的总结一下上面提到的事情：</p>
-<ul>
-<li>产品经理和项目经理角色可能被弄混，但他们是完全不同的。他们对于软件开发公司是同等重要。</li>
-<li>产品经理驱动产品开发，主动性的工作，确定优先顺序以及制定战略决定。项目经理管控已经被开发和审批过的项目计划。</li>
-<li>两个经理都需要专业管理软件来可视化和追踪产品和项目活动，并与团队通力合作。</li>
-</ul>
-<p><em>你怎么区分项目和产品经理呢？哪些软件你尝试过，为什么？</em></p>
+<h4 id="图片缓存的实现如下："><a href="#图片缓存的实现如下：" class="headerlink" title="图片缓存的实现如下："></a>图片缓存的实现如下：</h4><p><img src="/p/14198/sd2.png" alt></p>
+<h4 id="以下为异步下载部分："><a href="#以下为异步下载部分：" class="headerlink" title="以下为异步下载部分："></a><strong>以下为异步下载部分：</strong></h4><p><img src="/p/14198/sd3.png" alt></p>
 
             </div>
             <hr/>
@@ -523,7 +456,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/posts/56253.html">http://nilsli.com/posts/56253.html</a>
+                    <a href="http://nilsli.com/p/14198.html">http://nilsli.com/p/14198.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -561,24 +494,16 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/项目经理/">
-                                    <span class="chip bg-color">项目经理</span>
+                                <a href="/tags/ios/">
+                                    <span class="chip bg-color">ios</span>
                                 </a>
                             
-                                <a href="/tags/产品经理/">
-                                    <span class="chip bg-color">产品经理</span>
+                                <a href="/tags/开发/">
+                                    <span class="chip bg-color">开发</span>
                                 </a>
                             
-                                <a href="/tags/IT/">
-                                    <span class="chip bg-color">IT</span>
-                                </a>
-                            
-                                <a href="/tags/产品/">
-                                    <span class="chip bg-color">产品</span>
-                                </a>
-                            
-                                <a href="/tags/项目/">
-                                    <span class="chip bg-color">项目</span>
+                                <a href="/tags/SDWebImage/">
+                                    <span class="chip bg-color">SDWebImage</span>
                                 </a>
                             
                         </div>
@@ -749,7 +674,7 @@
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2019-08-23T15-16-02',
+        id: '2018-02-24T15-33-15',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -774,25 +699,29 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/2840.html">
+                <a href="/p/51950.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/6.jpg" class="responsive-img" alt="Flutter 深入学习">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg" class="responsive-img" alt="如何在苹果AppStore 上下架应用">
                         
-                        <span class="card-title">Flutter 深入学习</span>
+                        <span class="card-title">如何在苹果AppStore 上下架应用</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            引言Flutter是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。 Flutter可以与现有的代码一起工作。在全世界，Flutter正在被越来越多的开发者和组织使用，并且Flutter是完全免费、开源的。
+                            序言：作为开发者，如何快捷的在苹果商店下架上架App，请看图吧如何下架1. 进入开发者中心 itunesConnect
+ 
 
+2. 选择相应的App
+3. 如图，选择价格与销售范围—— 下架
+4. 等等10分钟左右，再次搜索，此时AppSt
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2019-10-31
+                            <i class="far fa-clock fa-fw icon-date"></i>2018-07-24
                         </span>
                         <span class="publish-author">
                             
@@ -805,16 +734,24 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/Flutter/">
-                        <span class="chip bg-color">Flutter</span>
+                    <a href="/tags/ios/">
+                        <span class="chip bg-color">ios</span>
                     </a>
                     
-                    <a href="/tags/iOS/">
-                        <span class="chip bg-color">iOS</span>
+                    <a href="/tags/appstore/">
+                        <span class="chip bg-color">appstore</span>
                     </a>
                     
-                    <a href="/tags/大前端，跨栈/">
-                        <span class="chip bg-color">大前端，跨栈</span>
+                    <a href="/tags/上架/">
+                        <span class="chip bg-color">上架</span>
+                    </a>
+                    
+                    <a href="/tags/下架/">
+                        <span class="chip bg-color">下架</span>
+                    </a>
+                    
+                    <a href="/tags/苹果商店/">
+                        <span class="chip bg-color">苹果商店</span>
                     </a>
                     
                 </div>
@@ -828,28 +765,25 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/49163.html">
+                <a href="/p/7421.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/23.jpg" class="responsive-img" alt="iOS开发中的问题集锦">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/21.jpg" class="responsive-img" alt="通过Universal Link在微信页面中唤起原生App">
                         
-                        <span class="card-title">iOS开发中的问题集锦</span>
+                        <span class="card-title">通过Universal Link在微信页面中唤起原生App</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            开发中难免遇到各式各样的小问题，平时收集一下，汇总如下，按Q（问题）和 A（解决方法）。
-Q1遇到unable to index file详细内容：
-​        详细内容：
-        unable to index file 
-
+                            因微信封杀，已失效，微信大刀威武！
+在某些电商项目，或者是社交媒体的分享页面中，我们经常会看到在页面的顶端或者底部遇到有【打开App】或者【下载App】这样的按钮。比较友好的产品经理，会做设备识别，以及检测APP是否安装，来做打开或者下载A
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-07-28
+                                <i class="far fa-clock fa-fw icon-date"></i>2017-06-24
                             </span>
                         <span class="publish-author">
                             
@@ -866,16 +800,24 @@ Q1遇到unable to index file详细内容：
                         <span class="chip bg-color">iOS</span>
                     </a>
                     
-                    <a href="/tags/swift/">
-                        <span class="chip bg-color">swift</span>
+                    <a href="/tags/原生/">
+                        <span class="chip bg-color">原生</span>
                     </a>
                     
-                    <a href="/tags/小问题/">
-                        <span class="chip bg-color">小问题</span>
+                    <a href="/tags/微信/">
+                        <span class="chip bg-color">微信</span>
                     </a>
                     
-                    <a href="/tags/git/">
-                        <span class="chip bg-color">git</span>
+                    <a href="/tags/universallink/">
+                        <span class="chip bg-color">universallink</span>
+                    </a>
+                    
+                    <a href="/tags/hyper/">
+                        <span class="chip bg-color">hyper</span>
+                    </a>
+                    
+                    <a href="/tags/混合交互/">
+                        <span class="chip bg-color">混合交互</span>
                     </a>
                     
                 </div>

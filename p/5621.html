@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="【休闲】西湖一瞥, 李佳的技术博客">
+    <meta name="keywords" content="使用Runtime获取第三方成员变量, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>【休闲】西湖一瞥 | 李佳的技术博客</title>
+    <title>使用Runtime获取第三方成员变量 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/20.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/19.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">【休闲】西湖一瞥</h1>
+                    <h1 class="description center-align post-title">使用Runtime获取第三方成员变量</h1>
                 </div>
             </div>
         </div>
@@ -367,20 +367,16 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/休闲/">
-                                <span class="chip bg-color">休闲</span>
+                            <a href="/tags/ios/">
+                                <span class="chip bg-color">ios</span>
                             </a>
                         
-                            <a href="/tags/杭州/">
-                                <span class="chip bg-color">杭州</span>
+                            <a href="/tags/runtime/">
+                                <span class="chip bg-color">runtime</span>
                             </a>
                         
-                            <a href="/tags/西湖/">
-                                <span class="chip bg-color">西湖</span>
-                            </a>
-                        
-                            <a href="/tags/Apple/">
-                                <span class="chip bg-color">Apple</span>
+                            <a href="/tags/进阶/">
+                                <span class="chip bg-color">进阶</span>
                             </a>
                         
                     </div>
@@ -395,7 +391,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-03-09
+                    2019-12-12
                 </div>
                 
 
@@ -404,7 +400,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    66
+                    223
                 </div>
                 
 
@@ -427,12 +423,36 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h4 id="逛次逛次的西湖"><a href="#逛次逛次的西湖" class="headerlink" title="逛次逛次的西湖"></a>逛次逛次的西湖</h4><p>今天过来平海路的Apple 直营店给电脑做大保健，顺便看了一眼西湖。</p>
-<p>湖边景色依旧宜人，可惜游人寥寥。</p>
-<p>期待一切顺利，然后恢复到游人如织的景色。</p>
-<p><img src="/posts/37569/02.jpg" alt="步行街"></p>
-<p><img src="/posts/37569/03.jpg" alt="Apple 直营店，天才吧的天才在户外工作"></p>
-<p><img src="/posts/37569/01.jpg" alt="【全景模式】西湖一瞥"></p>
+                <p>我们使用第三方库，有时候需要获取其成员变量。方法如下：</p>
+<p><strong>导入runtime</strong></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">import</span> &lt;objc/runtime.h></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><strong>声明一个Person类</strong></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">@interface Person <span class="token operator">:</span> NSObject
+<span class="token punctuation">{</span>
+    NSString <span class="token operator">*</span>address<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+@<span class="token function">property</span><span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span>strong<span class="token punctuation">)</span>NSString <span class="token operator">*</span>name<span class="token punctuation">;</span>
+@<span class="token function">property</span><span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span>assign<span class="token punctuation">)</span>NSInteger age<span class="token punctuation">;</span>
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>使用runtime获取私有属性</strong></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">//遍历获取Person类所有的成员变量IvarList</span>
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span> getAllIvarList <span class="token punctuation">{</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> methodCount <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    Ivar <span class="token operator">*</span> ivars <span class="token operator">=</span> <span class="token function">class_copyIvarList</span><span class="token punctuation">(</span><span class="token punctuation">[</span>Person <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>methodCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> methodCount<span class="token punctuation">;</span> i <span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Ivar ivar <span class="token operator">=</span> ivars<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> name <span class="token operator">=</span> <span class="token function">ivar_getName</span><span class="token punctuation">(</span>ivar<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> type <span class="token operator">=</span> <span class="token function">ivar_getTypeEncoding</span><span class="token punctuation">(</span>ivar<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"Person拥有的成员变量的类型为%s，名字为 %s "</span><span class="token punctuation">,</span>type<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">free</span><span class="token punctuation">(</span>ivars<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>打印结果如下：</strong></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token number">2019</span><span class="token operator">-</span><span class="token number">12</span><span class="token operator">-</span><span class="token number">12</span> <span class="token number">15</span><span class="token operator">:</span><span class="token number">14</span><span class="token operator">:</span><span class="token number">02.115744</span><span class="token operator">+</span><span class="token number">0800</span> PersonRuntime<span class="token punctuation">[</span><span class="token number">11576</span><span class="token operator">:</span><span class="token number">1071364</span><span class="token punctuation">]</span> Person拥有的成员变量的类型为@<span class="token string">"NSString"</span>，名字为 address 
+<span class="token number">2019</span><span class="token operator">-</span><span class="token number">12</span><span class="token operator">-</span><span class="token number">12</span> <span class="token number">15</span><span class="token operator">:</span><span class="token number">14</span><span class="token operator">:</span><span class="token number">02.115902</span><span class="token operator">+</span><span class="token number">0800</span> PersonRuntime<span class="token punctuation">[</span><span class="token number">11576</span><span class="token operator">:</span><span class="token number">1071364</span><span class="token punctuation">]</span> Person拥有的成员变量的类型为@<span class="token string">"NSString"</span>，名字为 _name 
+<span class="token number">2019</span><span class="token operator">-</span><span class="token number">12</span><span class="token operator">-</span><span class="token number">12</span> <span class="token number">15</span><span class="token operator">:</span><span class="token number">14</span><span class="token operator">:</span><span class="token number">02.115997</span><span class="token operator">+</span><span class="token number">0800</span> PersonRuntime<span class="token punctuation">[</span><span class="token number">11576</span><span class="token operator">:</span><span class="token number">1071364</span><span class="token punctuation">]</span> Person拥有的成员变量的类型为q，名字为 _age 
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 
             </div>
             <hr/>
@@ -458,7 +478,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/posts/37569.html">http://nilsli.com/posts/37569.html</a>
+                    <a href="http://nilsli.com/p/5621.html">http://nilsli.com/p/5621.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -496,20 +516,16 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/休闲/">
-                                    <span class="chip bg-color">休闲</span>
+                                <a href="/tags/ios/">
+                                    <span class="chip bg-color">ios</span>
                                 </a>
                             
-                                <a href="/tags/杭州/">
-                                    <span class="chip bg-color">杭州</span>
+                                <a href="/tags/runtime/">
+                                    <span class="chip bg-color">runtime</span>
                                 </a>
                             
-                                <a href="/tags/西湖/">
-                                    <span class="chip bg-color">西湖</span>
-                                </a>
-                            
-                                <a href="/tags/Apple/">
-                                    <span class="chip bg-color">Apple</span>
+                                <a href="/tags/进阶/">
+                                    <span class="chip bg-color">进阶</span>
                                 </a>
                             
                         </div>
@@ -680,7 +696,7 @@
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2020-03-09T20-11-20',
+        id: '2019-12-12T15-04-43',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -705,13 +721,13 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/59010.html">
+                <a href="/p/19251.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg" class="responsive-img" alt="方法的本质4_消息转发机制">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg" class="responsive-img" alt="OC 底层研究1--alloc和init原理">
                         
-                        <span class="card-title">方法的本质4_消息转发机制</span>
+                        <span class="card-title">OC 底层研究1--alloc和init原理</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -720,17 +736,14 @@
                             
 本页所使用的objc runtime 756.2，来自GITHUB
 
-1、回顾上文消息方法的本质3_消息查找流程 一文总结了方法查找的流程，得到结论如下:
-
-
-类的缓存里查找——找到——结束查找
-类的方法列表里查找——找到——结束查找
-递
+1. 题目开始学习研究OC源码，今天看的是对象的初始化，也就是alloc以及init的分析。
+2. 附流程图如下 
+3. 内容3.1引子我们先看一段代码，Person类
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-13
+                            <i class="far fa-clock fa-fw icon-date"></i>2019-12-16
                         </span>
                         <span class="publish-author">
                             
@@ -755,16 +768,8 @@
                         <span class="chip bg-color">底层</span>
                     </a>
                     
-                    <a href="/tags/结构/">
-                        <span class="chip bg-color">结构</span>
-                    </a>
-                    
-                    <a href="/tags/消息转发/">
-                        <span class="chip bg-color">消息转发</span>
-                    </a>
-                    
-                    <a href="/tags/objc/">
-                        <span class="chip bg-color">objc</span>
+                    <a href="/tags/alloc/">
+                        <span class="chip bg-color">alloc</span>
                     </a>
                     
                 </div>
@@ -778,30 +783,25 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/64205.html">
+                <a href="/p/2840.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/22.jpg" class="responsive-img" alt="方法的本质3_消息查找流程">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/6.jpg" class="responsive-img" alt="Flutter 深入学习">
                         
-                        <span class="card-title">方法的本质3_消息查找流程</span>
+                        <span class="card-title">Flutter 深入学习</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            
-本页所使用的objc runtime 756.2，来自GITHUB
+                            引言Flutter是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。 Flutter可以与现有的代码一起工作。在全世界，Flutter正在被越来越多的开发者和组织使用，并且Flutter是完全免费、开源的。
 
-1. 概念在前文中，已经总结了方法查找的流程，今天从代码层面上继续阐述。
-isa 的指向图如下所示：
-   
-2. 方法查找流程2.1 从业务代码分析配置代码环境：，先
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-06
+                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-31
                             </span>
                         <span class="publish-author">
                             
@@ -814,28 +814,16 @@ isa 的指向图如下所示：
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/ios/">
-                        <span class="chip bg-color">ios</span>
+                    <a href="/tags/Flutter/">
+                        <span class="chip bg-color">Flutter</span>
                     </a>
                     
-                    <a href="/tags/源码/">
-                        <span class="chip bg-color">源码</span>
+                    <a href="/tags/iOS/">
+                        <span class="chip bg-color">iOS</span>
                     </a>
                     
-                    <a href="/tags/底层/">
-                        <span class="chip bg-color">底层</span>
-                    </a>
-                    
-                    <a href="/tags/类/">
-                        <span class="chip bg-color">类</span>
-                    </a>
-                    
-                    <a href="/tags/结构/">
-                        <span class="chip bg-color">结构</span>
-                    </a>
-                    
-                    <a href="/tags/objc/">
-                        <span class="chip bg-color">objc</span>
+                    <a href="/tags/大前端，跨栈/">
+                        <span class="chip bg-color">大前端，跨栈</span>
                     </a>
                     
                 </div>

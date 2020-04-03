@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="OC 底层研究1--alloc和init原理, 李佳的技术博客">
+    <meta name="keywords" content="【底层探索】dyld浅析, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>OC 底层研究1--alloc和init原理 | 李佳的技术博客</title>
+    <title>【底层探索】dyld浅析 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/12.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">OC 底层研究1--alloc和init原理</h1>
+                    <h1 class="description center-align post-title">【底层探索】dyld浅析</h1>
                 </div>
             </div>
         </div>
@@ -367,10 +367,6 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/ios/">
-                                <span class="chip bg-color">ios</span>
-                            </a>
-                        
                             <a href="/tags/源码/">
                                 <span class="chip bg-color">源码</span>
                             </a>
@@ -379,8 +375,8 @@
                                 <span class="chip bg-color">底层</span>
                             </a>
                         
-                            <a href="/tags/alloc/">
-                                <span class="chip bg-color">alloc</span>
+                            <a href="/tags/dyld/">
+                                <span class="chip bg-color">dyld</span>
                             </a>
                         
                     </div>
@@ -395,7 +391,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-12-16
+                    2020-03-23
                 </div>
                 
 
@@ -404,14 +400,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    819
+                    347
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    1 分
                 </div>
                 
 
@@ -430,114 +426,38 @@
                 <blockquote>
 <p>本页所使用的objc runtime 756.2，来自<a href="https://github.com/RetVal/objc-runtime" target="_blank" rel="noopener">GITHUB</a></p>
 </blockquote>
-<h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1. 题目"></a>1. 题目</h3><p>开始学习研究OC源码，今天看的是对象的初始化，也就是alloc以及init的分析。</p>
-<h3 id="2-附流程图如下"><a href="#2-附流程图如下" class="headerlink" title="2. 附流程图如下"></a>2. 附流程图如下</h3><p> <img src="/posts/19251/121601.png" alt></p>
-<h3 id="3-内容"><a href="#3-内容" class="headerlink" title="3. 内容"></a>3. 内容</h3><h4 id="3-1引子"><a href="#3-1引子" class="headerlink" title="3.1引子"></a>3.1引子</h4><p>我们先看一段代码，Person类的初始化，打印p1,p2,p3对象，以及指向他们的指针：</p>
-<pre class="line-numbers language-objective-c"><code class="language-objective-c">    Person *p1 = [Person alloc];
-    Person *p2 = [p1 init];
-    Person *p3 = [p1 init];
-
-    NSLog(@"%@ -- %p", p1, &p1);
-    NSLog(@"%@ -- %p", p2, &p2);
-    NSLog(@"%@ -- %p", p3, &p3);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>打印结果是：</p>
-<img src="/posts/19251/121602.png" style="zoom:50%;">
-
-<p>这里为什么p1相同的情况下，经过init后的p2，p3 的地址都不一样呢，我们要用这个图来分析:</p>
-<img src="/posts/19251/121603.png" style="zoom:50%;">
-
-<p>在这里，我们<strong>[Person alloc]</strong>创建了一个p 对象的内存空间，而<strong>[p1 init]</strong>则是创建同样是指向p1的指针p2，p3，因为和p1 内存空间一致，所以地址均为0x6000024f4950，但是指向该3个指针的指针不一样，所以&amp;p1, &amp;p2, &amp;p3 地址不一致。 </p>
-<h4 id="3-2源码分析："><a href="#3-2源码分析：" class="headerlink" title="3.2源码分析："></a>3.2源码分析：</h4><p>alloc 步骤如下</p>
-<h6 id="1-alloc"><a href="#1-alloc" class="headerlink" title="1. alloc"></a><strong>1. alloc</strong></h6><p>该步骤主要为创建对象，<strong>申请内存空间</strong>。相关objc源代码如下</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">+</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span>alloc <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token function">_objc_rootAlloc</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>　　<a id="more"></a></p>
-<h6 id="2-objc-rootAlloc"><a href="#2-objc-rootAlloc" class="headerlink" title="2. objc_rootAlloc"></a><strong>2. objc_rootAlloc</strong></h6><p>基类对于alloc 的实现，此时cls不为空，源码如下：</p>
-<p><strong>init方法：</strong></p>
-<p>类的init 如下</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">+</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>init<span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span>self<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>对象的init如下</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span>init<span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token function">_objc_rootAlloc</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-cpp"><code class="language-cpp">id
-<span class="token function">_objc_rootAlloc</span><span class="token punctuation">(</span>Class <span class="token class-name">cls</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token function">callAlloc</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token comment" spellcheck="true">/*checkNil*/</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token comment" spellcheck="true">/*allocWithZone*/</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>此处init 方法仅仅为工厂初始方法，作为父类方法，方便子类重写。</p>
-<h6 id="3-callAlloc"><a href="#3-callAlloc" class="headerlink" title="3. callAlloc**"></a>3. callAlloc**</h6><p>callAlloc 的实现如下:</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// Call [cls alloc] or [cls allocWithZone:nil], with appropriate </span>
-<span class="token comment" spellcheck="true">// shortcutting optimizations.</span>
-<span class="token keyword">static</span> ALWAYS_INLINE id
-<span class="token function">callAlloc</span><span class="token punctuation">(</span>Class <span class="token class-name">cls</span><span class="token punctuation">,</span> <span class="token keyword">bool</span> checkNil<span class="token punctuation">,</span> <span class="token keyword">bool</span> allocWithZone<span class="token operator">=</span><span class="token boolean">false</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">slowpath</span><span class="token punctuation">(</span>checkNil <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>cls<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span> nil<span class="token punctuation">;</span>
-
-<span class="token macro property">#<span class="token directive keyword">if</span> __OBJC2__</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">fastpath</span><span class="token punctuation">(</span><span class="token operator">!</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">ISA</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">hasCustomAWZ</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token comment" spellcheck="true">// No alloc/allocWithZone implementation. Go straight to the allocator.</span>
-        <span class="token comment" spellcheck="true">// fixme store hasCustomAWZ in the non-meta class and </span>
-        <span class="token comment" spellcheck="true">// add it to canAllocFast's summary</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">fastpath</span><span class="token punctuation">(</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">canAllocFast</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// No ctors, raw isa, etc. Go straight to the metal.</span>
-            <span class="token keyword">bool</span> dtor <span class="token operator">=</span> cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">hasCxxDtor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            id obj <span class="token operator">=</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token function">calloc</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> cls<span class="token operator">-</span><span class="token operator">></span>bits<span class="token punctuation">.</span><span class="token function">fastInstanceSize</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">slowpath</span><span class="token punctuation">(</span><span class="token operator">!</span>obj<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token function">callBadAllocHandler</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            obj<span class="token operator">-</span><span class="token operator">></span><span class="token function">initInstanceIsa</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> dtor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span> obj<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">else</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// Has ctor or raw isa or something. Use the slower path.</span>
-            id obj <span class="token operator">=</span> <span class="token function">class_createInstance</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">slowpath</span><span class="token punctuation">(</span><span class="token operator">!</span>obj<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token function">callBadAllocHandler</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">return</span> obj<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-<span class="token macro property">#<span class="token directive keyword">endif</span></span>
-
-    <span class="token comment" spellcheck="true">// No shortcuts available.</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>allocWithZone<span class="token punctuation">)</span> <span class="token keyword">return</span> <span class="token punctuation">[</span>cls allocWithZone<span class="token operator">:</span>nil<span class="token punctuation">]</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> <span class="token punctuation">[</span>cls alloc<span class="token punctuation">]</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h6 id="4-class-createInstance"><a href="#4-class-createInstance" class="headerlink" title="4. class_createInstance"></a><strong>4. class_createInstance</strong></h6><p>如上代码，如无捷径，类对象即创建实例</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">class_createInstance</span><span class="token punctuation">(</span>Class <span class="token class-name">cls</span><span class="token punctuation">,</span> size_t extraBytes<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token keyword">return</span> <span class="token function">_class_createInstanceFromZone</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> extraBytes<span class="token punctuation">,</span> nil<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h6 id="5-class-createINstanceFramZone"><a href="#5-class-createINstanceFramZone" class="headerlink" title="5. _class_createINstanceFramZone"></a><strong>5. _class_createINstanceFramZone</strong></h6><ol>
-<li><p>Cls-&gt;instanceSize</p>
-<p>此时为对其寻址空间，统一为为每个对象开辟16位的位置，防止溢出。</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp">    size_t size <span class="token operator">=</span> cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">instanceSize</span><span class="token punctuation">(</span>extraBytes<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">// CF requires all objects be at least 16 bytes.</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>outAllocatedSize<span class="token punctuation">)</span> <span class="token operator">*</span>outAllocatedSize <span class="token operator">=</span> size<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-</li>
-<li><p>calloc</p>
-<p>如果空间已开辟，则指定空间并返回，类似去学校报道，宿管阿姨带你去宿舍并交付钥匙给你，代码如下:</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp">
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>zone<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// malloc_zone_calloc 即为开辟内存</span>
-            obj <span class="token operator">=</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token function">malloc_zone_calloc</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>malloc_zone_t <span class="token operator">*</span><span class="token punctuation">)</span>zone<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> size<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-            obj <span class="token operator">=</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token function">calloc</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> size<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-</li>
-<li><p>objc-&gt;initInstanceIsa</p>
-<p>这一步为确定指针，即给宿舍贴上门牌号，相关代码如下：</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>zone  <span class="token operator">&amp;&amp;</span>  fast<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        obj <span class="token operator">=</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token function">calloc</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> size<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// 该行开辟了名为obj空间</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>obj<span class="token punctuation">)</span> <span class="token keyword">return</span> nil<span class="token punctuation">;</span>
-        obj<span class="token operator">-</span><span class="token operator">></span><span class="token function">initInstanceIsa</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> hasCxxDtor<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-</li>
-</ol>
-<p>在这一环节，<code>obj = (id)calloc(1, size)</code> 该行开辟了名为obj空间。</p>
-<p>而<code>obj-&gt;initInstanceIsa(cls, hasCxxDtor)</code> 则真正的将内存空间obj 与类cls 进行关联上。</p>
-<h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h3><p>总的来说，alloc的过程，即时在堆区开辟空间给对象，并在栈区开辟指针（大小为8字节）指向该对象的内存区，即给定isa，以方便寻址。</p>
-<p>以上，如果有更深入的理解，会再来补充，供参考。</p>
+<h2 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h2><p>前文研究了对象、方法的基础，知道了对象/类的结构，类方法的生成和传递原理。下面该进入到核心环节，就是类的加载了，在这一个模块，需要了解的有下面几点：</p>
+<ul>
+<li>OC 的库</li>
+<li>app 的加载流程</li>
+<li>image 的结构</li>
+<li>回调函数</li>
+<li>image 的加载流程</li>
+</ul>
+<h2 id="二、库"><a href="#二、库" class="headerlink" title="二、库"></a>二、库</h2><h3 id="2-1、静态库"><a href="#2-1、静态库" class="headerlink" title="2.1、静态库"></a>2.1、静态库</h3><blockquote>
+<p>是一个外部函数与变量的集合体</p>
+<p>iOS 在<strong>编译时</strong>执行静态库，链接到相应代码</p>
+</blockquote>
+<p>静态库的文件内容，通常包含一堆程序员自定的变量与函数，其内容不像动态链接库那么复杂，在编译期间由编译器与链接器将它集成至应用程序内，并制作成目标文件以及可以独立运作的可执行文件。</p>
+<p>常见的iOS 环境下的静态库由 <code>.a</code> 文件，<code>.framework</code> 文件。java 环境下有<code>.so</code> 静态库</p>
+<h3 id="2-2、动态库"><a href="#2-2、动态库" class="headerlink" title="2.2、动态库"></a>2.2、动态库</h3><blockquote>
+<p>iOS 在<strong>运行时</strong>执行动态库，链接到相应的代码里。</p>
+</blockquote>
+<p> .dylib 库文件</p>
+<h2 id="三、App-启动流程"><a href="#三、App-启动流程" class="headerlink" title="三、App 启动流程"></a>三、App 启动流程</h2><h3 id="1-dyld-start"><a href="#1-dyld-start" class="headerlink" title="1. dyld start"></a>1. dyld start</h3><pre class="line-numbers language-cpp"><code class="language-cpp">libdyld<span class="token punctuation">.</span>dylib`start<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="2-加载镜像"><a href="#2-加载镜像" class="headerlink" title="2. 加载镜像"></a>2. 加载镜像</h3><pre><code>reloadAllImages:</code></pre><h3 id="3-加载链接"><a href="#3-加载链接" class="headerlink" title="3. 加载链接"></a>3. 加载链接</h3><pre><code>loadInsertedDylib</code></pre><ul>
+<li>插入（insert）： 插入网线</li>
+<li>链接（link）： 接通网络</li>
+</ul>
+<h2 id="四、dyld"><a href="#四、dyld" class="headerlink" title="四、dyld"></a>四、dyld</h2><h3 id="4-1-start"><a href="#4-1-start" class="headerlink" title="4.1 start"></a>4.1 start</h3><h3 id="4-2-递归初始化"><a href="#4-2-递归初始化" class="headerlink" title="4.2 递归初始化"></a>4.2 递归初始化</h3><h3 id="4-3-objc-init"><a href="#4-3-objc-init" class="headerlink" title="4.3 objc_init"></a>4.3 objc_init</h3><h2 id="五、镜像-images"><a href="#五、镜像-images" class="headerlink" title="五、镜像 - images"></a>五、镜像 - images</h2><ul>
+<li>dyld</li>
+<li>Objc_init</li>
+</ul>
+<h2 id="六、回调函数"><a href="#六、回调函数" class="headerlink" title="六、回调函数"></a>六、回调函数</h2><ul>
+<li>指针</li>
+<li>注册</li>
+<li>*snotif</li>
+</ul>
 
             </div>
             <hr/>
@@ -563,7 +483,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/posts/19251.html">http://nilsli.com/posts/19251.html</a>
+                    <a href="http://nilsli.com/p/62973.html">http://nilsli.com/p/62973.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -601,10 +521,6 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/ios/">
-                                    <span class="chip bg-color">ios</span>
-                                </a>
-                            
                                 <a href="/tags/源码/">
                                     <span class="chip bg-color">源码</span>
                                 </a>
@@ -613,8 +529,8 @@
                                     <span class="chip bg-color">底层</span>
                                 </a>
                             
-                                <a href="/tags/alloc/">
-                                    <span class="chip bg-color">alloc</span>
+                                <a href="/tags/dyld/">
+                                    <span class="chip bg-color">dyld</span>
                                 </a>
                             
                         </div>
@@ -785,7 +701,7 @@
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2019-12-16T15-31-51',
+        id: '2020-03-23T12-30-29',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -810,13 +726,75 @@
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/43162.html">
+                <a href="/p/29664.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/16.jpg" class="responsive-img" alt="OC底层研究2--内存对齐原理">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/5.jpg" class="responsive-img" alt="底层探索——类的加载">
                         
-                        <span class="card-title">OC底层研究2--内存对齐原理</span>
+                        <span class="card-title">底层探索——类的加载</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+本页所使用的objc runtime 756.2，来自 Apple 开源文档
+
+1、objc_init 流程类的加载，初始化来自dyld 中的objc_init 这个步骤，查看一下源码，得到
+void _objc_init(void)
+{
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-24
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/iOS/">
+                        <span class="chip bg-color">iOS</span>
+                    </a>
+                    
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                    <a href="/tags/底层/">
+                        <span class="chip bg-color">底层</span>
+                    </a>
+                    
+                    <a href="/tags/Class/">
+                        <span class="chip bg-color">Class</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/59010.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg" class="responsive-img" alt="方法的本质4_消息转发机制">
+                        
+                        <span class="card-title">方法的本质4_消息转发机制</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -825,14 +803,18 @@
                             
 本页所使用的objc runtime 756.2，来自GITHUB
 
-开始继续学习研究OC源码，今天看的是OC的内存原理，以及对齐原理的分析。
-1.概念内存对齐在数据结构中，是比较基础也比较重要的一环，对于iOS开发，研究底层更免不了要了
+1、回顾上文消息方法的本质3_消息查找流程 一文总结了方法查找的流程，得到结论如下:
+
+
+类的缓存里查找——找到——结束查找
+类的方法列表里查找——找到——结束查找
+递
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2019-12-22
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-13
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -856,71 +838,16 @@
                         <span class="chip bg-color">底层</span>
                     </a>
                     
-                    <a href="/tags/对齐/">
-                        <span class="chip bg-color">对齐</span>
+                    <a href="/tags/结构/">
+                        <span class="chip bg-color">结构</span>
                     </a>
                     
-                    <a href="/tags/内存/">
-                        <span class="chip bg-color">内存</span>
+                    <a href="/tags/消息转发/">
+                        <span class="chip bg-color">消息转发</span>
                     </a>
                     
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/posts/5621.html">
-                    <div class="card-image">
-                        
-                        
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/19.jpg" class="responsive-img" alt="使用Runtime获取第三方成员变量">
-                        
-                        <span class="card-title">使用Runtime获取第三方成员变量</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            我们使用第三方库，有时候需要获取其成员变量。方法如下：
-导入runtime
-#import &lt;objc/runtime.h>
-声明一个Person类
-@interface Person : NSObject
-{
-    NSStrin
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-12
-                            </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            李佳
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/ios/">
-                        <span class="chip bg-color">ios</span>
-                    </a>
-                    
-                    <a href="/tags/runtime/">
-                        <span class="chip bg-color">runtime</span>
-                    </a>
-                    
-                    <a href="/tags/进阶/">
-                        <span class="chip bg-color">进阶</span>
+                    <a href="/tags/objc/">
+                        <span class="chip bg-color">objc</span>
                     </a>
                     
                 </div>

@@ -432,7 +432,7 @@
 <p>将单链表中终点结点的指针端由空指针改为指向头结点，就使整个单链表形成一个环，这种头尾相连的单链表称为单循环链表，简称循环链表（<em>circular linked list</em>）。</p>
 </blockquote>
 <p>我们先讨论的是单向循环链表，示意图如下所示:</p>
-<p><img src="/posts/54688/001.png" alt="单向循环链表结构图"></p>
+<p><img src="/p/54688/001.png" alt="单向循环链表结构图"></p>
 <h3 id="二、操作"><a href="#二、操作" class="headerlink" title="二、操作"></a>二、操作</h3><h4 id="2-1-创建单向循环链表"><a href="#2-1-创建单向循环链表" class="headerlink" title="2.1 创建单向循环链表"></a>2.1 创建单向循环链表</h4><p>创建逻辑主要有下面的步骤:</p>
 <p>先判断是否<strong>第一次</strong>创建？</p>
 <ol>
@@ -523,7 +523,7 @@ temp<span class="token operator">-></span>next <span class="token operator">=</s
 <p>这样，闭环完成，整个过程示意图可以用下面的图实现：</p>
 </li>
 </ol>
-<p><img src="/posts/54688/002.png" alt></p>
+<p><img src="/p/54688/002.png" alt></p>
 </li>
 </ol>
 <h4 id="2-2-单向循环链表插入数据"><a href="#2-2-单向循环链表插入数据" class="headerlink" title="2.2 单向循环链表插入数据"></a>2.2 单向循环链表插入数据</h4><p>分两种情况，插入点是否为首元结点</p>
@@ -544,7 +544,7 @@ temp<span class="token operator">-></span>data <span class="token operator">=</s
 temp<span class="token operator">-></span>next <span class="token operator">=</span> <span class="token operator">*</span>L<span class="token punctuation">;</span>
 target<span class="token operator">-></span>next <span class="token operator">=</span> temp<span class="token punctuation">;</span>
 <span class="token operator">*</span>L <span class="token operator">=</span> temp<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>如图所示：<br><img src="/posts/54688/003.png" alt></p>
+<p>如图所示：<br><img src="/p/54688/003.png" alt></p>
 <h5 id="2-2-2-插入点非首元结点"><a href="#2-2-2-插入点非首元结点" class="headerlink" title="2.2.2 插入点非首元结点"></a>2.2.2 插入点非首元结点</h5><ol>
 <li>创建新结点 <code>temp</code>，并判断成功与否</li>
 <li>找到插入的位置，如果超过链表长度，则自动插入队尾</li>
@@ -560,7 +560,7 @@ temp<span class="token operator">-></span>data <span class="token operator">=</s
 <span class="token keyword">for</span> <span class="token punctuation">(</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>target <span class="token operator">=</span> <span class="token operator">*</span>L<span class="token punctuation">;</span> target<span class="token operator">-></span>next <span class="token operator">!=</span> <span class="token operator">*</span>L <span class="token operator">&amp;&amp;</span> i <span class="token operator">!=</span> place <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> target <span class="token operator">=</span> target<span class="token operator">-></span>next<span class="token punctuation">,</span>i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">;</span>
 temp<span class="token operator">-></span>next <span class="token operator">=</span> target<span class="token operator">-></span>next<span class="token punctuation">;</span>
 target<span class="token operator">-></span>next <span class="token operator">=</span> temp<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><img src="/posts/54688/004.png" alt></p>
+<p><img src="/p/54688/004.png" alt></p>
 <h4 id="2-3-单向循环链表的删除"><a href="#2-3-单向循环链表的删除" class="headerlink" title="2.3 单向循环链表的删除"></a>2.3 单向循环链表的删除</h4><p>单向循环链表的删除，与顺序表的删除很类似，步骤都是先确定需要删除的位置，通过判断是否首元结点，做不同的操作。具体操作步骤如下：</p>
 <h5 id="2-3-1-删除点为首元结点"><a href="#2-3-1-删除点为首元结点" class="headerlink" title="2.3.1 删除点为首元结点"></a>2.3.1 删除点为首元结点</h5><ul>
 <li><p>如果本链表只剩首元结点，则直接将*L 置为空；</p>
@@ -591,7 +591,7 @@ target<span class="token operator">-></span>next <span class="token operator">=<
 <span class="token function">free</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 </ul>
-<p><img src="/posts/54688/005.png" alt></p>
+<p><img src="/p/54688/005.png" alt></p>
 <h5 id="2-3-2-删除点为非首元结点"><a href="#2-3-2-删除点为非首元结点" class="headerlink" title="2.3.2 删除点为非首元结点"></a>2.3.2 删除点为非首元结点</h5><ol>
 <li>找到需要删除结点的上一个结点，用<code>target</code>表示</li>
 <li>用<code>temp</code>临时接受需要删除的结点</li>
@@ -608,7 +608,7 @@ target<span class="token operator">-></span>next <span class="token operator">=<
 <span class="token comment" spellcheck="true">// 步骤 4⃣️</span>
 <span class="token function">free</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>示意图如下：</p>
-<p><img src="/posts/54688/006.png" alt></p>
+<p><img src="/p/54688/006.png" alt></p>
 <h4 id="2-4-单向链表的查询"><a href="#2-4-单向链表的查询" class="headerlink" title="2.4 单向链表的查询"></a>2.4 单向链表的查询</h4><p>这里仅仅讨论下简单的链表查询，步骤如下：</p>
 <ol>
 <li>循环查找链表中给定值的结点</li>
@@ -655,7 +655,7 @@ target<span class="token operator">-></span>next <span class="token operator">=<
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/posts/54688.html">http://nilsli.com/posts/54688.html</a>
+                    <a href="http://nilsli.com/p/54688.html">http://nilsli.com/p/54688.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -894,7 +894,7 @@ target<span class="token operator">-></span>next <span class="token operator">=<
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/56790.html">
+                <a href="/p/56790.html">
                     <div class="card-image">
                         
                         
@@ -931,7 +931,7 @@ target<span class="token operator">-></span>next <span class="token operator">=<
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/43366.html">
+                <a href="/p/43366.html">
                     <div class="card-image">
                         
                         

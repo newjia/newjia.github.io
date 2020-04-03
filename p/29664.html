@@ -630,7 +630,7 @@ recursive_mutex_t loadMethodLock<span class="token punctuation">;</span>
 <span class="token punctuation">[</span>d bark<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 </li>
 <li><p>异常抛出如下图所示：</p>
-<p><img src="/posts/29664/001.png" alt="objc_terminate 异常抛出"></p>
+<p><img src="/p/29664/001.png" alt="objc_terminate 异常抛出"></p>
 </li>
 </ul>
 <h3 id="1-6-dyld-objc-notify-register（核心）"><a href="#1-6-dyld-objc-notify-register（核心）" class="headerlink" title="1.6 _dyld_objc_notify_register（核心）"></a>1.6 _dyld_objc_notify_register（核心）</h3><blockquote>
@@ -835,7 +835,7 @@ cls<span class="token operator">-</span><span class="token operator">></span><sp
 <li>读取$2点data() 方法。</li>
 </ol>
 <p>过程可见下图，methods 属性下的list 为空，并没有方法列表的写入。</p>
-<p><img src="/posts/29664/002.png" alt="通过lldb 得到的rw 部分"></p>
+<p><img src="/p/29664/002.png" alt="通过lldb 得到的rw 部分"></p>
 <p>可见该过程，仅仅对<code>cls</code> 下<code>rw</code> 的属性的<code>ro</code> 、<code>flags</code>进行了赋值，而<code>rw</code> 并没有得到赋值</p>
 <h4 id="3-2-3-实现父类和元类关联"><a href="#3-2-3-实现父类和元类关联" class="headerlink" title="3.2.3 实现父类和元类关联"></a>3.2.3 实现父类和元类关联</h4><h5 id="3-2-3-1-子类链接父类"><a href="#3-2-3-1-子类链接父类" class="headerlink" title="3.2.3.1 子类链接父类"></a>3.2.3.1 子类链接父类</h5><p>上面的流程都是在初始化类的各种属性后，而类的结构最重要的一点是它与父类的关联，以及与元类的isa 指向。</p>
 <p>所以下面的操作是</p>
@@ -858,7 +858,7 @@ cls<span class="token operator">-</span><span class="token operator">></span><sp
     } else {
         addRootClass(cls);
     }</code></pre><p>结论是：子类里添加父类链接，父类里也添加子类链接，你中有我，我中有你。</p>
-<p><img src="/posts/29664/003.png" alt="子类——父类关联图"></p>
+<p><img src="/p/29664/003.png" alt="子类——父类关联图"></p>
 <p>接下来看一下父类链接的具体实现：</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">addSubclass</span><span class="token punctuation">(</span>Class <span class="token class-name">supercls</span><span class="token punctuation">,</span> Class <span class="token class-name">subcls</span><span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
@@ -998,7 +998,7 @@ uint32_t newCount <span class="token operator">=</span> oldCount <span class="to
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">protocol_array_t</span> <span class="token operator">:</span> 
     <span class="token keyword">public</span> list_array_tt<span class="token operator">&lt;</span>protocol_ref_t<span class="token punctuation">,</span> protocol_list_t<span class="token operator">></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>方法列表设计成二维数组，方便分类方法的批量插入：</p>
-<p><img src="/posts/29664/004.png" alt="method_array_t 结构图"></p>
+<p><img src="/p/29664/004.png" alt="method_array_t 结构图"></p>
 <h2 id="4、小结"><a href="#4、小结" class="headerlink" title="4、小结"></a>4、小结</h2><blockquote>
 <p>类的加载，流程分为环境的启动配置、加载镜像、读取类方法、对类内存空间初始化、子类-父类建立连接，以及最终rw填充方法，并对分类方法加入进行实现。</p>
 </blockquote>
@@ -1027,7 +1027,7 @@ uint32_t newCount <span class="token operator">=</span> oldCount <span class="to
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/posts/29664.html">http://nilsli.com/posts/29664.html</a>
+                    <a href="http://nilsli.com/p/29664.html">http://nilsli.com/p/29664.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -1274,7 +1274,7 @@ uint32_t newCount <span class="token operator">=</span> oldCount <span class="to
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/41032.html">
+                <a href="/p/41032.html">
                     <div class="card-image">
                         
                         
@@ -1312,16 +1312,16 @@ objc_registerClassPair(
                         <span class="chip bg-color">类</span>
                     </a>
                     
+                    <a href="/tags/2020/">
+                        <span class="chip bg-color">2020</span>
+                    </a>
+                    
                     <a href="/tags/runtime/">
                         <span class="chip bg-color">runtime</span>
                     </a>
                     
                     <a href="/tags/面试/">
                         <span class="chip bg-color">面试</span>
-                    </a>
-                    
-                    <a href="/tags/2020/">
-                        <span class="chip bg-color">2020</span>
                     </a>
                     
                     <a href="/tags/成员变量/">
@@ -1339,7 +1339,7 @@ objc_registerClassPair(
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/62973.html">
+                <a href="/p/62973.html">
                     <div class="card-image">
                         
                         

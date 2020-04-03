@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="方法的本质3_消息查找流程, 李佳的技术博客">
+    <meta name="keywords" content="通过Universal Link在微信页面中唤起原生App, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>方法的本质3_消息查找流程 | 李佳的技术博客</title>
+    <title>通过Universal Link在微信页面中唤起原生App | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/22.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/21.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">方法的本质3_消息查找流程</h1>
+                    <h1 class="description center-align post-title">通过Universal Link在微信页面中唤起原生App</h1>
                 </div>
             </div>
         </div>
@@ -367,28 +367,28 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/ios/">
-                                <span class="chip bg-color">ios</span>
+                            <a href="/tags/iOS/">
+                                <span class="chip bg-color">iOS</span>
                             </a>
                         
-                            <a href="/tags/源码/">
-                                <span class="chip bg-color">源码</span>
+                            <a href="/tags/原生/">
+                                <span class="chip bg-color">原生</span>
                             </a>
                         
-                            <a href="/tags/底层/">
-                                <span class="chip bg-color">底层</span>
+                            <a href="/tags/微信/">
+                                <span class="chip bg-color">微信</span>
                             </a>
                         
-                            <a href="/tags/类/">
-                                <span class="chip bg-color">类</span>
+                            <a href="/tags/universallink/">
+                                <span class="chip bg-color">universallink</span>
                             </a>
                         
-                            <a href="/tags/结构/">
-                                <span class="chip bg-color">结构</span>
+                            <a href="/tags/hyper/">
+                                <span class="chip bg-color">hyper</span>
                             </a>
                         
-                            <a href="/tags/objc/">
-                                <span class="chip bg-color">objc</span>
+                            <a href="/tags/混合交互/">
+                                <span class="chip bg-color">混合交互</span>
                             </a>
                         
                     </div>
@@ -403,7 +403,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-03-06
+                    2017-06-24
                 </div>
                 
 
@@ -412,14 +412,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1k
+                    898
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    4 分
+                    3 分
                 </div>
                 
 
@@ -435,162 +435,78 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <blockquote>
-<p>本页所使用的objc runtime 756.2，来自<a href="https://github.com/RetVal/objc-runtime" target="_blank" rel="noopener">GITHUB</a></p>
-</blockquote>
-<h2 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h2><p>在前文中，已经总结了方法查找的流程，今天从代码层面上继续阐述。</p>
-<p>isa 的指向图如下所示：</p>
-<p>   <img src="/posts/64205/001.png" alt="消息的查找流程图"></p>
-<h2 id="2-方法查找流程"><a href="#2-方法查找流程" class="headerlink" title="2. 方法查找流程"></a>2. 方法查找流程</h2><h3 id="2-1-从业务代码分析"><a href="#2-1-从业务代码分析" class="headerlink" title="2.1 从业务代码分析"></a>2.1 从业务代码分析</h3><p><strong>配置代码环境：</strong>，先从子类父类方法查找说起，先创建几个类，有:</p>
-<ul>
-<li><p>父类 <strong>Person</strong> 继承自<strong>NSObject</strong>，有方法<code>talk</code></p>
-</li>
-<li><p>子类 <strong>Student</strong> 继承自 <strong>Person</strong>，有方法 <code>sayEnglish</code></p>
-</li>
-<li><p>扩展 <strong>NSObject + sayGerman</strong>，有方法 <code>sayGerman</code></p>
-</li>
-</ul>
-<p>具体代码如下所示</p>
-<p><img src="/posts/64205/003.png" alt="业务代码类结构"></p>
-<p>主业务代码图：</p>
-<p><img src="/posts/64205/004.png" alt="业务执行方法图"></p>
-<p>由上图可以看出，我们生成的子类<code>Student</code> 对象，既可以执行自己的对象方法<code>sayEnglish</code>，也可以执行父类方法<code>talk</code>，当需要执行的方法——子类和父类都没有之后，也可以执行根类扩展方法<code>sayGerman</code>。</p>
-<blockquote>
-<p>查找逻辑图可以初步理解为：子类——&gt; 父类——&gt; 父类的父类 ——&gt;根元类(NSObject)</p>
-</blockquote>
-<p>类方法也是类似的，就不赘述</p>
-<h3 id="2-2-源码分析"><a href="#2-2-源码分析" class="headerlink" title="2.2 源码分析"></a>2.2 源码分析</h3><h4 id="2-2-1-class-lookupMethodAndLoadCache3-慢速查找开启"><a href="#2-2-1-class-lookupMethodAndLoadCache3-慢速查找开启" class="headerlink" title="2.2.1 class_lookupMethodAndLoadCache3 - 慢速查找开启"></a>2.2.1 <strong>class_lookupMethodAndLoadCache3</strong> - 慢速查找开启</h4><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">/***********************************************************************
-* _class_lookupMethodAndLoadCache.
-* Method lookup for dispatchers ONLY. OTHER CODE SHOULD USE lookUpImp().
-* This lookup avoids optimistic cache scan because the dispatcher 
-* already tried that.
-**********************************************************************/</span>
-IMP <span class="token function">_class_lookupMethodAndLoadCache3</span><span class="token punctuation">(</span>id obj<span class="token punctuation">,</span> SEL sel<span class="token punctuation">,</span> Class <span class="token class-name">cls</span><span class="token punctuation">)</span>
-<span class="token punctuation">{</span>        
-    <span class="token keyword">return</span> <span class="token function">lookUpImpOrForward</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> 
-                              YES<span class="token comment" spellcheck="true">/*initialize*/</span><span class="token punctuation">,</span> NO<span class="token comment" spellcheck="true">/*cache*/</span><span class="token punctuation">,</span> YES<span class="token comment" spellcheck="true">/*resolver*/</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <p>因微信封杀，已失效，微信大刀威武！</p>
+<p>在某些电商项目，或者是社交媒体的分享页面中，我们经常会看到在页面的顶端或者底部遇到有【打开App】或者【下载App】这样的按钮。比较友好的产品经理，会做设备识别，以及检测APP是否安装，来做打开或者下载App 的需求。<br>这些功能在Safari下使用location.href=”scheme://example” 即可实现。<br>但是在微信中，这方面做的比较恶心，微信下面几乎是全面屏蔽了唤起原生App 的功能，所有的启动都需要通过应用宝。</p>
+<p>在iOS 9以后，苹果推出了Universal Link 这个概念，解决了使用A标签，以及iFrame 的弊端。WWDC2015 Session 509 有介绍,通过Universal Link，将App 与网页端建立连接桥，可以从Safari 或者其他前端浏览器来识别并唤醒App，甚至是微信环境下也可以冲破障碍。</p>
+<a id="more"></a>
+
+<p>参考了苹果的原生介绍，做出了微信下唤醒自己的 App 效果如下：</p>
+<p><img src="/p/7421/0.gif" alt></p>
+<h3 id="实操如下"><a href="#实操如下" class="headerlink" title="实操如下"></a>实操如下</h3><h5 id="服务器配置："><a href="#服务器配置：" class="headerlink" title="服务器配置："></a>服务器配置：</h5><p>准备独立域名。</p>
+<p>一级域名，二级域名均可。</p>
+<h5 id="SSL-证书"><a href="#SSL-证书" class="headerlink" title="SSL 证书"></a>SSL 证书</h5><p>这里需要为服务器配置HTTPS 用的SSL 证书。</p>
+<h5 id="上传签名好的JSON-配置文件"><a href="#上传签名好的JSON-配置文件" class="headerlink" title="上传签名好的JSON 配置文件"></a>上传签名好的JSON 配置文件</h5><p>新建一个JSON文件，不需要后缀名，内容输入以下代码：</p>
+<pre class="line-numbers language-javascript"><code class="language-javascript"><span class="token punctuation">{</span>
+<span class="token string">"applinks"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+<span class="token string">"apps"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+<span class="token string">"details"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>
+<span class="token punctuation">{</span>
+<span class="token string">"appID"</span><span class="token punctuation">:</span> <span class="token string">"5B5Q4xxxx.com.xxxx.xxxx"</span><span class="token punctuation">,</span>
+<span class="token string">"paths"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span> <span class="token string">"/html/1/*"</span><span class="token punctuation">,</span> <span class="token string">"/*"</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>原来上文留下的<strong>class_lookupMethodAndLoadCache3</strong> 方法，最终执行的方法是<strong>lookUpImpOrForward</strong>，继续探究一下！</p>
-<h4 id="lookUpImpOrForward-查找Imp-或转发消息"><a href="#lookUpImpOrForward-查找Imp-或转发消息" class="headerlink" title="lookUpImpOrForward - 查找Imp 或转发消息"></a><strong>lookUpImpOrForward</strong> - 查找Imp 或转发消息</h4><h5 id="乐观检查是否有缓存"><a href="#乐观检查是否有缓存" class="headerlink" title="乐观检查是否有缓存"></a>乐观检查是否有缓存</h5><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// Optimistic cache lookup</span>
-<span class="token keyword">if</span> <span class="token punctuation">(</span>cache<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-   imp <span class="token operator">=</span> <span class="token function">cache_getImp</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-   <span class="token keyword">if</span> <span class="token punctuation">(</span>imp<span class="token punctuation">)</span> <span class="token keyword">return</span> imp<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="查找类是否缓存过"><a href="#查找类是否缓存过" class="headerlink" title="查找类是否缓存过"></a>查找类是否缓存过</h5><pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// runtimeLock is held during isRealized and isInitialized checking</span>
-    <span class="token comment" spellcheck="true">// to prevent races against concurrent realization.</span>
-
-    <span class="token comment" spellcheck="true">// runtimeLock is held during method search to make</span>
-    <span class="token comment" spellcheck="true">// method-lookup + cache-fill atomic with respect to method addition.</span>
-    <span class="token comment" spellcheck="true">// Otherwise, a category could be added but ignored indefinitely because</span>
-    <span class="token comment" spellcheck="true">// the cache was re-filled with the old value after the cache flush on</span>
-    <span class="token comment" spellcheck="true">// behalf of the category.</span>
-
-    runtimeLock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token function">checkIsKnownClass</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>这里通过<code>runtimeLock</code> 锁住该部分内存，进行查找，执行了<code>isKnownClass</code>的方法，具体实现在这里</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">/***********************************************************************
-* isKnownClass
-* Return true if the class is known to the runtime (located within the
-* shared cache, within the data segment of a loaded image, or has been
-* allocated with obj_allocateClassPair).
-**********************************************************************/</span>
-<span class="token keyword">static</span> <span class="token keyword">bool</span> <span class="token function">isKnownClass</span><span class="token punctuation">(</span>Class <span class="token class-name">cls</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// The order of conditionals here is important for speed. We want to</span>
-    <span class="token comment" spellcheck="true">// put the most common cases first, but also the fastest cases</span>
-    <span class="token comment" spellcheck="true">// first. Checking the shared region is both fast and common.</span>
-    <span class="token comment" spellcheck="true">// Checking allocatedClasses is fast, but may not be common,</span>
-    <span class="token comment" spellcheck="true">// depending on what the program is doing. Checking if data segments</span>
-    <span class="token comment" spellcheck="true">// contain the address is slow, so do it last.</span>
-    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token function">sharedRegionContains</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span> <span class="token operator">||</span>
-            <span class="token function">NXHashMember</span><span class="token punctuation">(</span>allocatedClasses<span class="token punctuation">,</span> cls<span class="token punctuation">)</span> <span class="token operator">||</span>
-            <span class="token function">dataSegmentsContain</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="在类的缓存（cache-t）找"><a href="#在类的缓存（cache-t）找" class="headerlink" title="在类的缓存（cache_t）找"></a>在类的缓存（cache_t）找</h5><pre class="line-numbers language-cpp"><code class="language-cpp">   <span class="token comment" spellcheck="true">// Try this class's cache.</span>
-
-    imp <span class="token operator">=</span> <span class="token function">cache_getImp</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>imp<span class="token punctuation">)</span> <span class="token keyword">goto</span> done<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="在类的方法列表里寻找"><a href="#在类的方法列表里寻找" class="headerlink" title="在类的方法列表里寻找"></a>在类的方法列表里寻找</h5><pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// Try this class's method lists.</span>
-    <span class="token punctuation">{</span>
-        Method meth <span class="token operator">=</span> <span class="token function">getMethodNoSuper_nolock</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>meth<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">log_and_fill_cache</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> meth<span class="token operator">-</span><span class="token operator">></span>imp<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> inst<span class="token punctuation">,</span> cls<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            imp <span class="token operator">=</span> meth<span class="token operator">-</span><span class="token operator">></span>imp<span class="token punctuation">;</span>
-            <span class="token keyword">goto</span> done<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="在父类的缓存和方法列表寻找"><a href="#在父类的缓存和方法列表寻找" class="headerlink" title="在父类的缓存和方法列表寻找"></a>在父类的缓存和方法列表寻找</h5><pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// Try superclass caches and method lists.</span>
-    <span class="token punctuation">{</span>
-        <span class="token keyword">unsigned</span> attempts <span class="token operator">=</span> <span class="token function">unreasonableClassCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span>Class <span class="token class-name">curClass</span> <span class="token operator">=</span> cls<span class="token operator">-</span><span class="token operator">></span>superclass<span class="token punctuation">;</span>
-             curClass <span class="token operator">!=</span> nil<span class="token punctuation">;</span>
-             curClass <span class="token operator">=</span> curClass<span class="token operator">-</span><span class="token operator">></span>superclass<span class="token punctuation">)</span>
-        <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">// Halt if there is a cycle in the superclass chain.</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">--</span>attempts <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token function">_objc_fatal</span><span class="token punctuation">(</span><span class="token string">"Memory corruption in class list."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<ol>
-<li><p>父类缓存（Cache）找</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp">           <span class="token comment" spellcheck="true">// Superclass cache.</span>
-            imp <span class="token operator">=</span> <span class="token function">cache_getImp</span><span class="token punctuation">(</span>curClass<span class="token punctuation">,</span> sel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>imp<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>imp <span class="token operator">!=</span> <span class="token punctuation">(</span>IMP<span class="token punctuation">)</span>_objc_msgForward_impcache<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token comment" spellcheck="true">// Found the method in a superclass. Cache it in this class.</span>
-                    <span class="token function">log_and_fill_cache</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> imp<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> inst<span class="token punctuation">,</span> curClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token keyword">goto</span> done<span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-                <span class="token keyword">else</span> <span class="token punctuation">{</span>
-                    <span class="token comment" spellcheck="true">// Found a forward:: entry in a superclass.</span>
-                    <span class="token comment" spellcheck="true">// Stop searching, but don't cache yet; call method </span>
-                    <span class="token comment" spellcheck="true">// resolver for this class first.</span>
-                    <span class="token keyword">break</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span>
-            <span class="token punctuation">}</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-</li>
-<li><p>父类方法列表找</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp">            <span class="token comment" spellcheck="true">// Superclass method list.</span>
-            Method meth <span class="token operator">=</span> <span class="token function">getMethodNoSuper_nolock</span><span class="token punctuation">(</span>curClass<span class="token punctuation">,</span> sel<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>meth<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token function">log_and_fill_cache</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> meth<span class="token operator">-</span><span class="token operator">></span>imp<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> inst<span class="token punctuation">,</span> curClass<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                imp <span class="token operator">=</span> meth<span class="token operator">-</span><span class="token operator">></span>imp<span class="token punctuation">;</span>
-                <span class="token keyword">goto</span> done<span class="token punctuation">;</span>
-            <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-</li>
-</ol>
-<h5 id="有可能内存覆盖，再给一次查找"><a href="#有可能内存覆盖，再给一次查找" class="headerlink" title="有可能内存覆盖，再给一次查找"></a>有可能内存覆盖，再给一次查找</h5><p>这里的核心方法是</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// No implementation found. Try method resolver once.</span>
-
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>resolver  <span class="token operator">&amp;&amp;</span>  <span class="token operator">!</span>triedResolver<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        runtimeLock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">resolveMethod</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> inst<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        runtimeLock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">// Don't cache the result; we don't hold the lock so it may have </span>
-        <span class="token comment" spellcheck="true">// changed already. Re-do the search from scratch instead.</span>
-        triedResolver <span class="token operator">=</span> YES<span class="token punctuation">;</span>
-        <span class="token keyword">goto</span> retry<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="父类也没有——查找失败——报错"><a href="#父类也没有——查找失败——报错" class="headerlink" title="父类也没有——查找失败——报错"></a>父类也没有——查找失败——报错</h5><pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// No implementation found, and method resolver didn't help. </span>
-    <span class="token comment" spellcheck="true">// Use forwarding.</span>
-
-    imp <span class="token operator">=</span> <span class="token punctuation">(</span>IMP<span class="token punctuation">)</span>_objc_msgForward_impcache<span class="token punctuation">;</span>
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<p>但是这个<code>_objc_msgForward_impcache</code> 的实现可不好找，在源码里只看到了这些：</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">if</span> !OBJC_OLD_DISPATCH_PROTOTYPES</span>
-<span class="token keyword">extern</span> <span class="token keyword">void</span> <span class="token function">_objc_msgForward_impcache</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>最终通过搜索查找<strong>_objc_msgForward_impcache</strong>，在汇编源码找到了类似的代码<img src="/posts/64205/005.png" alt="消息转发流程"><br>得到这个叫做__objc_forward_handler 的代码块，搜索得知它继承自objc_defaultForwardHandler，</p>
-<p>继续查找，得到最终的源码如下：</p>
-<p><img src="/posts/64205/006.png" alt="消息查找失败报错"></p>
-<p>OH MY GOD! 原来这就是传说中——让程序员捶胸顿足的方法查找失败的代码</p>
-<p><img src="/posts/64205/007.png" alt="消息查找失败报错"></p>
-<p>至此，方法查找的流程已经捋完。</p>
-<h2 id="3-小结"><a href="#3-小结" class="headerlink" title="3. 小结"></a>3. 小结</h2><p>方法查找的流程，就是在类里查找缓存与方法列表里挖掘的过程。</p>
-<p>如上文阐述：</p>
-<blockquote>
-<p>方法查找：缓存查找 —— <strong>类</strong>的方法列表 —— 父类的方法列表 （递归）—— 动态方法解析 —— 结束</p>
-</blockquote>
-<p><img src="/posts/64205/002.png" alt="消息转发流程"></p>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里的 appID 相关内容可以在Developer 中心找到相关的内容。如图，前半部分为Prefix 后半部分为ID，即你的App 的bundle id，两者通过.相连。</p>
+<p><img src="/p/7421/1.png" alt></p>
+<p>注意：这里的AppID中前半部分，在App 转让主体后会改变，需重新更新。</p>
+<p>paths 则是用来唤醒App 所需要指定的JSON文件在服务器中的路径。用”/* “ 是根目录，而/html 则是指html目录下的。</p>
+<p>填好后保存为apple-app-site-association 名，上传到域名指向的服务器根目录。</p>
+<p>App配置：</p>
+<p>在工程文件中，找到Targets - Capabilities - Associated Domains 将开关选为On，并添加你的域名，格式为applinks:你的域名.com</p>
+<p><img src="/p/7421/2.png" alt></p>
+<p>iOS 移动端的代码配置</p>
+<pre class="line-numbers language-swift"><code class="language-swift"><span class="token operator">-</span> <span class="token punctuation">(</span><span class="token constant">BOOL</span><span class="token punctuation">)</span>application<span class="token punctuation">:</span><span class="token punctuation">(</span><span class="token builtin">UIApplication</span> <span class="token operator">*</span><span class="token punctuation">)</span>application continueUserActivity<span class="token punctuation">:</span><span class="token punctuation">(</span><span class="token builtin">NSUserActivity</span> <span class="token operator">*</span><span class="token punctuation">)</span>userActivity restorationHandler<span class="token punctuation">:</span><span class="token punctuation">(</span><span class="token function">void</span> <span class="token punctuation">(</span><span class="token operator">^</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token builtin">NSArray</span> <span class="token operator">*</span> _Nullable<span class="token punctuation">)</span><span class="token punctuation">)</span>restorationHandler
+<span class="token punctuation">{</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>userActivity<span class="token punctuation">.</span>activityType isEqualToString<span class="token punctuation">:</span><span class="token builtin">NSUserActivityTypeBrowsingWeb</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token builtin">NSString</span> <span class="token operator">*</span>url <span class="token operator">=</span> userActivity<span class="token punctuation">.</span>webpageURL<span class="token punctuation">.</span>description<span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">// 这里可以通过拆分url 来传入参数，达到跳转原生页面的功能，如跳转某商品页</span>
+<span class="token punctuation">[</span><span class="token builtin">UIApplication</span> sharedApplication<span class="token punctuation">]</span> openURL<span class="token punctuation">:</span>webpageURL<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">return</span> <span class="token constant">YES</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>h5网页配置：</p>
+<p>h5网页中对需要唤起App 的按钮或者控件添加点击事件，事件的函数代码如下:</p>
+<pre class="line-numbers language-swift"><code class="language-swift">function <span class="token function">wakeUpApp</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>navigator<span class="token punctuation">.</span>userAgent<span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token operator">/</span><span class="token punctuation">(</span>iPhone<span class="token operator">|</span>iPod<span class="token operator">|</span>iPad<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token operator">?</span><span class="token operator">/</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token keyword">var</span> loadDateTime <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+window<span class="token punctuation">.</span><span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token function">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token keyword">var</span> timeOutDateTime <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>timeOutDateTime <span class="token operator">-</span> loadDateTime <span class="token operator">&lt;</span> <span class="token number">5000</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+window<span class="token punctuation">.</span>location<span class="token punctuation">.</span>href <span class="token operator">=</span> <span class="token string">"http://a.app.qq.com/o/simple.jsp?pkgname=你的应用宝BundleID"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+window<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token number">25</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+window<span class="token punctuation">.</span>location<span class="token punctuation">.</span>href <span class="token operator">=</span> <span class="token string">"https://yourdomainname.com/"</span><span class="token punctuation">;</span>          
+<span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>navigator<span class="token punctuation">.</span>userAgent<span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span><span class="token operator">/</span>android<span class="token operator">/</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+<span class="token keyword">var</span> state <span class="token operator">=</span> null<span class="token punctuation">;</span>
+<span class="token keyword">try</span> <span class="token punctuation">{</span>
+state <span class="token operator">=</span> window<span class="token punctuation">.</span><span class="token function">open</span><span class="token punctuation">(</span><span class="token string">"apps custom url schemes "</span><span class="token punctuation">,</span> <span class="token string">'_blank'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">catch</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>state<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+window<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+window<span class="token punctuation">.</span>location<span class="token punctuation">.</span>href <span class="token operator">=</span> <span class="token string">"要跳转的页面URL"</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注：代码中 yourdomainname.com 还可以后面添加 /goodid/123456 之类的属性id后缀，用来传递事件类型和id，方便移动端做更丰富的功能需求，比如通过goodid 识别要做的下一步动作是打开商品id 为123456 的商品详情页，等等。</p>
+<p>配置完成，查看是否能唤起App，也可以通过如下图中，输入域名，长按来唤起App 做验证。</p>
+<p><img src="/p/7421/3.png" alt></p>
+<p>至此，大功告成。</p>
+<p>值得注意的是，只能在iOS 9环境及以上实现该功能。iOS 8或者以下，只能采取老式的跳转至应用宝来实现。</p>
 
             </div>
             <hr/>
@@ -616,7 +532,7 @@ IMP <span class="token function">_class_lookupMethodAndLoadCache3</span><span cl
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/posts/64205.html">http://nilsli.com/posts/64205.html</a>
+                    <a href="http://nilsli.com/p/7421.html">http://nilsli.com/p/7421.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -654,28 +570,28 @@ IMP <span class="token function">_class_lookupMethodAndLoadCache3</span><span cl
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/ios/">
-                                    <span class="chip bg-color">ios</span>
+                                <a href="/tags/iOS/">
+                                    <span class="chip bg-color">iOS</span>
                                 </a>
                             
-                                <a href="/tags/源码/">
-                                    <span class="chip bg-color">源码</span>
+                                <a href="/tags/原生/">
+                                    <span class="chip bg-color">原生</span>
                                 </a>
                             
-                                <a href="/tags/底层/">
-                                    <span class="chip bg-color">底层</span>
+                                <a href="/tags/微信/">
+                                    <span class="chip bg-color">微信</span>
                                 </a>
                             
-                                <a href="/tags/类/">
-                                    <span class="chip bg-color">类</span>
+                                <a href="/tags/universallink/">
+                                    <span class="chip bg-color">universallink</span>
                                 </a>
                             
-                                <a href="/tags/结构/">
-                                    <span class="chip bg-color">结构</span>
+                                <a href="/tags/hyper/">
+                                    <span class="chip bg-color">hyper</span>
                                 </a>
                             
-                                <a href="/tags/objc/">
-                                    <span class="chip bg-color">objc</span>
+                                <a href="/tags/混合交互/">
+                                    <span class="chip bg-color">混合交互</span>
                                 </a>
                             
                         </div>
@@ -846,7 +762,7 @@ IMP <span class="token function">_class_lookupMethodAndLoadCache3</span><span cl
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2020-03-06T16-33-26',
+        id: '2017-06-24T15-39-05',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -871,95 +787,33 @@ IMP <span class="token function">_class_lookupMethodAndLoadCache3</span><span cl
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/37569.html">
+                <a href="/p/14198.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/20.jpg" class="responsive-img" alt="【休闲】西湖一瞥">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/6.jpg" class="responsive-img" alt="图解SDWebImage(读sdwebimage源码分析)">
                         
-                        <span class="card-title">【休闲】西湖一瞥</span>
+                        <span class="card-title">图解SDWebImage(读sdwebimage源码分析)</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            逛次逛次的西湖今天过来平海路的Apple 直营店给电脑做大保健，顺便看了一眼西湖。
-湖边景色依旧宜人，可惜游人寥寥。
-期待一切顺利，然后恢复到游人如织的景色。
+                            最近在看一些第三方库的源码，其中SDWebImage 尤其让人惊叹，尝试用XMind 画出原理，以后有机会， 会增加更多的细节图。
+大纲如下：
 
 
 
+
+图片缓存的实现如下：
+以下为异步下载部分：
 
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-09
+                            <i class="far fa-clock fa-fw icon-date"></i>2018-02-24
                         </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            李佳
-                            
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/休闲/">
-                        <span class="chip bg-color">休闲</span>
-                    </a>
-                    
-                    <a href="/tags/杭州/">
-                        <span class="chip bg-color">杭州</span>
-                    </a>
-                    
-                    <a href="/tags/西湖/">
-                        <span class="chip bg-color">西湖</span>
-                    </a>
-                    
-                    <a href="/tags/Apple/">
-                        <span class="chip bg-color">Apple</span>
-                    </a>
-                    
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/posts/23281.html">
-                    <div class="card-image">
-                        
-                        
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg" class="responsive-img" alt="方法的本质2_从objc_msgSend谈起">
-                        
-                        <span class="card-title">方法的本质2_从objc_msgSend谈起</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            
-方法的本质，就是消息传递…
-
-
-本页所使用的objc runtime 756.2，来自GITHUB
-
-一、引子：Runtime概念我们都知道，在运行OC代码时，类或者对象在调用方法时会用到runtime，那么，到底什么是运行时呢？
-寻找一
-                        
-                    </div>
-                    <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-24
-                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -975,28 +829,63 @@ IMP <span class="token function">_class_lookupMethodAndLoadCache3</span><span cl
                         <span class="chip bg-color">ios</span>
                     </a>
                     
-                    <a href="/tags/源码/">
-                        <span class="chip bg-color">源码</span>
+                    <a href="/tags/开发/">
+                        <span class="chip bg-color">开发</span>
                     </a>
                     
-                    <a href="/tags/底层/">
-                        <span class="chip bg-color">底层</span>
+                    <a href="/tags/SDWebImage/">
+                        <span class="chip bg-color">SDWebImage</span>
                     </a>
                     
-                    <a href="/tags/类/">
-                        <span class="chip bg-color">类</span>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/31557.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/0.jpg" class="responsive-img" alt="下棋">
+                        
+                        <span class="card-title">下棋</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            在公园和大爷下象棋，有点紧张。走了第一步后，大爷沉默了很久说：“你是新手吧？”“大爷你怎么知道？”“我在这玩了几年，第一步走帅的真不多。”“不应该让领导先走吗？”
+ 
+
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2016-03-24
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/休闲/">
+                        <span class="chip bg-color">休闲</span>
                     </a>
                     
-                    <a href="/tags/结构/">
-                        <span class="chip bg-color">结构</span>
-                    </a>
-                    
-                    <a href="/tags/objc/">
-                        <span class="chip bg-color">objc</span>
-                    </a>
-                    
-                    <a href="/tags/msgSend/">
-                        <span class="chip bg-color">msgSend</span>
+                    <a href="/tags/人生哲理/">
+                        <span class="chip bg-color">人生哲理</span>
                     </a>
                     
                 </div>

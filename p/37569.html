@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="iOS开发中的问题集锦, 李佳的技术博客">
+    <meta name="keywords" content="【休闲】西湖一瞥, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>iOS开发中的问题集锦 | 李佳的技术博客</title>
+    <title>【休闲】西湖一瞥 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/23.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/20.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">iOS开发中的问题集锦</h1>
+                    <h1 class="description center-align post-title">【休闲】西湖一瞥</h1>
                 </div>
             </div>
         </div>
@@ -367,20 +367,20 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/iOS/">
-                                <span class="chip bg-color">iOS</span>
+                            <a href="/tags/休闲/">
+                                <span class="chip bg-color">休闲</span>
                             </a>
                         
-                            <a href="/tags/swift/">
-                                <span class="chip bg-color">swift</span>
+                            <a href="/tags/杭州/">
+                                <span class="chip bg-color">杭州</span>
                             </a>
                         
-                            <a href="/tags/小问题/">
-                                <span class="chip bg-color">小问题</span>
+                            <a href="/tags/西湖/">
+                                <span class="chip bg-color">西湖</span>
                             </a>
                         
-                            <a href="/tags/git/">
-                                <span class="chip bg-color">git</span>
+                            <a href="/tags/Apple/">
+                                <span class="chip bg-color">Apple</span>
                             </a>
                         
                     </div>
@@ -395,7 +395,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2019-07-28
+                    2020-03-09
                 </div>
                 
 
@@ -404,7 +404,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    270
+                    66
                 </div>
                 
 
@@ -427,37 +427,12 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>开发中难免遇到各式各样的小问题，平时收集一下，汇总如下，按Q（问题）和 A（解决方法）。</p>
-<h4 id="Q1遇到unable-to-index-file"><a href="#Q1遇到unable-to-index-file" class="headerlink" title="Q1遇到unable to index file"></a>Q1遇到unable to index file</h4><p>详细内容：</p>
-<p>​        详细内容：</p>
-<pre class="line-numbers language-bash"><code class="language-bash">        unable to index <span class="token function">file</span> 
-
-        fatal: updating files failed<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<p>A 解决：</p>
-<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> reset HEAD qooxdoo<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h4 id="Q2-hexo部署后，CNAME会被自动删除"><a href="#Q2-hexo部署后，CNAME会被自动删除" class="headerlink" title="Q2  hexo部署后，CNAME会被自动删除"></a>Q2  hexo部署后，CNAME会被自动删除</h4><p>推送上去后，包含域名内容的CNAME 被删除，博客无法用域名解析。</p>
-<p><strong>A 解决：</strong></p>
-<p>出现这样的问题一般是CNAME 放在blog根目录下，正确是放在source 目录下。</p>
-<p>然后执行 部署推送</p>
-<p><code>hexo d -g</code></p>
-<p>问题得到解决。</p>
-<h4 id="Q3-This-copy-of-libswiftCore-dylib-requires-an-OS-version-prior-to-10-14-4"><a href="#Q3-This-copy-of-libswiftCore-dylib-requires-an-OS-version-prior-to-10-14-4" class="headerlink" title="Q3 This copy of libswiftCore.dylib requires an OS version prior to 10.14.4."></a>Q3 This copy of libswiftCore.dylib requires an OS version prior to 10.14.4.</h4><p>问题:</p>
-<p>在掘金<a href="https://juejin.im/post/5a3cc9a351882560b76c5ddf" target="_blank" rel="noopener">这篇文章</a>, 尝试配置SPM，通过命令创建包时，执行<code>swift run</code> 后，出现如下问题</p>
-<p><strong><img src="/posts/49163/0806-001.png" alt="0806-001"></strong></p>
-<p><strong>A 解决：</strong></p>
-<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">cp</span> -r /usr/lib/swift/*.dylib /Applications/Xcode.app/Contents/Frameworks<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<h4 id="Q4-Git-遇到了-early-EOF-index-pack-failed"><a href="#Q4-Git-遇到了-early-EOF-index-pack-failed" class="headerlink" title="Q4: Git 遇到了 early EOF index-pack failed"></a>Q4: Git 遇到了 early EOF index-pack failed</h4><pre class="line-numbers language-cpp"><code class="language-cpp">$ git clone https<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>github<span class="token punctuation">.</span>com<span class="token operator">/</span>boostorg<span class="token operator">/</span>boost<span class="token punctuation">.</span>git
-Cloning into <span class="token string">'boost'</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-remote<span class="token operator">:</span> Counting objects<span class="token operator">:</span> <span class="token number">183543</span><span class="token punctuation">,</span> done<span class="token punctuation">.</span>
-remote<span class="token operator">:</span> Compressing objects<span class="token operator">:</span> <span class="token number">100</span><span class="token operator">%</span> <span class="token punctuation">(</span><span class="token number">69361</span><span class="token operator">/</span><span class="token number">69361</span><span class="token punctuation">)</span><span class="token punctuation">,</span> done<span class="token punctuation">.</span>
-fatal<span class="token operator">:</span> The remote end hung up unexpectedly
-fatal<span class="token operator">:</span> early <span class="token constant">EOF</span>
-fatal<span class="token operator">:</span> index<span class="token operator">-</span>pack failed<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>解决：</p>
-<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> config --add core.compression -1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>————————</p>
-<p>持续添加中</p>
-<p><img src="https://s3.amazonaws.com/com.twilio.prod.twilio-docs/images/iOSUsernotificationsSwift.width-1616.jpg" alt></p>
+                <h4 id="逛次逛次的西湖"><a href="#逛次逛次的西湖" class="headerlink" title="逛次逛次的西湖"></a>逛次逛次的西湖</h4><p>今天过来平海路的Apple 直营店给电脑做大保健，顺便看了一眼西湖。</p>
+<p>湖边景色依旧宜人，可惜游人寥寥。</p>
+<p>期待一切顺利，然后恢复到游人如织的景色。</p>
+<p><img src="/p/37569/02.jpg" alt="步行街"></p>
+<p><img src="/p/37569/03.jpg" alt="Apple 直营店，天才吧的天才在户外工作"></p>
+<p><img src="/p/37569/01.jpg" alt="【全景模式】西湖一瞥"></p>
 
             </div>
             <hr/>
@@ -483,7 +458,7 @@ fatal<span class="token operator">:</span> index<span class="token operator">-</
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/posts/49163.html">http://nilsli.com/posts/49163.html</a>
+                    <a href="http://nilsli.com/p/37569.html">http://nilsli.com/p/37569.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -521,20 +496,20 @@ fatal<span class="token operator">:</span> index<span class="token operator">-</
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/iOS/">
-                                    <span class="chip bg-color">iOS</span>
+                                <a href="/tags/休闲/">
+                                    <span class="chip bg-color">休闲</span>
                                 </a>
                             
-                                <a href="/tags/swift/">
-                                    <span class="chip bg-color">swift</span>
+                                <a href="/tags/杭州/">
+                                    <span class="chip bg-color">杭州</span>
                                 </a>
                             
-                                <a href="/tags/小问题/">
-                                    <span class="chip bg-color">小问题</span>
+                                <a href="/tags/西湖/">
+                                    <span class="chip bg-color">西湖</span>
                                 </a>
                             
-                                <a href="/tags/git/">
-                                    <span class="chip bg-color">git</span>
+                                <a href="/tags/Apple/">
+                                    <span class="chip bg-color">Apple</span>
                                 </a>
                             
                         </div>
@@ -705,7 +680,7 @@ fatal<span class="token operator">:</span> index<span class="token operator">-</
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2019-07-28T15-33-22',
+        id: '2020-03-09T20-11-20',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -730,25 +705,32 @@ fatal<span class="token operator">:</span> index<span class="token operator">-</
             <div class="article-badge left-badge text-color">
                 <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/posts/56253.html">
+                <a href="/p/59010.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg" class="responsive-img" alt="【译】产品经理vs项目经理：如何区别他们">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg" class="responsive-img" alt="方法的本质4_消息转发机制">
                         
-                        <span class="card-title">【译】产品经理vs项目经理：如何区别他们</span>
+                        <span class="card-title">方法的本质4_消息转发机制</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            （原链接在此）序言大公司和较大的团队常常存在许多战略部门与角色。因此，人们往往会对其中众多角色岗位一脸懵逼不足为奇。
-不同的经理在团队中的关键职责是否那么容易区分呢？举个栗子，一个产品经理和项目经理的角色就有很多共同点。据说，这些经理中每一
+                            
+本页所使用的objc runtime 756.2，来自GITHUB
+
+1、回顾上文消息方法的本质3_消息查找流程 一文总结了方法查找的流程，得到结论如下:
+
+
+类的缓存里查找——找到——结束查找
+类的方法列表里查找——找到——结束查找
+递
                         
                     </div>
                     <div class="publish-info">
                         <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2019-08-23
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-13
                         </span>
                         <span class="publish-author">
                             
@@ -761,24 +743,28 @@ fatal<span class="token operator">:</span> index<span class="token operator">-</
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/项目经理/">
-                        <span class="chip bg-color">项目经理</span>
+                    <a href="/tags/ios/">
+                        <span class="chip bg-color">ios</span>
                     </a>
                     
-                    <a href="/tags/产品经理/">
-                        <span class="chip bg-color">产品经理</span>
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
                     </a>
                     
-                    <a href="/tags/IT/">
-                        <span class="chip bg-color">IT</span>
+                    <a href="/tags/底层/">
+                        <span class="chip bg-color">底层</span>
                     </a>
                     
-                    <a href="/tags/产品/">
-                        <span class="chip bg-color">产品</span>
+                    <a href="/tags/结构/">
+                        <span class="chip bg-color">结构</span>
                     </a>
                     
-                    <a href="/tags/项目/">
-                        <span class="chip bg-color">项目</span>
+                    <a href="/tags/消息转发/">
+                        <span class="chip bg-color">消息转发</span>
+                    </a>
+                    
+                    <a href="/tags/objc/">
+                        <span class="chip bg-color">objc</span>
                     </a>
                     
                 </div>
@@ -792,27 +778,30 @@ fatal<span class="token operator">:</span> index<span class="token operator">-</
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/posts/21620.html">
+                <a href="/p/64205.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/16.jpg" class="responsive-img" alt="【译】从阿波罗7号卫星上俯瞰加州南部">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/22.jpg" class="responsive-img" alt="方法的本质3_消息查找流程">
                         
-                        <span class="card-title">【译】从阿波罗7号卫星上俯瞰加州南部</span>
+                        <span class="card-title">方法的本质3_消息查找流程</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            这是从阿波罗7号上拍摄的加州南部的照片
+                            
+本页所使用的objc runtime 756.2，来自GITHUB
 
-图片来自 NASA
-这片照片拍摄于1968年10月12日，由阿波罗7号航天器在执行它的绕地飞行第18圈时拍摄。拍摄时对地高度为124海里，加州海岸线上的穆古岬向南一直到欧申赛德，都能尽收眼底。透过云
+1. 概念在前文中，已经总结了方法查找的流程，今天从代码层面上继续阐述。
+isa 的指向图如下所示：
+   
+2. 方法查找流程2.1 从业务代码分析配置代码环境：，先
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-07-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-06
                             </span>
                         <span class="publish-author">
                             
@@ -825,16 +814,28 @@ fatal<span class="token operator">:</span> index<span class="token operator">-</
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/NASA/">
-                        <span class="chip bg-color">NASA</span>
+                    <a href="/tags/ios/">
+                        <span class="chip bg-color">ios</span>
                     </a>
                     
-                    <a href="/tags/太空/">
-                        <span class="chip bg-color">太空</span>
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
                     </a>
                     
-                    <a href="/tags/卫星/">
-                        <span class="chip bg-color">卫星</span>
+                    <a href="/tags/底层/">
+                        <span class="chip bg-color">底层</span>
+                    </a>
+                    
+                    <a href="/tags/类/">
+                        <span class="chip bg-color">类</span>
+                    </a>
+                    
+                    <a href="/tags/结构/">
+                        <span class="chip bg-color">结构</span>
+                    </a>
+                    
+                    <a href="/tags/objc/">
+                        <span class="chip bg-color">objc</span>
                     </a>
                     
                 </div>
