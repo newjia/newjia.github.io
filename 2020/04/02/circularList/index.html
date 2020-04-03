@@ -412,7 +412,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    6 分
                 </div>
                 
 
@@ -589,9 +589,9 @@ temp <span class="token operator">=</span> <span class="token operator">*</span>
 target<span class="token operator">-></span>next <span class="token operator">=</span> <span class="token operator">*</span>L<span class="token punctuation">;</span>
 <span class="token comment" spellcheck="true">// 步骤 5⃣️</span>
 <span class="token function">free</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p><img src="/2020/04/02/circularList/005.png" alt></p>
 </li>
 </ul>
+<p><img src="/2020/04/02/circularList/005.png" alt></p>
 <h5 id="2-3-2-删除点为非首元结点"><a href="#2-3-2-删除点为非首元结点" class="headerlink" title="2.3.2 删除点为非首元结点"></a>2.3.2 删除点为非首元结点</h5><ol>
 <li>找到需要删除结点的上一个结点，用<code>target</code>表示</li>
 <li>用<code>temp</code>临时接受需要删除的结点</li>
@@ -607,6 +607,8 @@ temp <span class="token operator">=</span> target<span class="token operator">->
 target<span class="token operator">-></span>next <span class="token operator">=</span> temp<span class="token operator">-></span>next<span class="token punctuation">;</span>
 <span class="token comment" spellcheck="true">// 步骤 4⃣️</span>
 <span class="token function">free</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>示意图如下：</p>
+<p><img src="/2020/04/02/circularList/006.png" alt></p>
 <h4 id="2-4-单向链表的查询"><a href="#2-4-单向链表的查询" class="headerlink" title="2.4 单向链表的查询"></a>2.4 单向链表的查询</h4><p>这里仅仅讨论下简单的链表查询，步骤如下：</p>
 <ol>
 <li>循环查找链表中给定值的结点</li>
@@ -986,10 +988,6 @@ target<span class="token operator">-></span>next <span class="token operator">=<
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/iOS/">
-                        <span class="chip bg-color">iOS</span>
-                    </a>
-                    
                     <a href="/tags/数据结构/">
                         <span class="chip bg-color">数据结构</span>
                     </a>
@@ -1008,6 +1006,10 @@ target<span class="token operator">-></span>next <span class="token operator">=<
                     
                     <a href="/tags/线性表/">
                         <span class="chip bg-color">线性表</span>
+                    </a>
+                    
+                    <a href="/tags/iOS/">
+                        <span class="chip bg-color">iOS</span>
                     </a>
                     
                 </div>
