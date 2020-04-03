@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2020-04-03T05:59:27.139Z</updated>
+  <updated>2020-04-03T12:06:17.548Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -17,11 +17,26 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>【数据结构与算法】-双向链表和双向循环链表</title>
+    <link href="http://nilsli.com/posts/56790.html"/>
+    <id>http://nilsli.com/posts/56790.html</id>
+    <published>2020-04-03T12:04:49.000Z</published>
+    <updated>2020-04-03T12:06:17.548Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
     <title>【数据结构与算法】-循环链表(单向)</title>
-    <link href="http://nilsli.com/2020/04/02/circularList/"/>
-    <id>http://nilsli.com/2020/04/02/circularList/</id>
+    <link href="http://nilsli.com/posts/54688.html"/>
+    <id>http://nilsli.com/posts/54688.html</id>
     <published>2020-04-02T08:06:27.000Z</published>
-    <updated>2020-04-03T05:59:27.139Z</updated>
+    <updated>2020-04-03T14:20:50.483Z</updated>
     
     <summary type="html">
     
@@ -47,8 +62,8 @@
   
   <entry>
     <title>【数据结构与算法】- 线性表基础</title>
-    <link href="http://nilsli.com/2020/04/01/linearlist/"/>
-    <id>http://nilsli.com/2020/04/01/linearlist/</id>
+    <link href="http://nilsli.com/posts/43366.html"/>
+    <id>http://nilsli.com/posts/43366.html</id>
     <published>2020-04-01T09:19:38.000Z</published>
     <updated>2020-04-02T08:09:20.551Z</updated>
     
@@ -66,6 +81,8 @@
     
     
     
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+    
       <category term="数据结构" scheme="http://nilsli.com/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
       <category term="算法" scheme="http://nilsli.com/tags/%E7%AE%97%E6%B3%95/"/>
@@ -76,14 +93,12 @@
     
       <category term="线性表" scheme="http://nilsli.com/tags/%E7%BA%BF%E6%80%A7%E8%A1%A8/"/>
     
-      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
-    
   </entry>
   
   <entry>
     <title>【数据结构与算法】- 基础篇</title>
-    <link href="http://nilsli.com/2020/03/31/dataStructureNAlgorithmBasicTheory/"/>
-    <id>http://nilsli.com/2020/03/31/dataStructureNAlgorithmBasicTheory/</id>
+    <link href="http://nilsli.com/posts/43384.html"/>
+    <id>http://nilsli.com/posts/43384.html</id>
     <published>2020-03-31T09:01:00.000Z</published>
     <updated>2020-04-01T17:05:23.382Z</updated>
     
@@ -101,6 +116,8 @@
     
     
     
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+    
       <category term="数据结构" scheme="http://nilsli.com/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
       <category term="算法" scheme="http://nilsli.com/tags/%E7%AE%97%E6%B3%95/"/>
@@ -109,14 +126,12 @@
     
       <category term="基础" scheme="http://nilsli.com/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
-    
   </entry>
   
   <entry>
     <title>【底层探索】-懒加载与分类</title>
-    <link href="http://nilsli.com/2020/03/31/lazyNcat/"/>
-    <id>http://nilsli.com/2020/03/31/lazyNcat/</id>
+    <link href="http://nilsli.com/posts/38312.html"/>
+    <id>http://nilsli.com/posts/38312.html</id>
     <published>2020-03-31T04:58:01.000Z</published>
     <updated>2020-04-01T15:06:03.730Z</updated>
     
@@ -140,8 +155,8 @@
   
   <entry>
     <title>runtime 面试题</title>
-    <link href="http://nilsli.com/2020/03/30/runtimeInterview/"/>
-    <id>http://nilsli.com/2020/03/30/runtimeInterview/</id>
+    <link href="http://nilsli.com/posts/41032.html"/>
+    <id>http://nilsli.com/posts/41032.html</id>
     <published>2020-03-30T08:24:38.000Z</published>
     <updated>2020-04-01T15:06:03.742Z</updated>
     
@@ -161,11 +176,11 @@
     
       <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
     
-      <category term="2020" scheme="http://nilsli.com/tags/2020/"/>
-    
       <category term="runtime" scheme="http://nilsli.com/tags/runtime/"/>
     
       <category term="面试" scheme="http://nilsli.com/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+      <category term="2020" scheme="http://nilsli.com/tags/2020/"/>
     
       <category term="成员变量" scheme="http://nilsli.com/tags/%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F/"/>
     
@@ -173,8 +188,8 @@
   
   <entry>
     <title>底层探索——类的加载</title>
-    <link href="http://nilsli.com/2020/03/24/loadingClass/"/>
-    <id>http://nilsli.com/2020/03/24/loadingClass/</id>
+    <link href="http://nilsli.com/posts/29664.html"/>
+    <id>http://nilsli.com/posts/29664.html</id>
     <published>2020-03-24T07:18:34.000Z</published>
     <updated>2020-04-01T15:06:03.750Z</updated>
     
@@ -192,11 +207,11 @@
     
     
     
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
     
       <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
     
-      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
     
       <category term="Class" scheme="http://nilsli.com/tags/Class/"/>
     
@@ -204,8 +219,8 @@
   
   <entry>
     <title>【底层探索】dyld浅析</title>
-    <link href="http://nilsli.com/2020/03/23/dyld-analyze/"/>
-    <id>http://nilsli.com/2020/03/23/dyld-analyze/</id>
+    <link href="http://nilsli.com/posts/62973.html"/>
+    <id>http://nilsli.com/posts/62973.html</id>
     <published>2020-03-23T04:30:29.000Z</published>
     <updated>2020-04-01T15:06:03.727Z</updated>
     
@@ -223,18 +238,18 @@
     
     
     
-      <category term="dyld" scheme="http://nilsli.com/tags/dyld/"/>
+      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
     
       <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
     
-      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
+      <category term="dyld" scheme="http://nilsli.com/tags/dyld/"/>
     
   </entry>
   
   <entry>
     <title>方法的本质4_消息转发机制</title>
-    <link href="http://nilsli.com/2020/03/13/messageSend/"/>
-    <id>http://nilsli.com/2020/03/13/messageSend/</id>
+    <link href="http://nilsli.com/posts/59010.html"/>
+    <id>http://nilsli.com/posts/59010.html</id>
     <published>2020-03-13T10:16:42.000Z</published>
     <updated>2020-04-01T15:06:03.737Z</updated>
     
@@ -252,11 +267,11 @@
     
     
     
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
     
       <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
     
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
     
       <category term="结构" scheme="http://nilsli.com/tags/%E7%BB%93%E6%9E%84/"/>
     
@@ -268,8 +283,8 @@
   
   <entry>
     <title>【休闲】西湖一瞥</title>
-    <link href="http://nilsli.com/2020/03/09/glance-at-WestLake/"/>
-    <id>http://nilsli.com/2020/03/09/glance-at-WestLake/</id>
+    <link href="http://nilsli.com/posts/37569.html"/>
+    <id>http://nilsli.com/posts/37569.html</id>
     <published>2020-03-09T12:11:20.000Z</published>
     <updated>2020-04-01T15:06:03.728Z</updated>
     
@@ -299,8 +314,8 @@
   
   <entry>
     <title>方法的本质3_消息查找流程</title>
-    <link href="http://nilsli.com/2020/03/06/wayOfCheckingMethod/"/>
-    <id>http://nilsli.com/2020/03/06/wayOfCheckingMethod/</id>
+    <link href="http://nilsli.com/posts/64205.html"/>
+    <id>http://nilsli.com/posts/64205.html</id>
     <published>2020-03-06T08:33:26.000Z</published>
     <updated>2020-04-01T15:06:03.749Z</updated>
     
@@ -318,11 +333,11 @@
     
     
     
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
     
       <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
     
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
     
       <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
     
@@ -334,8 +349,8 @@
   
   <entry>
     <title>方法的本质2_从objc_msgSend谈起</title>
-    <link href="http://nilsli.com/2020/02/24/startToLearnObjcSend/"/>
-    <id>http://nilsli.com/2020/02/24/startToLearnObjcSend/</id>
+    <link href="http://nilsli.com/posts/23281.html"/>
+    <id>http://nilsli.com/posts/23281.html</id>
     <published>2020-02-24T02:47:05.000Z</published>
     <updated>2020-04-01T15:06:03.745Z</updated>
     
@@ -353,11 +368,11 @@
     
     
     
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
     
       <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
     
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
     
       <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
     
@@ -371,8 +386,8 @@
   
   <entry>
     <title>方法的本质1--cache_t方法缓存分析</title>
-    <link href="http://nilsli.com/2020/01/21/analyzeOfCacheT/"/>
-    <id>http://nilsli.com/2020/01/21/analyzeOfCacheT/</id>
+    <link href="http://nilsli.com/posts/40097.html"/>
+    <id>http://nilsli.com/posts/40097.html</id>
     <published>2020-01-20T17:18:38.000Z</published>
     <updated>2020-04-01T15:06:03.721Z</updated>
     
@@ -394,11 +409,11 @@
     
     
     
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
     
       <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
     
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
     
       <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
     
@@ -410,8 +425,8 @@
   
   <entry>
     <title>OC底层研究4--类的结构分析</title>
-    <link href="http://nilsli.com/2020/01/12/StructOfClass/"/>
-    <id>http://nilsli.com/2020/01/12/StructOfClass/</id>
+    <link href="http://nilsli.com/posts/8549.html"/>
+    <id>http://nilsli.com/posts/8549.html</id>
     <published>2020-01-12T06:00:53.000Z</published>
     <updated>2020-04-01T15:06:03.706Z</updated>
     
@@ -424,7 +439,7 @@
 &lt;p&gt;Class在源码里的真正类型为&lt;strong&gt;objc_class&lt;/strong&gt;的&lt;strong&gt;结构体&lt;/strong&gt;。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;先查看源码——在Xcode按下&lt;strong&gt;Shift+Command+O&lt;/strong&gt;，选择&lt;strong&gt;objc-runtime-new.h&lt;/strong&gt;，搜索objc_class，可以得知，Class底层编译实现的前4行如下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/2020/01/12/StructOfClass/01.png&quot; alt&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/posts/8549/01.png&quot; alt&gt;&lt;/p&gt;
 &lt;p&gt;可知类结构如下：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;A. //&lt;strong&gt;Class ISA&lt;/strong&gt;                                &lt;/p&gt;
@@ -449,17 +464,17 @@ struct objc_object {
 &lt;p&gt;为何cache_t cache 这个变量占位位16，而不是8？&lt;/p&gt;
 &lt;p&gt;原因是因为这里的&lt;strong&gt;cache_t&lt;/strong&gt;是结构体，其占内存为根据内部属性结构而定，为防止溢出，给予&lt;strong&gt;16位字节&lt;/strong&gt;，而不是指针所需的8位。&lt;/p&gt;
 &lt;p&gt;Talk is cheap, show me the code, 伸伸手指，点开cache_t 的内部结构&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/2020/01/12/StructOfClass/02.png&quot; alt&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/posts/8549/02.png&quot; alt&gt;&lt;/p&gt;
     
     </summary>
     
     
     
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
     
       <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
     
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
     
       <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
     
@@ -469,8 +484,8 @@ struct objc_object {
   
   <entry>
     <title>2020新年感想</title>
-    <link href="http://nilsli.com/2020/01/02/newyearnote/"/>
-    <id>http://nilsli.com/2020/01/02/newyearnote/</id>
+    <link href="http://nilsli.com/posts/63353.html"/>
+    <id>http://nilsli.com/posts/63353.html</id>
     <published>2020-01-01T16:39:53.000Z</published>
     <updated>2020-04-01T15:06:03.735Z</updated>
     
@@ -496,8 +511,8 @@ struct objc_object {
   
   <entry>
     <title>OC底层研究3--isa的初始化和指向分析</title>
-    <link href="http://nilsli.com/2019/12/27/initialOfIsaNDirection/"/>
-    <id>http://nilsli.com/2019/12/27/initialOfIsaNDirection/</id>
+    <link href="http://nilsli.com/posts/64820.html"/>
+    <id>http://nilsli.com/posts/64820.html</id>
     <published>2019-12-27T07:05:19.000Z</published>
     <updated>2020-04-01T15:06:03.728Z</updated>
     
@@ -536,11 +551,11 @@ typedef struct objc_object *id;
     
     
     
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
     
       <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
     
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
     
       <category term="对齐" scheme="http://nilsli.com/tags/%E5%AF%B9%E9%BD%90/"/>
     
@@ -550,8 +565,8 @@ typedef struct objc_object *id;
   
   <entry>
     <title>OC底层研究2--内存对齐原理</title>
-    <link href="http://nilsli.com/2019/12/22/memoryAlignPrinciple/"/>
-    <id>http://nilsli.com/2019/12/22/memoryAlignPrinciple/</id>
+    <link href="http://nilsli.com/posts/43162.html"/>
+    <id>http://nilsli.com/posts/43162.html</id>
     <published>2019-12-22T03:05:11.000Z</published>
     <updated>2020-04-01T15:06:03.734Z</updated>
     
@@ -567,17 +582,17 @@ typedef struct objc_object *id;
 &lt;p&gt;内存对齐，也可以理解为数据结构对齐（Data structure alignment），是代码编译后在内存的布局与使用方式。包括三方面内容：&lt;strong&gt;数据对齐&lt;/strong&gt;、&lt;strong&gt;数据结构填充&lt;/strong&gt;（padding）与&lt;strong&gt;包入&lt;/strong&gt;（packing）。&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;下图是内存中各类型属性所占的空间大小：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/2019/12/22/memoryAlignPrinciple/010.png&quot; alt&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/posts/43162/010.png&quot; alt&gt;&lt;/p&gt;
     
     </summary>
     
     
     
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
     
       <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
     
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
     
       <category term="对齐" scheme="http://nilsli.com/tags/%E5%AF%B9%E9%BD%90/"/>
     
@@ -587,8 +602,8 @@ typedef struct objc_object *id;
   
   <entry>
     <title>OC 底层研究1--alloc和init原理</title>
-    <link href="http://nilsli.com/2019/12/16/pricipleofalloc/"/>
-    <id>http://nilsli.com/2019/12/16/pricipleofalloc/</id>
+    <link href="http://nilsli.com/posts/19251.html"/>
+    <id>http://nilsli.com/posts/19251.html</id>
     <published>2019-12-16T07:31:51.000Z</published>
     <updated>2020-04-01T15:06:03.741Z</updated>
     
@@ -598,7 +613,7 @@ typedef struct objc_object *id;
 &lt;p&gt;本页所使用的objc runtime 756.2，来自&lt;a href=&quot;https://github.com/RetVal/objc-runtime&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GITHUB&lt;/a&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;h3 id=&quot;1-题目&quot;&gt;&lt;a href=&quot;#1-题目&quot; class=&quot;headerlink&quot; title=&quot;1. 题目&quot;&gt;&lt;/a&gt;1. 题目&lt;/h3&gt;&lt;p&gt;开始学习研究OC源码，今天看的是对象的初始化，也就是alloc以及init的分析。&lt;/p&gt;
-&lt;h3 id=&quot;2-附流程图如下&quot;&gt;&lt;a href=&quot;#2-附流程图如下&quot; class=&quot;headerlink&quot; title=&quot;2. 附流程图如下&quot;&gt;&lt;/a&gt;2. 附流程图如下&lt;/h3&gt;&lt;p&gt; &lt;img src=&quot;/2019/12/16/pricipleofalloc/121601.png&quot; alt&gt;&lt;/p&gt;
+&lt;h3 id=&quot;2-附流程图如下&quot;&gt;&lt;a href=&quot;#2-附流程图如下&quot; class=&quot;headerlink&quot; title=&quot;2. 附流程图如下&quot;&gt;&lt;/a&gt;2. 附流程图如下&lt;/h3&gt;&lt;p&gt; &lt;img src=&quot;/posts/19251/121601.png&quot; alt&gt;&lt;/p&gt;
 &lt;h3 id=&quot;3-内容&quot;&gt;&lt;a href=&quot;#3-内容&quot; class=&quot;headerlink&quot; title=&quot;3. 内容&quot;&gt;&lt;/a&gt;3. 内容&lt;/h3&gt;&lt;h4 id=&quot;3-1引子&quot;&gt;&lt;a href=&quot;#3-1引子&quot; class=&quot;headerlink&quot; title=&quot;3.1引子&quot;&gt;&lt;/a&gt;3.1引子&lt;/h4&gt;&lt;p&gt;我们先看一段代码，Person类的初始化，打印p1,p2,p3对象，以及指向他们的指针：&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;objective-c&quot;&gt;    Person *p1 = [Person alloc];
     Person *p2 = [p1 init];
@@ -608,10 +623,10 @@ typedef struct objc_object *id;
     NSLog(@&amp;quot;%@ -- %p&amp;quot;, p2, &amp;amp;p2);
     NSLog(@&amp;quot;%@ -- %p&amp;quot;, p3, &amp;amp;p3);&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;打印结果是：&lt;/p&gt;
-&lt;img src=&quot;/2019/12/16/pricipleofalloc/121602.png&quot; style=&quot;zoom:50%;&quot;&gt;
+&lt;img src=&quot;/posts/19251/121602.png&quot; style=&quot;zoom:50%;&quot;&gt;
 
 &lt;p&gt;这里为什么p1相同的情况下，经过init后的p2，p3 的地址都不一样呢，我们要用这个图来分析:&lt;/p&gt;
-&lt;img src=&quot;/2019/12/16/pricipleofalloc/121603.png&quot; style=&quot;zoom:50%;&quot;&gt;
+&lt;img src=&quot;/posts/19251/121603.png&quot; style=&quot;zoom:50%;&quot;&gt;
 
 &lt;p&gt;在这里，我们&lt;strong&gt;[Person alloc]&lt;/strong&gt;创建了一个p 对象的内存空间，而&lt;strong&gt;[p1 init]&lt;/strong&gt;则是创建同样是指向p1的指针p2，p3，因为和p1 内存空间一致，所以地址均为0x6000024f4950，但是指向该3个指针的指针不一样，所以&amp;amp;p1, &amp;amp;p2, &amp;amp;p3 地址不一致。 &lt;/p&gt;
 &lt;h4 id=&quot;3-2源码分析：&quot;&gt;&lt;a href=&quot;#3-2源码分析：&quot; class=&quot;headerlink&quot; title=&quot;3.2源码分析：&quot;&gt;&lt;/a&gt;3.2源码分析：&lt;/h4&gt;&lt;p&gt;alloc 步骤如下&lt;/p&gt;
@@ -625,11 +640,11 @@ typedef struct objc_object *id;
     
     
     
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
+      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
     
       <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
     
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
     
       <category term="alloc" scheme="http://nilsli.com/tags/alloc/"/>
     
@@ -637,8 +652,8 @@ typedef struct objc_object *id;
   
   <entry>
     <title>使用Runtime获取第三方成员变量</title>
-    <link href="http://nilsli.com/2019/12/12/runtimes/"/>
-    <id>http://nilsli.com/2019/12/12/runtimes/</id>
+    <link href="http://nilsli.com/posts/5621.html"/>
+    <id>http://nilsli.com/posts/5621.html</id>
     <published>2019-12-12T07:04:43.000Z</published>
     <updated>2020-04-01T15:06:03.743Z</updated>
     
@@ -666,8 +681,8 @@ typedef struct objc_object *id;
   
   <entry>
     <title>Flutter 深入学习</title>
-    <link href="http://nilsli.com/2019/10/31/Flutter-beginer/"/>
-    <id>http://nilsli.com/2019/10/31/Flutter-beginer/</id>
+    <link href="http://nilsli.com/posts/2840.html"/>
+    <id>http://nilsli.com/posts/2840.html</id>
     <published>2019-10-31T10:00:19.000Z</published>
     <updated>2020-04-01T15:06:03.750Z</updated>
     
@@ -682,40 +697,11 @@ typedef struct objc_object *id;
     
     
     
-      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
-    
       <category term="Flutter" scheme="http://nilsli.com/tags/Flutter/"/>
     
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+    
       <category term="大前端，跨栈" scheme="http://nilsli.com/tags/%E5%A4%A7%E5%89%8D%E7%AB%AF%EF%BC%8C%E8%B7%A8%E6%A0%88/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【译】产品经理vs项目经理：如何区别他们</title>
-    <link href="http://nilsli.com/2019/08/23/pmvspm/"/>
-    <id>http://nilsli.com/2019/08/23/pmvspm/</id>
-    <published>2019-08-23T07:16:02.000Z</published>
-    <updated>2020-04-01T15:06:03.740Z</updated>
-    
-    <summary type="html">
-    
-      &lt;h6 id=&quot;（原链接在此）&quot;&gt;&lt;a href=&quot;#（原链接在此）&quot; class=&quot;headerlink&quot; title=&quot;（原链接在此）&quot;&gt;&lt;/a&gt;（&lt;a href=&quot;https://habr.com/en/company/hygger/blog/462919/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;原链接在此&lt;/a&gt;）&lt;/h6&gt;&lt;h3 id=&quot;序言&quot;&gt;&lt;a href=&quot;#序言&quot; class=&quot;headerlink&quot; title=&quot;序言&quot;&gt;&lt;/a&gt;序言&lt;/h3&gt;&lt;p&gt;大公司和较大的团队常常存在许多战略部门与角色。因此，人们往往会对其中众多角色岗位一脸懵逼不足为奇。&lt;/p&gt;
-&lt;p&gt;不同的经理在团队中的关键职责是否那么容易区分呢？举个栗子，一个产品经理和项目经理的角色就有很多共同点。据说，这些经理中每一个人在他的生命中起码听过这样直接的问题：他们（产品经理、项目经理）有区别吗？不过，也别急着埋怨他们或者觉得难堪，就因为他们对这些职能弄不清楚。产品经理和项目经理是完全不同的角色。这篇文章的目标是定义清楚这两种在软件开发公司里的关键位置的区别，让你彻底甩掉疑惑。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;https://habrastorage.org/getpro/habr/post_images/eda/55f/a19/eda55fa19804f2f0d2fd819a7cf17ad8.jpg&quot; alt&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-    
-      <category term="项目经理" scheme="http://nilsli.com/tags/%E9%A1%B9%E7%9B%AE%E7%BB%8F%E7%90%86/"/>
-    
-      <category term="产品经理" scheme="http://nilsli.com/tags/%E4%BA%A7%E5%93%81%E7%BB%8F%E7%90%86/"/>
-    
-      <category term="IT" scheme="http://nilsli.com/tags/IT/"/>
-    
-      <category term="产品" scheme="http://nilsli.com/tags/%E4%BA%A7%E5%93%81/"/>
-    
-      <category term="项目" scheme="http://nilsli.com/tags/%E9%A1%B9%E7%9B%AE/"/>
     
   </entry>
   

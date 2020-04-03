@@ -1,0 +1,1420 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="方法的本质1--cache_t方法缓存分析, 李佳的技术博客">
+    <meta name="description" content>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>方法的本质1--cache_t方法缓存分析 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/5.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">方法的本质1--cache_t方法缓存分析</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/ios/">
+                                <span class="chip bg-color">ios</span>
+                            </a>
+                        
+                            <a href="/tags/源码/">
+                                <span class="chip bg-color">源码</span>
+                            </a>
+                        
+                            <a href="/tags/底层/">
+                                <span class="chip bg-color">底层</span>
+                            </a>
+                        
+                            <a href="/tags/类/">
+                                <span class="chip bg-color">类</span>
+                            </a>
+                        
+                            <a href="/tags/结构/">
+                                <span class="chip bg-color">结构</span>
+                            </a>
+                        
+                            <a href="/tags/cache-t/">
+                                <span class="chip bg-color">cache_t</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-01-21
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.9k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    8 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>本页所使用的objc runtime 756.2，来自<a href="https://github.com/RetVal/objc-runtime" target="_blank" rel="noopener">GITHUB</a></p>
+</blockquote>
+<h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h3><h4 id="1-1-objc-class-结构"><a href="#1-1-objc-class-结构" class="headerlink" title="1.1 objc_class 结构"></a>1.1 objc_class 结构</h4><p>前面探索了类的结构，知道了类的结构本质上是<strong>objc_class</strong>的结构体，而在 <strong>C</strong> 源码例， <strong>objc_class</strong> 结构体的结构如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">struct</span> objc_class <span class="token operator">:</span> objc_object <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// Class ISA;                 // 指向类的isa</span>
+    Class <span class="token class-name">superclass</span><span class="token punctuation">;</span>         <span class="token comment" spellcheck="true">// 父类</span>
+    cache_t cache<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">// 缓存的方法列表         // formerly cache pointer and vtable</span>
+    class_data_bits_t bits<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 缓存的属性和变量  // class_rw_t * plus custom rr/alloc flags</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>上一篇文章，具体分析了class_data_bits_t，那么上面的缓存<strong>cache_t</strong> 还没有展开学习，下面就继续进行讲解。</p>
+<a id="more"></a>
+
+<h4 id="1-2-Cache-t-结构"><a href="#1-2-Cache-t-结构" class="headerlink" title="1.2 Cache_t 结构:"></a>1.2 Cache_t 结构:</h4><p><strong>cache_t</strong> 是<strong>objc_class</strong> 的重要组成属性，它主要用来存储方法。</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">struct</span> cache_t <span class="token punctuation">{</span>
+    <span class="token keyword">struct</span> bucket_t <span class="token operator">*</span>_buckets<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 缓存的方法列表</span>
+    mask_t _mask<span class="token punctuation">;</span>               <span class="token comment" spellcheck="true">// 散列表的长度</span>
+    mask_t _occupied<span class="token punctuation">;</span>           <span class="token comment" spellcheck="true">// 缓存过的方法数量</span>
+        <span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>bucket 的定义</p>
+<p>顾名思义是桶 ，装水的桶，装<strong>奥特曼</strong>的桶……</p>
+<p>在这里是一个hash表，计算公式是hash = sel 地址%mask，其中mask 是存放空间的大小，初始值是4。</p>
+</blockquote>
+<p>通过源码查看，可以知道结构体如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">struct</span> bucket_t <span class="token punctuation">{</span>
+<span class="token keyword">private</span><span class="token operator">:</span>
+    <span class="token comment" spellcheck="true">// IMP-first is better for arm64e ptrauth and no worse for arm64.</span>
+    <span class="token comment" spellcheck="true">// SEL-first is better for armv7* and i386 and x86_64.</span>
+<span class="token macro property">#<span class="token directive keyword">if</span> __arm64__</span>
+    MethodCacheIMP _imp<span class="token punctuation">;</span>            <span class="token comment" spellcheck="true">// 方法实现</span>
+    cache_key_t _key<span class="token punctuation">;</span>                    <span class="token comment" spellcheck="true">// 方法编号</span>
+<span class="token macro property">#<span class="token directive keyword">else</span></span>
+    cache_key_t _key<span class="token punctuation">;</span>
+    MethodCacheIMP _imp<span class="token punctuation">;</span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到，这里缓存了<strong>MethodCacheIMP</strong> 方法，其中 <strong>MethodCacheIMP</strong> 是<strong>IMP</strong>的子类：</p>
+<blockquote>
+<p><strong>MethodCacheIMP</strong>     ——对于方法实现</p>
+<p><strong>cache_key_t</strong>                 ——对应方法缓存编号</p>
+</blockquote>
+<h3 id="2-实现"><a href="#2-实现" class="headerlink" title="2. 实现"></a>2. 实现</h3><h4 id="2-1方法缓存入口"><a href="#2-1方法缓存入口" class="headerlink" title="2.1方法缓存入口"></a>2.1方法缓存入口</h4><ul>
+<li>入口<br>引起我们注意的是如下这段代码:</li>
+</ul>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token function">cache_fill</span><span class="token punctuation">(</span>Class <span class="token class-name">cls</span><span class="token punctuation">,</span> SEL sel<span class="token punctuation">,</span> IMP imp<span class="token punctuation">,</span> id receiver<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+<span class="token macro property">#<span class="token directive keyword">if</span> !DEBUG_TASK_THREADS</span>
+    mutex_locker_t <span class="token function">lock</span><span class="token punctuation">(</span>cacheUpdateLock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">cache_fill_nolock</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">,</span> imp<span class="token punctuation">,</span> receiver<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token macro property">#<span class="token directive keyword">else</span></span>
+    <span class="token function">_collecting_in_critical</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>代码解释：</p>
+<blockquote>
+<p>cache_fill 方法的缓存写入操作</p>
+<p>cache_fill_nolock 线程解锁后的缓存写入</p>
+</blockquote>
+<ul>
+<li>断言保护<br>这里的方法<strong>cache_fill_nolock</strong> 就是我们的方法入口，<u>为追求速度</u>，执行的内容是无锁操作下的缓存填充，即对开辟的内存空间，进行方法写入，实现源码如下：</li>
+</ul>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">cache_fill_nolock</span><span class="token punctuation">(</span>Class <span class="token class-name">cls</span><span class="token punctuation">,</span> SEL sel<span class="token punctuation">,</span> IMP imp<span class="token punctuation">,</span> id receiver<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    cacheUpdateLock<span class="token punctuation">.</span><span class="token function">assertLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Never cache before +initialize is done</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>cls<span class="token operator">-</span><span class="token operator">></span><span class="token function">isInitialized</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Make sure the entry wasn't added to the cache by some other thread </span>
+    <span class="token comment" spellcheck="true">// before we grabbed the cacheUpdateLock.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">cache_getImp</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> sel<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+
+    cache_t <span class="token operator">*</span>cache <span class="token operator">=</span> <span class="token function">getCache</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    cache_key_t key <span class="token operator">=</span> <span class="token function">getKey</span><span class="token punctuation">(</span>sel<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>代码解释：</p>
+<blockquote>
+<ol>
+<li>cacheUpdateLock.assertLocked() ：这里对内存区域锁定进行了跳出断言</li>
+<li>if (!cls-&gt;isInitialized()) return; 对为初始化内存空间进行跳出断言</li>
+<li>if (cache_getImp(cls, sel)) 对缓存空间已有该方法跳出断言</li>
+</ol>
+</blockquote>
+<h4 id="2-2-检查容量"><a href="#2-2-检查容量" class="headerlink" title="2.2 检查容量"></a>2.2 检查容量</h4><ul>
+<li>在检查容量之前，<strong>cache_t</strong> 做了两个操作：</li>
+</ul>
+<blockquote>
+<ol>
+<li>将类的引用地址转化成了cache 结构体:  <code>cache_t *cache = getCache(cls)</code></li>
+<li>将方法编号<code>sel</code> 转换成了整型，方便寻址 <code>cache_key_t key = getKey(sel)</code></li>
+</ol>
+</blockquote>
+<ul>
+<li><p>容量为空检测</p>
+<p>将方法缓存时，先确定是否为空对缓存。这里使用了</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">if</span> <span class="token punctuation">(</span>cache<span class="token operator">-</span><span class="token operator">></span><span class="token function">isConstantEmptyCache</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Cache is read-only. Replace it.</span>
+        cache<span class="token operator">-</span><span class="token operator">></span><span class="token function">reallocate</span><span class="token punctuation">(</span>capacity<span class="token punctuation">,</span> capacity <span class="token operator">?</span><span class="token operator">:</span> INIT_CACHE_SIZE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>来判断空间是否为空，<code>isConstantEmptyCache</code>这个函数更详细的操作如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">return</span> <span class="token function">occupied</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span>  <span class="token operator">&amp;&amp;</span>  
+        <span class="token function">buckets</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token function">emptyBucketsForCapacity</span><span class="token punctuation">(</span><span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>即<code>occupied</code>占位为空，而且容器<strong>桶</strong> 也无法从其他堆中空间共享空间，就必须重新开辟新的空间，开辟空间操作见 <strong>2.3</strong>。</p>
+</li>
+<li><p>扩容的条件：</p>
+<p>扩容条件的操作为将当前容量 <strong>occupied + 1</strong>, 然后检查是否达到 <strong>3/4</strong>，超过则需要<strong>扩容</strong>；否则不需要扩容，直接进行缓存的写入，下面的代码足够明了的解释；</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// Use the cache as-is if it is less than 3/4 full</span>
+    mask_t newOccupied <span class="token operator">=</span> cache<span class="token operator">-</span><span class="token operator">></span><span class="token function">occupied</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    mask_t capacity <span class="token operator">=</span> cache<span class="token operator">-</span><span class="token operator">></span><span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>cache<span class="token operator">-</span><span class="token operator">></span><span class="token function">isConstantEmptyCache</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Cache is read-only. Replace it.</span>
+        cache<span class="token operator">-</span><span class="token operator">></span><span class="token function">reallocate</span><span class="token punctuation">(</span>capacity<span class="token punctuation">,</span> capacity <span class="token operator">?</span><span class="token operator">:</span> INIT_CACHE_SIZE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>newOccupied <span class="token operator">&lt;=</span> capacity <span class="token operator">/</span> <span class="token number">4</span> <span class="token operator">*</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Cache is less than 3/4 full. Use it as-is.</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Cache is too full. Expand it.</span>
+        cache<span class="token operator">-</span><span class="token operator">></span><span class="token function">expand</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>代码详解：</p>
+<blockquote>
+<p>mask_t newOccupied = cache-&gt;occupied() + 1</p>
+<p>mask_t capacity = cache-&gt;capacity();</p>
+<p>if (newOccupied &lt;= capacity / 4 * 3) </p>
+</blockquote>
+<p>这里的 <strong>newOccupied</strong> 是当前的占用容量+1, 与目前的总容量 <strong>capacity</strong> 的 3/4 来做比较，这里使用占位+1 后来做比较，目的是提前准备，防止内存溢出。</p>
+</li>
+</ul>
+<h4 id="2-3-内存扩容"><a href="#2-3-内存扩容" class="headerlink" title="2.3 内存扩容"></a>2.3 内存扩容</h4><h5 id="2-3-1-空间计算"><a href="#2-3-1-空间计算" class="headerlink" title="2.3.1 空间计算"></a>2.3.1 空间计算</h5><blockquote>
+<p>扩容方法：</p>
+<p>判断当前容量是否为空，若为空，就给初始化的内存为为4；</p>
+<p>如果之前就有空间，则加倍。</p>
+</blockquote>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> cache_t<span class="token operator">::</span><span class="token function">expand</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    cacheUpdateLock<span class="token punctuation">.</span><span class="token function">assertLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    uint32_t oldCapacity <span class="token operator">=</span> <span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    uint32_t newCapacity <span class="token operator">=</span> oldCapacity <span class="token operator">?</span> oldCapacity<span class="token operator">*</span><span class="token number">2</span> <span class="token operator">:</span> INIT_CACHE_SIZE<span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>uint32_t<span class="token punctuation">)</span><span class="token punctuation">(</span>mask_t<span class="token punctuation">)</span>newCapacity <span class="token operator">!=</span> newCapacity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// mask overflow - can't grow further</span>
+        <span class="token comment" spellcheck="true">// fixme this wastes one bit of mask</span>
+        newCapacity <span class="token operator">=</span> oldCapacity<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token function">reallocate</span><span class="token punctuation">(</span>oldCapacity<span class="token punctuation">,</span> newCapacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>代码详解：</p>
+<blockquote>
+<p><strong>oldCapacity</strong> 定义了当前的容量</p>
+<ol>
+<li>如果 <strong>oldCapacity</strong> 为空，则立刻开辟大小为<em>4</em> 的空间。</li>
+<li>否则，给当前空间加倍，即 <strong>oldCapacity*2</strong>，并在新空间内进行缓存空间开辟 <strong>reallocate</strong>。</li>
+</ol>
+</blockquote>
+<h5 id="2-3-2-新建容器reallocate"><a href="#2-3-2-新建容器reallocate" class="headerlink" title="2.3.2 新建容器reallocate"></a>2.3.2 新建容器reallocate</h5><p>新开内存空间的操作步骤：</p>
+<ol>
+<li>确定是否可以释放旧空间</li>
+<li>将开辟的空间和内存方法绑定，并将<strong>mask</strong> 和占位值<strong>occupied</strong> 归零。</li>
+</ol>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> cache_t<span class="token operator">::</span><span class="token function">reallocate</span><span class="token punctuation">(</span>mask_t oldCapacity<span class="token punctuation">,</span> mask_t newCapacity<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">bool</span> freeOld <span class="token operator">=</span> <span class="token function">canBeFreed</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    bucket_t <span class="token operator">*</span>oldBuckets <span class="token operator">=</span> <span class="token function">buckets</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    bucket_t <span class="token operator">*</span>newBuckets <span class="token operator">=</span> <span class="token function">allocateBuckets</span><span class="token punctuation">(</span>newCapacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Cache's old contents are not propagated. </span>
+    <span class="token comment" spellcheck="true">// This is thought to save cache memory at the cost of extra cache fills.</span>
+    <span class="token comment" spellcheck="true">// fixme re-measure this</span>
+
+    <span class="token function">assert</span><span class="token punctuation">(</span>newCapacity <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">assert</span><span class="token punctuation">(</span><span class="token punctuation">(</span>uintptr_t<span class="token punctuation">)</span><span class="token punctuation">(</span>mask_t<span class="token punctuation">)</span><span class="token punctuation">(</span>newCapacity<span class="token number">-1</span><span class="token punctuation">)</span> <span class="token operator">==</span> newCapacity<span class="token number">-1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">setBucketsAndMask</span><span class="token punctuation">(</span>newBuckets<span class="token punctuation">,</span> newCapacity <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>freeOld<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">cache_collect_free</span><span class="token punctuation">(</span>oldBuckets<span class="token punctuation">,</span> oldCapacity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">cache_collect</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p> 代码讲解：</p>
+<ul>
+<li><p>bool freeOld = canBeFreed() 决定了是否可以释放旧内存。</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">bool</span> cache_t<span class="token operator">::</span><span class="token function">canBeFreed</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token operator">!</span><span class="token function">isConstantEmptyCache</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里的<code>canBeFreed</code>依赖于<code>isConstantEmptyCache</code>的取反，即需要之前方法缓存有占位，并且旧bucket 本身容量不为空。</p>
+<p>即以下源码里返回为空：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">bool</span> cache_t<span class="token operator">::</span><span class="token function">isConstantEmptyCache</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> 
+        <span class="token function">occupied</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span>  <span class="token operator">&amp;&amp;</span>  
+        <span class="token function">buckets</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token function">emptyBucketsForCapacity</span><span class="token punctuation">(</span><span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+需要 occupied <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">,</span> 以及 <span class="token function">buckets</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> <span class="token function">emptyBucketsForCapacity</span><span class="token punctuation">(</span><span class="token function">capacity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>setBucketsAndMask 用来初始化 新的bucket 和 occupied</p>
+<p>newCapacity - 1 更新索引，用来查询散列表里的元素。</p>
+</li>
+<li><p>cache_collect_free 用来释放旧容量（oldCapacity）下的旧方法数据（oldBuckets）</p>
+</li>
+</ul>
+<h4 id="2-4-缓存写入"><a href="#2-4-缓存写入" class="headerlink" title="2.4 缓存写入"></a>2.4 缓存写入</h4><h5 id="2-4-1-查找缓存"><a href="#2-4-1-查找缓存" class="headerlink" title="2.4.1 查找缓存"></a>2.4.1 查找缓存</h5><p>通过 <code>cache-&gt;find</code> 查找对应的缓存，如果没有找到，就添加新缓存，在这之前将占位<code>occupied</code>  添加1 ，实现源码如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">cache_fill_nolock</span><span class="token punctuation">(</span>Class <span class="token class-name">cls</span><span class="token punctuation">,</span> SEL sel<span class="token punctuation">,</span> IMP imp<span class="token punctuation">,</span> id receiver<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+   <span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span>
+     <span class="token comment" spellcheck="true">// 找到对应的 bucket</span>
+    bucket_t <span class="token operator">*</span>bucket <span class="token operator">=</span> cache<span class="token operator">-</span><span class="token operator">></span><span class="token function">find</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> receiver<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>bucket<span class="token operator">-</span><span class="token operator">></span><span class="token function">key</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> cache<span class="token operator">-</span><span class="token operator">></span><span class="token function">incrementOccupied</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    bucket<span class="token operator">-</span><span class="token operator">></span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> imp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-cpp"><code class="language-cpp">
+<span class="token keyword">void</span> cache_t<span class="token operator">::</span><span class="token function">incrementOccupied</span><span class="token punctuation">(</span><span class="token punctuation">)</span> 
+<span class="token punctuation">{</span>
+    _occupied<span class="token operator">++</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// 占位增加</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="2-4-2-未扩容过"><a href="#2-4-2-未扩容过" class="headerlink" title="2.4.2 未扩容过"></a>2.4.2 未扩容过</h5><p>找到之前的bucket，按照编号和方法，写入缓存:</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">bucket_t <span class="token operator">*</span>bucket <span class="token operator">=</span> cache<span class="token operator">-</span><span class="token operator">></span><span class="token function">find</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> receiver<span class="token punctuation">)</span><span class="token punctuation">;</span>
+bucket<span class="token operator">-</span><span class="token operator">></span><span class="token function">set</span><span class="token punctuation">(</span>key<span class="token punctuation">,</span> imp<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h5 id="2-4-3-缓存写入实现"><a href="#2-4-3-缓存写入实现" class="headerlink" title="2.4.3 缓存写入实现"></a>2.4.3 缓存写入实现</h5><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> bucket_t<span class="token operator">::</span><span class="token function">set</span><span class="token punctuation">(</span>cache_key_t newKey<span class="token punctuation">,</span> IMP newImp<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">assert</span><span class="token punctuation">(</span>_key <span class="token operator">==</span> <span class="token number">0</span>  <span class="token operator">||</span>  _key <span class="token operator">==</span> newKey<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// objc_msgSend uses key and imp with no locks.</span>
+    <span class="token comment" spellcheck="true">// It is safe for objc_msgSend to see new imp but NULL key</span>
+    <span class="token comment" spellcheck="true">// (It will get a cache miss but not dispatch to the wrong place.)</span>
+    <span class="token comment" spellcheck="true">// It is unsafe for objc_msgSend to see old imp and new key.</span>
+    <span class="token comment" spellcheck="true">// Therefore we write new imp, wait a lot, then write new key.</span>
+
+    _imp <span class="token operator">=</span> newImp<span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>_key <span class="token operator">!=</span> newKey<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">mega_barrier</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        _key <span class="token operator">=</span> newKey<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>代码详解：</p>
+<blockquote>
+<p>注释中写明了：</p>
+<p>objc_msgSend 在无锁环境下使用key 和 imp 实现。</p>
+<p>objc_msgSend 查看到新的imp 实现是安全的，除了空的key地址外。（可能会造成小的缓存丢失，但是并不会分发到错误的空间）</p>
+<p>objc_msgSend 旧的imp 和新的key 是不安全的，因此我们先写新imp，等一会儿，再写新的 key</p>
+<p>代码中的 <code>mega_barrier</code> 就是 使用了阻塞，让方法先看到imp ，保证线程的安全。</p>
+</blockquote>
+<h3 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h3><h4 id="3-1-梳理"><a href="#3-1-梳理" class="headerlink" title="3.1 梳理"></a>3.1 梳理</h4><p><strong>cache_t</strong> 起源于 OC中的方法传递，也就是<strong>objc_msgSend</strong> 的实现。在类的方法传递时，为了追求，先去cache_t 中查找是否有缓存，如果有，可以直接调用，如果没有缓存，则需要对类进行一系列的内存空间确认，进行imp - key 的写入，并进行最终调用。</p>
+<p>这一章节应该是目前分析最难的，花了大概三到四天弄明白，希望这艰难的一步能为以后的分析打好更好的基础。</p>
+<h4 id="3-2-流程图"><a href="#3-2-流程图" class="headerlink" title="3.2 流程图"></a>3.2 流程图</h4><p><img src="/posts/40097/004.png" alt></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/posts/40097.html">http://nilsli.com/posts/40097.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/ios/">
+                                    <span class="chip bg-color">ios</span>
+                                </a>
+                            
+                                <a href="/tags/源码/">
+                                    <span class="chip bg-color">源码</span>
+                                </a>
+                            
+                                <a href="/tags/底层/">
+                                    <span class="chip bg-color">底层</span>
+                                </a>
+                            
+                                <a href="/tags/类/">
+                                    <span class="chip bg-color">类</span>
+                                </a>
+                            
+                                <a href="/tags/结构/">
+                                    <span class="chip bg-color">结构</span>
+                                </a>
+                            
+                                <a href="/tags/cache-t/">
+                                    <span class="chip bg-color">cache_t</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'edbea41d4435fd297c8b',
+        clientSecret: 'b17f455a79f3ec625d2424da1184772883e1adee',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-01-21T01-18-38',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/posts/23281.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg" class="responsive-img" alt="方法的本质2_从objc_msgSend谈起">
+                        
+                        <span class="card-title">方法的本质2_从objc_msgSend谈起</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+方法的本质，就是消息传递…
+
+
+本页所使用的objc runtime 756.2，来自GITHUB
+
+一、引子：Runtime概念我们都知道，在运行OC代码时，类或者对象在调用方法时会用到runtime，那么，到底什么是运行时呢？
+寻找一
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-02-24
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/ios/">
+                        <span class="chip bg-color">ios</span>
+                    </a>
+                    
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                    <a href="/tags/底层/">
+                        <span class="chip bg-color">底层</span>
+                    </a>
+                    
+                    <a href="/tags/类/">
+                        <span class="chip bg-color">类</span>
+                    </a>
+                    
+                    <a href="/tags/结构/">
+                        <span class="chip bg-color">结构</span>
+                    </a>
+                    
+                    <a href="/tags/objc/">
+                        <span class="chip bg-color">objc</span>
+                    </a>
+                    
+                    <a href="/tags/msgSend/">
+                        <span class="chip bg-color">msgSend</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/posts/8549.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/19.jpg" class="responsive-img" alt="OC底层研究4--类的结构分析">
+                        
+                        <span class="card-title">OC底层研究4--类的结构分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+本页所使用的objc runtime 756.2，来自GITHUB
+
+1.概念1.1 类Class 的类型
+Class在源码里的真正类型为objc_class的结构体。
+
+先查看源码——在Xcode按下Shift+Command+O，选择
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-12
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/ios/">
+                        <span class="chip bg-color">ios</span>
+                    </a>
+                    
+                    <a href="/tags/源码/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                    <a href="/tags/底层/">
+                        <span class="chip bg-color">底层</span>
+                    </a>
+                    
+                    <a href="/tags/类/">
+                        <span class="chip bg-color">类</span>
+                    </a>
+                    
+                    <a href="/tags/结构/">
+                        <span class="chip bg-color">结构</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
