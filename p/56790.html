@@ -396,14 +396,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.2k
+                    3.3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    12 分
+                    13 分
                 </div>
                 
 
@@ -807,7 +807,22 @@
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="3-4-查询结点"><a href="#3-4-查询结点" class="headerlink" title="3.4 查询结点"></a>3.4 查询结点</h3><p>与双向链表相同，更新结点，只需要遍历循环链表，找到序号内的结点，将其数据域 <code>data</code> 替换为新的数据</p>
 <p>代码参见 2.5</p>
-<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>双向链表比起单向链表来说，增加了<code>prior</code> 这一指针域，可以在查找和删除时，极其迅速的操作，无须做更多的判断，极大地提高了运算效率。同时在操作时，需要注意指针修改顺序，以免形成野指针。</p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><h3 id="4-1-线性表结构"><a href="#4-1-线性表结构" class="headerlink" title="4.1 线性表结构"></a>4.1 线性表结构</h3><p><img src="/p/56790/006.png" alt="线性表·结构"></p>
+<h3 id="4-2-顺序表与链表比较"><a href="#4-2-顺序表与链表比较" class="headerlink" title="4.2 顺序表与链表比较"></a>4.2 顺序表与链表比较</h3><p>顺序结构的线性表与链式结构的线性表比较起来，</p>
+<p><strong>从空间性能上比较</strong>：</p>
+<ol>
+<li><p>存储空间分配</p>
+</li>
+<li><p>存储密度的大小</p>
+</li>
+</ol>
+<p>   存储密度 = $\frac{数据元素本身占用存储量}{结点结构占用的存储量}$</p>
+<p>时间性能比较：</p>
+<ol>
+<li>存储元素的效率</li>
+<li>插入和删除操作的效率</li>
+</ol>
+<h3 id="4-3-其他"><a href="#4-3-其他" class="headerlink" title="4.3 其他"></a>4.3 其他</h3><p>双向链表比起单向链表来说，增加了<code>prior</code> 这一指针域，可以在查找和删除时，极其迅速的操作，无须做更多的判断，极大地提高了运算效率。同时在操作时，需要注意指针修改顺序，以免形成野指针。</p>
 
             </div>
             <hr/>
@@ -1312,6 +1327,13 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
 
 </main>
 
+
+<script src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$', '$'], ['\(', '\)']]}
+    });
+</script>
 
 
     <footer class="page-footer bg-color">
