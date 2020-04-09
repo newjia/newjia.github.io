@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="【底层探索】-懒加载与分类, 李佳的技术博客">
+    <meta name="keywords" content="【数据结构与算法4】链表面试题解析, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>【底层探索】-懒加载与分类 | 李佳的技术博客</title>
+    <title>【数据结构与算法4】链表面试题解析 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">【底层探索】-懒加载与分类</h1>
+                    <h1 class="description center-align post-title">【数据结构与算法4】链表面试题解析</h1>
                 </div>
             </div>
         </div>
@@ -367,8 +367,16 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/底层，源码，懒加载，分类/">
-                                <span class="chip bg-color">底层，源码，懒加载，分类</span>
+                            <a href="/tags/算法/">
+                                <span class="chip bg-color">算法</span>
+                            </a>
+                        
+                            <a href="/tags/线性表/">
+                                <span class="chip bg-color">线性表</span>
+                            </a>
+                        
+                            <a href="/tags/链表/">
+                                <span class="chip bg-color">链表</span>
                             </a>
                         
                     </div>
@@ -383,7 +391,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-03-31
+                    2020-04-09
                 </div>
                 
 
@@ -392,14 +400,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    284
+                    574
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    2 分
                 </div>
                 
 
@@ -415,16 +423,77 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="一、懒加载"><a href="#一、懒加载" class="headerlink" title="一、懒加载"></a>一、懒加载</h2><h3 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h3><blockquote>
-<p><em>懒加载(lazy loading)又称为延迟加载，它是指系统不会在初始化是就加载某个对象，而是在第一次调用（使用 get 方法）时才加载这个对象到内存。它的实现方法实质上就是覆写该对象的 get 方法，并将该对象在初始化时需要实现的代码在 get 方法中实现。</em></p>
+                <h3 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h3><blockquote>
+<p><a href="https://nilsli.com/p/43384.html">【数据结构与算法】- 基础篇</a></p>
+<p><a href="https://nilsli.com/p/43366.html">【数据结构与算法】- 线性表基础</a></p>
+<p><a href="https://nilsli.com/p/54688.html">【数据结构与算法】- 循环链表（单向）</a></p>
+<p><a href="https://nilsli.com/p/56790.html">【数据结构与算法】-双向链表和双向循环链表</a></p>
 </blockquote>
-<p>而对于数据结构而言，惰性加载是指从一个数据对象通过方法获得里面的一个属性对象时，这个对应对象实际并没有随其父数据对象创建时一起保存在运行空间中，而是在其读取方法第一次被调用时才从其他数据源中加载到运行空间中，这样可以避免过早地导入过大的数据对象但并没有使用的空间占用浪费。</p>
-<h3 id="1-2-优点"><a href="#1-2-优点" class="headerlink" title="1.2 优点"></a>1.2 优点</h3><ul>
-<li>不需要在 viewDidLoad 中实例化对象，简化代码，使结构清晰</li>
-<li>提升初始化加载速度</li>
-<li>减少内存占用</li>
+<p>之前复习了一下数据结构以及线性表的基础，继续来做一些习题，巩固一下。</p>
+<h3 id="Q1-链表合并"><a href="#Q1-链表合并" class="headerlink" title="Q1 链表合并"></a>Q1 链表合并</h3><h4 id="1-要求："><a href="#1-要求：" class="headerlink" title="1. 要求："></a>1. 要求：</h4><p>将两个递增的有序链表合并为一个有序链表；要求结果链表仍然是用两个链表的存储空间，不另外占用其他的存储空间；表中不允许有重复的数据</p>
+<p>如<strong>La{1 ,2, 3}</strong>, <strong>Lb{3, 6, 9}</strong>, 合并成为 <strong>Lc{1, 2, 3, 6, 9}</strong></p>
+<p><img src="/p/50518edc/001.png" alt></p>
+<h4 id="2-分析："><a href="#2-分析：" class="headerlink" title="2. 分析："></a>2. 分析：</h4><p>本题要求如下：</p>
+<ul>
+<li>两个都是递增有序链表</li>
+<li>不允许重复数据</li>
+<li>结果要求保持递增关系，可以考虑后插法</li>
+<li>不占用额外空间，也不允许新建维持逻辑</li>
 </ul>
-<h3 id="1-2-区分"><a href="#1-2-区分" class="headerlink" title="1.2 区分"></a>1.2 区分</h3><h2 id="二、分类"><a href="#二、分类" class="headerlink" title="二、分类"></a>二、分类</h2>
+<h4 id="3-解题思路："><a href="#3-解题思路：" class="headerlink" title="3. 解题思路："></a>3. 解题思路：</h4><ol>
+<li>准备临时变量：<ol>
+<li>原始链表<code>La</code>、<code>Lb</code>、</li>
+<li>链表 <code>La</code> 和 <code>Lb</code> 各自的工具指针<code>pa</code>、  <code>pb</code>、</li>
+<li>头指针<code>Lc</code>——由于要求不占用额外空间，<code>Lc</code>指向（借用）<code>La</code> 的头结点</li>
+</ol>
+</li>
+<li>依次循环<code>pa</code>、<code>pb</code> ，<ol>
+<li>比较两者的 <code>data</code> 值大小，取较小者存到<code>Lc</code>里</li>
+<li>若相等，保留<code>La</code> 存入Lc 里，释放<code>Lb</code></li>
+</ol>
+</li>
+<li>若循环<code>pa</code> <code>pb</code> 有一者为空，即循环截止，保留另一者保存<code>Lc</code></li>
+</ol>
+<h4 id="4-代码实现："><a href="#4-代码实现：" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">MergeList</span><span class="token punctuation">(</span>LinkList <span class="token operator">*</span>La<span class="token punctuation">,</span> LinkList <span class="token operator">*</span>Lb<span class="token punctuation">,</span> LinkList <span class="token operator">*</span>Lc<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//目标:将2个递增的有序链表La,Lb 合并为一个递增的有序链表Lc</span>
+    LinkList pa<span class="token punctuation">,</span>pb<span class="token punctuation">,</span>pc<span class="token punctuation">,</span>temp<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//pa 是链表La的工作指针,pb 是链表Lb的工作指针, 初始化为首元结点;</span>
+    pa <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>La<span class="token punctuation">)</span><span class="token operator">-></span>next<span class="token punctuation">;</span>
+    pb <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>Lb<span class="token punctuation">)</span><span class="token operator">-></span>next<span class="token punctuation">;</span>
+
+    <span class="token operator">*</span>Lc <span class="token operator">=</span> pc <span class="token operator">=</span> <span class="token operator">*</span>La<span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>pa <span class="token operator">&amp;&amp;</span> pb<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>pa<span class="token operator">-></span>data <span class="token operator">&lt;</span> pb<span class="token operator">-></span>data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//取较小者La中的元素,将pa链接在pc的后面,pa指针后移</span>
+            pc<span class="token operator">-></span>next <span class="token operator">=</span> pa<span class="token punctuation">;</span>
+            pc <span class="token operator">=</span> pa<span class="token punctuation">;</span>
+            pa <span class="token operator">=</span> pa<span class="token operator">-></span>next<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>pa<span class="token operator">-></span>data <span class="token operator">></span> pb<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//取较小者Lb的元素,将pb链接在pc后面, pb指针后移</span>
+            pc<span class="token operator">-></span>next <span class="token operator">=</span> pb<span class="token punctuation">;</span>
+            pc <span class="token operator">=</span> pb<span class="token punctuation">;</span>
+            pb <span class="token operator">=</span> pb<span class="token operator">-></span>next<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span>
+        <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//相等时取La中的元素,删除Lb的元素;</span>
+            pc<span class="token operator">-></span>next <span class="token operator">=</span> pa<span class="token punctuation">;</span>
+            pc <span class="token operator">=</span> pa<span class="token punctuation">;</span>
+            pa <span class="token operator">=</span> pa <span class="token operator">-></span>next<span class="token punctuation">;</span>
+            temp <span class="token operator">=</span> pb<span class="token operator">-></span>next<span class="token punctuation">;</span>
+            <span class="token function">free</span><span class="token punctuation">(</span>pb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            pb <span class="token operator">=</span> temp<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//将非空表的剩余元素之间链接在Lc表的最后</span>
+    pc<span class="token operator">-></span>next <span class="token operator">=</span> pa<span class="token operator">?</span>pa<span class="token punctuation">:</span>pb<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">//释放Lb的头结点</span>
+    <span class="token function">free</span><span class="token punctuation">(</span><span class="token operator">*</span>Lb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="5-流程图解"><a href="#5-流程图解" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><p><img src="/p/50518edc/002.png" alt></p>
+
             </div>
             <hr/>
 
@@ -449,7 +518,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/p/38312.html">http://nilsli.com/p/38312.html</a>
+                    <a href="http://nilsli.com/p/50518edc.html">http://nilsli.com/p/50518edc.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -487,8 +556,16 @@
                     
                         <div class="article-tag">
                             
-                                <a href="/tags/底层，源码，懒加载，分类/">
-                                    <span class="chip bg-color">底层，源码，懒加载，分类</span>
+                                <a href="/tags/算法/">
+                                    <span class="chip bg-color">算法</span>
+                                </a>
+                            
+                                <a href="/tags/线性表/">
+                                    <span class="chip bg-color">线性表</span>
+                                </a>
+                            
+                                <a href="/tags/链表/">
+                                    <span class="chip bg-color">链表</span>
                                 </a>
                             
                         </div>
@@ -659,7 +736,7 @@
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2020-03-31T12-58-01',
+        id: '2020-04-09T11-28-58',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -680,29 +757,37 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
-                <a href="/p/43384.html">
+                <a href="/p/50518edc.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/10.jpg" class="responsive-img" alt="【数据结构与算法】- 基础篇">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg" class="responsive-img" alt="【数据结构与算法4】链表面试题解析">
                         
-                        <span class="card-title">【数据结构与算法】- 基础篇</span>
+                        <span class="card-title">【数据结构与算法4】链表面试题解析</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            算法是解决特定问题对求解步骤的描述，在计算机中表现为指令的有限序列，并且每条指令表示一个或多个操作。
+                            序言
+【数据结构与算法】- 基础篇
+【数据结构与算法】- 线性表基础
+【数据结构与算法】- 循环链表（单向）
+【数据结构与算法】-双向链表和双向循环链表
+
+之前复习了一下数据结构以及线性表的基础，继续来做一些习题，巩固一下。
+Q1 链表合并
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-31
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-09
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -711,6 +796,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -718,20 +804,12 @@
                         <span class="chip bg-color">算法</span>
                     </a>
                     
-                    <a href="/tags/iOS/">
-                        <span class="chip bg-color">iOS</span>
+                    <a href="/tags/线性表/">
+                        <span class="chip bg-color">线性表</span>
                     </a>
                     
-                    <a href="/tags/数据结构/">
-                        <span class="chip bg-color">数据结构</span>
-                    </a>
-                    
-                    <a href="/tags/理论/">
-                        <span class="chip bg-color">理论</span>
-                    </a>
-                    
-                    <a href="/tags/基础/">
-                        <span class="chip bg-color">基础</span>
+                    <a href="/tags/链表/">
+                        <span class="chip bg-color">链表</span>
                     </a>
                     
                 </div>
@@ -745,28 +823,31 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/p/41032.html">
+                <a href="/p/56790.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/21.jpg" class="responsive-img" alt="runtime 面试题">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/8.jpg" class="responsive-img" alt="【数据结构与算法】-双向链表和双向循环链表">
                         
-                        <span class="card-title">runtime 面试题</span>
+                        <span class="card-title">【数据结构与算法】-双向链表和双向循环链表</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            最近看到一道runtime 面试题，觉得有意思
-问题：Q：已经注册好的类，能否再动态添加成员变量？为什么？
-分析：我们通过Runtime还原一下场景。
-注册好的类，实现的方法是，注册到内存里：
-objc_registerClassPair(
+                            一、概念双向链表：
+
+是在单链表的每个节点中，再设置一个指向其前驱结点的指针域。
+
+所以在双向链表中的结点有两个指针域，一个指向直接后继，另一个指向直接前驱。
+
+双向循环链表：
+与双向链表相比，双向循环链表的尾结点的next指向头结点，头结
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-30
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-03
                             </span>
                         <span class="publish-author">
                             
@@ -779,24 +860,12 @@ objc_registerClassPair(
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/类/">
-                        <span class="chip bg-color">类</span>
+                    <a href="/tags/链表/">
+                        <span class="chip bg-color">链表</span>
                     </a>
                     
-                    <a href="/tags/2020/">
-                        <span class="chip bg-color">2020</span>
-                    </a>
-                    
-                    <a href="/tags/runtime/">
-                        <span class="chip bg-color">runtime</span>
-                    </a>
-                    
-                    <a href="/tags/面试/">
-                        <span class="chip bg-color">面试</span>
-                    </a>
-                    
-                    <a href="/tags/成员变量/">
-                        <span class="chip bg-color">成员变量</span>
+                    <a href="/tags/循环/">
+                        <span class="chip bg-color">循环</span>
                     </a>
                     
                 </div>
