@@ -29,9 +29,9 @@
 
     <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
     
+<link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
 <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
-<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
 
 
 <body>
@@ -400,14 +400,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    735
+                    1.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    4 分
                 </div>
                 
 
@@ -447,8 +447,8 @@
 <li>头指针<code>Lc</code>——由于要求不占用额外空间，<code>Lc</code>指向（借用）<code>La</code> 的头结点</li>
 </ol>
 </li>
-<li>依次循环<code>pa</code>、<code>pb</code> ，<ol>
-<li>比较两者的 <code>data</code> 值大小，取较小者存到<code>Lc</code>里</li>
+<li>依次循环<code>La</code>、<code>Lb</code> ，<ol>
+<li>比较<code>pa</code>、<code>pb</code>两者的 <code>data</code> 值大小，取较小者存到<code>Lc</code>里</li>
 <li>若相等，保留<code>La</code> 存入Lc 里，释放<code>Lb</code></li>
 </ol>
 </li>
@@ -501,15 +501,75 @@
 <li>需要比较相同元素，予以保留</li>
 <li>比较后不同的元素，予以删除</li>
 </ul>
-<h4 id="3-解题思路"><a href="#3-解题思路" class="headerlink" title="3. 解题思路"></a>3. 解题思路</h4><ol>
+<h4 id="3-解题思路"><a href="#3-解题思路" class="headerlink" title="3. 解题思路"></a>3. 解题思路</h4><p>这道题目与上道题恰恰相反，在依次循环后，<strong>留下相同的元素</strong>。</p>
+<ol>
 <li>准备临时变量：<ol>
 <li>原始链表<code>La</code>、<code>Lb</code>、</li>
 <li>链表 <code>La</code> 和 <code>Lb</code> 各自的首元结点指针<code>pa</code>、  <code>pb</code>、</li>
 <li>头指针<code>Lc</code>——由于要求不占用额外空间，<code>Lc</code>指向（借用）<code>La</code> 的头结点</li>
 </ol>
 </li>
-<li></li>
+<li>依次循环<code>La</code>、<code>Lb</code> ，<ol>
+<li>比较<code>pa</code>、<code>pb</code>两者的 <code>data</code> 值大小</li>
+<li>若相等，把<code>pa</code>存到<code>Lc</code>里，释放<code>pb</code>指定结点</li>
+<li>若不相等，释放掉较小的元素</li>
 </ol>
+</li>
+<li>若循环至某一方为空，删除/释放非空表所有元素</li>
+</ol>
+<h4 id="4-代码实现"><a href="#4-代码实现" class="headerlink" title="4. 代码实现"></a>4. 代码实现</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">Intersection</span><span class="token punctuation">(</span>LinkList <span class="token operator">*</span>La<span class="token punctuation">,</span> LinkList <span class="token operator">*</span>Lb<span class="token punctuation">,</span> LinkList <span class="token operator">*</span>Lc<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//目标: 求2个递增的有序链表La,Lb的交集, 使用头指针Lc指向带回;</span>
+    LinkList pa<span class="token punctuation">,</span>pb<span class="token punctuation">,</span>pc<span class="token punctuation">,</span>temp<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//pa 是链表La的工作指针,pb 是链表Lb的工作指针, 初始化为首元结点;La的头结点作为Lc的头结点;</span>
+    pa <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>La<span class="token punctuation">)</span><span class="token operator">-></span>next<span class="token punctuation">;</span>
+    pb <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>Lb<span class="token punctuation">)</span><span class="token operator">-></span>next<span class="token punctuation">;</span>
+    <span class="token operator">*</span>Lc <span class="token operator">=</span> pc <span class="token operator">=</span> <span class="token operator">*</span>La<span class="token punctuation">;</span>
+
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>pa <span class="token operator">&amp;&amp;</span> pb<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>pa<span class="token operator">-></span>data <span class="token operator">==</span> pb<span class="token operator">-></span>data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//相等,交集并入结果链表中;</span>
+            <span class="token comment" spellcheck="true">//(1).取La中的元素,将pa链接到pc的后面,pa指针后移;</span>
+            pc<span class="token operator">-></span>next <span class="token operator">=</span> pa<span class="token punctuation">;</span>
+            pc <span class="token operator">=</span> pa<span class="token punctuation">;</span>
+            pa <span class="token operator">=</span> pa<span class="token operator">-></span>next<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//(2)删除Lb中对应相等的元素</span>
+            temp <span class="token operator">=</span> pb<span class="token punctuation">;</span>
+            pb <span class="token operator">=</span> pb<span class="token operator">-></span>next<span class="token punctuation">;</span>
+            <span class="token function">free</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>pa<span class="token operator">-></span>data <span class="token operator">&lt;</span> pb<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+            <span class="token comment" spellcheck="true">//删除较小值La的元素;</span>
+            temp <span class="token operator">=</span> pa<span class="token punctuation">;</span>
+            pa <span class="token operator">=</span> pa<span class="token operator">-></span>next<span class="token punctuation">;</span>
+            <span class="token function">free</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//删除较小值Lb中的元素</span>
+            temp <span class="token operator">=</span> pb<span class="token punctuation">;</span>
+            pb <span class="token operator">=</span> pb<span class="token operator">-></span>next<span class="token punctuation">;</span>
+            <span class="token function">free</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//Lb为空,删除非空表La中的所有元素</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>pa<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        temp <span class="token operator">=</span> pa<span class="token punctuation">;</span>
+        pa <span class="token operator">=</span> pa<span class="token operator">-></span>next<span class="token punctuation">;</span>
+        <span class="token function">free</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//La为空,删除非空表Lb中的所有元素</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>pb<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        temp <span class="token operator">=</span> pb<span class="token punctuation">;</span>
+        pb <span class="token operator">=</span> pb<span class="token operator">-></span>next<span class="token punctuation">;</span>
+        <span class="token function">free</span><span class="token punctuation">(</span>temp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+
+    pc<span class="token operator">-></span>next <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+    <span class="token function">free</span><span class="token punctuation">(</span><span class="token operator">*</span>Lb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
             </div>
             <hr/>
@@ -843,9 +903,9 @@
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/8.jpg" class="responsive-img" alt="【数据结构与算法】-双向链表和双向循环链表">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/13.jpg" class="responsive-img" alt="【数据结构与算法】-（4）双向链表和双向循环链表">
                         
-                        <span class="card-title">【数据结构与算法】-双向链表和双向循环链表</span>
+                        <span class="card-title">【数据结构与算法】-（4）双向链表和双向循环链表</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
