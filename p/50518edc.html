@@ -400,14 +400,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.2k
+                    3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    13 分
+                    12 分
                 </div>
                 
 
@@ -438,60 +438,33 @@
 <li>两个都是递增有序链表</li>
 <li>不允许重复数据</li>
 <li>结果要求保持递增关系，可以考虑后插法</li>
-<li>不占用额外空间，也不允许新建维持逻辑</li>
+<li><strong>不占用额外空间</strong>，也不允许新建维持逻辑</li>
 </ul>
 <h4 id="3-算法思路："><a href="#3-算法思路：" class="headerlink" title="3. 算法思路："></a>3. 算法思路：</h4><ol>
-<li>准备临时变量：<ol>
-<li>原始链表<code>La</code>、<code>Lb</code>、</li>
-<li>链表 <code>La</code> 和 <code>Lb</code> 各自的首元结点指针<code>pa</code>、  <code>pb</code>、</li>
-<li>头指针<code>Lc</code>——由于要求不占用额外空间，<code>Lc</code>指向（借用）<code>La</code> 的头结点</li>
-</ol>
-</li>
+<li>准备临时变量：头指针<code>Lc</code>——由于要求不占用额外空间，<code>Lc</code>指向（借用）<code>La</code> 的头结点</li>
 <li>依次循环<code>La</code>、<code>Lb</code> ，<ol>
 <li>比较<code>pa</code>、<code>pb</code>两者的 <code>data</code> 值大小，取较小者存到<code>Lc</code>里</li>
-<li>若相等，保留<code>La</code> 存入Lc 里，释放<code>Lb</code></li>
+<li>比较较小者剩余链表，与较大者的<code>data</code>，循环往复</li>
 </ol>
 </li>
-<li>若循环<code>pa</code> <code>pb</code> 有一者为空，即循环截止，保留另一者保存<code>Lc</code></li>
 </ol>
-<h4 id="4-代码实现："><a href="#4-代码实现：" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">MergeList</span><span class="token punctuation">(</span>LinkList <span class="token operator">*</span>La<span class="token punctuation">,</span> LinkList <span class="token operator">*</span>Lb<span class="token punctuation">,</span> LinkList <span class="token operator">*</span>Lc<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">//目标:将2个递增的有序链表La,Lb 合并为一个递增的有序链表Lc</span>
-    LinkList pa<span class="token punctuation">,</span>pb<span class="token punctuation">,</span>pc<span class="token punctuation">,</span>temp<span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">//pa 是链表La的工作指针,pb 是链表Lb的工作指针, 初始化为首元结点;</span>
-    pa <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>La<span class="token punctuation">)</span><span class="token operator">-></span>next<span class="token punctuation">;</span>
-    pb <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>Lb<span class="token punctuation">)</span><span class="token operator">-></span>next<span class="token punctuation">;</span>
+<h4 id="4-代码实现："><a href="#4-代码实现：" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><pre class="line-numbers language-c"><code class="language-c">ListNode<span class="token operator">*</span> <span class="token function">mergeTwoLists</span><span class="token punctuation">(</span>ListNode<span class="token operator">*</span> La<span class="token punctuation">,</span> ListNode<span class="token operator">*</span> Lb<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+       <span class="token keyword">if</span><span class="token punctuation">(</span>La <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> Lb<span class="token punctuation">;</span>
+        <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>Lb <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> La<span class="token punctuation">;</span>
 
-    <span class="token operator">*</span>Lc <span class="token operator">=</span> pc <span class="token operator">=</span> <span class="token operator">*</span>La<span class="token punctuation">;</span>
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>pa <span class="token operator">&amp;&amp;</span> pb<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>pa<span class="token operator">-></span>data <span class="token operator">&lt;</span> pb<span class="token operator">-></span>data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">//取较小者La中的元素,将pa链接在pc的后面,pa指针后移</span>
-            pc<span class="token operator">-></span>next <span class="token operator">=</span> pa<span class="token punctuation">;</span>
-            pc <span class="token operator">=</span> pa<span class="token punctuation">;</span>
-            pa <span class="token operator">=</span> pa<span class="token operator">-></span>next<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>pa<span class="token operator">-></span>data <span class="token operator">></span> pb<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">//取较小者Lb的元素,将pb链接在pc后面, pb指针后移</span>
-            pc<span class="token operator">-></span>next <span class="token operator">=</span> pb<span class="token punctuation">;</span>
-            pc <span class="token operator">=</span> pb<span class="token punctuation">;</span>
-            pb <span class="token operator">=</span> pb<span class="token operator">-></span>next<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span><span class="token keyword">else</span>
-        <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">//相等时取La中的元素,删除Lb的元素;</span>
-            pc<span class="token operator">-></span>next <span class="token operator">=</span> pa<span class="token punctuation">;</span>
-            pc <span class="token operator">=</span> pa<span class="token punctuation">;</span>
-            pa <span class="token operator">=</span> pa <span class="token operator">-></span>next<span class="token punctuation">;</span>
-            temp <span class="token operator">=</span> pb<span class="token operator">-></span>next<span class="token punctuation">;</span>
-            <span class="token function">free</span><span class="token punctuation">(</span>pb<span class="token punctuation">)</span><span class="token punctuation">;</span>
-            pb <span class="token operator">=</span> temp<span class="token punctuation">;</span>
+        ListNode <span class="token operator">*</span>Lc <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>La<span class="token operator">-></span> data <span class="token operator">&lt;</span> Lb<span class="token operator">-></span> data<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            Lc <span class="token operator">=</span> La<span class="token punctuation">;</span>
+            Lc<span class="token operator">-></span>next <span class="token operator">=</span> <span class="token function">mergeTwoLists</span><span class="token punctuation">(</span>La<span class="token operator">-></span>next<span class="token punctuation">,</span> Lb<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            Lc <span class="token operator">=</span> Lb<span class="token punctuation">;</span>
+            Lc<span class="token operator">-></span>next <span class="token operator">=</span> <span class="token function">mergeTwoLists</span><span class="token punctuation">(</span>La<span class="token punctuation">,</span> Lb<span class="token operator">-></span>next<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token comment" spellcheck="true">//将非空表的剩余元素之间链接在Lc表的最后</span>
-    pc<span class="token operator">-></span>next <span class="token operator">=</span> pa<span class="token operator">?</span>pa<span class="token punctuation">:</span>pb<span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">//释放Lb的头结点</span>
-    <span class="token function">free</span><span class="token punctuation">(</span><span class="token operator">*</span>Lb<span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+        <span class="token keyword">return</span> Lc<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="5-流程图解"><a href="#5-流程图解" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><p><img src="/p/50518edc/002.png" alt></p>
 <h3 id="Q2-链表：求重"><a href="#Q2-链表：求重" class="headerlink" title="Q2 链表：求重"></a>Q2 链表：求重</h3><h4 id="1-题目：-1"><a href="#1-题目：-1" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>已知两个链表A和B分别表示两个集合.其元素递增排列. 设计一个算法,用于求出A与B的交集,并存储在A链表中;</p>
 <p>例如:</p>
@@ -710,7 +683,7 @@
 <h4 id="2-分析：-5"><a href="#2-分析：-5" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
 <li>递增数组</li>
 <li>数组中可能有多次出现的元素</li>
-<li>出现次数超过一半，极为目标元素</li>
+<li>出现次数超过一半 &gt; <code>n/2</code> ，即为目标元素</li>
 </ul>
 <h4 id="3-算法思路：-4"><a href="#3-算法思路：-4" class="headerlink" title="3. 算法思路："></a>3. 算法思路：</h4><ol>
 <li>假定一个<strong>候选主元素</strong> <code>key</code> </li>
