@@ -400,7 +400,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3k
+                    2.9k
                 </div>
                 
 
@@ -465,7 +465,7 @@
         <span class="token punctuation">}</span>
         <span class="token keyword">return</span> Lc<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="5-流程图解"><a href="#5-流程图解" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><p><img src="/p/50518edc/002.png" alt></p>
+<h4 id="5-流程图解"><a href="#5-流程图解" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><p><img src="/p/50518edc/002.png" alt>  </p>
 <h3 id="Q2-链表：求重"><a href="#Q2-链表：求重" class="headerlink" title="Q2 链表：求重"></a>Q2 链表：求重</h3><h4 id="1-题目：-1"><a href="#1-题目：-1" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>已知两个链表A和B分别表示两个集合.其元素递增排列. 设计一个算法,用于求出A与B的交集,并存储在A链表中;</p>
 <p>例如:</p>
 <p> La = {2,4,6,8}; Lb = {4,6,8,10};</p>
@@ -551,34 +551,24 @@
 <li>首选<strong>头插法</strong></li>
 </ul>
 <h4 id="3-算法思路：-1"><a href="#3-算法思路：-1" class="headerlink" title="3. 算法思路："></a>3. 算法思路：</h4><ol>
-<li>创建新链表头结点指针<code>*L</code>、 工具结点<code>q</code>、以及一直移动的<code>p</code></li>
-<li>循环原链表，将链表中的结点<code>p</code>下一个交由<code>q</code> <strong>保管</strong></li>
-<li>将<code>p</code>插入到新链表头结点<code>*L</code> 前面，成为<strong>第一个</strong>结点【头插】</li>
-<li>再将链表头结点查到<code>p</code> 前面</li>
-<li>将工具结点<code>q</code> 赋值给<code>p</code>，重复第一步</li>
+<li>保持当前头结点的下个结点 </li>
+<li>将当前头结点的指向指到上一个结点</li>
+<li>把当前头结点保存为上一个结点</li>
+<li>将头结点的下一个结点，设定为头结点</li>
 </ol>
-<h4 id="4-代码实现：-1"><a href="#4-代码实现：-1" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">Inverse</span><span class="token punctuation">(</span>LinkList <span class="token operator">*</span>L<span class="token punctuation">)</span><span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">//目的: 逆转带头结点单链表L;</span>
-    LinkList p<span class="token punctuation">,</span>q<span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">//p指向首元结点;</span>
-    p <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>L<span class="token punctuation">)</span><span class="token operator">-></span>next<span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">//头结点的指针域置空</span>
-    <span class="token punctuation">(</span><span class="token operator">*</span>L<span class="token punctuation">)</span><span class="token operator">-></span>next <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">//遍历链表</span>
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>p<span class="token operator">!=</span><span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-
-        <span class="token comment" spellcheck="true">//q执行p的后继</span>
-        q <span class="token operator">=</span> p<span class="token operator">-></span>next<span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">//p->next = (*L)->next</span>
-        p<span class="token operator">-></span>next <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>L<span class="token punctuation">)</span><span class="token operator">-></span>next<span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">//*p 插入到头结点之后;</span>
-        <span class="token punctuation">(</span><span class="token operator">*</span>L<span class="token punctuation">)</span><span class="token operator">-></span>next <span class="token operator">=</span> p<span class="token punctuation">;</span>
-        <span class="token comment" spellcheck="true">//处理下一个结点</span>
-        p <span class="token operator">=</span> q<span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="5-流程图解-2"><a href="#5-流程图解-2" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><h3 id="Q4-链表删除指定元素"><a href="#Q4-链表删除指定元素" class="headerlink" title="Q4 链表删除指定元素"></a>Q4 链表删除指定元素</h3><h4 id="1-题目：-3"><a href="#1-题目：-3" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>设计一个算法，删除递增有序链表中值大于等于<code>mink</code>且小于等于<code>maxk</code>（<code>mink, maxk</code>是给定的两个参数,其值可以和表中的元素相同,也可以不同）的所有元素;</p>
+<h4 id="4-代码实现：-1"><a href="#4-代码实现：-1" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><pre class="line-numbers language-C"><code class="language-C">struct LinkList* reverseList(struct LinkList* head){
+    struct LinkList *pre = NULL;
+    struct LinkList *next = NULL;
+    while(head != NULL){
+        next = head->next;
+        head->next = pre;
+        pre = head;
+        head = next;
+    }
+    return pre;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="5-流程图解-2"><a href="#5-流程图解-2" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><p><img src="/p/50518edc/003.png" alt></p>
+<h3 id="Q4-链表删除指定元素"><a href="#Q4-链表删除指定元素" class="headerlink" title="Q4 链表删除指定元素"></a>Q4 链表删除指定元素</h3><h4 id="1-题目：-3"><a href="#1-题目：-3" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>设计一个算法，删除递增有序链表中值大于等于<code>mink</code>且小于等于<code>maxk</code>（<code>mink, maxk</code>是给定的两个参数,其值可以和表中的元素相同,也可以不同）的所有元素;</p>
 <h4 id="2-分析：-3"><a href="#2-分析：-3" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
 <li>链表递增</li>
 <li>给定上边界、下边界</li>
