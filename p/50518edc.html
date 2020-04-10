@@ -400,14 +400,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.1k
+                    2.3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    4 分
+                    9 分
                 </div>
                 
 
@@ -493,7 +493,7 @@
 
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="5-流程图解"><a href="#5-流程图解" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><p><img src="/p/50518edc/002.png" alt></p>
-<h3 id="Q2-链表求重"><a href="#Q2-链表求重" class="headerlink" title="Q2 链表求重"></a>Q2 链表求重</h3><h4 id="1-题目：-1"><a href="#1-题目：-1" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>已知两个链表A和B分别表示两个集合.其元素递增排列. 设计一个算法,用于求出A与B的交集,并存储在A链表中;</p>
+<h3 id="Q2-链表：求重"><a href="#Q2-链表：求重" class="headerlink" title="Q2 链表：求重"></a>Q2 链表：求重</h3><h4 id="1-题目：-1"><a href="#1-题目：-1" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>已知两个链表A和B分别表示两个集合.其元素递增排列. 设计一个算法,用于求出A与B的交集,并存储在A链表中;</p>
 <p>例如:</p>
 <p> La = {2,4,6,8}; Lb = {4,6,8,10};</p>
 <p> Lc = {4,6,8}</p>
@@ -570,6 +570,144 @@
     pc<span class="token operator">-></span>next <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
     <span class="token function">free</span><span class="token punctuation">(</span><span class="token operator">*</span>Lb<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="5-流程图解-1"><a href="#5-流程图解-1" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><h3 id="Q3-链表原地旋转【面试常有】"><a href="#Q3-链表原地旋转【面试常有】" class="headerlink" title="Q3 链表原地旋转【面试常有】"></a>Q3 链表原地旋转【面试常有】</h3><h4 id="1-题目：-2"><a href="#1-题目：-2" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>设计一个算法,将链表中所有节点的链接方向”原地旋转”，即要求<strong>仅仅利用原表的存储空间</strong>。换句话说,要求算法空间复杂度为O(1);</p>
+<p>例如:L = <em>{0,2,4,6,8,10}</em>, 逆转后: L = <em>{10,8,6,4,2,0}</em>;</p>
+<h4 id="2-分析：-2"><a href="#2-分析：-2" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
+<li>不可以开辟空间</li>
+<li>只能移动指针</li>
+<li>首选<strong>头插法</strong></li>
+</ul>
+<h4 id="3-解题思路：-1"><a href="#3-解题思路：-1" class="headerlink" title="3. 解题思路："></a>3. 解题思路：</h4><ol>
+<li>创建新链表头结点指针<code>*L</code>、 工具结点<code>q</code>、以及一直移动的<code>p</code></li>
+<li>循环原链表，将链表中的结点<code>p</code>下一个交由<code>q</code> <strong>保管</strong></li>
+<li>将<code>p</code>插入到新链表头结点<code>*L</code> 前面，成为<strong>第一个</strong>结点【头插】</li>
+<li>再将链表头结点查到<code>p</code> 前面</li>
+<li>将工具结点<code>q</code> 赋值给<code>p</code>，重复第一步</li>
+</ol>
+<h4 id="4-代码实现：-1"><a href="#4-代码实现：-1" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">Inverse</span><span class="token punctuation">(</span>LinkList <span class="token operator">*</span>L<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//目的: 逆转带头结点单链表L;</span>
+    LinkList p<span class="token punctuation">,</span>q<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//p指向首元结点;</span>
+    p <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>L<span class="token punctuation">)</span><span class="token operator">-></span>next<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//头结点的指针域置空</span>
+    <span class="token punctuation">(</span><span class="token operator">*</span>L<span class="token punctuation">)</span><span class="token operator">-></span>next <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">//遍历链表</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>p<span class="token operator">!=</span><span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token comment" spellcheck="true">//q执行p的后继</span>
+        q <span class="token operator">=</span> p<span class="token operator">-></span>next<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//p->next = (*L)->next</span>
+        p<span class="token operator">-></span>next <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>L<span class="token punctuation">)</span><span class="token operator">-></span>next<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//*p 插入到头结点之后;</span>
+        <span class="token punctuation">(</span><span class="token operator">*</span>L<span class="token punctuation">)</span><span class="token operator">-></span>next <span class="token operator">=</span> p<span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//处理下一个结点</span>
+        p <span class="token operator">=</span> q<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="5-流程图解-2"><a href="#5-流程图解-2" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><h3 id="Q4-链表删除指定元素"><a href="#Q4-链表删除指定元素" class="headerlink" title="Q4 链表删除指定元素"></a>Q4 链表删除指定元素</h3><h4 id="1-题目：-3"><a href="#1-题目：-3" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>设计一个算法，删除递增有序链表中值大于等于<code>mink</code>且小于等于<code>maxk</code>（<code>mink, maxk</code>是给定的两个参数,其值可以和表中的元素相同,也可以不同）的所有元素;</p>
+<h4 id="2-分析：-3"><a href="#2-分析：-3" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
+<li>链表递增</li>
+<li>给定上边界、下边界</li>
+<li>上下边界找到后，桥接起来</li>
+<li>边界中其他元素删除</li>
+</ul>
+<h4 id="3-解题思路：-2"><a href="#3-解题思路：-2" class="headerlink" title="3. 解题思路："></a>3. 解题思路：</h4><ol>
+<li><code>mink</code>：循环链表1次，找到第一个大于<code>mink</code>的结点，记住其前驱结点<code>pre</code></li>
+<li><code>maxk</code>：循环链表2次，找到大于等于maxk 的结点，用<code>p</code>标记</li>
+<li>桥接：把 <code>pre -&gt; next</code> 指向结点<code>p</code></li>
+<li>循环释放，释放<code>pre</code>、<code>p</code> 中间的结点</li>
+</ol>
+<h4 id="4-代码实现：-2"><a href="#4-代码实现：-2" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">DeleteMinMax</span><span class="token punctuation">(</span>LinkList <span class="token operator">*</span>L<span class="token punctuation">,</span> <span class="token keyword">int</span> mink<span class="token punctuation">,</span> <span class="token keyword">int</span> maxk<span class="token punctuation">)</span><span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//目标: 删除递增有序链表L中值大于等于mink 和小于等于maxk的所有元素</span>
+
+    LinkList p<span class="token punctuation">,</span>q<span class="token punctuation">,</span>pre<span class="token punctuation">;</span>
+    pre <span class="token operator">=</span> <span class="token operator">*</span>L<span class="token punctuation">;</span>
+    LinkList temp<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">//p指向首元结点</span>
+    p <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>L<span class="token punctuation">)</span><span class="token operator">-></span>next<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">//1.查找第一值大于mink的结点</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>p <span class="token operator">&amp;&amp;</span> p<span class="token operator">-></span>data <span class="token operator">&lt;</span> mink<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//指向前驱结点</span>
+        pre <span class="token operator">=</span> p<span class="token punctuation">;</span>
+        p <span class="token operator">=</span> p<span class="token operator">-></span>next<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//2.查找第一个值大于等于maxk的结点</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>p <span class="token operator">&amp;&amp;</span> p<span class="token operator">-></span>data<span class="token operator">&lt;=</span>maxk<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        p <span class="token operator">=</span> p<span class="token operator">-></span>next<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//3.修改待删除的结点指针</span>
+    q <span class="token operator">=</span> pre<span class="token operator">-></span>next<span class="token punctuation">;</span>
+    pre<span class="token operator">-></span>next <span class="token operator">=</span> p<span class="token punctuation">;</span>
+
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>q <span class="token operator">!=</span> p<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        temp <span class="token operator">=</span> q<span class="token operator">-></span>next<span class="token punctuation">;</span>
+        <span class="token function">free</span><span class="token punctuation">(</span>q<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        q <span class="token operator">=</span> temp<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="5-流程图解-3"><a href="#5-流程图解-3" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><h3 id="Q5-数组平移"><a href="#Q5-数组平移" class="headerlink" title="Q5 数组平移"></a>Q5 数组平移</h3><h4 id="1-题目：-4"><a href="#1-题目：-4" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>设将n(n&gt;1)个整数存放到一维数组R中, 试设计一个在时间和空间两方面都尽可能高效的算法;将R中保存的序列循环左移p个位置 <em>(0&lt;p&lt;n)</em> 个位置， 即将R中的数据由 <em>(x0,x1,……,xn-1)</em> 变换为<em>(xp,xp+1,…,xn-1,x0,x1,…,xp-1)</em>.</p>
+<p> 例如: </p>
+<blockquote>
+<p>   pre[10] = <em>{0,1,2,3,4,5,6,7,8,9},</em></p>
+<p>   n = 10,p = 3;</p>
+<p>   pre[10] = <em>{3,4,5,6,7,8,9,0,1,2}</em></p>
+</blockquote>
+<h4 id="2-分析：-4"><a href="#2-分析：-4" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
+<li>数组而非链表</li>
+<li>往左移动，原左边的元素依次推到右边</li>
+<li>本质上两个区块元素交换，可考虑先原地旋转</li>
+<li>再将两个区块元素各自原地旋转</li>
+</ul>
+<h4 id="3-解题思路：-3"><a href="#3-解题思路：-3" class="headerlink" title="3. 解题思路："></a>3. 解题思路：</h4><ol>
+<li>将原数组原地旋转，成为<em>[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]</em></li>
+<li>从后面第<code>p</code>位，将原数组断成为<em>[9, 8, 7, 6, 5, 4, 3]</em>, [2, 1, 0]</li>
+<li>再将新的两个数组原地旋转<em>[3, 4, 5, 6, 7, 8, 9]</em>, <em>[0, 1, 2]</em></li>
+<li>合并成为目标数组 <em>[3, 4, 5, 6, 7, 8, 9, 0, 1, 2]</em> </li>
+</ol>
+<h4 id="4-代码实现：-3"><a href="#4-代码实现：-3" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">Reverse</span><span class="token punctuation">(</span><span class="token keyword">int</span> <span class="token operator">*</span>pre<span class="token punctuation">,</span><span class="token keyword">int</span> left <span class="token punctuation">,</span><span class="token keyword">int</span> right<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">//将数组R中的数据原地逆置</span>
+
+    <span class="token comment" spellcheck="true">//i等于左边界left,j等于右边界right;</span>
+    <span class="token keyword">int</span> i <span class="token operator">=</span> left<span class="token punctuation">,</span>j <span class="token operator">=</span> right<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> temp<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">//交换pre[i] 和 pre[j] 的值</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>i <span class="token operator">&lt;</span> j<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token comment" spellcheck="true">//交换</span>
+        temp <span class="token operator">=</span> pre<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        pre<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> pre<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        pre<span class="token punctuation">[</span>j<span class="token punctuation">]</span> <span class="token operator">=</span> temp<span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//i右移,j左移</span>
+        i<span class="token operator">++</span><span class="token punctuation">;</span>
+        j<span class="token operator">--</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">void</span> <span class="token function">LeftShift</span><span class="token punctuation">(</span><span class="token keyword">int</span> <span class="token operator">*</span>pre<span class="token punctuation">,</span><span class="token keyword">int</span> n<span class="token punctuation">,</span><span class="token keyword">int</span> p<span class="token punctuation">)</span><span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">//将长度为n的数组pre 中的数据循环左移p个位置</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>p<span class="token operator">></span><span class="token number">0</span> <span class="token operator">&amp;&amp;</span> p<span class="token operator">&lt;</span>n<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">//1. 将数组中所有元素全部逆置</span>
+        <span class="token function">Reverse</span><span class="token punctuation">(</span>pre<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> n<span class="token number">-1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//2. 将前n-p个数据逆置</span>
+        <span class="token function">Reverse</span><span class="token punctuation">(</span>pre<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> n<span class="token operator">-</span>p<span class="token number">-1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">//3. 将后p个数据逆置</span>
+        <span class="token function">Reverse</span><span class="token punctuation">(</span>pre<span class="token punctuation">,</span> n<span class="token operator">-</span>p<span class="token punctuation">,</span> n<span class="token number">-1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="5-流程图解-4"><a href="#5-流程图解-4" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><h3 id="Q6-链表原地旋转"><a href="#Q6-链表原地旋转" class="headerlink" title="Q6 链表原地旋转"></a>Q6 链表原地旋转</h3><h4 id="1-题目：-5"><a href="#1-题目：-5" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>已知一个整数序列A = (a0,a1,a2,…an-1)，其中(0&lt;= ai &lt;=n),(0&lt;= i&lt;=n)。</p>
+<p>若存在ap1= ap2 = …= apm = x，且m&gt;n/2(0&lt;=pk&lt;n,1&lt;=k&lt;=m)，则称x 为 A的主元素。</p>
+<p>例如,A = (0,5,5,3,5,7,5,5)，则5是主元素；若B = (0,5,5,3,5,1,5,7)，则A 中没有主元素，假设A中的n个元素保存在一个一维数组中，请设计一个尽可能高效的算法,找出数组元素中的主元素，若存在主元素则输出该元素，否则输出-1.</p>
+<h4 id="2-分析：-5"><a href="#2-分析：-5" class="headerlink" title="2. 分析："></a>2. 分析：</h4><p>to be continued…</p>
 
             </div>
             <hr/>
