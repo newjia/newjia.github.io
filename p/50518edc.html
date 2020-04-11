@@ -557,16 +557,17 @@
 <li>将头结点的下一个结点，设定为头结点</li>
 </ol>
 <h4 id="4-代码实现：-1"><a href="#4-代码实现：-1" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><pre class="line-numbers language-C"><code class="language-C">struct LinkList* reverseList(struct LinkList* head){
-    struct LinkList *pre = NULL;
-    struct LinkList *next = NULL;
-    while(head != NULL){
-        next = head->next;
-        head->next = pre;
-        pre = head;
-        head = next;
-    }
-    return pre;
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+    if(head == NULL || head->next == NULL)
+        return head;
+
+    struct LinkList *preNode = reverseList(head->next);
+
+    head->next->next = head;
+    head->next = NULL;
+
+    return preNode;
+
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="5-流程图解-2"><a href="#5-流程图解-2" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><p><img src="/p/50518edc/003.png" alt></p>
 <h3 id="Q4-链表删除指定元素"><a href="#Q4-链表删除指定元素" class="headerlink" title="Q4 链表删除指定元素"></a>Q4 链表删除指定元素</h3><h4 id="1-题目：-3"><a href="#1-题目：-3" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>设计一个算法，删除递增有序链表中值大于等于<code>mink</code>且小于等于<code>maxk</code>（<code>mink, maxk</code>是给定的两个参数,其值可以和表中的元素相同,也可以不同）的所有元素;</p>
 <h4 id="2-分析：-3"><a href="#2-分析：-3" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
@@ -737,7 +738,7 @@
 </ol>
 </li>
 </ol>
-<h4 id="4-代码实现：-5"><a href="#4-代码实现：-5" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">DeleteEqualNode</span><span class="token punctuation">(</span>LinkList <span class="token operator">*</span>L<span class="token punctuation">,</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<h4 id="x"><a href="#x" class="headerlink" title="x"></a>x</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">DeleteEqualNode</span><span class="token punctuation">(</span>LinkList <span class="token operator">*</span>L<span class="token punctuation">,</span><span class="token keyword">int</span> n<span class="token punctuation">)</span><span class="token punctuation">{</span>
 
     <span class="token comment" spellcheck="true">//目标: 删除单链表中绝对值相等的结点;</span>
     <span class="token comment" spellcheck="true">//1. 开辟辅助数组p.</span>
@@ -1043,36 +1044,35 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/p/50518edc.html">
+                <a href="/p/7914b7d0.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/19.jpg" class="responsive-img" alt="【数据结构与算法】-（5）链表面试题解析">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/2.jpg" class="responsive-img" alt="【数据结构与算法】-（6）栈和队列">
                         
-                        <span class="card-title">【数据结构与算法】-（5）链表面试题解析</span>
+                        <span class="card-title">【数据结构与算法】-（6）栈和队列</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            序言
-【数据结构与算法】-（1）基础篇
-【数据结构与算法】-（2）线性表基础
-【数据结构与算法】-（3）循环链表（单向）
-【数据结构与算法】-（4）双向链表和双向循环链表
+                            一、栈1. 概念1.1 定义
+栈 (stack) 是限定仅在表尾进行插入和删除操作的线性表
 
-之前复习了一下数据结构以及线性表的基础，继续来做一些习题，巩固一下
+
+栈的插入操作（push），叫作进栈、入栈。类似子弹入弹夹。
+栈的删除操作（pop），叫作出栈，也有的叫做弹栈。
+允许插入和删除的一段叫作栈顶 (
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-09
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-11
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -1081,7 +1081,6 @@
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
@@ -1089,12 +1088,16 @@
                         <span class="chip bg-color">算法</span>
                     </a>
                     
-                    <a href="/tags/线性表/">
-                        <span class="chip bg-color">线性表</span>
+                    <a href="/tags/数据结构/">
+                        <span class="chip bg-color">数据结构</span>
                     </a>
                     
-                    <a href="/tags/链表/">
-                        <span class="chip bg-color">链表</span>
+                    <a href="/tags/栈/">
+                        <span class="chip bg-color">栈</span>
+                    </a>
+                    
+                    <a href="/tags/队列/">
+                        <span class="chip bg-color">队列</span>
                     </a>
                     
                 </div>
