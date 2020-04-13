@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2020-04-13T03:18:16.244Z</updated>
+  <updated>2020-04-13T17:21:08.019Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>【数据结构与算法】-（6）栈和队列</title>
-    <link href="http://nilsli.com/p/7914b7d0.html"/>
-    <id>http://nilsli.com/p/7914b7d0.html</id>
-    <published>2020-04-11T13:37:54.000Z</published>
-    <updated>2020-04-13T03:18:16.244Z</updated>
+    <title>【数据结构与算法】-（7）队列</title>
+    <link href="http://nilsli.com/p/c0a767bd.html"/>
+    <id>http://nilsli.com/p/c0a767bd.html</id>
+    <published>2020-04-13T17:13:40.000Z</published>
+    <updated>2020-04-13T17:21:08.019Z</updated>
     
     <summary type="html">
     
@@ -37,9 +37,32 @@
     
     
     
-      <category term="算法" scheme="http://nilsli.com/tags/%E7%AE%97%E6%B3%95/"/>
+  </entry>
+  
+  <entry>
+    <title>【数据结构与算法】-（6）栈</title>
+    <link href="http://nilsli.com/p/7914b7d0.html"/>
+    <id>http://nilsli.com/p/7914b7d0.html</id>
+    <published>2020-04-11T13:37:54.000Z</published>
+    <updated>2020-04-13T17:20:03.890Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
     
       <category term="数据结构" scheme="http://nilsli.com/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+      <category term="算法" scheme="http://nilsli.com/tags/%E7%AE%97%E6%B3%95/"/>
     
       <category term="栈" scheme="http://nilsli.com/tags/%E6%A0%88/"/>
     
@@ -153,17 +176,17 @@
     
     
     
+      <category term="数据结构" scheme="http://nilsli.com/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
       <category term="算法" scheme="http://nilsli.com/tags/%E7%AE%97%E6%B3%95/"/>
     
       <category term="线性表" scheme="http://nilsli.com/tags/%E7%BA%BF%E6%80%A7%E8%A1%A8/"/>
     
-      <category term="数据结构" scheme="http://nilsli.com/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
-    
-      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
-    
       <category term="理论" scheme="http://nilsli.com/tags/%E7%90%86%E8%AE%BA/"/>
     
       <category term="基础" scheme="http://nilsli.com/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
     
   </entry>
   
@@ -188,24 +211,24 @@
     
     
     
-      <category term="算法" scheme="http://nilsli.com/tags/%E7%AE%97%E6%B3%95/"/>
-    
       <category term="数据结构" scheme="http://nilsli.com/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
-      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+      <category term="算法" scheme="http://nilsli.com/tags/%E7%AE%97%E6%B3%95/"/>
     
       <category term="理论" scheme="http://nilsli.com/tags/%E7%90%86%E8%AE%BA/"/>
     
       <category term="基础" scheme="http://nilsli.com/tags/%E5%9F%BA%E7%A1%80/"/>
     
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+    
   </entry>
   
   <entry>
-    <title>【底层探索】-懒加载与分类</title>
+    <title>【底层探索】-懒加载类与分类的加载</title>
     <link href="http://nilsli.com/p/38312.html"/>
     <id>http://nilsli.com/p/38312.html</id>
     <published>2020-03-31T04:58:01.000Z</published>
-    <updated>2020-04-08T11:40:09.285Z</updated>
+    <updated>2020-04-13T11:55:14.182Z</updated>
     
     <summary type="html">
     
@@ -669,56 +692,6 @@ typedef struct objc_object *id;
       <category term="对齐" scheme="http://nilsli.com/tags/%E5%AF%B9%E9%BD%90/"/>
     
       <category term="内存" scheme="http://nilsli.com/tags/%E5%86%85%E5%AD%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>OC 底层研究1--alloc和init原理</title>
-    <link href="http://nilsli.com/p/19251.html"/>
-    <id>http://nilsli.com/p/19251.html</id>
-    <published>2019-12-16T07:31:51.000Z</published>
-    <updated>2020-04-01T15:06:03.741Z</updated>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;本页所使用的objc runtime 756.2，来自&lt;a href=&quot;https://github.com/RetVal/objc-runtime&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GITHUB&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h3 id=&quot;1-题目&quot;&gt;&lt;a href=&quot;#1-题目&quot; class=&quot;headerlink&quot; title=&quot;1. 题目&quot;&gt;&lt;/a&gt;1. 题目&lt;/h3&gt;&lt;p&gt;开始学习研究OC源码，今天看的是对象的初始化，也就是alloc以及init的分析。&lt;/p&gt;
-&lt;h3 id=&quot;2-附流程图如下&quot;&gt;&lt;a href=&quot;#2-附流程图如下&quot; class=&quot;headerlink&quot; title=&quot;2. 附流程图如下&quot;&gt;&lt;/a&gt;2. 附流程图如下&lt;/h3&gt;&lt;p&gt; &lt;img src=&quot;/p/19251/121601.png&quot; alt&gt;&lt;/p&gt;
-&lt;h3 id=&quot;3-内容&quot;&gt;&lt;a href=&quot;#3-内容&quot; class=&quot;headerlink&quot; title=&quot;3. 内容&quot;&gt;&lt;/a&gt;3. 内容&lt;/h3&gt;&lt;h4 id=&quot;3-1引子&quot;&gt;&lt;a href=&quot;#3-1引子&quot; class=&quot;headerlink&quot; title=&quot;3.1引子&quot;&gt;&lt;/a&gt;3.1引子&lt;/h4&gt;&lt;p&gt;我们先看一段代码，Person类的初始化，打印p1,p2,p3对象，以及指向他们的指针：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;objective-c&quot;&gt;    Person *p1 = [Person alloc];
-    Person *p2 = [p1 init];
-    Person *p3 = [p1 init];
-
-    NSLog(@&amp;quot;%@ -- %p&amp;quot;, p1, &amp;amp;p1);
-    NSLog(@&amp;quot;%@ -- %p&amp;quot;, p2, &amp;amp;p2);
-    NSLog(@&amp;quot;%@ -- %p&amp;quot;, p3, &amp;amp;p3);&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;打印结果是：&lt;/p&gt;
-&lt;img src=&quot;/p/19251/121602.png&quot; style=&quot;zoom:50%;&quot;&gt;
-
-&lt;p&gt;这里为什么p1相同的情况下，经过init后的p2，p3 的地址都不一样呢，我们要用这个图来分析:&lt;/p&gt;
-&lt;img src=&quot;/p/19251/121603.png&quot; style=&quot;zoom:50%;&quot;&gt;
-
-&lt;p&gt;在这里，我们&lt;strong&gt;[Person alloc]&lt;/strong&gt;创建了一个p 对象的内存空间，而&lt;strong&gt;[p1 init]&lt;/strong&gt;则是创建同样是指向p1的指针p2，p3，因为和p1 内存空间一致，所以地址均为0x6000024f4950，但是指向该3个指针的指针不一样，所以&amp;amp;p1, &amp;amp;p2, &amp;amp;p3 地址不一致。 &lt;/p&gt;
-&lt;h4 id=&quot;3-2源码分析：&quot;&gt;&lt;a href=&quot;#3-2源码分析：&quot; class=&quot;headerlink&quot; title=&quot;3.2源码分析：&quot;&gt;&lt;/a&gt;3.2源码分析：&lt;/h4&gt;&lt;p&gt;alloc 步骤如下&lt;/p&gt;
-&lt;h6 id=&quot;1-alloc&quot;&gt;&lt;a href=&quot;#1-alloc&quot; class=&quot;headerlink&quot; title=&quot;1. alloc&quot;&gt;&lt;/a&gt;&lt;strong&gt;1. alloc&lt;/strong&gt;&lt;/h6&gt;&lt;p&gt;该步骤主要为创建对象，&lt;strong&gt;申请内存空间&lt;/strong&gt;。相关objc源代码如下&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;cpp&quot;&gt;+ (id)alloc {
-    return _objc_rootAlloc(self);
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-    
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
-    
-      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
-    
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
-    
-      <category term="alloc" scheme="http://nilsli.com/tags/alloc/"/>
     
   </entry>
   
