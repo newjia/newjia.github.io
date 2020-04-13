@@ -404,14 +404,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.4k
+                    1.8k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    7 分
                 </div>
                 
 
@@ -638,8 +638,34 @@
 <h2 id="二、队列"><a href="#二、队列" class="headerlink" title="二、队列"></a>二、队列</h2><h3 id="1-概念-1"><a href="#1-概念-1" class="headerlink" title="1. 概念"></a>1. 概念</h3><blockquote>
 <p>队列 (<em>queue</em>) 是只允许在一端进行插入操作、而在另一端进行删除操作的线性表</p>
 </blockquote>
-<p>队列是一种先进先出（First In First Out）的线性表，简称<strong>FIFO</strong>。允许插入的一端称为队尾，允许删除的一端称为队头。</p>
-<h3 id="2-操作"><a href="#2-操作" class="headerlink" title="2. 操作"></a>2. 操作</h3>
+<p>队列是一种<strong>先进先出</strong>（First In First Out）的线性表，简称<strong>FIFO</strong>。允许插入的一端称为队尾(<em>rear</em>)，允许删除的一端称为队头(<em>front</em>)。</p>
+<p><img src="/p/7914b7d0/005.png" alt="队列结构"></p>
+<h3 id="2-操作"><a href="#2-操作" class="headerlink" title="2. 操作"></a>2. 操作</h3><p>入队和出队：正如上文提到的，队列讲究的是先进先出的原则。队列的内部规则，好比大学上课时的占座位，先占到座位的总是前三排，来得晚的只能做到后面去了，等到下课了，先出去的也往往是前三排，也就是先来的那些同学。</p>
+<p>给队列的进队入队画了个示意图如下：</p>
+<p><img src="/p/7914b7d0/006.png" alt></p>
+<h3 id="3-循环队列"><a href="#3-循环队列" class="headerlink" title="3. 循环队列"></a>3. 循环队列</h3><h4 id="2-3-1-原理"><a href="#2-3-1-原理" class="headerlink" title="2.3.1 原理"></a>2.3.1 原理</h4><p>线性表有顺序存储和链式存储，队列作为线性表的一种，同样有循环队列的结构。</p>
+<p>像上图中，当C3离开，相继加入了C4和C5，队尾指针就要指出到队列外了，这时就会报出数组越界的错误，但是可以看到队列下方0、1、2位都是空的，这种情况叫做“假溢出”。</p>
+<p>为了解决这种前面空，后面满的情况，我们经常采用解决方案，就是头尾相连的循环。</p>
+<blockquote>
+<p>队列的头尾相连的循环结构称为循环队列</p>
+</blockquote>
+<p>引入循环队列的概念，是为了解决假溢出的现象，那么，究竟什么时候队列真正满了呢？</p>
+<p>我们根据下图分析：</p>
+<ul>
+<li>当初始时，队列空：此时 <code>Q.front = Q.rear</code></li>
+<li>当a、b、c 依次入队，front 不变，rear 指向到元素c后面</li>
+<li>当<code>a</code>离开，front 下沉，指向<code>b</code></li>
+<li>当d、e、f、g入队后，此时<code>rear</code>指向最后一个元素<code>b</code>，此时与<code>front</code>重合</li>
+</ul>
+<p>此时<code>rear</code>、 <code>front</code>再次重合，回到老路上了？</p>
+<p><strong>解决办法</strong>是：预留一个元素位，防止重合。</p>
+<p>也就是说当队列满时，还会有一个空闲的空间。如最后一张图所示，这样<code>rear</code>和<code>front</code> 不会重合。</p>
+<p>所以判断队伍满的条件是：</p>
+<ul>
+<li>队列满：<code>Q.front = (Q.rear + 1) % MaxSize</code></li>
+</ul>
+<p><img src="http://c.biancheng.net/cpp/uploads/allimg/140713/1-140G32234251B.jpg" alt="循环队列出队入队"></p>
+<h4 id><a href="#" class="headerlink" title=" "></a> </h4>
             </div>
             <hr/>
 
