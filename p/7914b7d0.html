@@ -404,14 +404,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.3k
+                    1.5k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    5 分
+                    6 分
                 </div>
                 
 
@@ -427,7 +427,16 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h3><h4 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h4><blockquote>
+                <blockquote>
+<p> <a href="https://nilsli.com/p/43384.html">【数据结构与算法】-（1）基础篇</a></p>
+<p> <a href="https://nilsli.com/p/43366.html">【数据结构与算法】-（2）线性表基础</a></p>
+<p> <a href="https://nilsli.com/p/54688.html">【数据结构与算法】-（3）循环链表（单向）</a></p>
+<p> <a href="https://nilsli.com/p/56790.html">【数据结构与算法】-（4）双向链表和双向循环链表</a></p>
+<p> <a href="https://nilsli.com/p/50518edc.html">【数据结构与算法】-（5）链表面试题解析</a></p>
+<p> <a href="https://nilsli.com/p/7914b7d0.html">【数据结构与算法】-（6）栈</a></p>
+<p> <a href="https://nilsli.com/p/c0a767bd.html">【数据结构与算法】-（7）队列</a></p>
+</blockquote>
+<h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h3><h4 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h4><blockquote>
 <p>栈 (<em>stack</em>) 是限定仅在表尾进行插入和删除操作的线性表</p>
 </blockquote>
 <ul>
@@ -436,30 +445,35 @@
 <li>允许插入和删除的一段叫作栈顶 (<em>top</em>)，另一段底叫作栈底(<em>bottom/rear</em>)</li>
 </ul>
 <h4 id="1-2-示意图"><a href="#1-2-示意图" class="headerlink" title="1.2 示意图"></a>1.2 示意图</h4><p><img src="/p/7914b7d0/001.png" alt="栈结构示意图"></p>
-<h3 id="1-2-栈的顺序存储结构及实现"><a href="#1-2-栈的顺序存储结构及实现" class="headerlink" title="1.2 栈的顺序存储结构及实现"></a>1.2 栈的顺序存储结构及实现</h3><h4 id="1-2-1-顺序栈结构"><a href="#1-2-1-顺序栈结构" class="headerlink" title="1.2.1 顺序栈结构"></a>1.2.1 顺序栈结构</h4><p>顺序栈由一个数据数组和栈顶指针组成：</p>
+<h3 id="1-2-栈的顺序存储结构及实现"><a href="#1-2-栈的顺序存储结构及实现" class="headerlink" title="1.2 栈的顺序存储结构及实现"></a>1.2 栈的顺序存储结构及实现</h3><h4 id="1-2-1-顺序栈结构"><a href="#1-2-1-顺序栈结构" class="headerlink" title="1.2.1 顺序栈结构"></a>1.2.1 顺序栈结构</h4><p>顺序栈由一个<strong>数据数组</strong>和栈顶指针组成：</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span>
 <span class="token punctuation">{</span>
     SElemType data<span class="token punctuation">[</span>MAXSIZE<span class="token punctuation">]</span><span class="token punctuation">;</span>
     <span class="token keyword">int</span> top<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">/* 用于栈顶指针 */</span>
 <span class="token punctuation">}</span>SqStack<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>和链式结构类似，指针<code>top</code> 永远指向下一个栈内元素。</p>
-<h4 id="1-2-2-创建空栈"><a href="#1-2-2-创建空栈" class="headerlink" title="1.2.2 创建空栈"></a>1.2.2 创建空栈</h4><pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">InitStack</span><span class="token punctuation">(</span>SqStack <span class="token operator">*</span>S<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<h4 id="1-2-2-创建空栈"><a href="#1-2-2-创建空栈" class="headerlink" title="1.2.2 创建空栈"></a>1.2.2 创建空栈</h4><p>初始化栈，只需要将栈顶<code>top</code> 处于-1 即可，类似数组，有心数据进来就从0开始排列</p>
+<pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">InitStack</span><span class="token punctuation">(</span>SqStack <span class="token operator">*</span>S<span class="token punctuation">)</span><span class="token punctuation">{</span>
 
     S<span class="token operator">-></span>top <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="1-2-3-清空一个栈"><a href="#1-2-3-清空一个栈" class="headerlink" title="1.2.3 清空一个栈"></a>1.2.3 清空一个栈</h4><pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">ClearStack</span><span class="token punctuation">(</span>SqStack <span class="token operator">*</span>S<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<h4 id="1-2-3-清空一个栈"><a href="#1-2-3-清空一个栈" class="headerlink" title="1.2.3 清空一个栈"></a>1.2.3 清空一个栈</h4><p>清空栈也栈顶<code>top</code> 处于-1 即可。</p>
+<pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">ClearStack</span><span class="token punctuation">(</span>SqStack <span class="token operator">*</span>S<span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">// 只需要修改top标签 -1.</span>
     S<span class="token operator">-></span>top <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="1-2-4-判断栈是否为空"><a href="#1-2-4-判断栈是否为空" class="headerlink" title="1.2.4 判断栈是否为空"></a>1.2.4 判断栈是否为空</h4><pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">StackEmpty</span><span class="token punctuation">(</span>SqStack S<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<h4 id="1-2-4-判断栈是否为空"><a href="#1-2-4-判断栈是否为空" class="headerlink" title="1.2.4 判断栈是否为空"></a>1.2.4 判断栈是否为空</h4><p>由于栈内只要有有元素，栈顶<code>top</code>都会移动位置，所以只需要判断是否在-1 即可</p>
+<pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">StackEmpty</span><span class="token punctuation">(</span>SqStack S<span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token keyword">return</span> S<span class="token punctuation">.</span>top <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h4 id="1-2-5-返回栈的长度"><a href="#1-2-5-返回栈的长度" class="headerlink" title="1.2.5 返回栈的长度"></a>1.2.5 返回栈的长度</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">StackLength</span><span class="token punctuation">(</span>SqStack S<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<h4 id="1-2-5-返回栈的长度"><a href="#1-2-5-返回栈的长度" class="headerlink" title="1.2.5 返回栈的长度"></a>1.2.5 返回栈的长度</h4><p>由于栈顶从0开始排列起来，长度必须上<code>top</code>的序号+1</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">StackLength</span><span class="token punctuation">(</span>SqStack S<span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token keyword">return</span> S<span class="token punctuation">.</span>top <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
-<h4 id="1-2-6-获取栈顶元素"><a href="#1-2-6-获取栈顶元素" class="headerlink" title="1.2.6 获取栈顶元素"></a>1.2.6 获取栈顶元素</h4><pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">GetTop</span><span class="token punctuation">(</span>SqStack S<span class="token punctuation">,</span>SElemType <span class="token operator">*</span>e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<h4 id="1-2-6-获取栈顶元素"><a href="#1-2-6-获取栈顶元素" class="headerlink" title="1.2.6 获取栈顶元素"></a>1.2.6 获取栈顶元素</h4><p>类似数组一样，栈定元素为最后一个元素，即<code>S.data[S.top]</code></p>
+<pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">GetTop</span><span class="token punctuation">(</span>SqStack S<span class="token punctuation">,</span>SElemType <span class="token operator">*</span>e<span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>S<span class="token punctuation">.</span>top <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>
         <span class="token keyword">return</span> ERROR<span class="token punctuation">;</span>
     <span class="token keyword">else</span>
@@ -467,7 +481,8 @@
 
     <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="1-2-7-插入元素e-为新栈顶元素（压栈）"><a href="#1-2-7-插入元素e-为新栈顶元素（压栈）" class="headerlink" title="1.2.7 插入元素e 为新栈顶元素（压栈）"></a>1.2.7 插入元素<code>e</code> 为新栈顶元素（压栈）</h4><pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">PushData</span><span class="token punctuation">(</span>SqStack <span class="token operator">*</span>S<span class="token punctuation">,</span> SElemType e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<h4 id="1-2-7-插入元素e-为新栈顶元素（压栈）"><a href="#1-2-7-插入元素e-为新栈顶元素（压栈）" class="headerlink" title="1.2.7 插入元素e 为新栈顶元素（压栈）"></a>1.2.7 插入元素<code>e</code> 为新栈顶元素（压栈）</h4><p>压栈即把<code>top</code> 序号 位置提升1位，<code>top</code>位的元素为新元素。</p>
+<pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">PushData</span><span class="token punctuation">(</span>SqStack <span class="token operator">*</span>S<span class="token punctuation">,</span> SElemType e<span class="token punctuation">)</span><span class="token punctuation">{</span>
 
     <span class="token comment" spellcheck="true">//栈已满</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>S<span class="token operator">-></span>top <span class="token operator">==</span> MAXSIZE <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -482,7 +497,8 @@
     <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h4 id="1-2-8-删除栈定元素，并用e带回（出栈）"><a href="#1-2-8-删除栈定元素，并用e带回（出栈）" class="headerlink" title="1.2.8 删除栈定元素，并用e带回（出栈）"></a>1.2.8 删除栈定元素，并用e带回（出栈）</h4><pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">Pop</span><span class="token punctuation">(</span>SqStack <span class="token operator">*</span>S<span class="token punctuation">,</span>SElemType <span class="token operator">*</span>e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+<h4 id="1-2-8-删除栈定元素，并用e带回（出栈）"><a href="#1-2-8-删除栈定元素，并用e带回（出栈）" class="headerlink" title="1.2.8 删除栈定元素，并用e带回（出栈）"></a>1.2.8 删除栈定元素，并用e带回（出栈）</h4><p>出栈与入栈恰恰相反，将<code>top</code> 位的元素弹出，同时将<code>top</code> 序号减1</p>
+<pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">Pop</span><span class="token punctuation">(</span>SqStack <span class="token operator">*</span>S<span class="token punctuation">,</span>SElemType <span class="token operator">*</span>e<span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token comment" spellcheck="true">//空栈,则返回error;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>S<span class="token operator">-></span>top <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token keyword">return</span> ERROR<span class="token punctuation">;</span>
@@ -972,13 +988,13 @@
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            序言
-【数据结构与算法】-（1）基础篇
-【数据结构与算法】-（2）线性表基础
-【数据结构与算法】-（3）循环链表（单向）
-【数据结构与算法】-（4）双向链表和双向循环链表
-
-之前复习了一下数据结构以及线性表的基础，继续来做一些习题，巩固一下
+                            
+ 【数据结构与算法】-（1）基础篇
+ 【数据结构与算法】-（2）线性表基础
+ 【数据结构与算法】-（3）循环链表（单向）
+ 【数据结构与算法】-（4）双向链表和双向循环链表
+ 【数据结构与算法】-（5）链表面试题解析
+ 【数据结构与算法】
                         
                     </div>
                     <div class="publish-info">

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2020-04-14T08:45:50.826Z</updated>
+  <updated>2020-04-20T10:16:01.750Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -17,11 +17,61 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>【数据结构与算法】-（8）栈与队列算法题</title>
+    <link href="http://nilsli.com/p/b0e10b1c.html"/>
+    <id>http://nilsli.com/p/b0e10b1c.html</id>
+    <published>2020-04-20T10:11:53.000Z</published>
+    <updated>2020-04-20T10:16:01.750Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>【iOS进阶】-启动优化</title>
+    <link href="http://nilsli.com/p/7bfd68ea.html"/>
+    <id>http://nilsli.com/p/7bfd68ea.html</id>
+    <published>2020-04-18T16:27:05.000Z</published>
+    <updated>2020-04-19T11:55:32.172Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="启动优化" scheme="http://nilsli.com/tags/%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96/"/>
+    
+      <category term="调优" scheme="http://nilsli.com/tags/%E8%B0%83%E4%BC%98/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【数据结构与算法】-（7）队列</title>
     <link href="http://nilsli.com/p/c0a767bd.html"/>
     <id>http://nilsli.com/p/c0a767bd.html</id>
     <published>2020-04-13T17:13:40.000Z</published>
-    <updated>2020-04-14T08:45:50.826Z</updated>
+    <updated>2020-04-20T10:20:26.166Z</updated>
     
     <summary type="html">
     
@@ -50,7 +100,7 @@
     <link href="http://nilsli.com/p/7914b7d0.html"/>
     <id>http://nilsli.com/p/7914b7d0.html</id>
     <published>2020-04-11T13:37:54.000Z</published>
-    <updated>2020-04-13T17:20:03.890Z</updated>
+    <updated>2020-04-20T10:21:02.110Z</updated>
     
     <summary type="html">
     
@@ -81,7 +131,7 @@
     <link href="http://nilsli.com/p/50518edc.html"/>
     <id>http://nilsli.com/p/50518edc.html</id>
     <published>2020-04-09T03:28:58.000Z</published>
-    <updated>2020-04-11T13:39:05.560Z</updated>
+    <updated>2020-04-20T10:19:46.849Z</updated>
     
     <summary type="html">
     
@@ -110,7 +160,7 @@
     <link href="http://nilsli.com/p/56790.html"/>
     <id>http://nilsli.com/p/56790.html</id>
     <published>2020-04-03T12:04:49.000Z</published>
-    <updated>2020-04-09T07:31:04.039Z</updated>
+    <updated>2020-04-20T10:20:47.700Z</updated>
     
     <summary type="html">
     
@@ -137,7 +187,7 @@
     <link href="http://nilsli.com/p/54688.html"/>
     <id>http://nilsli.com/p/54688.html</id>
     <published>2020-04-02T08:06:27.000Z</published>
-    <updated>2020-04-09T07:31:39.555Z</updated>
+    <updated>2020-04-20T10:19:48.231Z</updated>
     
     <summary type="html">
     
@@ -166,7 +216,7 @@
     <link href="http://nilsli.com/p/43366.html"/>
     <id>http://nilsli.com/p/43366.html</id>
     <published>2020-04-01T09:19:38.000Z</published>
-    <updated>2020-04-09T07:31:24.802Z</updated>
+    <updated>2020-04-20T10:21:35.402Z</updated>
     
     <summary type="html">
     
@@ -188,11 +238,11 @@
     
       <category term="线性表" scheme="http://nilsli.com/tags/%E7%BA%BF%E6%80%A7%E8%A1%A8/"/>
     
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+    
       <category term="理论" scheme="http://nilsli.com/tags/%E7%90%86%E8%AE%BA/"/>
     
       <category term="基础" scheme="http://nilsli.com/tags/%E5%9F%BA%E7%A1%80/"/>
-    
-      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
     
   </entry>
   
@@ -201,7 +251,7 @@
     <link href="http://nilsli.com/p/43384.html"/>
     <id>http://nilsli.com/p/43384.html</id>
     <published>2020-03-31T09:01:00.000Z</published>
-    <updated>2020-04-09T07:34:38.642Z</updated>
+    <updated>2020-04-20T10:21:54.888Z</updated>
     
     <summary type="html">
     
@@ -221,11 +271,11 @@
     
       <category term="算法" scheme="http://nilsli.com/tags/%E7%AE%97%E6%B3%95/"/>
     
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+    
       <category term="理论" scheme="http://nilsli.com/tags/%E7%90%86%E8%AE%BA/"/>
     
       <category term="基础" scheme="http://nilsli.com/tags/%E5%9F%BA%E7%A1%80/"/>
-    
-      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
     
   </entry>
   
@@ -308,11 +358,11 @@
     
     
     
+      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
+    
       <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
     
       <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
-    
-      <category term="iOS" scheme="http://nilsli.com/tags/iOS/"/>
     
       <category term="Class" scheme="http://nilsli.com/tags/Class/"/>
     
@@ -607,97 +657,6 @@ struct objc_object {
       <category term="2020" scheme="http://nilsli.com/tags/2020/"/>
     
       <category term="感想" scheme="http://nilsli.com/tags/%E6%84%9F%E6%83%B3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>OC底层研究3--isa的初始化和指向分析</title>
-    <link href="http://nilsli.com/p/64820.html"/>
-    <id>http://nilsli.com/p/64820.html</id>
-    <published>2019-12-27T07:05:19.000Z</published>
-    <updated>2020-04-01T15:06:03.728Z</updated>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;本页所使用的objc runtime 756.2，来自&lt;a href=&quot;https://github.com/RetVal/objc-runtime&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GITHUB&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;开始继续学习研究OC源码，这次研究的是isa的初始化和指向分析。&lt;/p&gt;
-&lt;h3 id=&quot;1-概念&quot;&gt;&lt;a href=&quot;#1-概念&quot; class=&quot;headerlink&quot; title=&quot;1. 概念&quot;&gt;&lt;/a&gt;1. 概念&lt;/h3&gt;&lt;h4 id=&quot;什么是isa&quot;&gt;&lt;a href=&quot;#什么是isa&quot; class=&quot;headerlink&quot; title=&quot;什么是isa&quot;&gt;&lt;/a&gt;什么是isa&lt;/h4&gt;&lt;p&gt;看看苹果文档的介绍：&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;isa&lt;/p&gt;
-&lt;p&gt;A Pointer to the class definition of which this object is an instance.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;&lt;strong&gt;isa&lt;/strong&gt; ： 一个指向该对象的类的指针。&lt;/p&gt;
-&lt;p&gt;打开Xcode，找到objc.h，我们可以看看到如下代码&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;cpp&quot;&gt;#if !OBJC_TYPES_DEFINED
-/// An opaque type that represents an Objective-C class.
-/// 一个展示OC类的未知的类型
-typedef struct objc_class *Class;
-
-/// Represents an instance of a class.
-/// 展示一个类的实例
-struct objc_object {
-    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
-};
-
-/// A pointer to an instance of a class.
-/// 一个指向类的实例的指针
-typedef struct objc_object *id;
-#endif&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;可以看出，Class 是一个objc_class 类型的结构体。&lt;/p&gt;
-&lt;p&gt;而id类型，则是objc_object 类型的结构体.&lt;/p&gt;
-    
-    </summary>
-    
-    
-    
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
-    
-      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
-    
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
-    
-      <category term="对齐" scheme="http://nilsli.com/tags/%E5%AF%B9%E9%BD%90/"/>
-    
-      <category term="内存" scheme="http://nilsli.com/tags/%E5%86%85%E5%AD%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>OC底层研究2--内存对齐原理</title>
-    <link href="http://nilsli.com/p/43162.html"/>
-    <id>http://nilsli.com/p/43162.html</id>
-    <published>2019-12-22T03:05:11.000Z</published>
-    <updated>2020-04-01T15:06:03.734Z</updated>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;本页所使用的objc runtime 756.2，来自&lt;a href=&quot;https://github.com/RetVal/objc-runtime&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GITHUB&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;开始继续学习研究OC源码，今天看的是OC的内存原理，以及对齐原理的分析。&lt;/p&gt;
-&lt;h4 id=&quot;1-概念&quot;&gt;&lt;a href=&quot;#1-概念&quot; class=&quot;headerlink&quot; title=&quot;1.概念&quot;&gt;&lt;/a&gt;1.概念&lt;/h4&gt;&lt;p&gt;内存对齐在数据结构中，是比较基础也比较重要的一环，对于iOS开发，研究底层更免不了要了解他们的原理，方便我们更透彻的学习iOS的原理。&lt;/p&gt;
-&lt;p&gt;我们先来一段维基百科的&lt;a href=&quot;https://en.wikipedia.org/wiki/Data_structure_alignment&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;数据结构对齐&lt;/a&gt;的相关知识。&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;内存对齐，也可以理解为数据结构对齐（Data structure alignment），是代码编译后在内存的布局与使用方式。包括三方面内容：&lt;strong&gt;数据对齐&lt;/strong&gt;、&lt;strong&gt;数据结构填充&lt;/strong&gt;（padding）与&lt;strong&gt;包入&lt;/strong&gt;（packing）。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;下图是内存中各类型属性所占的空间大小：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/p/43162/010.png&quot; alt&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-    
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
-    
-      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
-    
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
-    
-      <category term="对齐" scheme="http://nilsli.com/tags/%E5%AF%B9%E9%BD%90/"/>
-    
-      <category term="内存" scheme="http://nilsli.com/tags/%E5%86%85%E5%AD%98/"/>
     
   </entry>
   
