@@ -4,11 +4,11 @@
   
     
     <entry>
-      <title>【数据结构与算法】-（8）栈与队列算法题</title>
+      <title>【数据结构与算法】-（8）栈之算法题</title>
       <link href="/p/b0e10b1c.html"/>
       <url>/p/b0e10b1c.html</url>
       
-        <content type="html"><![CDATA[<blockquote><p><a href="https://nilsli.com/p/43384.html">【数据结构与算法】-（1）基础篇</a></p><p><a href="https://nilsli.com/p/43366.html">【数据结构与算法】-（2）线性表基础</a></p><p><a href="https://nilsli.com/p/54688.html">【数据结构与算法】-（3）循环链表（单向）</a></p><p><a href="https://nilsli.com/p/56790.html">【数据结构与算法】-（4）双向链表和双向循环链表</a></p><p><a href="https://nilsli.com/p/50518edc.html">【数据结构与算法】-（5）链表面试题解析</a></p><p><a href="https://nilsli.com/p/7914b7d0.html">【数据结构与算法】-（6）栈</a></p><p><a href="https://nilsli.com/p/c0a767bd.html">【数据结构与算法】-（7）队列</a></p></blockquote>]]></content>
+        <content type="html"><![CDATA[<blockquote><p><a href="https://nilsli.com/p/43384.html">【数据结构与算法】-（1）基础篇</a></p><p><a href="https://nilsli.com/p/43366.html">【数据结构与算法】-（2）线性表基础</a></p><p><a href="https://nilsli.com/p/54688.html">【数据结构与算法】-（3）循环链表（单向）</a></p><p><a href="https://nilsli.com/p/56790.html">【数据结构与算法】-（4）双向链表和双向循环链表</a></p><p><a href="https://nilsli.com/p/50518edc.html">【数据结构与算法】-（5）链表面试题解析</a></p><p><a href="https://nilsli.com/p/7914b7d0.html">【数据结构与算法】-（6）栈</a></p><p><a href="https://nilsli.com/p/c0a767bd.html">【数据结构与算法】-（7）队列</a></p></blockquote><h2 id="0-算法题解法"><a href="#0-算法题解法" class="headerlink" title="0. 算法题解法"></a>0. 算法题解法</h2><p>要进大厂，必须要迈过的一步，就是算法题，那么算法题的思路究竟是如何呢？</p><p>笔者总结了一下近十年工作中的精髓，思路如下：</p><blockquote><p>我们遇到什么困难也不要怕，微笑着面对它……奥利给！</p></blockquote><p>抱歉走错片场了……想说的真正意思上这样的：</p><h4 id="0-1-方法"><a href="#0-1-方法" class="headerlink" title="0.1 方法"></a>0.1 方法</h4><ol><li>充分阅读题目，了解题目背后的关键意思；</li><li>分析题目，涉及到哪些数据结构，对问题进行分类——到底属于链表问题、栈思想问题、字符串问题、二叉树问题、图相关问题、排序问题；与你之前所接触过的算法题有没有类似，找到问题的解题思路</li><li>实现算法。在算法的实现的过程，并不是一蹴而就，肯定是需要不断的调试、修改的。</li><li>验证算法正确性。</li><li>找到题源，看其他的开发者对齐的解决思路。</li><li>找到题解建议之后，对于其他优秀思路，分析它的优势，并且学习它的思路，并且写成其他解法的代码 </li><li>算法题的解题能力来自于2点：<ul><li>对于数据结构与算法核心问题是否夯实；</li><li>是否有足够多且足够耐心的积累；</li></ul></li></ol><h4 id="0-2-思想应用"><a href="#0-2-思想应用" class="headerlink" title="0.2 思想应用"></a>0.2 思想应用</h4><p>指的是利用栈的特性(先进后出)去解决问题,那么什么问题适合用栈思想解决了?</p><ol><li><p>数据是线性的。</p></li><li><p>问题中常常涉及到数据的来回比较，匹配问题；例如：每日温度、括号匹配、字符串解码、去掉重复字母等问题。</p></li><li><p>问题中涉及到数据的转置，例如进制问题、链表倒序打印问题等。</p></li><li><p>注意并不是说栈思想只是一个解决的的参考思想，并不是万能的。它适用于以上这样的情况下去解决问题；利用栈思想解决问题时，首先需要透彻的解析问题之后，找到问题解决的规律，才能使用它解决。思想只有指导作用，遇到不同的题目，需要个例分析。在基本思想上去找到解决问题之道;</p></li></ol><h4 id="0-3-推荐书单"><a href="#0-3-推荐书单" class="headerlink" title="0.3 推荐书单"></a>0.3 推荐书单</h4><p><img src="/p/b0e10b1c/001.jpg" alt="推荐书单"></p><h2 id="1-进制转换"><a href="#1-进制转换" class="headerlink" title="1. 进制转换"></a>1. 进制转换</h2><h4 id="Q-题目"><a href="#Q-题目" class="headerlink" title="Q: 题目"></a>Q: 题目</h4><p>如何将十进制转化为8进制的整形</p><h4 id="A-解答"><a href="#A-解答" class="headerlink" title="A: 解答"></a>A: 解答</h4><h5 id="1-初始化栈"><a href="#1-初始化栈" class="headerlink" title="1. 初始化栈"></a>1. 初始化栈</h5><pre class="line-numbers language-c"><code class="language-c">    SqStack S<span class="token punctuation">;</span>    SElemType e<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//1.初始化一个空栈S</span>    <span class="token function">InitStack</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre><pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">InitStack</span><span class="token punctuation">(</span>SqStack <span class="token operator">*</span>S<span class="token punctuation">)</span><span class="token punctuation">{</span>    S<span class="token operator">-></span>top <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>    <span class="token keyword">return</span> OK<span class="token punctuation">;</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre><h5 id="2-压栈"><a href="#2-压栈" class="headerlink" title="2. 压栈"></a>2. 压栈</h5><p>循环取余，N 为除以8 的取余</p><pre class="line-numbers language-c"><code class="language-c">    <span class="token comment" spellcheck="true">//2.</span>    <span class="token keyword">while</span> <span class="token punctuation">(</span>N<span class="token punctuation">)</span> <span class="token punctuation">{</span>        <span class="token function">PushData</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">,</span> N<span class="token operator">%</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>        N <span class="token operator">=</span> N<span class="token operator">/</span><span class="token number">8</span><span class="token punctuation">;</span>    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre><h5 id="3-出栈"><a href="#3-出栈" class="headerlink" title="3. 出栈"></a>3. 出栈</h5><p>当栈不为空，一直输出，<code>pop</code>出栈</p><pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">StackEmpty</span><span class="token punctuation">(</span>S<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>        <span class="token function">Pop</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">,</span> <span class="token operator">&amp;</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre><h4 id="4-打印结果："><a href="#4-打印结果：" class="headerlink" title="4. 打印结果："></a>4. 打印结果：</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">// insert code here...</span>    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"Hello, World!\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token function">conversion</span><span class="token punctuation">(</span><span class="token number">5201314</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>运行结果如下：</p><p><img src="/p/b0e10b1c/002.png" alt="运行结果"></p><h2 id="2-每日温度"><a href="#2-每日温度" class="headerlink" title="2. 每日温度"></a>2. 每日温度</h2><h2 id="3-括号匹配检验"><a href="#3-括号匹配检验" class="headerlink" title="3. 括号匹配检验"></a>3. 括号匹配检验</h2><h2 id="4-杨辉三角"><a href="#4-杨辉三角" class="headerlink" title="4. 杨辉三角"></a>4. 杨辉三角</h2><h2 id="5-爬楼梯"><a href="#5-爬楼梯" class="headerlink" title="5. 爬楼梯"></a>5. 爬楼梯</h2><h2 id="6-字符串编码问题"><a href="#6-字符串编码问题" class="headerlink" title="6. 字符串编码问题"></a>6. 字符串编码问题</h2>]]></content>
       
       
       
@@ -48,9 +48,9 @@
       
         <tags>
             
-            <tag> 数据结构 </tag>
-            
             <tag> 算法 </tag>
+            
+            <tag> 数据结构 </tag>
             
             <tag> 队列 </tag>
             
@@ -71,13 +71,13 @@
       
         <tags>
             
-            <tag> 数据结构 </tag>
-            
             <tag> 算法 </tag>
             
-            <tag> 栈 </tag>
+            <tag> 数据结构 </tag>
             
             <tag> 队列 </tag>
+            
+            <tag> 栈 </tag>
             
         </tags>
       
@@ -167,11 +167,11 @@
       
         <tags>
             
-            <tag> 数据结构 </tag>
-            
             <tag> 算法 </tag>
             
             <tag> 线性表 </tag>
+            
+            <tag> 数据结构 </tag>
             
             <tag> iOS </tag>
             
@@ -196,9 +196,9 @@
       
         <tags>
             
-            <tag> 数据结构 </tag>
-            
             <tag> 算法 </tag>
+            
+            <tag> 数据结构 </tag>
             
             <tag> iOS </tag>
             
