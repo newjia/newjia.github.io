@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="【数据结构与算法】-（8）栈之算法题, 李佳的技术博客">
+    <meta name="keywords" content="【数据结构与算法】-（8.1）字符串去重算法, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>【数据结构与算法】-（8）栈之算法题 | 李佳的技术博客</title>
+    <title>【数据结构与算法】-（8.1）字符串去重算法 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/23.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/6.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">【数据结构与算法】-（8）栈之算法题</h1>
+                    <h1 class="description center-align post-title">【数据结构与算法】-（8.1）字符串去重算法</h1>
                 </div>
             </div>
         </div>
@@ -365,9 +365,17 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/算法/">
+                                <span class="chip bg-color">算法</span>
+                            </a>
+                        
+                            <a href="/tags/去重/">
+                                <span class="chip bg-color">去重</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -379,7 +387,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-04-20
+                    2020-04-22
                 </div>
                 
 
@@ -388,14 +396,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    963
+                    1.5k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    5 分
                 </div>
                 
 
@@ -420,87 +428,139 @@
 <p><a href="https://nilsli.com/p/7914b7d0.html">【数据结构与算法】-（6）栈</a></p>
 <p><a href="https://nilsli.com/p/c0a767bd.html">【数据结构与算法】-（7）队列</a></p>
 </blockquote>
-<h2 id="0-算法题解法"><a href="#0-算法题解法" class="headerlink" title="0. 算法题解法"></a>0. 算法题解法</h2><p>要进大厂，必须要迈过的一步，就是算法题，那么算法题的思路究竟是如何呢？</p>
-<p>笔者总结了一下近十年工作中的精髓，思路如下：</p>
-<blockquote>
-<p>我们遇到什么困难也不要怕，微笑着面对它……奥利给！</p>
-</blockquote>
-<p>抱歉走错片场了……想说的真正意思上这样的：</p>
-<h4 id="0-1-方法"><a href="#0-1-方法" class="headerlink" title="0.1 方法"></a>0.1 方法</h4><ol>
-<li>充分阅读题目，了解题目背后的关键意思；</li>
-<li>分析题目，涉及到哪些数据结构，对问题进行分类——到底属于链表问题、栈思想问题、字符串问题、二叉树问题、图相关问题、排序问题；与你之前所接触过的算法题有没有类似，找到问题的解题思路</li>
-<li>实现算法。在算法的实现的过程，并不是一蹴而就，肯定是需要不断的调试、修改的。</li>
-<li>验证算法正确性。</li>
-<li>找到题源，看其他的开发者对齐的解决思路。</li>
-<li>找到题解建议之后，对于其他优秀思路，分析它的优势，并且学习它的思路，并且写成其他解法的代码 </li>
-<li>算法题的解题能力来自于2点：<ul>
-<li>对于数据结构与算法核心问题是否夯实；</li>
-<li>是否有足够多且足够耐心的积累；</li>
+<h2 id="去除重复字母"><a href="#去除重复字母" class="headerlink" title="去除重复字母"></a>去除重复字母</h2><p>LeetCode 级别：困难</p>
+<h3 id="Q：-题目"><a href="#Q：-题目" class="headerlink" title="Q： 题目"></a>Q： 题目</h3><p>给你一个仅包含小写字母的字符串，请你去除字符串中重复的字母，使得每个字母只出现一次。需保证返回结果的<strong>字典序</strong>最小。要求：不能打乱其他字符的相对位置。<a href="https://leetcode-cn.com/problems/remove-duplicate-letters/" target="_blank" rel="noopener">原题目leetcode链接</a></p>
+<p>示例1:</p>
+<p>输入：<code>&quot;bcabc&quot;</code></p>
+<p>输出：<code>&quot;abc&quot;</code></p>
+<p>示例2:</p>
+<p>输入：<code>&quot;cbacdcbc&quot;</code></p>
+<p>输出：<code>&quot;acdb&quot;</code>    <code>~~cbad~~</code>, <code>~~bacd~~</code>, <code>~~adcb~~</code></p>
+<h3 id="Analyze"><a href="#Analyze" class="headerlink" title="Analyze:"></a>Analyze:</h3><p>分析关键字：<strong>字典序</strong>、<strong>不打乱</strong></p>
+<ul>
+<li>字典序最小：即排列顺序按照26个字母一次排序，比如给的<code>antman</code> 肯定要排在<code>ultraman</code> 前面</li>
+<li>不打乱排序：即去除重复字母后，未被重复的那部分字母，不改变原来位置。比如<code>bcabc</code> 结果是 <code>abc</code> 那么去除的是第1、第2位的<code>b</code>和<code>c</code>， 后面3位<code>abc</code> 依然不变。</li>
 </ul>
+<h3 id="A：思路："><a href="#A：思路：" class="headerlink" title="A：思路："></a>A：思路：</h3><ol>
+<li><p>给定字符串 <code>s</code> ，排除字符串异常情况；</p>
 </li>
-</ol>
-<h4 id="0-2-思想应用"><a href="#0-2-思想应用" class="headerlink" title="0.2 思想应用"></a>0.2 思想应用</h4><p>指的是利用栈的特性(先进后出)去解决问题,那么什么问题适合用栈思想解决了?</p>
+<li><p>使用一个<code>record</code> 数组，来记录字符串中字母出现的次数；</p>
+</li>
+<li><p>创建一个栈<code>stack</code> ，用来存储<strong>去除重复字母</strong>的结果，并利用它的特性帮助我们找到正确的次序。</p>
+</li>
+<li><p>遍历给定的字符串<code>s</code>；</p>
+</li>
+<li><p>从0～<code>top</code> 依次遍历 <code>stack</code>，判断当前的字符<code>s[i]</code> 是否存在于<code>stack</code> 中，用一个<code>int</code>类型的值<code>isExist</code>来表示是否存在。</p>
 <ol>
-<li><p>数据是线性的。</p>
+<li><p>如果<code>isExsit</code> 存在，即==1，将<code>record [s[i]]</code> 位置上出现次数减1，即<code>record[s[i]]--</code>，并继续遍历下一个字符；意思是，当前的stack 已经包含这个字符，以后都不需要继续处理这个字符了。</p>
 </li>
-<li><p>问题中常常涉及到数据的来回比较，匹配问题；例如：每日温度、括号匹配、字符串解码、去掉重复字母等问题。</p>
-</li>
-<li><p>问题中涉及到数据的转置，例如进制问题、链表倒序打印问题等。</p>
-</li>
-<li><p>注意并不是说栈思想只是一个解决的的参考思想，并不是万能的。它适用于以上这样的情况下去解决问题；利用栈思想解决问题时，首先需要透彻的解析问题之后，找到问题解决的规律，才能使用它解决。思想只有指导作用，遇到不同的题目，需要个例分析。在基本思想上去找到解决问题之道;</p>
+<li><p>如果<code>isExist</code> 不存在，则需要<code>while</code>循环一下，找到这个字符正确的位置，然后存储起来。循环规则大概是这样：跳过栈中比当前字符大、而且后面还会出现的元素，将字符入栈。</p>
+<p><code>while</code> 循环的条件如下：</p>
+<ol>
+<li>用<code>top</code> &gt; -1 来保证栈不为空</li>
+<li>用 <code>stack[top]</code> &gt; s[i]  表示栈定元素比当前元素大</li>
+<li>用 <code>record[stack[top]]</code> &gt; 1 表示后面还会出现</li>
+</ol>
 </li>
 </ol>
-<h4 id="0-3-推荐书单"><a href="#0-3-推荐书单" class="headerlink" title="0.3 推荐书单"></a>0.3 推荐书单</h4><p><img src="/p/b0e10b1c/001.jpg" alt="推荐书单"></p>
-<h2 id="1-进制转换"><a href="#1-进制转换" class="headerlink" title="1. 进制转换"></a>1. 进制转换</h2><h4 id="Q-题目"><a href="#Q-题目" class="headerlink" title="Q: 题目"></a>Q: 题目</h4><p>如何将十进制转化为8进制的整形</p>
-<h4 id="A-解答"><a href="#A-解答" class="headerlink" title="A: 解答"></a>A: 解答</h4><h5 id="1-初始化栈"><a href="#1-初始化栈" class="headerlink" title="1. 初始化栈"></a>1. 初始化栈</h5><pre class="line-numbers language-c"><code class="language-c">    SqStack S<span class="token punctuation">;</span>
-    SElemType e<span class="token punctuation">;</span>
-    <span class="token comment" spellcheck="true">//1.初始化一个空栈S</span>
-    <span class="token function">InitStack</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">InitStack</span><span class="token punctuation">(</span>SqStack <span class="token operator">*</span>S<span class="token punctuation">)</span><span class="token punctuation">{</span>
+</li>
+<li><p>等遍历完所有的字符后，对当前的字符栈<code>stack</code> 添加一个结束符<code>\0</code>，并返回当前字符串首地址；</p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3></li>
+</ol>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">char</span> <span class="token operator">*</span><span class="token function">removeDuplicateLetters</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span>s<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">/*
+     ① 特殊情况处理,s为空,或者字符串长度为0;
+     ② 特殊情况,s的长度为1,则没有必要后续的处理,则直接返回s;
+     */</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>s <span class="token operator">==</span> <span class="token constant">NULL</span> <span class="token operator">||</span> <span class="token function">strlen</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token string">""</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">strlen</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> s<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    S<span class="token operator">-></span>top <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> OK<span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="2-压栈"><a href="#2-压栈" class="headerlink" title="2. 压栈"></a>2. 压栈</h5><p>循环取余，N 为除以8 的取余</p>
-<pre class="line-numbers language-c"><code class="language-c">    <span class="token comment" spellcheck="true">//2.</span>
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>N<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">PushData</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">,</span> N<span class="token operator">%</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        N <span class="token operator">=</span> N<span class="token operator">/</span><span class="token number">8</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="3-出栈"><a href="#3-出栈" class="headerlink" title="3. 出栈"></a>3. 出栈</h5><p>当栈不为空，一直输出，<code>pop</code>出栈</p>
-<pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">StackEmpty</span><span class="token punctuation">(</span>S<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token function">Pop</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>S<span class="token punctuation">,</span> <span class="token operator">&amp;</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
-<h5 id="4-打印结果："><a href="#4-打印结果：" class="headerlink" title="4. 打印结果："></a>4. 打印结果：</h5><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// insert code here...</span>
-    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"Hello, World!\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//record数组,用来记录字符串s中每个字符未来会出现的次数;</span>
+    <span class="token keyword">char</span> record<span class="token punctuation">[</span><span class="token number">26</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token keyword">int</span> len <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token function">strlen</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    <span class="token function">conversion</span><span class="token punctuation">(</span><span class="token number">5201314</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>运行结果如下：</p>
-<p><img src="/p/b0e10b1c/002.png" alt="运行结果"></p>
-<h2 id="2-括号匹配检验"><a href="#2-括号匹配检验" class="headerlink" title="2. 括号匹配检验"></a>2. 括号匹配检验</h2><h4 id="Q-题目-1"><a href="#Q-题目-1" class="headerlink" title="Q: 题目"></a>Q: 题目</h4><p><strong>括号匹配检验（题源：<a href="https://leetcode-cn.com/problems/valid-parentheses" target="_blank" rel="noopener">LeetCode</a>）</strong></p>
-<p>给定一个只包括 <code>(</code>，<code>)</code>，<code>{</code>，<code>}</code>，<code>[</code>，<code>]</code> 的字符串，判断字符串是否有效。</p>
-<p>有效字符串需满足：</p>
-<p>左括号必须用相同类型的右括号闭合。<br>左括号必须以正确的顺序闭合。<br>注意空字符串可被认为是有效字符串。</p>
-<p> <strong>示例 1:</strong></p>
-<pre class="line-numbers language-c"><code class="language-c">输入<span class="token punctuation">:</span> <span class="token string">"()"</span>
-输出<span class="token punctuation">:</span> true<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p><strong>示例 2:</strong></p>
-<pre class="line-numbers language-c"><code class="language-c">输入<span class="token punctuation">:</span> <span class="token string">"()[]{}"</span>
-输出<span class="token punctuation">:</span> true<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p><strong>示例 3:</strong></p>
-<pre class="line-numbers language-c"><code class="language-c">输入<span class="token punctuation">:</span> <span class="token string">"(]"</span>
-输出<span class="token punctuation">:</span> false<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p><strong>示例 4:</strong></p>
-<pre class="line-numbers language-c"><code class="language-c">输入<span class="token punctuation">:</span> <span class="token string">"([)]"</span>
-输出<span class="token punctuation">:</span> false<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p><strong>示例 5:</strong></p>
-<pre class="line-numbers language-c"><code class="language-c">输入<span class="token punctuation">:</span> <span class="token string">"{[]}"</span>
-输出<span class="token punctuation">:</span> true<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h4 id="A-解答-1"><a href="#A-解答-1" class="headerlink" title="A: 解答"></a>A: 解答</h4><h2 id="3-每日温度"><a href="#3-每日温度" class="headerlink" title="3. 每日温度"></a>3. 每日温度</h2><h2 id="4-杨辉三角"><a href="#4-杨辉三角" class="headerlink" title="4. 杨辉三角"></a>4. 杨辉三角</h2><h2 id="5-爬楼梯"><a href="#5-爬楼梯" class="headerlink" title="5. 爬楼梯"></a>5. 爬楼梯</h2><h2 id="6-字符串编码问题"><a href="#6-字符串编码问题" class="headerlink" title="6. 字符串编码问题"></a>6. 字符串编码问题</h2>
+    <span class="token comment" spellcheck="true">//申请一个字符串stack;(用栈的特性来进行stack字符串的数据进出)</span>
+    <span class="token keyword">char</span><span class="token operator">*</span> stack <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">char</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span>len <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">*</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token keyword">char</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//memset(void *s, int ch, size_t n) 将stack len*2*sizeof(char)长度范围的空间填充0;</span>
+    <span class="token function">memset</span><span class="token punctuation">(</span>stack<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> len <span class="token operator">*</span> <span class="token number">2</span> <span class="token operator">*</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token keyword">char</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">//stack 栈顶赋初值为-1;</span>
+    <span class="token keyword">int</span> top <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">//1.统计每个字符的频次</span>
+    <span class="token comment" spellcheck="true">//例如bcabc  recod[26] = {1,2,2};</span>
+    <span class="token keyword">int</span> i<span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        record<span class="token punctuation">[</span>s<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">-</span> <span class="token string">'a'</span><span class="token punctuation">]</span><span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//2.遍历s,入栈</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+
+        <span class="token comment" spellcheck="true">//isExist 标记, 判断当前字符是否存在栈中;</span>
+        <span class="token keyword">int</span> isExist <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">//①从0~top,遍历stack 判断当前字符s[i]是否存在于栈stack中</span>
+        <span class="token comment" spellcheck="true">//如果当前字符是否存在于栈的flag, 0表示不存在, 1表示存在</span>
+        <span class="token comment" spellcheck="true">//top指向栈顶(也是执行stack字符串最后一个字符的位置,表示字符串长度上限)</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;=</span> top<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>s<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">==</span> stack<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                isExist <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+                <span class="token keyword">break</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">//② 如果存在,record[s[i]]位置上的出现次数减一，并继续遍历下一个字符</span>
+        <span class="token comment" spellcheck="true">//③ 如果不存在,则需要循环一个正确位置存储起来;</span>
+        <span class="token comment" spellcheck="true">//④ 如果不存在，跳过栈中所有比当前字符大、且后面还会出现的元素，然后将当前字符入栈</span>
+        <span class="token comment" spellcheck="true">// top > -1表示栈非空</span>
+        <span class="token comment" spellcheck="true">//stack[top] > s[i]表示栈顶元素比当前元素大</span>
+        <span class="token comment" spellcheck="true">//record[stack[top]] > 1表示后面还会出现</span>
+        <span class="token comment" spellcheck="true">//例如b,c因为不符合以下条件会直接入栈.stack[] = "bc",但是当当前字符是"a"时,由于bcabc,a不应该是在stack的顺序是"bca",所以要把位置不符合的字符出栈;</span>
+        <span class="token comment" spellcheck="true">//top = 1,stack[top] > s[i], c>a; 并且stack[top] 在之后还会重复的出现,所以我们可以安心的把stack中的栈顶C出栈,所以stack[]="b",top减一后等于0; 同时也需要将record[c]出现次数减一;</span>
+        <span class="token comment" spellcheck="true">//top=0,stack[top]>s[i],b>a,并且stack[top] 在之后还会出现,所以stack把栈顶b出栈,所以此时栈stack[]="",top减一后等于-1, 此时栈中位置不正确的字符都已经移除;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>isExist <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            record<span class="token punctuation">[</span>s<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">-</span> <span class="token string">'a'</span><span class="token punctuation">]</span><span class="token operator">--</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>top <span class="token operator">></span> <span class="token operator">-</span><span class="token number">1</span> <span class="token operator">&amp;&amp;</span> stack<span class="token punctuation">[</span>top<span class="token punctuation">]</span> <span class="token operator">></span> s<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">&amp;&amp;</span> record<span class="token punctuation">[</span>stack<span class="token punctuation">[</span>top<span class="token punctuation">]</span> <span class="token operator">-</span> <span class="token string">'a'</span><span class="token punctuation">]</span> <span class="token operator">></span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+                <span class="token comment" spellcheck="true">// 跳过该元素，频次要减一</span>
+                record<span class="token punctuation">[</span>stack<span class="token punctuation">[</span>top<span class="token punctuation">]</span> <span class="token operator">-</span> <span class="token string">'a'</span><span class="token punctuation">]</span><span class="token operator">--</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// 出栈</span>
+                top<span class="token operator">--</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">//⑤ 结束while 循环;</span>
+            <span class="token comment" spellcheck="true">//循环结束的3种可能性:(1)移动到栈底(top == -1) ; (2)栈顶元素小于当前元素(stack[top] &lt;= s[i]) (3)栈顶元素后面不出现(record[stack[top]] == 1)</span>
+            <span class="token comment" spellcheck="true">// 此时，当前元素要插入到top的下一个位置</span>
+            <span class="token comment" spellcheck="true">// top往上移动1位</span>
+            top<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 入栈</span>
+            stack<span class="token punctuation">[</span>top<span class="token punctuation">]</span> <span class="token operator">=</span> s<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">//结束栈顶添加字符结束符</span>
+    stack<span class="token punctuation">[</span><span class="token operator">++</span>top<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">'\0'</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> stack<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>试着执行一下代码：</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">char</span> <span class="token operator">*</span>s <span class="token punctuation">;</span>
+    s <span class="token operator">=</span> <span class="token function">removeDuplicateLetters</span><span class="token punctuation">(</span><span class="token string">"zdzdaabc"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>结果如下：</p>
+<p><img src="/p/cc625709/001.png" alt></p>
+<p>从 <code>zdzdaabc</code> = &gt; <code>dzabc</code> ，符合要求 ✅</p>
+<h2 id="提交结果"><a href="#提交结果" class="headerlink" title="提交结果"></a>提交结果</h2><p> leetcode 双百，可以可以</p>
+<p><img src="/p/cc625709/002.png" alt></p>
+
             </div>
             <hr/>
 
@@ -525,7 +585,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/p/b0e10b1c.html">http://nilsli.com/p/b0e10b1c.html</a>
+                    <a href="http://nilsli.com/p/cc625709.html">http://nilsli.com/p/cc625709.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -562,7 +622,15 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/算法/">
+                                    <span class="chip bg-color">算法</span>
+                                </a>
+                            
+                                <a href="/tags/去重/">
+                                    <span class="chip bg-color">去重</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -731,7 +799,7 @@
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2020-04-20T18-11-53',
+        id: '2020-04-22T13-59-10',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -752,9 +820,10 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/p/cc625709.html">
                     <div class="card-image">
@@ -779,9 +848,9 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-22
-                        </span>
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-22
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -790,6 +859,7 @@
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -812,25 +882,31 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/p/7bfd68ea.html">
+                <a href="/p/b0e10b1c.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/3.jpg" class="responsive-img" alt="【iOS进阶】-启动优化">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/23.jpg" class="responsive-img" alt="【数据结构与算法】-（8）栈之算法题">
                         
-                        <span class="card-title">【iOS进阶】-启动优化</span>
+                        <span class="card-title">【数据结构与算法】-（8）栈之算法题</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            总结中…近期更新
+                            
+【数据结构与算法】-（1）基础篇
+【数据结构与算法】-（2）线性表基础
+【数据结构与算法】-（3）循环链表（单向）
+【数据结构与算法】-（4）双向链表和双向循环链表
+【数据结构与算法】-（5）链表面试题解析
+【数据结构与算法】-（6）栈
 
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-19
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-20
                             </span>
                         <span class="publish-author">
                             
@@ -839,18 +915,6 @@
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/启动优化/">
-                        <span class="chip bg-color">启动优化</span>
-                    </a>
-                    
-                    <a href="/tags/调优/">
-                        <span class="chip bg-color">调优</span>
-                    </a>
-                    
                 </div>
                 
             </div>

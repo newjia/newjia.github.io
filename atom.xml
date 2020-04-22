@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2020-04-20T11:54:28.747Z</updated>
+  <updated>2020-04-22T09:42:01.215Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【数据结构与算法】-（8.1）字符串去重算法</title>
+    <link href="http://nilsli.com/p/cc625709.html"/>
+    <id>http://nilsli.com/p/cc625709.html</id>
+    <published>2020-04-22T05:59:10.000Z</published>
+    <updated>2020-04-22T09:42:01.215Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="算法" scheme="http://nilsli.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+      <category term="去重" scheme="http://nilsli.com/tags/%E5%8E%BB%E9%87%8D/"/>
+    
+  </entry>
   
   <entry>
     <title>【数据结构与算法】-（8）栈之算法题</title>
@@ -120,9 +147,9 @@
     
       <category term="数据结构" scheme="http://nilsli.com/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
-      <category term="栈" scheme="http://nilsli.com/tags/%E6%A0%88/"/>
-    
       <category term="队列" scheme="http://nilsli.com/tags/%E9%98%9F%E5%88%97/"/>
+    
+      <category term="栈" scheme="http://nilsli.com/tags/%E6%A0%88/"/>
     
   </entry>
   
@@ -630,33 +657,6 @@ struct objc_object {
       <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
     
       <category term="结构" scheme="http://nilsli.com/tags/%E7%BB%93%E6%9E%84/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>2020新年感想</title>
-    <link href="http://nilsli.com/p/63353.html"/>
-    <id>http://nilsli.com/p/63353.html</id>
-    <published>2020-01-01T16:39:53.000Z</published>
-    <updated>2020-04-01T15:06:03.735Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          
-        
-      
-    
-    </summary>
-    
-    
-    
-      <category term="2020" scheme="http://nilsli.com/tags/2020/"/>
-    
-      <category term="感想" scheme="http://nilsli.com/tags/%E6%84%9F%E6%83%B3/"/>
     
   </entry>
   
