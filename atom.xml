@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2020-04-22T09:44:25.818Z</updated>
+  <updated>2020-04-22T17:27:10.014Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -15,6 +15,37 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【数据结构与算法】-（8.2）字符串匹配和RK&amp;BP算法</title>
+    <link href="http://nilsli.com/p/8a586c1e.html"/>
+    <id>http://nilsli.com/p/8a586c1e.html</id>
+    <published>2020-04-22T09:45:47.000Z</published>
+    <updated>2020-04-22T17:27:10.014Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="算法" scheme="http://nilsli.com/tags/%E7%AE%97%E6%B3%95/"/>
+    
+      <category term="RK" scheme="http://nilsli.com/tags/RK/"/>
+    
+      <category term="BF" scheme="http://nilsli.com/tags/BF/"/>
+    
+      <category term="字符查找" scheme="http://nilsli.com/tags/%E5%AD%97%E7%AC%A6%E6%9F%A5%E6%89%BE/"/>
+    
+  </entry>
   
   <entry>
     <title>【数据结构与算法】-（8.1）字符串去重算法</title>
@@ -147,9 +178,9 @@
     
       <category term="数据结构" scheme="http://nilsli.com/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
-      <category term="队列" scheme="http://nilsli.com/tags/%E9%98%9F%E5%88%97/"/>
-    
       <category term="栈" scheme="http://nilsli.com/tags/%E6%A0%88/"/>
+    
+      <category term="队列" scheme="http://nilsli.com/tags/%E9%98%9F%E5%88%97/"/>
     
   </entry>
   
@@ -354,11 +385,11 @@
     
       <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
     
-      <category term="2020" scheme="http://nilsli.com/tags/2020/"/>
-    
       <category term="runtime" scheme="http://nilsli.com/tags/runtime/"/>
     
       <category term="面试" scheme="http://nilsli.com/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+      <category term="2020" scheme="http://nilsli.com/tags/2020/"/>
     
       <category term="成员变量" scheme="http://nilsli.com/tags/%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F/"/>
     
@@ -598,65 +629,6 @@
       <category term="结构" scheme="http://nilsli.com/tags/%E7%BB%93%E6%9E%84/"/>
     
       <category term="cache_t" scheme="http://nilsli.com/tags/cache-t/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>OC底层研究4--类的结构分析</title>
-    <link href="http://nilsli.com/p/8549.html"/>
-    <id>http://nilsli.com/p/8549.html</id>
-    <published>2020-01-12T06:00:53.000Z</published>
-    <updated>2020-04-01T15:06:03.706Z</updated>
-    
-    <summary type="html">
-    
-      &lt;blockquote&gt;
-&lt;p&gt;本页所使用的objc runtime 756.2，来自&lt;a href=&quot;https://github.com/RetVal/objc-runtime&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;GITHUB&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h3 id=&quot;1-概念&quot;&gt;&lt;a href=&quot;#1-概念&quot; class=&quot;headerlink&quot; title=&quot;1.概念&quot;&gt;&lt;/a&gt;1.概念&lt;/h3&gt;&lt;h4 id=&quot;1-1-类Class-的类型&quot;&gt;&lt;a href=&quot;#1-1-类Class-的类型&quot; class=&quot;headerlink&quot; title=&quot;1.1 类Class 的类型&quot;&gt;&lt;/a&gt;1.1 类&lt;strong&gt;Class&lt;/strong&gt; 的类型&lt;/h4&gt;&lt;blockquote&gt;
-&lt;p&gt;Class在源码里的真正类型为&lt;strong&gt;objc_class&lt;/strong&gt;的&lt;strong&gt;结构体&lt;/strong&gt;。&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;先查看源码——在Xcode按下&lt;strong&gt;Shift+Command+O&lt;/strong&gt;，选择&lt;strong&gt;objc-runtime-new.h&lt;/strong&gt;，搜索objc_class，可以得知，Class底层编译实现的前4行如下：&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/p/8549/01.png&quot; alt&gt;&lt;/p&gt;
-&lt;p&gt;可知类结构如下：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;A. //&lt;strong&gt;Class ISA&lt;/strong&gt;                                &lt;/p&gt;
-&lt;p&gt;​    继承自父类 &lt;strong&gt;objc_class&lt;/strong&gt; 的 &lt;strong&gt;isa&lt;/strong&gt; ，指向类的指针不需显示（内存占8位），这里它返回一个&lt;strong&gt;nonpointer&lt;/strong&gt;的指针，相关源码如下：&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;cpp&quot;&gt;/// Represents an instance of a class.
-struct objc_object {
-    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;
-};&lt;/code&gt;&lt;/pre&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;B. &lt;strong&gt;Class superclass;&lt;/strong&gt;                    &lt;/p&gt;
-&lt;p&gt;​    指向本类的父类（内存占8位）&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;C. &lt;strong&gt;cache_t cache;&lt;/strong&gt;                        &lt;/p&gt;
-&lt;p&gt;​    存储指针和vtable，加速方法调用（内存占8位）&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;D. &lt;strong&gt;class_data_bits_t bits;&lt;/strong&gt;             &lt;/p&gt;
-&lt;p&gt;​    存储类的方法、属性、遵循的协议等信息的地方（内存占8位） &lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;E. 其他方法/函数 – &lt;strong&gt;不占内存&lt;/strong&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;为何cache_t cache 这个变量占位位16，而不是8？&lt;/p&gt;
-&lt;p&gt;原因是因为这里的&lt;strong&gt;cache_t&lt;/strong&gt;是结构体，其占内存为根据内部属性结构而定，为防止溢出，给予&lt;strong&gt;16位字节&lt;/strong&gt;，而不是指针所需的8位。&lt;/p&gt;
-&lt;p&gt;Talk is cheap, show me the code, 伸伸手指，点开cache_t 的内部结构&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/p/8549/02.png&quot; alt&gt;&lt;/p&gt;
-    
-    </summary>
-    
-    
-    
-      <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
-    
-      <category term="源码" scheme="http://nilsli.com/tags/%E6%BA%90%E7%A0%81/"/>
-    
-      <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
-    
-      <category term="类" scheme="http://nilsli.com/tags/%E7%B1%BB/"/>
-    
-      <category term="结构" scheme="http://nilsli.com/tags/%E7%BB%93%E6%9E%84/"/>
     
   </entry>
   
