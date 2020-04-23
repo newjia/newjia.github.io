@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2020-04-22T17:27:10.014Z</updated>
+  <updated>2020-04-23T09:35:40.476Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>【数据结构与算法】-（8.2）字符串匹配和RK&amp;BP算法</title>
+    <title>【数据结构与算法】-（8.2）字符串搜索算法和RK&amp;BP算法</title>
     <link href="http://nilsli.com/p/8a586c1e.html"/>
     <id>http://nilsli.com/p/8a586c1e.html</id>
     <published>2020-04-22T09:45:47.000Z</published>
-    <updated>2020-04-22T17:27:10.014Z</updated>
+    <updated>2020-04-23T09:35:40.476Z</updated>
     
     <summary type="html">
     
