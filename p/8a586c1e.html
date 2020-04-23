@@ -411,7 +411,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    8 分
+                    7 分
                 </div>
                 
 
@@ -552,58 +552,49 @@ Status <span class="token function">StrAssign</span><span class="token punctuati
     <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"s1子串为"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token function">StrPrint</span><span class="token punctuation">(</span>s1<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+      <span class="token function">StrAssign</span><span class="token punctuation">(</span>s2<span class="token punctuation">,</span> <span class="token string">"xe"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"s2子串为"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">StrPrint</span><span class="token punctuation">(</span>s2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    i <span class="token operator">=</span> <span class="token function">Index_BF</span><span class="token punctuation">(</span>s1<span class="token punctuation">,</span> s2<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"i = %d\n"</span><span class="token punctuation">,</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>结果验证：</p>
+<p><img src="/p/8a586c1e/001.png" alt="001"></p>
 </li>
 </ol>
-<pre><code>   StrAssign(s2, &quot;xe&quot;);
-   printf(&quot;s2子串为&quot;);
-   StrPrint(s2);
-
-   i = Index_BF(s1, s2, 1);
-   printf(&quot;i = %d\n&quot;,i);
-   return 0;</code></pre><p>   }</p>
-<pre><code>
-8. 结果验证：
-
-   ![001](0422rkbp/001.png)
-
-### 二、RK算法  
-
-#### 2.1 哈希算法
-
-&gt; **散列函数**（英语：Hash function）又称散列算法、哈希函数，是一种从任何一种数据中创建小的数字“指纹”的方法。
-
-散列函数把消息或数据压缩成摘要，使得数据量变小，将数据的格式固定下来。该函数将数据打乱混合，重新创建一个叫做散列值（hash values，hash codes，hash sums，或hashes）的指纹。散列值通常用一个短的随机字母和数字组成的字符串来代表。好的散列函数在输入域中很少出现散列冲突。在散列表和数据处理中，不抑制冲突来区别数据，会使得数据库记录更难找到。
-
- #### 2.2 思路：
-
-- 主串分解成多个字串，用子串与模式串进行核对
-
-  ![拆分字串](0422rkbp/003.png)
-
-- 把需要匹配的字符串，转换成`hash` 值
-
-  以 a 为基点，将字符与`a` 的ASCII 码的差值，转换成整形：
-
-  如abc，结果为 
-
-  Result= ( a - &#39;a&#39; ) * 26&lt;sup&gt;2&lt;/sup&gt; + (b - &#39;a&#39; ) * 26 + (c - &#39;a&#39; )
-
-- 用主串对字串和模式串的的`hash` 值来互相判断，更为高效
-
-#### 2.3 代码实现
-
-- 二次确认`hash` 值相等。以防止有的字符串相同，但是`hash` 不相等。
-
-  ```c
-  int isMatch(char *S, int i, char *P, int m)
-  {
-      int is, ip;
-      for(is=i, ip=0; is != m &amp;&amp; ip != m; is++, ip++)
-          if(S[is] != P[ip])
-              return 0;
-      return 1;
-  }</code></pre><ul>
+<h3 id="二、RK算法"><a href="#二、RK算法" class="headerlink" title="二、RK算法"></a>二、RK算法</h3><h4 id="2-1-哈希算法"><a href="#2-1-哈希算法" class="headerlink" title="2.1 哈希算法"></a>2.1 哈希算法</h4><blockquote>
+<p><strong>散列函数</strong>（英语：Hash function）又称散列算法、哈希函数，是一种从任何一种数据中创建小的数字“指纹”的方法。</p>
+</blockquote>
+<p>散列函数把消息或数据压缩成摘要，使得数据量变小，将数据的格式固定下来。该函数将数据打乱混合，重新创建一个叫做散列值（hash values，hash codes，hash sums，或hashes）的指纹。散列值通常用一个短的随机字母和数字组成的字符串来代表。好的散列函数在输入域中很少出现散列冲突。在散列表和数据处理中，不抑制冲突来区别数据，会使得数据库记录更难找到。</p>
+<h4 id="2-2-思路："><a href="#2-2-思路：" class="headerlink" title="2.2 思路："></a>2.2 思路：</h4><ul>
+<li><p>主串分解成多个字串，用子串与模式串进行核对</p>
+<p><img src="/p/8a586c1e/003.png" alt="拆分字串"></p>
+</li>
+<li><p>把需要匹配的字符串，转换成<code>hash</code> 值</p>
+<p>以 a 为基点，将字符与<code>a</code> 的ASCII 码的差值，转换成整形：</p>
+<p>如abc，结果为 </p>
+<p>Result= ( a - ‘a’ ) * 26<sup>2</sup> + (b - ‘a’ ) * 26 + (c - ‘a’ )</p>
+<p><img src="/p/8a586c1e/008.png" alt="字符串转hash"></p>
+</li>
+<li><p>用主串对字串和模式串的的<code>hash</code> 值来互相判断，更为高效</p>
+</li>
+</ul>
+<h4 id="2-3-代码实现"><a href="#2-3-代码实现" class="headerlink" title="2.3 代码实现"></a>2.3 代码实现</h4><ul>
+<li><p>二次确认<code>hash</code> 值相等。以防止有的字符串相同，但是<code>hash</code> 不相等。</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">isMatch</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span>S<span class="token punctuation">,</span> <span class="token keyword">int</span> i<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token operator">*</span>P<span class="token punctuation">,</span> <span class="token keyword">int</span> m<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">int</span> is<span class="token punctuation">,</span> ip<span class="token punctuation">;</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span>is<span class="token operator">=</span>i<span class="token punctuation">,</span> ip<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> is <span class="token operator">!=</span> m <span class="token operator">&amp;&amp;</span> ip <span class="token operator">!=</span> m<span class="token punctuation">;</span> is<span class="token operator">++</span><span class="token punctuation">,</span> ip<span class="token operator">++</span><span class="token punctuation">)</span>
+        <span class="token keyword">if</span><span class="token punctuation">(</span>S<span class="token punctuation">[</span>is<span class="token punctuation">]</span> <span class="token operator">!=</span> P<span class="token punctuation">[</span>ip<span class="token punctuation">]</span><span class="token punctuation">)</span>
+            <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<ul>
 <li><p>算出 d 进制下的最高位:</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">getMaxValue</span><span class="token punctuation">(</span><span class="token keyword">int</span> m<span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token keyword">int</span> h <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
@@ -668,27 +659,22 @@ Status <span class="token function">StrAssign</span><span class="token punctuati
     <span class="token punctuation">}</span>
 
     <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-
-<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 </ul>
-<pre><code>
-#### 2.4 代码验证
+<h4 id="2-4-代码验证"><a href="#2-4-代码验证" class="headerlink" title="2.4 代码验证"></a>2.4 代码验证</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>buf<span class="token operator">=</span><span class="token string">"abcababcabx"</span><span class="token punctuation">;</span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>ptrn<span class="token operator">=</span><span class="token string">"abcabx"</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"主串为%s\n"</span><span class="token punctuation">,</span>buf<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"子串为%s\n"</span><span class="token punctuation">,</span>ptrn<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-```c
-int main()
-{
-    char *buf=&quot;abcababcabx&quot;;
-    char *ptrn=&quot;abcabx&quot;;
-    printf(&quot;主串为%s\n&quot;,buf);
-    printf(&quot;子串为%s\n&quot;,ptrn);
+    <span class="token keyword">int</span> index <span class="token operator">=</span> <span class="token function">RK</span><span class="token punctuation">(</span>buf<span class="token punctuation">,</span> ptrn<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"find index : %d\n"</span><span class="token punctuation">,</span>index<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    int index = RK(buf, ptrn);
-    printf(&quot;find index : %d\n&quot;,index);
-
-    return 1;
-}</code></pre><p><img src="/p/8a586c1e/002.png" alt="001"></p>
+    <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="/p/8a586c1e/002.png" alt="通过RK 算法查找到的结果打印"></p>
 
             </div>
             <hr/>
