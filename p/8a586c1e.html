@@ -404,14 +404,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.9k
+                    2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    8 分
                 </div>
                 
 
@@ -565,11 +565,15 @@ Status <span class="token function">StrAssign</span><span class="token punctuati
 </li>
 </ol>
 <h3 id="1-4-时间复杂度"><a href="#1-4-时间复杂度" class="headerlink" title="1.4 时间复杂度"></a>1.4 时间复杂度</h3><p>但是此直观算法较为暴力，复杂度达到了O(mn)，其中 <code>S</code> 的长度为<code>n</code>，<code>T</code> 的长度为<code>m</code>， 所以我们要考虑更快速的算法。</p>
-<h2 id="二、RK算法"><a href="#二、RK算法" class="headerlink" title="二、RK算法"></a>二、RK算法</h2><h3 id="2-1-哈希算法"><a href="#2-1-哈希算法" class="headerlink" title="2.1 哈希算法"></a>2.1 哈希算法</h3><blockquote>
+<h2 id="二、RK算法"><a href="#二、RK算法" class="headerlink" title="二、RK算法"></a>二、RK算法</h2><h3 id="2-0-概念"><a href="#2-0-概念" class="headerlink" title="2.0 概念"></a>2.0 概念</h3><blockquote>
+<p>RK 算法（<strong>Rabin–Karp algorithm</strong> ）是一个字符串查找算法，由<a href="https://en.wikipedia.org/wiki/Richard_M._Karp" target="_blank" rel="noopener">Richard M. Karp</a> and <a href="https://en.wikipedia.org/wiki/Michael_O._Rabin" target="_blank" rel="noopener">Michael O. Rabin</a> 在1987年提出，使用哈希算法，来比对字符串。</p>
+</blockquote>
+<p>在这里，与粗暴简单的BF 算法不一样，我们引入了哈希值来进行比对，这样计算机只需要匹配整形，相比匹配字符串，更快一些。</p>
+<blockquote>
 <p><strong>散列函数</strong>（英语：Hash function）又称散列算法、哈希函数，是一种从任何一种数据中创建小的数字“指纹”的方法。</p>
 </blockquote>
 <p>散列函数把消息或数据压缩成摘要，使得数据量变小，将数据的格式固定下来。该函数将数据打乱混合，重新创建一个叫做散列值（hash values，hash codes，hash sums，或hashes）的指纹。散列值通常用一个短的随机字母和数字组成的字符串来代表。好的散列函数在输入域中很少出现散列冲突。在散列表和数据处理中，不抑制冲突来区别数据，会使得数据库记录更难找到。</p>
-<h3 id="2-2-思路："><a href="#2-2-思路：" class="headerlink" title="2.2 思路："></a>2.2 思路：</h3><ul>
+<h3 id="2-1-思路："><a href="#2-1-思路：" class="headerlink" title="2.1 思路："></a>2.1 思路：</h3><ul>
 <li><p>主串分解成多个字串，用子串与模式串进行核对</p>
 <p><img src="/p/8a586c1e/003.png" alt="拆分字串"></p>
 </li>
@@ -582,7 +586,7 @@ Status <span class="token function">StrAssign</span><span class="token punctuati
 <li><p>用主串对字串和模式串的的<code>hash</code> 值来互相判断，更为高效</p>
 </li>
 </ul>
-<h3 id="2-3-代码实现"><a href="#2-3-代码实现" class="headerlink" title="2.3 代码实现"></a>2.3 代码实现</h3><ul>
+<h3 id="2-2-代码实现"><a href="#2-2-代码实现" class="headerlink" title="2.2 代码实现"></a>2.2 代码实现</h3><ul>
 <li><p>二次确认<code>hash</code> 值相等。以防止有的字符串相同，但是<code>hash</code> 不相等。</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">isMatch</span><span class="token punctuation">(</span><span class="token keyword">char</span> <span class="token operator">*</span>S<span class="token punctuation">,</span> <span class="token keyword">int</span> i<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token operator">*</span>P<span class="token punctuation">,</span> <span class="token keyword">int</span> m<span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
@@ -662,7 +666,7 @@ Status <span class="token function">StrAssign</span><span class="token punctuati
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 </ul>
-<h3 id="2-4-代码验证"><a href="#2-4-代码验证" class="headerlink" title="2.4 代码验证"></a>2.4 代码验证</h3><ul>
+<h3 id="2-3-代码验证"><a href="#2-3-代码验证" class="headerlink" title="2.3 代码验证"></a>2.3 代码验证</h3><ul>
 <li><p>执行查找代码</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
@@ -680,6 +684,10 @@ Status <span class="token function">StrAssign</span><span class="token punctuati
 <li><p>结果如下：</p>
 <p><img src="/p/8a586c1e/002.png" alt="通过RK 算法查找到的结果打印"></p>
 </li>
+</ul>
+<h3 id="2-4-复杂度"><a href="#2-4-复杂度" class="headerlink" title="2.4 复杂度"></a>2.4 复杂度</h3><ul>
+<li>时间复杂度：O(n+m)，最坏O((n-m) * m)</li>
+<li>空间复杂度：O(1)</li>
 </ul>
 
             </div>
@@ -949,18 +957,17 @@ Status <span class="token function">StrAssign</span><span class="token punctuati
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/p/8a586c1e.html">
+                <a href="/p/22d3726c.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/8.jpg" class="responsive-img" alt="【数据结构与算法】-（8.2）字符串搜索算法和RK&BP算法">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg" class="responsive-img" alt="【数据结构与算法】-（8.3）字符串搜索&KMP算法">
                         
-                        <span class="card-title">【数据结构与算法】-（8.2）字符串搜索算法和RK&BP算法</span>
+                        <span class="card-title">【数据结构与算法】-（8.3）字符串搜索&KMP算法</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -977,9 +984,9 @@ Status <span class="token function">StrAssign</span><span class="token punctuati
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-22
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-23
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -988,7 +995,6 @@ Status <span class="token function">StrAssign</span><span class="token punctuati
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
@@ -996,16 +1002,12 @@ Status <span class="token function">StrAssign</span><span class="token punctuati
                         <span class="chip bg-color">算法</span>
                     </a>
                     
-                    <a href="/tags/RK/">
-                        <span class="chip bg-color">RK</span>
+                    <a href="/tags/KMP/">
+                        <span class="chip bg-color">KMP</span>
                     </a>
                     
-                    <a href="/tags/BF/">
-                        <span class="chip bg-color">BF</span>
-                    </a>
-                    
-                    <a href="/tags/字符查找/">
-                        <span class="chip bg-color">字符查找</span>
+                    <a href="/tags/字符串查找/">
+                        <span class="chip bg-color">字符串查找</span>
                     </a>
                     
                 </div>
