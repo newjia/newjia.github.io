@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2020-04-24T18:39:33.705Z</updated>
+  <updated>2020-04-24T18:42:08.119Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>【数据结构与算法】-（8.3）字符串搜索&amp;KMP算法</title>
+    <title>【数据结构与算法】-（8.3）KMP算法</title>
     <link href="http://nilsli.com/p/22d3726c.html"/>
     <id>http://nilsli.com/p/22d3726c.html</id>
     <published>2020-04-23T10:09:33.000Z</published>
-    <updated>2020-04-24T18:39:33.705Z</updated>
+    <updated>2020-04-24T18:42:08.119Z</updated>
     
     <summary type="html">
     
