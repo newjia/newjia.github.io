@@ -400,14 +400,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.3k
+                    3.9k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    13 分
+                    16 分
                 </div>
                 
 
@@ -709,14 +709,14 @@
 <p>结果如下：</p>
 <p><img src="/p/22d3726c/010.png" alt="010"></p>
 <p>给出的 <code>S = cccaababcabc</code> ， <code>T = abc</code> ，结果是从第7位开始重复，命中！</p>
-<h2 id="四、优化改进"><a href="#四、优化改进" class="headerlink" title="四、优化改进"></a>四、优化改进</h2><p>上面已经基本实现了KMP算法的时间部分，但是——有些场景还是会有些不理想。</p>
-<p>假设给出<code>S = aaaabcdefgh</code>， 给出的 <code>T = aaaacd</code> </p>
+<h2 id="四、优化改进"><a href="#四、优化改进" class="headerlink" title="四、优化改进"></a>四、优化改进</h2><h3 id="4-1-分析不足"><a href="#4-1-分析不足" class="headerlink" title="4.1 分析不足"></a>4.1 分析不足</h3><p>上面已经基本实现了KMP算法的时间部分，但是——有些场景还是会有些不理想。</p>
+<p>假设给出<code>S = aaaaabcdefgh</code>， 给出的 <code>T = aaaaad</code> </p>
 <p><img src="/p/22d3726c/011.png" alt></p>
 <p>如上图所示，当前4位匹配已知，对比到第5位时，会对 j 进行回溯。</p>
 <p>此时 <code>T</code> 的next 数组位 01234，所以j 回溯到 next[5] = 4，即第4位，如<strong>第2张图</strong>所示。</p>
 <p>而此时a 不等于 b，再次回溯，以此类推，一直到第5步，发现回溯完后，<code>T</code> 中的<code>a</code> 一直不等于b，不得不放弃回溯，直接将<code>S</code> 中的 i 增加，跳到下一个字符。</p>
 <p>而我们明明看到了，a 中的前5位都是一致的，本来第1步时，模式串中<code>a</code> 不等于主串 中的<code>b</code>， 完全可以放弃2，3，4，5这几部的比较。</p>
-<p>根据上面的总结，说明之前的next数组有可以改进的地方，改进如下:</p>
+<h3 id="4-2-新的nextVal-数组"><a href="#4-2-新的nextVal-数组" class="headerlink" title="4.2 新的nextVal 数组"></a>4.2 新的nextVal 数组</h3><p>根据上面的总结，说明之前的next数组有可以改进的地方，改进如下:</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">get_nextVal</span><span class="token punctuation">(</span>String T<span class="token punctuation">,</span> <span class="token keyword">int</span> <span class="token operator">*</span>nextVal<span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
       <span class="token keyword">int</span> i<span class="token punctuation">,</span> j<span class="token punctuation">;</span>
@@ -748,8 +748,87 @@
 <p>可以看到，在判断前后缀相同的时候，添加了这一段判断</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">if</span> <span class="token punctuation">(</span>T<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">==</span> T<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">)</span> 
     nextVal<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> nextVal<span class="token punctuation">[</span>j<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<p>这里的的意思是，如果判断当前<code>T</code> 中的字符与<code>S</code> 中相等，而且<code>S</code>和<code>T</code>各自下一个字符，还是一一相等，把<code>T</code>中前缀的nextval 值，放入nextval 数组在 i 的值。</p>
-<p>### </p>
+<p>这里的的意思是：</p>
+<p>判断——如果当前 T 中的i 位字符与 T 的i位字符相等，且两串的各自下一个字符还是一一相等，把<code>T</code>中前缀的值——即上一次匹配 的的next 值，放入新的nextVal 数组中。</p>
+<h3 id="4-3逆推nextVal数组"><a href="#4-3逆推nextVal数组" class="headerlink" title="4.3逆推nextVal数组"></a>4.3逆推nextVal数组</h3><p>声明比较的规则，即拿 </p>
+<p>左边 = T[j]   </p>
+<p>右边 =  T [next[j]] </p>
+<p><strong>两者相比较！</strong></p>
+<h4 id="4-3-1-模式串为：ababaaaba"><a href="#4-3-1-模式串为：ababaaaba" class="headerlink" title="4.3.1 模式串为：ababaaaba"></a>4.3.1 模式串为：ababaaaba</h4><table>
+<thead>
+<tr>
+<th align="center">j</th>
+<th align="center">123456789</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">模式串</td>
+<td align="center">ababaaaba</td>
+</tr>
+<tr>
+<td align="center">next[j]</td>
+<td align="center">011234223</td>
+</tr>
+<tr>
+<td align="center">nextVal[j]</td>
+<td align="center">010104210</td>
+</tr>
+</tbody></table>
+<ol>
+<li>j = 1, nextVal[1]    = 0;</li>
+<li>j = 2, <strong>照旧</strong>。左边为T [2] = b，右边 T[next[2]] = T[1] = a 这种前后字符<strong>不相等</strong>，还是沿用之前next[i] 的逻辑，即 = 1；</li>
+<li>j = 3，此时为<strong>新情况</strong>，左边为T [3] = a，右边 T[next[3]] = T[1] = a 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[3] = nextVal[1] = 0；</li>
+<li>j = 4 ，此时为<strong>新情况</strong>，左边为T [4] = b，右边 T[next[4]] = T[2] = b 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[4] = nextVal[2] = 1；</li>
+<li>j = 5，此时为<strong>新情况</strong>，左边为T [5] = a，右边 T[next[5]] = T[3] = a 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[5] = nextVal[3] = 0；</li>
+<li>j = 6，<strong>照旧</strong>。左边为T [6] = a，右边 T[next[6]] = T[4] = b 这种前后字符<strong>不相等</strong>，还是沿用之前next[i] 的逻辑，即 = 4；</li>
+<li>j = 7，<strong>照旧</strong>。左边为T [7] = a，右边 T[next[7]] = T[2] = b 这种前后字符<strong>不相等</strong>，还是沿用之前next[i] 的逻辑，即 = 2；</li>
+<li>j = 8，此时为<strong>新情况</strong>，左边为T [8] = b，右边 T[next[8]] = T[2] = b 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[8] = nextVal[2] = 1；</li>
+<li>j = 9，此时为<strong>新情况</strong>，左边为T [9] = a，右边 T[next[9]] = T[3] = a 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[9] = nextVal[3] = 0；</li>
+</ol>
+<h4 id="4-3-2-模式串为：aaaacd"><a href="#4-3-2-模式串为：aaaacd" class="headerlink" title="4.3.2 模式串为：aaaacd"></a>4.3.2 模式串为：aaaacd</h4><table>
+<thead>
+<tr>
+<th align="center">j</th>
+<th align="center">123456</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">模式串</td>
+<td align="center">aaaaad</td>
+</tr>
+<tr>
+<td align="center">next[j]</td>
+<td align="center">012345</td>
+</tr>
+<tr>
+<td align="center">nextValue[j]</td>
+<td align="center">000005</td>
+</tr>
+</tbody></table>
+<p>现在回到引起需要改进的字符串里面来，aaaaad，依次分析</p>
+<ol>
+<li><p>j = 1, nextVal[1]    = 0;</p>
+</li>
+<li><p>j = 2, 此时为<strong>新情况</strong>，左边为T [2] = a，右边 T[next[2]] = T[1] = a 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[2] = nextVal[1] = 0；</p>
+</li>
+<li><p>j = 3，此时为<strong>新情况</strong>，左边为T [3] = a，右边 T[next[3]] = T[2] = a 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[3] = nextVal[2] = 0；</p>
+</li>
+<li><p>同上累加</p>
+</li>
+<li><p>同上累加</p>
+</li>
+<li><p>同上累加</p>
+</li>
+<li><p>j = 6，<strong>此时照旧</strong>。左边T[6] = d， 右边 T [next[6]] = T [5] = a， 两者并不相等，沿用之前的next，即 nextVal[6] = 5</p>
+</li>
+</ol>
+<h3 id="4-4-改进小结"><a href="#4-4-改进小结" class="headerlink" title="4.4 改进小结"></a>4.4 改进小结</h3><p>总之，这里改进了的一句代码</p>
+<pre class="line-numbers language-C"><code class="language-C">if (T[i] == T[j]) { nextVal[i] = nextVal[j];}<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>最终的含义：</p>
+<p>是如果存在某个字符a，如果它当前next位指向的字符相等—— 它的偏移值nextVal 数组当前的值，就使用会沿用指向的那个值的nextVal值。其他情况的逻辑照旧。</p>
+<p>画了个图解释一下：</p>
+<p><img src="/p/22d3726c/012.png" alt></p>
+<h3 id><a href="#" class="headerlink" title=" "></a> </h3><p>相关实现代码，放在<a href="https://github.com/newjia/kmp" target="_blank" rel="noopener">GITHUB</a> 上，欢迎食用 XD!</p>
 
             </div>
             <hr/>
