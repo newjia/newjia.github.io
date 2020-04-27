@@ -375,6 +375,10 @@
                                 <span class="chip bg-color">树</span>
                             </a>
                         
+                            <a href="/tags/二叉树/">
+                                <span class="chip bg-color">二叉树</span>
+                            </a>
+                        
                     </div>
                     
                 </div>
@@ -396,14 +400,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    826
+                    1.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    2 分
+                    5 分
                 </div>
                 
 
@@ -464,7 +468,54 @@
 <p>换句通俗的话说，哥哥一家没生满二胎，弟弟一家不允许要孩子……🐶，否则就不是完全二叉树。</p>
 <p>如下图中，11节点丢失的情况下，不可以称为完全二叉树</p>
 <p><img src="/p/919af6b6/008.png" alt></p>
-<h2 id="二、二叉树的存储结构"><a href="#二、二叉树的存储结构" class="headerlink" title="二、二叉树的存储结构"></a>二、二叉树的存储结构</h2><h3 id="2-1-顺序存储结构"><a href="#2-1-顺序存储结构" class="headerlink" title="2.1 顺序存储结构"></a>2.1 顺序存储结构</h3><h3 id="2-2-二叉链表"><a href="#2-2-二叉链表" class="headerlink" title="2.2 二叉链表"></a>2.2 二叉链表</h3><h2 id="三、顺序存储下的实现"><a href="#三、顺序存储下的实现" class="headerlink" title="三、顺序存储下的实现"></a>三、顺序存储下的实现</h2>
+<h2 id="二、二叉树的存储结构"><a href="#二、二叉树的存储结构" class="headerlink" title="二、二叉树的存储结构"></a>二、二叉树的存储结构</h2><h3 id="2-1-顺序存储结构"><a href="#2-1-顺序存储结构" class="headerlink" title="2.1 顺序存储结构"></a>2.1 顺序存储结构</h3><p>通常用数组来存储二叉树，先看看存储完全二叉树的情况</p>
+<p><img src="/p/919af6b6/014.png" alt></p>
+<p>可以看到，二叉树中的元素按照顺序依次放入开辟好的数组内存空间里。</p>
+<p>但是，凡事都有但是，在某些极端情况下，某一棵树，缺胳膊少腿儿，导致空间大大浪费，比如下图：</p>
+<p><img src="/p/919af6b6/015.png" alt></p>
+<p>这棵树只有4个有效的结点，但是却不得不开辟从A～M一共13个结点的内存空间，这种情况的树，使用数组结构来存储，对内存空间是一种浪费。</p>
+<h3 id="2-2-二叉链表"><a href="#2-2-二叉链表" class="headerlink" title="2.2 二叉链表"></a>2.2 二叉链表</h3><p>鉴于上文中数组结构无法更高效的表述二叉树，引入了链表的结构进行表述。</p>
+<p>由于二叉树结构最多有两个孩子，所以引入的链表结点，结构分别为数据域、左孩子指针、右孩子指针</p>
+<p>结点结构如下</p>
+<table>
+<thead>
+<tr>
+<th>左孩子</th>
+<th>数据</th>
+<th>右孩子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lChild</td>
+<td>data</td>
+<td>rChild</td>
+</tr>
+</tbody></table>
+<p>用代码来表述可以是这样的</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">struct</span> BiTreeNode<span class="token punctuation">{</span>
+        <span class="token keyword">int</span> data<span class="token punctuation">;</span>
+        BiTreeNode <span class="token operator">*</span>lChild<span class="token punctuation">;</span>
+        BITreeNode <span class="token operator">*</span>rChild<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>BiTreeNode<span class="token punctuation">,</span> <span class="token operator">*</span>BiTree<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>把上文中较特殊的二叉树，用这样的结点表述的二叉树结构如下：</p>
+<p><img src="/p/919af6b6/016.png" alt></p>
+<h2 id="三、二叉树的遍历"><a href="#三、二叉树的遍历" class="headerlink" title="三、二叉树的遍历"></a>三、二叉树的遍历</h2><blockquote>
+<p>二叉树的遍历（traversing binary tree）是指从根结点出发，按照某种次序访问二叉树中所有结点，使得每个结点被访问一次且仅被访问一次。</p>
+</blockquote>
+<p>二叉树的遍历方法，主要有四种：</p>
+<h3 id="3-1-前序遍历"><a href="#3-1-前序遍历" class="headerlink" title="3.1 前序遍历"></a>3.1 前序遍历</h3><p>遍历的规则是若二叉树为空，空操作返回；否则先访问根结点，然后前序遍历左子树，再前序遍历右子树</p>
+<p>如图示：</p>
+<p><img src="/p/919af6b6/010.png" alt></p>
+<h3 id="3-2-中序遍历"><a href="#3-2-中序遍历" class="headerlink" title="3.2 中序遍历"></a>3.2 中序遍历</h3><p>遍历的规则是若二叉树为空，空操作返回；否则从根结点开始（但此时并不遍历根结点），先前序遍历左子树，先遍历访问根结点，再前序遍历右子树。</p>
+<p>如图示：</p>
+<p><img src="/p/919af6b6/011.png" alt></p>
+<h3 id="3-3-后序遍历"><a href="#3-3-后序遍历" class="headerlink" title="3.3 后序遍历"></a>3.3 后序遍历</h3><p>遍历的规则是若二叉树为空，空操作返回；否则从左到右先叶子后结点的方式遍历访问左右子树，最后访问根结点。</p>
+<p>如图示</p>
+<p><img src="/p/919af6b6/012.png" alt></p>
+<h3 id="3-4-层序遍历"><a href="#3-4-层序遍历" class="headerlink" title="3.4 层序遍历"></a>3.4 层序遍历</h3><p>遍历的规则是若二叉树为空，空操作返回；否则从树的第一层——也就是根结点开始访问，从上往下，在同一层时从左至右对结点逐个访问。</p>
+<p>访问顺序如图示：</p>
+<p><img src="/p/919af6b6/013.png" alt></p>
+<h2 id="三、顺序存储下的实现"><a href="#三、顺序存储下的实现" class="headerlink" title="三、顺序存储下的实现"></a>三、顺序存储下的实现</h2><h3 id="3-1-顺序存储的实现"><a href="#3-1-顺序存储的实现" class="headerlink" title="3.1 顺序存储的实现"></a>3.1 顺序存储的实现</h3><h3 id="3-2-链式存储的实现"><a href="#3-2-链式存储的实现" class="headerlink" title="3.2 链式存储的实现"></a>3.2 链式存储的实现</h3>
             </div>
             <hr/>
 
@@ -533,6 +584,10 @@
                             
                                 <a href="/tags/树/">
                                     <span class="chip bg-color">树</span>
+                                </a>
+                            
+                                <a href="/tags/二叉树/">
+                                    <span class="chip bg-color">二叉树</span>
                                 </a>
                             
                         </div>
@@ -768,6 +823,10 @@
                     
                     <a href="/tags/树/">
                         <span class="chip bg-color">树</span>
+                    </a>
+                    
+                    <a href="/tags/二叉树/">
+                        <span class="chip bg-color">二叉树</span>
                     </a>
                     
                 </div>
