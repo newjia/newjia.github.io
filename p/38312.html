@@ -392,14 +392,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.6k
+                    2.5k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    10 分
                 </div>
                 
 
@@ -527,7 +527,7 @@
 <p><img src="/p/38312/002.png" alt="分类的结构"></p>
 <p>其中包含了 </p>
 <ul>
-<li>name - 分类依附的主类的名字</li>
+<li>name - 主类的名字</li>
 <li>cls - 分类的名字</li>
 <li>instanceMethods - <strong>实例方法列表</strong></li>
 <li>classMethods -  <strong>类方法列表</strong></li>
@@ -581,7 +581,112 @@
 
     property_list_t <span class="token operator">*</span><span class="token function">propertiesForMeta</span><span class="token punctuation">(</span><span class="token keyword">bool</span> isMeta<span class="token punctuation">,</span> <span class="token keyword">struct</span> header_info <span class="token operator">*</span>hi<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="2-2-分类与懒加载的搭配"><a href="#2-2-分类与懒加载的搭配" class="headerlink" title="2.2 分类与懒加载的搭配"></a>2.2 分类与懒加载的搭配</h3><h4 id="2-2-1-分类实现load-方法（非懒分类）"><a href="#2-2-1-分类实现load-方法（非懒分类）" class="headerlink" title="2.2.1 分类实现load 方法（非懒分类）"></a>2.2.1 分类实现load 方法（非懒分类）</h4><ul>
+<h3 id="2-2-分类的加载流程"><a href="#2-2-分类的加载流程" class="headerlink" title="2.2 分类的加载流程"></a>2.2 分类的加载流程</h3><h4 id="2-3-1-初始化"><a href="#2-3-1-初始化" class="headerlink" title="2.3.1 初始化"></a>2.3.1 初始化</h4><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token function">_objc_init</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">static</span> <span class="token keyword">bool</span> initialized <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>initialized<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+    initialized <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// fixme defer initialization until an objc-using image is found?</span>
+    <span class="token function">environ_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">tls_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">static_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">lock_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">exception_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">_dyld_objc_notify_register</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>map_images<span class="token punctuation">,</span> load_images<span class="token punctuation">,</span> unmap_image<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="2-3-2-处理dyld镜像"><a href="#2-3-2-处理dyld镜像" class="headerlink" title="2.3.2 处理dyld镜像"></a>2.3.2 处理dyld镜像</h4><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span>
+<span class="token function">map_images</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> count<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> <span class="token keyword">const</span> paths<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+           <span class="token keyword">const</span> <span class="token keyword">struct</span> mach_header <span class="token operator">*</span> <span class="token keyword">const</span> mhdrs<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    mutex_locker_t <span class="token function">lock</span><span class="token punctuation">(</span>runtimeLock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">map_images_nolock</span><span class="token punctuation">(</span>count<span class="token punctuation">,</span> paths<span class="token punctuation">,</span> mhdrs<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="2-3-4-解锁处理镜像"><a href="#2-3-4-解锁处理镜像" class="headerlink" title="2.3.4 解锁处理镜像"></a>2.3.4 解锁处理镜像</h4><pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> 
+<span class="token function">map_images_nolock</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> mhCount<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> <span class="token keyword">const</span> mhPaths<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                  <span class="token keyword">const</span> <span class="token keyword">struct</span> mach_header <span class="token operator">*</span> <span class="token keyword">const</span> mhdrs<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+         <span class="token comment" spellcheck="true">/*** 省去许多 ***/</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>hCount <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">_read_images</span><span class="token punctuation">(</span>hList<span class="token punctuation">,</span> hCount<span class="token punctuation">,</span> totalClasses<span class="token punctuation">,</span> unoptimizedTotalClasses<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    firstTime <span class="token operator">=</span> NO<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到读取镜像后，核心业务代码为<code>_read_images</code> 这个方法， 处理了所有的类。</p>
+<h3 id="2-3-5-实现分类方法"><a href="#2-3-5-实现分类方法" class="headerlink" title="2.3.5 实现分类方法"></a>2.3.5 实现分类方法</h3><p>进到<code>_read_images</code> 方法，看到关于分类的在这里</p>
+<p><img src="/p/38312/005.png" alt></p>
+<p>这里逐一解释做了什么操作：</p>
+<ol>
+<li><p>将分类与类表中存储。使用的是<strong>addUnattachedCategoryForClass</strong> 方法，看看具体如何实现的：</p>
+<p><img src="/p/38312/006.png" alt></p>
+<p>如图所示，分别是：获取存放分类的表、分类扩容、分类插入表里。</p>
+<p>而分类插入到表里，是 分类——类进行key-value 对应存入的，具体的函数为：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token operator">*</span><span class="token function">NXMapInsert</span><span class="token punctuation">(</span>NXMapTable <span class="token operator">*</span>table<span class="token punctuation">,</span>
+                  <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>key<span class="token punctuation">,</span>
+                  <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>value<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>对方法的重新实现：<strong>remethodizeClass</strong>，来看看这个方法的实现</p>
+<p><img src="/p/38312/007.png" alt></p>
+<p>这是啥？脚趾头都知道，核心业务方法是 <code>attachCategories(cls, cats, true /*flush caches*/);</code>，点开继续看。</p>
+</li>
+<li><p>往类里添加分类 - attachCategories</p>
+<p><img src="/p/38312/008.png" alt></p>
+<p>所要做的，都写在上面了，就是做了3件事情：</p>
+<ul>
+<li>开辟内存空间</li>
+<li>遍历分类列表，把方法、属性、协议写到3组数组里</li>
+<li>通过attatchList 方法， 依次写入到类的rw 的methods、properties、protocols 里</li>
+</ul>
+</li>
+<li><p>attachLists方法 - 粘贴方法/属性/协议的具体实现：</p>
+<p>具体的代码如下：</p>
+<p><img src="/p/38312/009.png" alt></p>
+<p>这里可以看到，往类里添加分类的方法、属性、协议，一般有3种情况，处理如下：</p>
+<ul>
+<li>多对多。处理方式是为新内容创建空间，将旧内容<strong>平移</strong>到后面，将新内容<strong>拷贝</strong>放置最前面。 </li>
+<li>0对1。即之前没有方法、属性或协议。这种比较简单，直接插入即可。</li>
+<li>一对多。这种和多对多类似，将新的内容拷贝放入内存最前面</li>
+</ul>
+</li>
+<li><p><strong>内存移动和拷贝</strong></p>
+<p>这里着重分析一下，平移，与拷贝。在C函数里，他们是这样的</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token comment" spellcheck="true">/* dst     ： destination ：目标地址
+         src    ：    source            ：被移动的内存首地址
+         n        ：                             被移动的内存长度
+         memmove                            将 src内存中移动 len长度部分到 dest
+         memcpy                                将 src内存中拷贝 n 长度部分到 dest
+    */</span>
+<span class="token keyword">void</span>    <span class="token operator">*</span><span class="token function">memcpy</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>__dst<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>__src<span class="token punctuation">,</span> size_t __n<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">void</span>    <span class="token operator">*</span><span class="token function">memmove</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>__dst<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>__src<span class="token punctuation">,</span> size_t __len<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><p>第一步平移操作：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token function">memmove</span><span class="token punctuation">(</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span>lists <span class="token operator">+</span> addedCount<span class="token punctuation">,</span> <span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span>lists<span class="token punctuation">,</span> 
+                    oldCount <span class="token operator">*</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span>lists<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ul>
+<li>dst：array()-&gt;lists + addedCount，即总数组的长度</li>
+<li>src：被移动的数组为原内容（方法列表、属性、协议）</li>
+<li>n：移动了的部分：array()-&gt;lists，即偏移原来的部分</li>
+</ul>
+</li>
+<li><p>第二步操作 </p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token function">memcpy</span><span class="token punctuation">(</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span>lists<span class="token punctuation">,</span> addedLists<span class="token punctuation">,</span> 
+                   addedCount <span class="token operator">*</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token function">array</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span>lists<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ul>
+<li>dst：array()-&gt;lists + addedCount，即总数组的长度</li>
+<li>src：被拷贝的数组为原内容（方法列表、属性、协议）</li>
+<li>len：拷贝了的部分：array()-&gt;lists，即偏移原来的部分</li>
+</ul>
+</li>
+</ul>
+<p><img src="/p/38312/010.png" alt="009"></p>
+<p>从这张图，可以清晰的看出，分类中的方法、属性和协议的添加次序，都是讲旧的移走，新的方法排最前面。</p>
+<p>这也解释了为何分类会覆盖类原有的方法，原理是因为相应的方法、属性和协议，在内存段中，排列靠前。</p>
+</li>
+</ol>
+<h3 id="2-3-分类与懒加载的搭配"><a href="#2-3-分类与懒加载的搭配" class="headerlink" title="2.3 分类与懒加载的搭配"></a>2.3 分类与懒加载的搭配</h3><h4 id="2-2-1-分类实现load-方法（非懒分类）"><a href="#2-2-1-分类实现load-方法（非懒分类）" class="headerlink" title="2.2.1 分类实现load 方法（非懒分类）"></a>2.2.1 分类实现load 方法（非懒分类）</h4><ul>
 <li><p>懒加载的类 + 非懒加载的分类</p>
 <ol>
 <li><p>先实现非懒加载类的分类</p>
