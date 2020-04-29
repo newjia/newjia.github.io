@@ -392,14 +392,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.1k
+                    1.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    4 分
+                    6 分
                 </div>
                 
 
@@ -415,7 +415,10 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="一、懒加载类"><a href="#一、懒加载类" class="headerlink" title="一、懒加载类"></a>一、懒加载类</h2><h3 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h3><blockquote>
+                <blockquote>
+<p>本页所使用的objc runtime 756.2，来自 <a href="https://opensource.apple.com/tarballs/objc4" target="_blank" rel="noopener">Apple 开源文档</a></p>
+</blockquote>
+<h2 id="一、懒加载类"><a href="#一、懒加载类" class="headerlink" title="一、懒加载类"></a>一、懒加载类</h2><h3 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h3><blockquote>
 <p><em>懒加载(lazy loading)又称为延迟加载，它是指系统不会在初始化是就加载某个对象，而是在第一次调用（使用 get 方法）时才加载这个对象到内存。它的实现方法实质上就是覆写该对象的 get 方法，并将该对象在初始化时需要实现的代码在 get 方法中实现。</em></p>
 </blockquote>
 <p>而对于数据结构而言，惰性加载是指从一个数据对象通过方法获得里面的一个属性对象时，这个对应对象实际并没有随其父数据对象创建时一起保存在运行空间中，而是在其读取方法第一次被调用时才从其他数据源中加载到运行空间中，这样可以避免过早地导入过大的数据对象但并没有使用的空间占用浪费。</p>
@@ -507,7 +510,78 @@
 <p>可以看到，在这个类里面，进到<code>!cls-&gt;isSwiftStable_ButAllowLegacyForNow</code> 这个选择，也就是非swift 类的情况下，对类<code>cls</code>进行了方法属性的实现，对的，没错，实现放方法，就放在<code>realizeClassWithoutSwift</code>里，这也是之前讨论过的非懒加载来初次实现的方法。</p>
 </li>
 </ul>
-<h2 id="二、分类的加载"><a href="#二、分类的加载" class="headerlink" title="二、分类的加载"></a>二、分类的加载</h2><h3 id="2-1-分类实现-load方法"><a href="#2-1-分类实现-load方法" class="headerlink" title="2.1 分类实现 load方法"></a>2.1 分类实现 load方法</h3><ul>
+<h2 id="二、分类及其加载"><a href="#二、分类及其加载" class="headerlink" title="二、分类及其加载"></a>二、分类及其加载</h2><h3 id="2-1-分类的结构"><a href="#2-1-分类的结构" class="headerlink" title="2.1 分类的结构"></a>2.1 分类的结构</h3><p>为了搞清楚分类在底层的特点，先用代码一步一步来摸索</p>
+<p>生成一个分类：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">@interface <span class="token function">NSObject</span> <span class="token punctuation">(</span>Eat<span class="token punctuation">)</span>
+
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>eat<span class="token punctuation">;</span>
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>swallow<span class="token punctuation">;</span>
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>输入编译代码，得到相应的.cpp 文件</p>
+<pre class="line-numbers language-bash"><code class="language-bash">xcrun -sdk iphoneos clang -arch arm64 -rewrite-objc NSObject+Eat.m<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>得到对应的cpp文件</p>
+<p><img src="/p/38312/000.png" alt> </p>
+<p>打开这份.cpp 文件，熟悉的内容扑面而来</p>
+<p><img src="/p/38312/001.png" alt="类的结构"></p>
+<p>下面看到的是分类的结构：</p>
+<p><img src="/p/38312/002.png" alt="分类的结构"></p>
+<p>其中包含了 </p>
+<ul>
+<li>name - 分类依附的主类的名字</li>
+<li>cls - 分类的名字</li>
+<li>instanceMethods - <strong>实例方法列表</strong></li>
+<li>classMethods -  <strong>类方法列表</strong></li>
+<li>protocols - 分类遵循的<strong>协议列表</strong></li>
+<li>properties - <strong>属性列表</strong></li>
+</ul>
+<p>接下来看其中方法<code>method_list</code>的结构：</p>
+<p><img src="/p/38312/003.png" alt="分类方法的结构"></p>
+<p>得到了两个结构体，原结构体如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">struct</span> <span class="token comment" spellcheck="true">/*_method_list_t*/</span> <span class="token punctuation">{</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> entsize<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// sizeof(struct _objc_method)</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> method_count<span class="token punctuation">;</span>
+    <span class="token keyword">struct</span> _objc_method method_list<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>下面实现的结构体为：</p>
+<pre class="line-numbers language-c"><code class="language-c">_OBJC_$_CATEGORY_INSTANCE_METHODS_NSObject_$_Eat <span class="token function">__attribute__</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>used<span class="token punctuation">,</span> <span class="token function">section</span> <span class="token punctuation">(</span><span class="token string">"__DATA,__objc_const"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token keyword">sizeof</span><span class="token punctuation">(</span>_objc_method<span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token number">2</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token keyword">struct</span> objc_selector <span class="token operator">*</span><span class="token punctuation">)</span><span class="token string">"eat"</span><span class="token punctuation">,</span> <span class="token string">"v16@0:8"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>_I_NSObject_Eat_eat<span class="token punctuation">}</span><span class="token punctuation">,</span>
+	<span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token keyword">struct</span> objc_selector <span class="token operator">*</span><span class="token punctuation">)</span><span class="token string">"swallow"</span><span class="token punctuation">,</span> <span class="token string">"v16@0:8"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>_I_NSObject_Eat_swallow<span class="token punctuation">}</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>两个结构体，其实是一一对应关系</p>
+<ul>
+<li><p>占用内存：entsize —— sizeof(_objc_method)</p>
+</li>
+<li><p>方法数量：method_count - 2</p>
+</li>
+<li><p>方法列表：method_list - </p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token keyword">struct</span> objc_selector <span class="token operator">*</span><span class="token punctuation">)</span><span class="token string">"eat"</span><span class="token punctuation">,</span> <span class="token string">"v16@0:8"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>_I_NSObject_Eat_eat<span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token keyword">struct</span> objc_selector <span class="token operator">*</span><span class="token punctuation">)</span><span class="token string">"swallow"</span><span class="token punctuation">,</span> <span class="token string">"v16@0:8"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>_I_NSObject_Eat_swallow<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>即 eat 和 swallow 两个方法</p>
+</li>
+</ul>
+<p>继续往下看，可以看到分类 <code>_OBJC_$_CATEGORY_NSObject_$_Eat.cls</code> 这个类指针指向了 主类<code>OBJC_CLASS_$_NSObject</code> 的地址</p>
+<p><img src="/p/38312/004.png" alt="分类方法的结构"></p>
+<p>查询<a href="https://opensource.apple.com/tarballs/objc4" target="_blank" rel="noopener">源码762</a>，分类的结构如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">struct</span> category_t <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>name<span class="token punctuation">;</span>
+    classref_t cls<span class="token punctuation">;</span>
+    <span class="token keyword">struct</span> method_list_t <span class="token operator">*</span>instanceMethods<span class="token punctuation">;</span>
+    <span class="token keyword">struct</span> method_list_t <span class="token operator">*</span>classMethods<span class="token punctuation">;</span>
+    <span class="token keyword">struct</span> protocol_list_t <span class="token operator">*</span>protocols<span class="token punctuation">;</span>
+    <span class="token keyword">struct</span> property_list_t <span class="token operator">*</span>instanceProperties<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// Fields below this point are not always present on disk.</span>
+    <span class="token keyword">struct</span> property_list_t <span class="token operator">*</span>_classProperties<span class="token punctuation">;</span>
+
+    method_list_t <span class="token operator">*</span><span class="token function">methodsForMeta</span><span class="token punctuation">(</span><span class="token keyword">bool</span> isMeta<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>isMeta<span class="token punctuation">)</span> <span class="token keyword">return</span> classMethods<span class="token punctuation">;</span>
+        <span class="token keyword">else</span> <span class="token keyword">return</span> instanceMethods<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    property_list_t <span class="token operator">*</span><span class="token function">propertiesForMeta</span><span class="token punctuation">(</span><span class="token keyword">bool</span> isMeta<span class="token punctuation">,</span> <span class="token keyword">struct</span> header_info <span class="token operator">*</span>hi<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-2-分类与懒加载的搭配"><a href="#2-2-分类与懒加载的搭配" class="headerlink" title="2.2 分类与懒加载的搭配"></a>2.2 分类与懒加载的搭配</h3><h4 id="2-2-1-分类实现load-方法（非懒分类）"><a href="#2-2-1-分类实现load-方法（非懒分类）" class="headerlink" title="2.2.1 分类实现load 方法（非懒分类）"></a>2.2.1 分类实现load 方法（非懒分类）</h4><ul>
 <li><p>懒加载的类 + 非懒加载的分类</p>
 <ol>
 <li><p>先实现非懒加载类的分类</p>
@@ -540,6 +614,13 @@
 </li>
 <li><p>实现主类后，将分类粘贴到主类上</p>
 <p>先进行 <code>realizeClassWithoutSwift</code>，然后 <code>unattachedCategoriesForClass</code> 贴到主类上</p>
+<p>具体的实现步骤如下：</p>
+<ol>
+<li><code>read_images</code></li>
+<li><code>prepare_load_methods</code></li>
+<li><code>realizeClassWithoutSwift</code></li>
+<li><code>unattachedCategoriesForClass</code></li>
+</ol>
 </li>
 </ol>
 </li>
@@ -548,20 +629,23 @@
 <p>这种情况是最普遍的，就是直接取 class 里的data()-&gt;ro，在ro 里找到对应的方法</p>
 <p>获取到过程是：</p>
 <ul>
-<li>read_images</li>
-<li>realizeClassWithoutSwift</li>
-<li>methodizedClass</li>
+<li>read_images - 读取镜像</li>
+<li>realizeClassWithoutSwift（实现非懒加载类）</li>
+<li>methodizedClass - 实现方法</li>
+<li>unattachedCategoriesForClass - 把内存里的类插入到表里</li>
+<li>attachCategories - 往类后面粘贴分类结构</li>
 </ul>
 </li>
 </ul>
-<h3 id="2-2-分类未实现load-方法"><a href="#2-2-分类未实现load-方法" class="headerlink" title="2.2 分类未实现load  方法"></a>2.2 分类未实现load  方法</h3><p>如果分类并不主动实现 +load() 方法，就由编译时实现类与分类的查找实现</p>
+<h4 id="2-2-分类未实现load-方法（懒分类）"><a href="#2-2-分类未实现load-方法（懒分类）" class="headerlink" title="2.2 分类未实现load  方法（懒分类）"></a>2.2 分类未实现load  方法（懒分类）</h4><p>如果分类并不主动实现 +load() 方法，就由编译时实现类与分类的查找实现</p>
 <ul>
 <li><p>非懒加载类 + 懒加载的分类</p>
 <p>通过镜像来查找实现</p>
 <ol>
 <li>读取镜像  read_images</li>
-<li>realizeClassWithoutSwift</li>
+<li>realizeClassWithoutSwift（实现非懒加载类）</li>
 <li>methodizedClass </li>
+<li>读取类里的 data-&gt;ro 信息</li>
 </ol>
 </li>
 <li><p>懒加载的类 + 懒加载的分类</p>
