@@ -392,14 +392,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    873
+                    1.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    4 分
                 </div>
                 
 
@@ -507,8 +507,73 @@
 <p>可以看到，在这个类里面，进到<code>!cls-&gt;isSwiftStable_ButAllowLegacyForNow</code> 这个选择，也就是非swift 类的情况下，对类<code>cls</code>进行了方法属性的实现，对的，没错，实现放方法，就放在<code>realizeClassWithoutSwift</code>里，这也是之前讨论过的非懒加载来初次实现的方法。</p>
 </li>
 </ul>
-<h2 id="二、分类的加载"><a href="#二、分类的加载" class="headerlink" title="二、分类的加载"></a>二、分类的加载</h2><h3 id="2-1-分类实现load"><a href="#2-1-分类实现load" class="headerlink" title="2.1 分类实现load"></a>2.1 分类实现load</h3><h4 id="2-1-1-懒加载的类和非懒加载的分类"><a href="#2-1-1-懒加载的类和非懒加载的分类" class="headerlink" title="2.1.1 懒加载的类和非懒加载的分类"></a>2.1.1 懒加载的类和非懒加载的分类</h4><p>两者很相似，当子类实现了<code>load</code> 方法，父类会由于子类实现递归实现，而自动拥有来<code>load</code> 这一方法</p>
-<h3 id="2-2-分类未实现load"><a href="#2-2-分类未实现load" class="headerlink" title="2.2 分类未实现load"></a>2.2 分类未实现load</h3><h4 id="2-2-1-非懒加载类和懒加载的分类"><a href="#2-2-1-非懒加载类和懒加载的分类" class="headerlink" title="2.2.1 非懒加载类和懒加载的分类"></a>2.2.1 非懒加载类和懒加载的分类</h4><h4 id="2-2-2-懒加载的类和懒加载的分类"><a href="#2-2-2-懒加载的类和懒加载的分类" class="headerlink" title="2.2.2 懒加载的类和懒加载的分类"></a>2.2.2 懒加载的类和懒加载的分类</h4>
+<h2 id="二、分类的加载"><a href="#二、分类的加载" class="headerlink" title="二、分类的加载"></a>二、分类的加载</h2><h3 id="2-1-分类实现-load方法"><a href="#2-1-分类实现-load方法" class="headerlink" title="2.1 分类实现 load方法"></a>2.1 分类实现 load方法</h3><ul>
+<li><p>懒加载的类 + 非懒加载的分类</p>
+<ol>
+<li><p>先实现非懒加载类的分类</p>
+<p>具体是读取镜像 <code>read_images</code> </p>
+<p>以及： <code>addUnattachedCategoryForClass</code> 将读到的分类插入到分类的表里，备用</p>
+<p>请见代码实现：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">addUnattachedCategoryForClass</span><span class="token punctuation">(</span>category_t <span class="token operator">*</span>cat<span class="token punctuation">,</span> Class <span class="token class-name">cls</span><span class="token punctuation">,</span> 
+                                          header_info <span class="token operator">*</span>catHeader<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    runtimeLock<span class="token punctuation">.</span><span class="token function">assertLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// DO NOT use cat->cls! cls may be cat->cls->isa instead</span>
+    NXMapTable <span class="token operator">*</span>cats <span class="token operator">=</span> <span class="token function">unattachedCategories</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    category_list <span class="token operator">*</span>list<span class="token punctuation">;</span>
+
+    list <span class="token operator">=</span> <span class="token punctuation">(</span>category_list <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">NXMapGet</span><span class="token punctuation">(</span>cats<span class="token punctuation">,</span> cls<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>list<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        list <span class="token operator">=</span> <span class="token punctuation">(</span>category_list <span class="token operator">*</span><span class="token punctuation">)</span>
+            <span class="token function">calloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token operator">*</span>list<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>list<span class="token operator">-</span><span class="token operator">></span>list<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        list <span class="token operator">=</span> <span class="token punctuation">(</span>category_list <span class="token operator">*</span><span class="token punctuation">)</span>
+            <span class="token function">realloc</span><span class="token punctuation">(</span>list<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token operator">*</span>list<span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>list<span class="token operator">-</span><span class="token operator">></span>list<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token punctuation">(</span>list<span class="token operator">-</span><span class="token operator">></span>count <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    list<span class="token operator">-</span><span class="token operator">></span>list<span class="token punctuation">[</span>list<span class="token operator">-</span><span class="token operator">></span>count<span class="token operator">++</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">(</span>locstamped_category_t<span class="token punctuation">)</span><span class="token punctuation">{</span>cat<span class="token punctuation">,</span> catHeader<span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token function">NXMapInsert</span><span class="token punctuation">(</span>cats<span class="token punctuation">,</span> cls<span class="token punctuation">,</span> list<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>分类督促懒加载类实现，不然分类无处依附。</p>
+<p>这里使用的是<code>prepare_load_methods</code>方法</p>
+</li>
+<li><p>实现主类后，将分类粘贴到主类上</p>
+<p>先进行 <code>realizeClassWithoutSwift</code>，然后 <code>unattachedCategoriesForClass</code> 贴到主类上</p>
+</li>
+</ol>
+</li>
+<li><p>非懒加载的类 + 非懒加载的分类</p>
+<p><strong>直接编译获取到</strong>。</p>
+<p>这种情况是最普遍的，就是直接取 class 里的data()-&gt;ro，在ro 里找到对应的方法</p>
+<p>获取到过程是：</p>
+<ul>
+<li>read_images</li>
+<li>realizeClassWithoutSwift</li>
+<li>methodizedClass</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-分类未实现load-方法"><a href="#2-2-分类未实现load-方法" class="headerlink" title="2.2 分类未实现load  方法"></a>2.2 分类未实现load  方法</h3><p>如果分类并不主动实现 +load() 方法，就由编译时实现类与分类的查找实现</p>
+<ul>
+<li><p>非懒加载类 + 懒加载的分类</p>
+<p>通过镜像来查找实现</p>
+<ol>
+<li>读取镜像  read_images</li>
+<li>realizeClassWithoutSwift</li>
+<li>methodizedClass </li>
+</ol>
+</li>
+<li><p>懒加载的类 + 懒加载的分类</p>
+<p>因为懒加载的类在编译时并不会主动实现，所以通过方法查找一步一步找到</p>
+<ol>
+<li>方法查找的消息传递 - lookupimporforward </li>
+<li>realizeClassWithoutSwift</li>
+<li>methodizedClass </li>
+</ol>
+</li>
+</ul>
+
             </div>
             <hr/>
 
