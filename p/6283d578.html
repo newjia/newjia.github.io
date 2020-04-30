@@ -400,14 +400,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.1k
+                    2.2k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    9 分
+                    10 分
                 </div>
                 
 
@@ -852,18 +852,7 @@ AssociationsHashMap <span class="token operator">&amp;</span><span class="token 
     <span class="token punctuation">}</span>
     <span class="token keyword">return</span> value<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="四、load的调用"><a href="#四、load的调用" class="headerlink" title="四、load的调用"></a>四、load的调用</h2><h3 id="3-1-何时调用"><a href="#3-1-何时调用" class="headerlink" title="3.1 何时调用"></a>3.1 何时调用</h3><p>load 方法常常是我们分辨懒加载类和非懒加载类的分水岭。</p>
-<p>它在系统objc_init 后的 load_images 里被调用</p>
-<h3 id="3-2-如何调用"><a href="#3-2-如何调用" class="headerlink" title="3.2 如何调用"></a>3.2 如何调用</h3><ol>
-<li><p>准备好类和分类 - loadable_class、loadable_category</p>
-</li>
-<li><p>遍历找到函数。</p>
-<p>这里的model 函数类型四 (*method_t)(class, SEL) </p>
-<p>通过发送 method_t 函数找到对应的SEL</p>
-</li>
-</ol>
-<h3 id="3-3-load-方法中执行重名的优先级"><a href="#3-3-load-方法中执行重名的优先级" class="headerlink" title="3.3 load 方法中执行重名的优先级"></a>3.3 load 方法中执行重名的优先级</h3><p>先主后分类，重复执行</p>
-<h2 id="五、initialize-的调用"><a href="#五、initialize-的调用" class="headerlink" title="五、initialize 的调用"></a>五、initialize 的调用</h2><ul>
+<h2 id="四、initialize-的调用"><a href="#四、initialize-的调用" class="headerlink" title="四、initialize 的调用"></a>四、initialize 的调用</h2><h3 id="4-1-调用步骤如下"><a href="#4-1-调用步骤如下" class="headerlink" title="4.1 调用步骤如下"></a>4.1 调用步骤如下</h3><ul>
 <li><p>lookUpImpOrForward</p>
 <pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">if</span> <span class="token punctuation">(</span>initialize <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>cls<span class="token operator">-></span><span class="token function">isInitialized</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         cls <span class="token operator">=</span> <span class="token function">initializeAndLeaveLocked</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> inst<span class="token punctuation">,</span> runtimeLock<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -911,6 +900,26 @@ AssociationsHashMap <span class="token operator">&amp;</span><span class="token 
     <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>Class<span class="token punctuation">,</span> SEL<span class="token punctuation">)</span><span class="token punctuation">)</span>objc_msgSend<span class="token punctuation">)</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> SEL_initialize<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">asm</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<h2 id="五、面试题-load-与initialize-的区别"><a href="#五、面试题-load-与initialize-的区别" class="headerlink" title="五、面试题 load 与initialize 的区别"></a>五、面试题 load 与initialize 的区别</h2><h4 id="5-1-调用方式："><a href="#5-1-调用方式：" class="headerlink" title="5.1 调用方式："></a>5.1 调用方式：</h4><ul>
+<li>load 根据函数地址调用</li>
+<li>initialize 通过objc_msgSend 调用</li>
+</ul>
+<h4 id="5-2-调用时刻"><a href="#5-2-调用时刻" class="headerlink" title="5.2 调用时刻"></a>5.2 调用时刻</h4><ul>
+<li>load 属于runtime 加载类、分类的时候，智慧调用一次</li>
+<li>initialize 方法上类第一次收到消息时，每个类调用一次，而父类的initialize 可能会调用多次 </li>
+</ul>
+<h4 id="5-3-调用顺序："><a href="#5-3-调用顺序：" class="headerlink" title="5.3 调用顺序："></a>5.3 调用顺序：</h4><ul>
+<li>load：<ul>
+<li>先编译那个类就先调用它的load，父类的load 方法优先。</li>
+<li>分类中也是先主类执行，后分类执行</li>
+</ul>
+</li>
+<li>initialize：和普通方法一样，因为执行的是objc_msgSend 。<ul>
+<li>先执行子类的initialize，如果没有，执行父类的。</li>
+<li>分类部分，如果分类有，执行分类，不执行主类的</li>
+</ul>
 </li>
 </ul>
 
