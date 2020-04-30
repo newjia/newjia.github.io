@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="【类的加载】-(2)懒加载类与分类, 李佳的技术博客">
+    <meta name="keywords" content="【类的加载】-（2）懒加载类与分类, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>【类的加载】-(2)懒加载类与分类 | 李佳的技术博客</title>
+    <title>【类的加载】-（2）懒加载类与分类 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/22.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/6.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">【类的加载】-(2)懒加载类与分类</h1>
+                    <h1 class="description center-align post-title">【类的加载】-（2）懒加载类与分类</h1>
                 </div>
             </div>
         </div>
@@ -417,6 +417,11 @@
             <div id="articleContent">
                 <blockquote>
 <p>本页所使用的objc runtime 756.2，来自 <a href="https://opensource.apple.com/tarballs/objc4" target="_blank" rel="noopener">Apple 开源文档</a></p>
+</blockquote>
+<blockquote>
+<p><strong>类的加载探寻系列:</strong><br>1、<a href="https://nilsli.com/p/29664.html">【类的加载】-（1）类的启动</a></p>
+<p>2、<a href="https://nilsli.com/p/38312.html">【类的加载】-（2）懒加载类与分类</a></p>
+<p>3、<a href="https://nilsli.com/p/6283d578.html">【类的加载】-（3）loading_images</a></p>
 </blockquote>
 <h2 id="一、懒加载类"><a href="#一、懒加载类" class="headerlink" title="一、懒加载类"></a>一、懒加载类</h2><h3 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h3><blockquote>
 <p><em>懒加载(lazy loading)又称为延迟加载，它是指系统不会在初始化是就加载某个对象，而是在第一次调用（使用 get 方法）时才加载这个对象到内存。它的实现方法实质上就是覆写该对象的 get 方法，并将该对象在初始化时需要实现的代码在 get 方法中实现。</em></p>
