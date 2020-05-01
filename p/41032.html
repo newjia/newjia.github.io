@@ -408,14 +408,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    537
+                    1.9k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    7 分
                 </div>
                 
 
@@ -436,12 +436,33 @@
 <h2 id="一、什么是Runtime"><a href="#一、什么是Runtime" class="headerlink" title="一、什么是Runtime"></a>一、什么是Runtime</h2><p>这个问题，问的是对Runtime 的基础理解。</p>
 <blockquote>
 <p>Runtime是由C和C++汇编实现的一套<strong>API</strong>，为 OC 语言加入了面向对象，运行时的功能。</p>
-<p>运行时（Runtime） 是指将数据类型的去定推迟到了运行时。</p>
+<p>运行时（Runtime） 是指将数据类型确定推迟到了运行时。</p>
 </blockquote>
-<p>举个例子：关于类——<strong>类的扩展</strong>，在编译时作为类的一部分（ro）就已经确定好了，所以可以添加分类；而<strong>分类</strong>由于是编译时加载，只能添加属性以及对应的setter 和getter 方法，来达到模拟属性的目的。</p>
-<h2 id="二、方法的本质是什么？"><a href="#二、方法的本质是什么？" class="headerlink" title="二、方法的本质是什么？"></a>二、方法的本质是什么？</h2><h2 id="三、简述SEL-和IMP和之间关系"><a href="#三、简述SEL-和IMP和之间关系" class="headerlink" title="三、简述SEL 和IMP和之间关系"></a>三、简述SEL 和IMP和之间关系</h2><h2 id="四、能否往已注册的类添加成员变量？"><a href="#四、能否往已注册的类添加成员变量？" class="headerlink" title="四、能否往已注册的类添加成员变量？"></a>四、能否往已注册的类添加成员变量？</h2><p>### </p>
+<p>举个例子：</p>
+<p>关于类——<strong>类的扩展</strong>，在编译时作为类的一部分（ro）就已经确定好了，所以可以添加分类；而<strong>分类</strong>由于是运行时加载，只能添加属性以及对应的setter 和getter 方法，来达到模拟属性的目的。</p>
+<h2 id="二、方法的本质是什么？"><a href="#二、方法的本质是什么？" class="headerlink" title="二、方法的本质是什么？"></a>二、方法的本质是什么？</h2><blockquote>
+<p>方法的本质，就是发送消息/消息传递</p>
+</blockquote>
+<p>让一个类（对象/类）执行一个方法的过程，就是向它发送消息，它便开始消息查找的过程。主要包含以下几个过程：</p>
+<ol>
+<li><strong>快速查找</strong>（<strong>objc_msgSend</strong>），主要向类 cache_t 查找缓存的过的方法。</li>
+<li><strong>慢速查找</strong>：执行 <strong>lookUpImpOrForward</strong> 方法，递归自己，以及自己的父类，属性 <code>rw</code> 里的<code>methodlist</code> 中查找方法。</li>
+<li><strong>动态方法加解析（还是查找不到）</strong>：<strong>resolveInstanceMethod</strong> 方法，看是否自定义实现过</li>
+<li>消息转发阶段：<ol>
+<li>快速转发—— <strong>forwardingTargetForSelector</strong> 寻找特定对象来执行方法</li>
+<li>慢速转发—— <strong>methodSignatureForSelector</strong>（获取方法的签名）以及生成相应的invocation，由 <strong>forwardInvocation</strong> 方法进行消息分发，让有能力执行的类来执行该方法。</li>
+</ol>
+</li>
+</ol>
+<h2 id="三、简述SEL-和IMP和之间关系"><a href="#三、简述SEL-和IMP和之间关系" class="headerlink" title="三、简述SEL 和IMP和之间关系"></a>三、简述SEL 和IMP和之间关系</h2><blockquote>
+<p>定义：SEL是内存中方法编号，IMP 是方法的具体实现</p>
+</blockquote>
+<p>两者个点关系就好比一本书：SEL 是目录页里的 章节标题，而IMP 则是文章的页码，通过页码，可以看到具体内容。</p>
+<p>SEL 是由read_images 就已经加载注册到内存表里。</p>
+<h2 id="四、能否往已注册的类添加成员变量？"><a href="#四、能否往已注册的类添加成员变量？" class="headerlink" title="四、能否往已注册的类添加成员变量？"></a>四、能否往已注册的类添加成员变量？</h2><p>### </p>
 <p>Q：已经注册好的类，能否再动态添加成员变量？为什么？</p>
-<h3 id="分析："><a href="#分析：" class="headerlink" title="分析："></a>分析：</h3><p>我们通过Runtime还原一下场景。</p>
+<p><strong>答案是不可以。</strong></p>
+<p>我们通过Runtime还原一下场景。</p>
 <p>注册好的类，实现的方法是，注册到内存里：</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">objc_registerClassPair</span><span class="token punctuation">(</span>LGPerson<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p>而实现<code>objc_registerClassPair</code> 这个方法，又实现了下面的内容:</p>
@@ -456,9 +477,127 @@ cls<span class="token operator">-</span><span class="token operator">></span><sp
 <p>在源码中找到相对应的函数：</p>
 <p><img src="/p/41032/001.png" alt="001"></p>
 <p>走到这一步，就戛然而止了……添加ivars 被拒绝——因为内存已固定，无法再添加新属性了。</p>
-<h3 id="回答："><a href="#回答：" class="headerlink" title="回答："></a>回答：</h3><p>答案是否。</p>
-<p>因为注册好的类，内存容量已经固定，无法动态添加了。</p>
-<h2 id="五、关联对象分析"><a href="#五、关联对象分析" class="headerlink" title="五、关联对象分析"></a>五、关联对象分析</h2><h2 id="六、weak-是什么及其实现原理"><a href="#六、weak-是什么及其实现原理" class="headerlink" title="六、weak 是什么及其实现原理"></a>六、weak 是什么及其实现原理</h2><h2 id="七、方法交换（Method-Swizzling）坑点"><a href="#七、方法交换（Method-Swizzling）坑点" class="headerlink" title="七、方法交换（Method Swizzling）坑点"></a>七、方法交换（Method Swizzling）坑点</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
+<blockquote>
+<p>原因：因为注册好的类，内存容量已经固定，无法动态添加了。</p>
+</blockquote>
+<h2 id="五、isKindOFClass-和-isMemberOfClass-的区别"><a href="#五、isKindOFClass-和-isMemberOfClass-的区别" class="headerlink" title="五、isKindOFClass 和 isMemberOfClass 的区别"></a>五、isKindOFClass 和 isMemberOfClass 的区别</h2><h3 id="5-1-题目"><a href="#5-1-题目" class="headerlink" title="5.1 题目"></a>5.1 题目</h3><p>关于这两个函数，我们知道他们各自概念是：</p>
+<blockquote>
+<p>isKindOfClass——某个对象是否是类的成员，或者继承自该类的成员（即父子关系）</p>
+<p>isMemberOfClass——某个对象是否当前类的成员，并不考虑回溯的父子类关系。</p>
+</blockquote>
+<p>这里有一道面试题，题目如下，要求回答各打印结果：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">BOOL re1 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">[</span>NSObject <span class="token keyword">class</span><span class="token punctuation">]</span> isKindOfClass<span class="token operator">:</span><span class="token punctuation">[</span>NSObject <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//1</span>
+BOOL re2 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">[</span>NSObject <span class="token keyword">class</span><span class="token punctuation">]</span> isMemberOfClass<span class="token operator">:</span><span class="token punctuation">[</span>NSObject <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 0</span>
+BOOL re3 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">[</span>Person <span class="token keyword">class</span><span class="token punctuation">]</span> isKindOfClass<span class="token operator">:</span><span class="token punctuation">[</span>Person <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//0</span>
+BOOL re4 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">[</span>Person <span class="token keyword">class</span><span class="token punctuation">]</span> isMemberOfClass<span class="token operator">:</span><span class="token punctuation">[</span>Person <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 0</span>
+<span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">" re1 :%hhd\n re2 :%hhd\n re3 :%hhd\n re4 :%hhd\n"</span><span class="token punctuation">,</span>re1<span class="token punctuation">,</span>re2<span class="token punctuation">,</span>re3<span class="token punctuation">,</span>re4<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+BOOL re5 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">[</span>NSObject alloc<span class="token punctuation">]</span> isKindOfClass<span class="token operator">:</span><span class="token punctuation">[</span>NSObject <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//1</span>
+BOOL re6 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">[</span>NSObject alloc<span class="token punctuation">]</span> isMemberOfClass<span class="token operator">:</span><span class="token punctuation">[</span>NSObject <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 1</span>
+BOOL re7 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">[</span>Person alloc<span class="token punctuation">]</span> isKindOfClass<span class="token operator">:</span><span class="token punctuation">[</span>Person <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">//1</span>
+BOOL re8 <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">[</span>Person alloc<span class="token punctuation">]</span> isMemberOfClass<span class="token operator">:</span><span class="token punctuation">[</span>Person <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token comment" spellcheck="true">// 1</span>
+<span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">" re5 :%hhd\n re6 :%hhd\n re7 :%hhd\n re8 :%hhd\n"</span><span class="token punctuation">,</span>re5<span class="token punctuation">,</span>re6<span class="token punctuation">,</span>re7<span class="token punctuation">,</span>re8<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>答案是什么呢？先别忙，先冷静分析一下</p>
+<h3 id="5-2-概念分析"><a href="#5-2-概念分析" class="headerlink" title="5.2 概念分析"></a>5.2 概念分析</h3><h4 id="5-2-1-类方法的区别分析"><a href="#5-2-1-类方法的区别分析" class="headerlink" title="5.2.1 类方法的区别分析"></a>5.2.1 类方法的区别分析</h4><p>很明显，上半部4个判断，是判断类与类的归属，执行的是类方法判断，先看一下涉及到的两个方法的源码：</p>
+<p>类方法的区别</p>
+<p>+(void)isKindOfClass** 的实现</p>
+<pre><code>+ (BOOL)isKindOfClass:(Class)cls {
+    for (Class tcls = object_getClass((id)self); tcls; tcls = tcls-&gt;superclass) {
+        if (tcls == cls) return YES;
+    }
+    return NO;
+}</code></pre><p><strong>+(BOOL)isMemberOfClass</strong> 的实现</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token operator">+</span> <span class="token punctuation">(</span>BOOL<span class="token punctuation">)</span>isMemberOfClass<span class="token punctuation">:</span><span class="token punctuation">(</span>Class<span class="token punctuation">)</span>cls <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">object_getClass</span><span class="token punctuation">(</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span>self<span class="token punctuation">)</span> <span class="token operator">==</span> cls<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>从上面源码分析，可以看出，isKindOfClass 多了一步 <code>tcls = tcls-&gt;superclass</code> 的循环，即如果当前类不等于目标类，向上查找父类，看看父类与目标是否相等。</p>
+<h4 id="5-2-2-实例方法的区别"><a href="#5-2-2-实例方法的区别" class="headerlink" title="5.2.2 实例方法的区别"></a>5.2.2 实例方法的区别</h4><ul>
+<li><p><strong>-(void)isKindOfClass</strong> 的实现</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span>BOOL<span class="token punctuation">)</span>isKindOfClass<span class="token operator">:</span><span class="token punctuation">(</span>Class<span class="token punctuation">)</span>cls <span class="token punctuation">{</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>Class <span class="token class-name">tcls</span> <span class="token operator">=</span> <span class="token punctuation">[</span>self <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">;</span> tcls<span class="token punctuation">;</span> tcls <span class="token operator">=</span> tcls<span class="token operator">-</span><span class="token operator">></span>superclass<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>tcls <span class="token operator">==</span> cls<span class="token punctuation">)</span> <span class="token keyword">return</span> YES<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> NO<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>步骤为：先判断对象的类，看是否与目标类相同；否则通过<code>tcls = tcls-&gt;superclass</code>，递归寻找父类及其父类，是否与本类相等</p>
+</li>
+<li><p><strong>-(void)isMemberOfClass</strong> 的实现</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token operator">-</span> <span class="token punctuation">(</span>BOOL<span class="token punctuation">)</span>isMemberOfClass<span class="token punctuation">:</span><span class="token punctuation">(</span>Class<span class="token punctuation">)</span>cls <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">[</span>self class<span class="token punctuation">]</span> <span class="token operator">==</span> cls<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>步骤为：判断对象指向的类，是否与目标类相同</p>
+</li>
+</ul>
+<h4 id="5-2-3-答题"><a href="#5-2-3-答题" class="headerlink" title="5.2.3 答题"></a>5.2.3 答题</h4><p>好的，根据这个，一个一个来进行解答。</p>
+<ol>
+<li><p><strong>返回1</strong>：因为根元类的父类=根元类</p>
+<p>左边的<code>NSObject class</code> 为 NSObject 的元类，判断是否与本类NSobject 相等？</p>
+<p>答案是不一致。</p>
+<p>但是此时会进入<code>tcls = tcls-&gt;superclass</code> 这个循环，查找本类的父类，而我们知道 NSObject 的元类的父类就是NSObject ，见下图。所以绕了一圈回来，NSObject = NSObject</p>
+<p><img src="/p/41032/002.png" alt></p>
+</li>
+<li><p><strong>返回0</strong>：因为元类与本类不相等</p>
+<p>和上一个问题一样，但是<code>isMemberOfClass</code> 在第一步就停下了，<code>object_getClass((id)self) == cls</code> 这里问到元类与本类是否相等，当然是否。</p>
+</li>
+<li><p><strong>返回0</strong>：因为普通类的元类的父类与本类是不相等的</p>
+<p>我们看右边是 Person Class </p>
+<p>左边的 Person Class </p>
+<p>判断条件是 <code>isKindOfClass</code></p>
+<p>所以，Person 开始找它的元类，看是否等于本类。我们看isa 的指向图可以得出，它的元类递归查找父类，一直都与本类不相等。所以返回为0</p>
+<p><img src="/p/41032/003.png" alt></p>
+</li>
+<li><p><strong>返回为0</strong>。因为 元类不等于本类</p>
+<p>这个和第2条是一样的</p>
+</li>
+</ol>
+<ol start="5">
+<li><p>*<em>返回为1： *</em> 因为本类等于本类</p>
+<p>给出的判断代码为：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token punctuation">[</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">[</span>NSObject alloc<span class="token punctuation">]</span> isKindOfClass<span class="token operator">:</span><span class="token punctuation">[</span>NSObject <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>其中左边的[NSObject alloc] ，创建了一个 NSObject 的对象，而对他指向 isKindOfClass 即执行以下方法：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">for</span> <span class="token punctuation">(</span>Class tcls <span class="token operator">=</span> <span class="token punctuation">[</span>self class<span class="token punctuation">]</span><span class="token punctuation">;</span> tcls<span class="token punctuation">;</span> tcls <span class="token operator">=</span> tcls<span class="token operator">-></span>superclass<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>tcls <span class="token operator">==</span> cls<span class="token punctuation">)</span> <span class="token keyword">return</span> YES<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>创建的 <code>Class tcls = [self class]</code> ，其中<strong>tcls</strong> 即为 其父类 NSObject，取其与 NSObject 相比，相等，所以返回为1。</p>
+</li>
+<li><p><strong>返回为1：</strong> 因为本类等于本类，同第5 题</p>
+</li>
+<li><p><strong>返回为1：</strong>同第5题</p>
+</li>
+<li><p><strong>返回为1：</strong> 同第5题</p>
+</li>
+</ol>
+<h2 id="五、-self-class-与-super-class-区别"><a href="#五、-self-class-与-super-class-区别" class="headerlink" title="五、[self class] 与[super class] 区别"></a>五、[self class] 与[super class] 区别</h2><h3 id="5-1-提问：以下打印什么？"><a href="#5-1-提问：以下打印什么？" class="headerlink" title="5.1 提问：以下打印什么？"></a>5.1 提问：以下打印什么？</h3><pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">import</span> "Student.h"</span>
+<span class="token macro property">#<span class="token directive keyword">import</span> &lt;objc/message.h></span>
+@implementation Student
+
+<span class="token operator">-</span> <span class="token punctuation">(</span>instancetype<span class="token punctuation">)</span>init<span class="token punctuation">{</span>
+    self <span class="token operator">=</span> <span class="token punctuation">[</span>super init<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"%@"</span><span class="token punctuation">,</span><span class="token function">NSStringFromClass</span><span class="token punctuation">(</span><span class="token punctuation">[</span>self <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"%@"</span><span class="token punctuation">,</span><span class="token function">NSStringFromClass</span><span class="token punctuation">(</span><span class="token punctuation">[</span>super <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="5-2-源码分析"><a href="#5-2-源码分析" class="headerlink" title="5.2 源码分析"></a>5.2 源码分析</h3><p>因为问题都涉及到了 <code>class</code> 这个方法，在NSObject.mm 这个类里找一下，方法实现如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token operator">-</span> <span class="token punctuation">(</span>Class<span class="token punctuation">)</span>class <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">object_getClass</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+Class <span class="token function">object_getClass</span><span class="token punctuation">(</span>id obj<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>obj<span class="token punctuation">)</span> <span class="token keyword">return</span> obj<span class="token operator">-></span><span class="token function">getIsa</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">else</span> <span class="token keyword">return</span> Nil<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以见到，在<code>object_getClass</code> 方法里，如果给的对象<code>self</code> ——<code>obj</code> 存在，返回的是它的元类，指针指向的是它的类，所以打印应该是 <code>Student</code>。</p>
+<p>而第一行中，向<code>super</code> 发送消息了。</p>
+<p>class 的本质，是找到它的元类：</p>
+<p>[self class] </p>
+<ul>
+<li>[self class] 方法，是向 对象（<code>self</code>）发送消息（<code>class</code>），走的流程是 objc_msgSend</li>
+<li>[super class]，是向 对象（<code>self</code>）发送消息（<code>class</code>），走的流程是 objc_msgSendSuper</li>
+</ul>
+<h3 id="5-3-解答"><a href="#5-3-解答" class="headerlink" title="5.3 解答"></a>5.3 解答</h3><p>打印都是</p>
+<h2 id="六、weak-是什么及其实现原理"><a href="#六、weak-是什么及其实现原理" class="headerlink" title="六、weak 是什么及其实现原理"></a>六、weak 是什么及其实现原理</h2><h2 id="七、方法交换（Method-Swizzling）坑点"><a href="#七、方法交换（Method-Swizzling）坑点" class="headerlink" title="七、方法交换（Method Swizzling）坑点"></a>七、方法交换（Method Swizzling）坑点</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
             </div>
             <hr/>
 
