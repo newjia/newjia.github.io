@@ -400,7 +400,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    2.2k
+                    2.3k
                 </div>
                 
 
@@ -674,11 +674,13 @@
 
 #### 3.1.1 概念
 
+&gt; associatedObject又称关联对象。顾名思义，就是把一个对象关联到另外一个对象身上。
+
 #### 3.1.2 应用场景
 
-- 
+- 为分类添加属性时，用到添加setter和getter方法，在实现里需要将类与属性关联
 
-- 为分类添加属性，需要将类与属性关联
+- 给某个类添加一个临时的属性
 
 
 
@@ -704,6 +706,7 @@
 <li><p>参数三：id value : 关联的值，也就是set方法传入的值给属性去保存。</p>
 </li>
 <li><p>参数四：objc_AssociationPolicy policy : 策略，属性以什么形式保存。</p>
+<p><img src="/p/6283d578/001.png" alt="关联策略"></p>
 <p>业务上，比如给当前的类把cate_name 作为属性绑定，业务代码如下</p>
 <p>```c</p>
 </li>
@@ -852,7 +855,8 @@ AssociationsHashMap <span class="token operator">&amp;</span><span class="token 
     <span class="token punctuation">}</span>
     <span class="token keyword">return</span> value<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="四、initialize-的调用"><a href="#四、initialize-的调用" class="headerlink" title="四、initialize 的调用"></a>四、initialize 的调用</h2><h3 id="4-1-调用步骤如下"><a href="#4-1-调用步骤如下" class="headerlink" title="4.1 调用步骤如下"></a>4.1 调用步骤如下</h3><ul>
+<h2 id="四、initialize-的调用"><a href="#四、initialize-的调用" class="headerlink" title="四、initialize 的调用"></a>四、initialize 的调用</h2><p>调用步骤如下</p>
+<ul>
 <li><p>lookUpImpOrForward</p>
 <pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">if</span> <span class="token punctuation">(</span>initialize <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>cls<span class="token operator">-></span><span class="token function">isInitialized</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         cls <span class="token operator">=</span> <span class="token function">initializeAndLeaveLocked</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> inst<span class="token punctuation">,</span> runtimeLock<span class="token punctuation">)</span><span class="token punctuation">;</span>
