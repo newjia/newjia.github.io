@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="runtime 面试题, 李佳的技术博客">
+    <meta name="keywords" content="【底层探索】- runtime面试题集, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>runtime 面试题 | 李佳的技术博客</title>
+    <title>【底层探索】- runtime面试题集 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/21.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">runtime 面试题</h1>
+                    <h1 class="description center-align post-title">【底层探索】- runtime面试题集</h1>
                 </div>
             </div>
         </div>
@@ -408,7 +408,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    258
+                    537
                 </div>
                 
 
@@ -431,8 +431,16 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>最近看到一道runtime 面试题，觉得有意思</p>
-<h3 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h3><p>Q：已经注册好的类，能否再动态添加成员变量？为什么？</p>
+                <h2 id="〇、引言"><a href="#〇、引言" class="headerlink" title="〇、引言"></a>〇、引言</h2><p>前面一步步学习了对象、类、方法、类的加载等，这些其实都是Runtime 的基础，而Runtime 又是iOS开发语言 Objective C 的精髓，因此关于Runtime 的面试题举不胜举。</p>
+<p>下面就简单的介绍几个，并提供解题思路，希望可以帮读者更清晰的理解Runtime。</p>
+<h2 id="一、什么是Runtime"><a href="#一、什么是Runtime" class="headerlink" title="一、什么是Runtime"></a>一、什么是Runtime</h2><p>这个问题，问的是对Runtime 的基础理解。</p>
+<blockquote>
+<p>Runtime是由C和C++汇编实现的一套<strong>API</strong>，为 OC 语言加入了面向对象，运行时的功能。</p>
+<p>运行时（Runtime） 是指将数据类型的去定推迟到了运行时。</p>
+</blockquote>
+<p>举个例子：关于类——<strong>类的扩展</strong>，在编译时作为类的一部分（ro）就已经确定好了，所以可以添加分类；而<strong>分类</strong>由于是编译时加载，只能添加属性以及对应的setter 和getter 方法，来达到模拟属性的目的。</p>
+<h2 id="二、方法的本质是什么？"><a href="#二、方法的本质是什么？" class="headerlink" title="二、方法的本质是什么？"></a>二、方法的本质是什么？</h2><h2 id="三、简述SEL-和IMP和之间关系"><a href="#三、简述SEL-和IMP和之间关系" class="headerlink" title="三、简述SEL 和IMP和之间关系"></a>三、简述SEL 和IMP和之间关系</h2><h2 id="四、能否往已注册的类添加成员变量？"><a href="#四、能否往已注册的类添加成员变量？" class="headerlink" title="四、能否往已注册的类添加成员变量？"></a>四、能否往已注册的类添加成员变量？</h2><p>### </p>
+<p>Q：已经注册好的类，能否再动态添加成员变量？为什么？</p>
 <h3 id="分析："><a href="#分析：" class="headerlink" title="分析："></a>分析：</h3><p>我们通过Runtime还原一下场景。</p>
 <p>注册好的类，实现的方法是，注册到内存里：</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">objc_registerClassPair</span><span class="token punctuation">(</span>LGPerson<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
@@ -450,7 +458,7 @@ cls<span class="token operator">-</span><span class="token operator">></span><sp
 <p>走到这一步，就戛然而止了……添加ivars 被拒绝——因为内存已固定，无法再添加新属性了。</p>
 <h3 id="回答："><a href="#回答：" class="headerlink" title="回答："></a>回答：</h3><p>答案是否。</p>
 <p>因为注册好的类，内存容量已经固定，无法动态添加了。</p>
-
+<h2 id="五、关联对象分析"><a href="#五、关联对象分析" class="headerlink" title="五、关联对象分析"></a>五、关联对象分析</h2><h2 id="六、weak-是什么及其实现原理"><a href="#六、weak-是什么及其实现原理" class="headerlink" title="六、weak 是什么及其实现原理"></a>六、weak 是什么及其实现原理</h2><h2 id="七、方法交换（Method-Swizzling）坑点"><a href="#七、方法交换（Method-Swizzling）坑点" class="headerlink" title="七、方法交换（Method Swizzling）坑点"></a>七、方法交换（Method Swizzling）坑点</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
             </div>
             <hr/>
 
