@@ -408,14 +408,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.9k
+                    3.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    14 分
                 </div>
                 
 
@@ -590,14 +590,325 @@ Class <span class="token function">object_getClass</span><span class="token punc
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>可以见到，在<code>object_getClass</code> 方法里，如果给的对象<code>self</code> ——<code>obj</code> 存在，返回的是它的元类，指针指向的是它的类，所以打印应该是 <code>Student</code>。</p>
 <p>而第一行中，向<code>super</code> 发送消息了。</p>
-<p>class 的本质，是找到它的元类：</p>
-<p>[self class] </p>
 <ul>
-<li>[self class] 方法，是向 对象（<code>self</code>）发送消息（<code>class</code>），走的流程是 objc_msgSend</li>
-<li>[super class]，是向 对象（<code>self</code>）发送消息（<code>class</code>），走的流程是 objc_msgSendSuper</li>
+<li><p>[self class] 方法，是向 对象（<code>self</code>）发送消息（<code>class</code>），走的流程是 objc_msgSend</p>
+</li>
+<li><p>[super class]，是向 对象（<code>self</code>）发送消息（<code>class</code>），走的流程是 objc_msgSendSuper</p>
+<p><strong>在OC中，super只是个符号标识符</strong>，objc_msgSendSuper最终接受对象还是 <code>self</code></p>
+</li>
 </ul>
-<h3 id="5-3-解答"><a href="#5-3-解答" class="headerlink" title="5.3 解答"></a>5.3 解答</h3><p>打印都是</p>
-<h2 id="六、weak-是什么及其实现原理"><a href="#六、weak-是什么及其实现原理" class="headerlink" title="六、weak 是什么及其实现原理"></a>六、weak 是什么及其实现原理</h2><h2 id="七、方法交换（Method-Swizzling）坑点"><a href="#七、方法交换（Method-Swizzling）坑点" class="headerlink" title="七、方法交换（Method Swizzling）坑点"></a>七、方法交换（Method Swizzling）坑点</h2><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2>
+<h3 id="5-3-解答"><a href="#5-3-解答" class="headerlink" title="5.3 解答"></a>5.3 解答</h3><p>打印都是NSObject</p>
+<h2 id="六、weak-是什么及其实现原理"><a href="#六、weak-是什么及其实现原理" class="headerlink" title="六、weak 是什么及其实现原理"></a>六、weak 是什么及其实现原理</h2><h3 id="6-1-分析"><a href="#6-1-分析" class="headerlink" title="6.1 分析"></a>6.1 分析</h3><p>在OC语言到开发中，我们经常对对象前面添加 <code>weak</code> 来实现弱引用，从而达到避免循环引用造成的内存泄漏。那么这个weak 究竟实现了什么，作为高级开发者，不得不仔细探究一下。</p>
+<h4 id="6-1-1-代码创建"><a href="#6-1-1-代码创建" class="headerlink" title="6.1.1 代码创建"></a>6.1.1 代码创建</h4><p>为了搞清楚weak 创建对象时内部的实现，创建一个weak 对象，打印试试，这时要把汇编断点打开</p>
+<pre class="line-numbers language-c"><code class="language-c">NSArray <span class="token operator">*</span>arr <span class="token operator">=</span> @<span class="token punctuation">[</span>@<span class="token string">"jack"</span><span class="token punctuation">,</span> @<span class="token string">"tiga"</span><span class="token punctuation">,</span> @<span class="token string">"jade"</span><span class="token punctuation">,</span> @<span class="token string">"obu"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+id __weak abc <span class="token operator">=</span> arr<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><img src="/p/41032/004.png" alt></p>
+<p>可以看到运行后，执行了这行代码：</p>
+<p><img src="/p/41032/005.png" alt></p>
+<p>可见创建后执行了关键代码 <code>objc_initWeak</code>，贴到源码里查看，实现如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">id
+<span class="token function">objc_initWeak</span><span class="token punctuation">(</span>id <span class="token operator">*</span>location<span class="token punctuation">,</span> id newObj<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>newObj<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token operator">*</span>location <span class="token operator">=</span> nil<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> nil<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> storeWeak<span class="token operator">&lt;</span>DontHaveOld<span class="token punctuation">,</span> DoHaveNew<span class="token punctuation">,</span> DoCrashIfDeallocating<span class="token operator">></span>
+        <span class="token punctuation">(</span>location<span class="token punctuation">,</span> <span class="token punctuation">(</span>objc_object<span class="token operator">*</span><span class="token punctuation">)</span>newObj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>返回到时<code>storeWeak(id *location, objc_object *newObj)</code>这个函数，依稀可以看出来，是一个将<code>newObj</code> 储存到<code>location</code> 的动作。继续往下分析如下：</p>
+<h4 id="6-1-2-源码解读-storeWeak"><a href="#6-1-2-源码解读-storeWeak" class="headerlink" title="6.1.2 源码解读 storeWeak"></a>6.1.2 源码解读 <code>storeWeak</code></h4><ol>
+<li><p>如果有新对象，创建新的散列表</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">if</span> <span class="token punctuation">(</span>haveNew<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   newTable <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token function">SideTables</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span>newObj<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>散列表结构如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">struct</span> SideTable <span class="token punctuation">{</span>
+    spinlock_t slock<span class="token punctuation">;</span>
+    RefcountMap refcnts<span class="token punctuation">;</span>
+    weak_table_t weak_table<span class="token punctuation">;</span>
+      <span class="token comment" spellcheck="true">/*精简以后的内容*/</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可见散列表中有重要的3个属性</p>
+<ul>
+<li><p>slock —— 自旋锁</p>
+</li>
+<li><p>refcnts——引用计数表，这里是App 维护的一张全局表，类型是</p>
+</li>
+<li><p>weak_table —— 全局的弱引用表，存储所有的弱引用对象，把对象当作<code>key</code> 来保持，打开看看，它的结构体实现是这样的：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">/**
+ * The global weak references table. Stores object ids as keys,
+ * and weak_entry_t structs as their values.
+ */</span>
+<span class="token keyword">struct</span> weak_table_t <span class="token punctuation">{</span>
+    weak_entry_t <span class="token operator">*</span>weak_entries<span class="token punctuation">;</span>
+    size_t    num_entries<span class="token punctuation">;</span>
+    uintptr_t mask<span class="token punctuation">;</span>
+    uintptr_t max_hash_displacement<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>共包含了整个应用里，弱引用实体和数量。</p>
+</li>
+</ul>
+</li>
+<li><p>如果当前是创建的新弱引用<code>haveNew</code>，添加弱引用。</p>
+<pre class="line-numbers language-c"><code class="language-c">newObj <span class="token operator">=</span> <span class="token punctuation">(</span>objc_object <span class="token operator">*</span><span class="token punctuation">)</span>
+            <span class="token function">weak_register_no_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>newTable<span class="token operator">-></span>weak_table<span class="token punctuation">,</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span>newObj<span class="token punctuation">,</span> location<span class="token punctuation">,</span> 
+                                  crashIfDeallocating<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>记录弱引用实体保存的内存地址：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">weak_entry_t <span class="token operator">*</span>entry<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>entry <span class="token operator">=</span> <span class="token function">weak_entry_for_referent</span><span class="token punctuation">(</span>weak_table<span class="token punctuation">,</span> referent<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">append_referrer</span><span class="token punctuation">(</span>entry<span class="token punctuation">,</span> referrer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>插入对象到弱引用过程如下：</p>
+<ol>
+<li><p>创建数组，插入到weak 表里</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">weak_entry_t <span class="token function">new_entry</span><span class="token punctuation">(</span>referent<span class="token punctuation">,</span> referrer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">weak_grow_maybe</span><span class="token punctuation">(</span>weak_table<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">weak_entry_insert</span><span class="token punctuation">(</span>weak_table<span class="token punctuation">,</span> <span class="token operator">&amp;</span>new_entry<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p><strong>循环弱引用表，将引用实体插入，弱引用的计数增加</strong></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">weak_entry_insert</span><span class="token punctuation">(</span>weak_table_t <span class="token operator">*</span>weak_table<span class="token punctuation">,</span> weak_entry_t <span class="token operator">*</span>new_entry<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    weak_entry_t <span class="token operator">*</span>weak_entries <span class="token operator">=</span> weak_table<span class="token operator">-</span><span class="token operator">></span>weak_entries<span class="token punctuation">;</span>
+    <span class="token function">assert</span><span class="token punctuation">(</span>weak_entries <span class="token operator">!=</span> nil<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    size_t begin <span class="token operator">=</span> <span class="token function">hash_pointer</span><span class="token punctuation">(</span>new_entry<span class="token operator">-</span><span class="token operator">></span>referent<span class="token punctuation">)</span> <span class="token operator">&amp;</span> <span class="token punctuation">(</span>weak_table<span class="token operator">-</span><span class="token operator">></span>mask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    size_t index <span class="token operator">=</span> begin<span class="token punctuation">;</span>
+    size_t hash_displacement <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>weak_entries<span class="token punctuation">[</span>index<span class="token punctuation">]</span><span class="token punctuation">.</span>referent <span class="token operator">!=</span> nil<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        index <span class="token operator">=</span> <span class="token punctuation">(</span>index<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span> weak_table<span class="token operator">-</span><span class="token operator">></span>mask<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">==</span> begin<span class="token punctuation">)</span> <span class="token function">bad_weak_table</span><span class="token punctuation">(</span>weak_entries<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        hash_displacement<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    weak_entries<span class="token punctuation">[</span>index<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token operator">*</span>new_entry<span class="token punctuation">;</span>
+    weak_table<span class="token operator">-</span><span class="token operator">></span>num_entries<span class="token operator">++</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>hash_displacement <span class="token operator">></span> weak_table<span class="token operator">-</span><span class="token operator">></span>max_hash_displacement<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        weak_table<span class="token operator">-</span><span class="token operator">></span>max_hash_displacement <span class="token operator">=</span> hash_displacement<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+</li>
+</ol>
+<ol start="5">
+<li><p>将弱引用的位值，存放在引用计数表里</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">if</span> <span class="token punctuation">(</span>newObj  <span class="token operator">&amp;&amp;</span>  <span class="token operator">!</span>newObj<span class="token operator">-></span><span class="token function">isTaggedPointer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            newObj<span class="token operator">-></span><span class="token function">setWeaklyReferenced_nolock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>并对isa 的weak引用属性设置为TRUE</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">newisa<span class="token punctuation">.</span>weakly_referenced <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>添加到计数表的方法如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> 
+objc_object<span class="token punctuation">:</span><span class="token punctuation">:</span><span class="token function">sidetable_setWeaklyReferenced_nolock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+<span class="token macro property">#<span class="token directive keyword">if</span> SUPPORT_NONPOINTER_ISA</span>
+    <span class="token function">assert</span><span class="token punctuation">(</span><span class="token operator">!</span>isa<span class="token punctuation">.</span>nonpointer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+    SideTable<span class="token operator">&amp;</span> table <span class="token operator">=</span> <span class="token function">SideTables</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span>this<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    table<span class="token punctuation">.</span>refcnts<span class="token punctuation">[</span>this<span class="token punctuation">]</span> <span class="token operator">|</span><span class="token operator">=</span> SIDE_TABLE_WEAKLY_REFERENCED<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>最终返回存储的内存地址的指针，指向这个新的对象</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token operator">*</span>location <span class="token operator">=</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span>newObj<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ol>
+<h3 id="6-3-weak-的释放"><a href="#6-3-weak-的释放" class="headerlink" title="6.3 weak 的释放"></a>6.3 weak 的释放</h3><h4 id="6-1-查看-dealloc"><a href="#6-1-查看-dealloc" class="headerlink" title="6.1 查看 dealloc"></a>6.1 查看 dealloc</h4><p>我们知道，对象的销毁，一般是在类的dealloc 后进行，所以目光放在 dealloc 的方法是先上</p>
+<p>查看NSObject.mm 中，得知dealloc 如下</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>dealloc <span class="token punctuation">{</span>
+    <span class="token function">_objc_rootDealloc</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>继续探寻</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span>
+<span class="token function">_objc_rootDealloc</span><span class="token punctuation">(</span>id obj<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">assert</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    obj<span class="token operator">-></span><span class="token function">rootDealloc</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>继续继续，得到一个内联函数如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">inline</span> <span class="token keyword">void</span>
+objc_object<span class="token operator">::</span><span class="token function">rootDealloc</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isTaggedPointer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// fixme necessary?</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">fastpath</span><span class="token punctuation">(</span>isa<span class="token punctuation">.</span>nonpointer  <span class="token operator">&amp;&amp;</span>  
+                 <span class="token operator">!</span>isa<span class="token punctuation">.</span>weakly_referenced  <span class="token operator">&amp;&amp;</span>  
+                 <span class="token operator">!</span>isa<span class="token punctuation">.</span>has_assoc  <span class="token operator">&amp;&amp;</span>  
+                 <span class="token operator">!</span>isa<span class="token punctuation">.</span>has_cxx_dtor  <span class="token operator">&amp;&amp;</span>  
+                 <span class="token operator">!</span>isa<span class="token punctuation">.</span>has_sidetable_rc<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token function">assert</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">sidetable_present</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">free</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> 
+    <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token function">object_dispose</span><span class="token punctuation">(</span><span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>目标放在<code>object_dispose((id)this);</code> 这一行，函数的名字——销毁对象，即当前对象的isa还有些弱引用（<code>isa.weakly_referenced</code>）或者关联对象（<code>isa.has_assoc</code>）未处理的业务，会比较复杂，需要特别处理。继续探寻如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">id 
+<span class="token function">object_dispose</span><span class="token punctuation">(</span>id obj<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>obj<span class="token punctuation">)</span> <span class="token keyword">return</span> nil<span class="token punctuation">;</span>
+
+    <span class="token function">objc_destructInstance</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>    
+    <span class="token function">free</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> nil<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>继续查看解构过程<code>objc_destructInstance(obj)</code> 这个函数：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token operator">*</span><span class="token function">objc_destructInstance</span><span class="token punctuation">(</span>id obj<span class="token punctuation">)</span> 
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>obj<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Read all of the flags at once for performance.</span>
+        <span class="token keyword">bool</span> cxx <span class="token operator">=</span> obj<span class="token operator">-</span><span class="token operator">></span><span class="token function">hasCxxDtor</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">bool</span> assoc <span class="token operator">=</span> obj<span class="token operator">-</span><span class="token operator">></span><span class="token function">hasAssociatedObjects</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// This order is important.</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>cxx<span class="token punctuation">)</span> <span class="token function">object_cxxDestruct</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>assoc<span class="token punctuation">)</span> <span class="token function">_object_remove_assocations</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        obj<span class="token operator">-</span><span class="token operator">></span><span class="token function">clearDeallocating</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> obj<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><strong>if (cxx) object_cxxDestruct(obj);</strong> —— 处理析构C++ 的对象</li>
+<li><strong>_object_remove_assocations(obj);</strong> ——移除类的关联对象</li>
+</ul>
+<p>那么要找寻如何移除弱引用，把目光放在<code>obj-&gt;clearDeallocating();</code> 这行代码——<br>又是一个内联函数，解释了如何dealloc 对象</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">inline</span> <span class="token keyword">void</span> 
+objc_object<span class="token operator">::</span><span class="token function">clearDeallocating</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">slowpath</span><span class="token punctuation">(</span><span class="token operator">!</span>isa<span class="token punctuation">.</span>nonpointer<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Slow path for raw pointer isa.</span>
+        <span class="token function">sidetable_clearDeallocating</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">slowpath</span><span class="token punctuation">(</span>isa<span class="token punctuation">.</span>weakly_referenced  <span class="token operator">||</span>  isa<span class="token punctuation">.</span>has_sidetable_rc<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Slow path for non-pointer isa with weak refs and/or side table data.</span>
+        <span class="token function">clearDeallocating_slow</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token function">assert</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">sidetable_present</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>很明显 <code>clearDeallocating_slow()</code>  才是需要找的，因为注释已经解释的很清楚：</p>
+<blockquote>
+<p>Slow path for non-pointer isa with weak refs and/or side table data.</p>
+<p>带弱引用或散列表数据的非指针的isa 慢速路径</p>
+</blockquote>
+<pre class="line-numbers language-cpp"><code class="language-cpp">NEVER_INLINE <span class="token keyword">void</span>
+objc_object<span class="token operator">::</span><span class="token function">clearDeallocating_slow</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">assert</span><span class="token punctuation">(</span>isa<span class="token punctuation">.</span>nonpointer  <span class="token operator">&amp;&amp;</span>  <span class="token punctuation">(</span>isa<span class="token punctuation">.</span>weakly_referenced <span class="token operator">||</span> isa<span class="token punctuation">.</span>has_sidetable_rc<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    SideTable<span class="token operator">&amp;</span> table <span class="token operator">=</span> <span class="token function">SideTables</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token keyword">this</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    table<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>isa<span class="token punctuation">.</span>weakly_referenced<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">weak_clear_no_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>table<span class="token punctuation">.</span>weak_table<span class="token punctuation">,</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>isa<span class="token punctuation">.</span>has_sidetable_rc<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        table<span class="token punctuation">.</span>refcnts<span class="token punctuation">.</span><span class="token function">erase</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    table<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p> 分析关键代码：</p>
+<ol>
+<li><p>如果当前isa 有弱引用，在弱引用表中，<strong>弱引用表清除当前的弱引用</strong></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">if</span> <span class="token punctuation">(</span>isa<span class="token punctuation">.</span>weakly_referenced<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">weak_clear_no_lock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>table<span class="token punctuation">.</span>weak_table<span class="token punctuation">,</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><code>weak_clear_no_lock</code> 这个核心函数，具体做了什么工作，继续探究一下</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> 
+<span class="token function">weak_clear_no_lock</span><span class="token punctuation">(</span>weak_table_t <span class="token operator">*</span>weak_table<span class="token punctuation">,</span> id referent_id<span class="token punctuation">)</span> 
+<span class="token punctuation">{</span>
+    objc_object <span class="token operator">*</span>referent <span class="token operator">=</span> <span class="token punctuation">(</span>objc_object <span class="token operator">*</span><span class="token punctuation">)</span>referent_id<span class="token punctuation">;</span>
+
+    weak_entry_t <span class="token operator">*</span>entry <span class="token operator">=</span> <span class="token function">weak_entry_for_referent</span><span class="token punctuation">(</span>weak_table<span class="token punctuation">,</span> referent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// zero out references</span>
+    weak_referrer_t <span class="token operator">*</span>referrers<span class="token punctuation">;</span>
+    size_t count<span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>entry<span class="token operator">-</span><span class="token operator">></span><span class="token function">out_of_line</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        referrers <span class="token operator">=</span> entry<span class="token operator">-</span><span class="token operator">></span>referrers<span class="token punctuation">;</span>
+        count <span class="token operator">=</span> <span class="token function">TABLE_SIZE</span><span class="token punctuation">(</span>entry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> 
+    <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        referrers <span class="token operator">=</span> entry<span class="token operator">-</span><span class="token operator">></span>inline_referrers<span class="token punctuation">;</span>
+        count <span class="token operator">=</span> WEAK_INLINE_COUNT<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>size_t i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> count<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        objc_object <span class="token operator">*</span><span class="token operator">*</span>referrer <span class="token operator">=</span> referrers<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>referrer<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">*</span>referrer <span class="token operator">==</span> referent<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token operator">*</span>referrer <span class="token operator">=</span> nil<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+         <span class="token comment" spellcheck="true">//</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token function">weak_entry_remove</span><span class="token punctuation">(</span>weak_table<span class="token punctuation">,</span> entry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里看上去业务挺多，其实核心也就两个:</p>
+<ul>
+<li><p>移除指针</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">*</span>referrer <span class="token operator">==</span> referent<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token operator">*</span>referrer <span class="token operator">=</span> nil<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>移除实体：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token function">weak_entry_remove</span><span class="token punctuation">(</span>weak_table<span class="token punctuation">,</span> entry<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">/**
+ * Remove entry from the zone's table of weak references.
+ */</span>
+<span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">weak_entry_remove</span><span class="token punctuation">(</span>weak_table_t <span class="token operator">*</span>weak_table<span class="token punctuation">,</span> weak_entry_t <span class="token operator">*</span>entry<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// remove entry</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>entry<span class="token operator">-></span><span class="token function">out_of_line</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token function">free</span><span class="token punctuation">(</span>entry<span class="token operator">-></span>referrers<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">bzero</span><span class="token punctuation">(</span>entry<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token operator">*</span>entry<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    weak_table<span class="token operator">-></span>num_entries<span class="token operator">--</span><span class="token punctuation">;</span>
+
+    <span class="token function">weak_compact_maybe</span><span class="token punctuation">(</span>weak_table<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li><p>如果当前对象有引用计数存表不为0，<strong>引用计数表清楚本对象</strong></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">if</span> <span class="token punctuation">(</span>isa<span class="token punctuation">.</span>has_sidetable_rc<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        table<span class="token punctuation">.</span>refcnts<span class="token punctuation">.</span><span class="token function">erase</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+<h3 id="6-3-回答"><a href="#6-3-回答" class="headerlink" title="6.3 回答"></a>6.3 回答</h3><blockquote>
+<p>weak 的创建，在内存的散列表中的弱引用表里，存储关于该对象的弱引用，按照key-value 存入。</p>
+<p>weak 的创建，正好相反，中dealloc 里，去弱引用表格里，找到引用进行弱引用实体销毁，以及弱引用的引用计数减少。</p>
+</blockquote>
+<h2 id="七、方法交换（Method-Swizzling）坑点"><a href="#七、方法交换（Method-Swizzling）坑点" class="headerlink" title="七、方法交换（Method Swizzling）坑点"></a>七、方法交换（Method Swizzling）坑点</h2><h3 id="7-1-一般使用"><a href="#7-1-一般使用" class="headerlink" title="7.1 一般使用"></a>7.1 一般使用</h3><p>如下所示，对数组越界做保护：</p>
+<pre><code>#import &quot;NSArray+Empty.h&quot;
+
+#import &lt;objc/runtime.h&gt;
+@implementation NSArray (Empty)
++ (void)load{
+    Method oriMethod = class_getInstanceMethod(NSClassFromString(@&quot;__NSArrayI&quot;), @selector(objectAtIndex:));
+    Method swiMethod = class_getInstanceMethod([self class], @selector(lj_objectAtIndex:));
+    method_exchangeImplementations(oriMethod, swiMethod);
+}
+
+- (instancetype)lj_objectAtIndex: (NSUInteger)index{
+    if (index &gt; self.count -1 ) {
+        NSLog(@&quot;out of bound&quot;);
+        return nil;
+    }
+    return [self lj_objectAtIndex:index];
+}</code></pre><p>试验一下结果如何：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    NSArray <span class="token operator">*</span>arr <span class="token operator">=</span> @<span class="token punctuation">[</span>@<span class="token string">"jack"</span><span class="token punctuation">,</span> @<span class="token string">"tiga"</span><span class="token punctuation">,</span> @<span class="token string">"jade"</span><span class="token punctuation">,</span> @<span class="token string">"obu"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"arr-->  %@"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>arr objectAtIndex<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="7-2-坑点1"><a href="#7-2-坑点1" class="headerlink" title="7.2 坑点1"></a>7.2 坑点1</h3><h3 id="7-2-坑点2"><a href="#7-2-坑点2" class="headerlink" title="7.2 坑点2"></a>7.2 坑点2</h3><h2 id="Z、总结"><a href="#Z、总结" class="headerlink" title="Z、总结"></a>Z、总结</h2>
             </div>
             <hr/>
 
