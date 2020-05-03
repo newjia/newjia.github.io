@@ -962,7 +962,7 @@ AssociationsHashMap <span class="token operator">&amp;</span><span class="token 
 <li>initialize 通过objc_msgSend 调用</li>
 </ul>
 <h4 id="5-2-调用时刻"><a href="#5-2-调用时刻" class="headerlink" title="5.2 调用时刻"></a>5.2 调用时刻</h4><ul>
-<li>load 属于runtime 加载类、分类的时候，智慧调用一次</li>
+<li>load 属于runtime 加载类、分类的时候，只会调用一次</li>
 <li>initialize 方法上类第一次收到消息时，每个类调用一次，而父类的initialize 可能会调用多次 </li>
 </ul>
 <h4 id="5-3-调用顺序："><a href="#5-3-调用顺序：" class="headerlink" title="5.3 调用顺序："></a>5.3 调用顺序：</h4><ul>

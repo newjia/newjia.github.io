@@ -408,14 +408,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.4k
+                    5.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    14 分
+                    21 分
                 </div>
                 
 
@@ -591,12 +591,16 @@ Class <span class="token function">object_getClass</span><span class="token punc
 <p>可以见到，在<code>object_getClass</code> 方法里，如果给的对象<code>self</code> ——<code>obj</code> 存在，返回的是它的元类，指针指向的是它的类，所以打印应该是 <code>Student</code>。</p>
 <p>而第一行中，向<code>super</code> 发送消息了。</p>
 <ul>
-<li><p>[self class] 方法，是向 对象（<code>self</code>）发送消息（<code>class</code>），走的流程是 objc_msgSend</p>
-</li>
-<li><p>[super class]，是向 对象（<code>self</code>）发送消息（<code>class</code>），走的流程是 objc_msgSendSuper</p>
-<p><strong>在OC中，super只是个符号标识符</strong>，objc_msgSendSuper最终接受对象还是 <code>self</code></p>
-</li>
+<li>[self class] 方法，是向 对象（<code>self</code>）发送消息（<code>class</code>），走的流程是 objc_msgSend</li>
+<li>[super class]，是向 对象（<code>self</code>）发送消息（<code>class</code>），走的流程是 objc_msgSendSuper</li>
 </ul>
+<p>那继续探寻<code>objc_msgSendSuper</code> 这个方法，可以看到他的结构如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token function">objc_msgSendSuper</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token comment" spellcheck="true">/* struct objc_super *super, SEL op, ... */</span> <span class="token punctuation">)</span>
+    <span class="token function">OBJC_AVAILABLE</span><span class="token punctuation">(</span><span class="token number">10.0</span><span class="token punctuation">,</span> <span class="token number">2.0</span><span class="token punctuation">,</span> <span class="token number">9.0</span><span class="token punctuation">,</span> <span class="token number">1.0</span><span class="token punctuation">,</span> <span class="token number">2.0</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>可见它执行的是 <code>struct objc_super</code> 类型的super，</p>
+<blockquote>
+<p> 原因：<strong>在OC中，super只是个符号标识符</strong>，objc_msgSendSuper最终接受对象还是 <code>self</code></p>
+</blockquote>
 <h3 id="5-3-解答"><a href="#5-3-解答" class="headerlink" title="5.3 解答"></a>5.3 解答</h3><p>打印都是NSObject</p>
 <h2 id="六、weak-是什么及其实现原理"><a href="#六、weak-是什么及其实现原理" class="headerlink" title="六、weak 是什么及其实现原理"></a>六、weak 是什么及其实现原理</h2><h3 id="6-1-分析"><a href="#6-1-分析" class="headerlink" title="6.1 分析"></a>6.1 分析</h3><p>在OC语言到开发中，我们经常对对象前面添加 <code>weak</code> 来实现弱引用，从而达到避免循环引用造成的内存泄漏。那么这个weak 究竟实现了什么，作为高级开发者，不得不仔细探究一下。</p>
 <h4 id="6-1-1-代码创建"><a href="#6-1-1-代码创建" class="headerlink" title="6.1.1 代码创建"></a>6.1.1 代码创建</h4><p>为了搞清楚weak 创建对象时内部的实现，创建一个weak 对象，打印试试，这时要把汇编断点打开</p>
@@ -888,27 +892,203 @@ objc_object<span class="token operator">::</span><span class="token function">cl
 <p>weak 的创建，在内存的散列表中的弱引用表里，存储关于该对象的弱引用，按照key-value 存入。</p>
 <p>weak 的创建，正好相反，中dealloc 里，去弱引用表格里，找到引用进行弱引用实体销毁，以及弱引用的引用计数减少。</p>
 </blockquote>
-<h2 id="七、方法交换（Method-Swizzling）坑点"><a href="#七、方法交换（Method-Swizzling）坑点" class="headerlink" title="七、方法交换（Method Swizzling）坑点"></a>七、方法交换（Method Swizzling）坑点</h2><h3 id="7-1-一般使用"><a href="#7-1-一般使用" class="headerlink" title="7.1 一般使用"></a>7.1 一般使用</h3><p>如下所示，对数组越界做保护：</p>
-<pre><code>#import &quot;NSArray+Empty.h&quot;
+<h2 id="七、黑魔法·方法交换（Method-Swizzling）坑点"><a href="#七、黑魔法·方法交换（Method-Swizzling）坑点" class="headerlink" title="七、黑魔法·方法交换（Method Swizzling）坑点"></a>七、黑魔法·方法交换（Method Swizzling）坑点</h2><h3 id="7-1-一般使用"><a href="#7-1-一般使用" class="headerlink" title="7.1 一般使用"></a>7.1 一般使用</h3><p>如下所示，对数组越界做保护：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">import</span> "NSArray+Empty.h"</span>
 
-#import &lt;objc/runtime.h&gt;
-@implementation NSArray (Empty)
-+ (void)load{
-    Method oriMethod = class_getInstanceMethod(NSClassFromString(@&quot;__NSArrayI&quot;), @selector(objectAtIndex:));
-    Method swiMethod = class_getInstanceMethod([self class], @selector(lj_objectAtIndex:));
-    method_exchangeImplementations(oriMethod, swiMethod);
-}
+<span class="token macro property">#<span class="token directive keyword">import</span> &lt;objc/runtime.h></span>
+@implementation <span class="token function">NSArray</span> <span class="token punctuation">(</span>Empty<span class="token punctuation">)</span>
+<span class="token operator">+</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>load<span class="token punctuation">{</span>
+    Method oriMethod <span class="token operator">=</span> <span class="token function">class_getInstanceMethod</span><span class="token punctuation">(</span><span class="token function">NSClassFromString</span><span class="token punctuation">(</span>@<span class="token string">"__NSArrayI"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> @<span class="token function">selector</span><span class="token punctuation">(</span>objectAtIndex<span class="token operator">:</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    Method swiMethod <span class="token operator">=</span> <span class="token function">class_getInstanceMethod</span><span class="token punctuation">(</span><span class="token punctuation">[</span>self <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> @<span class="token function">selector</span><span class="token punctuation">(</span>lj_objectAtIndex<span class="token operator">:</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">method_exchangeImplementations</span><span class="token punctuation">(</span>oriMethod<span class="token punctuation">,</span> swiMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-- (instancetype)lj_objectAtIndex: (NSUInteger)index{
-    if (index &gt; self.count -1 ) {
-        NSLog(@&quot;out of bound&quot;);
-        return nil;
-    }
-    return [self lj_objectAtIndex:index];
-}</code></pre><p>试验一下结果如何：</p>
+<span class="token operator">-</span> <span class="token punctuation">(</span>instancetype<span class="token punctuation">)</span>lj_objectAtIndex<span class="token operator">:</span> <span class="token punctuation">(</span>NSUInteger<span class="token punctuation">)</span>index<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">></span> self<span class="token punctuation">.</span>count <span class="token operator">-</span><span class="token number">1</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"朋友，数组越界了"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> nil<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token punctuation">[</span>self lj_objectAtIndex<span class="token operator">:</span>index<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>试验一下结果如何：</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp">    NSArray <span class="token operator">*</span>arr <span class="token operator">=</span> @<span class="token punctuation">[</span>@<span class="token string">"jack"</span><span class="token punctuation">,</span> @<span class="token string">"tiga"</span><span class="token punctuation">,</span> @<span class="token string">"jade"</span><span class="token punctuation">,</span> @<span class="token string">"obu"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-    <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"arr-->  %@"</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>arr objectAtIndex<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
-<h3 id="7-2-坑点1"><a href="#7-2-坑点1" class="headerlink" title="7.2 坑点1"></a>7.2 坑点1</h3><h3 id="7-2-坑点2"><a href="#7-2-坑点2" class="headerlink" title="7.2 坑点2"></a>7.2 坑点2</h3><h2 id="Z、总结"><a href="#Z、总结" class="headerlink" title="Z、总结"></a>Z、总结</h2>
+    NSString <span class="token operator">*</span>name <span class="token operator">=</span>  <span class="token punctuation">[</span>arr objectAtIndex<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p> 打印结果如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">03</span> <span class="token number">23</span><span class="token punctuation">:</span><span class="token number">52</span><span class="token punctuation">:</span><span class="token number">50.759731</span><span class="token operator">+</span><span class="token number">0800</span> SWZ<span class="token punctuation">[</span><span class="token number">7438</span><span class="token punctuation">:</span><span class="token number">461811</span><span class="token punctuation">]</span> 朋友，数组越界了<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>可以看到，经过方法交换，本来使用 <code>objectAtIndex</code> 的方法，它的实现被交换了，被交换到 <code>lj_objectAtIndex</code> 的实现里，执行了越界保护，保证了代码的鲁棒性。</p>
+<h3 id="7-2-坑点1-重复使用"><a href="#7-2-坑点1-重复使用" class="headerlink" title="7.2 坑点1 - 重复使用"></a>7.2 坑点1 - 重复使用</h3><p>以上是方法交换的一个简单的例子，对NSArray 添加方法实现方法交换。</p>
+<h4 id="7-2-1-症状"><a href="#7-2-1-症状" class="headerlink" title="7.2.1 症状"></a>7.2.1 症状</h4><p>那么会不会有什么漏洞呢？留意到方法实现是在 load 方法就实现，假设在实现方法之前，主动加载一次load 会怎么样？</p>
+<p>假设是这样：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    NSArray <span class="token operator">*</span>arr <span class="token operator">=</span> @<span class="token punctuation">[</span>@<span class="token string">"jack"</span><span class="token punctuation">,</span> @<span class="token string">"tiga"</span><span class="token punctuation">,</span> @<span class="token string">"jade"</span><span class="token punctuation">,</span> @<span class="token string">"obu"</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span>NSArray load<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    NSString <span class="token operator">*</span>name <span class="token operator">=</span>  <span class="token punctuation">[</span>arr objectAtIndex<span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>结果，出现了越界崩溃</p>
+<p><img src="/p/41032/006.png" alt></p>
+<h4 id="7-2-2-追踪分析"><a href="#7-2-2-追踪分析" class="headerlink" title="7.2.2 追踪分析"></a>7.2.2 追踪分析</h4><p>往核心方法load 里添加一段打印标记，看看是否与他有关：</p>
+<p><img src="/p/41032/007.png" alt></p>
+<p>通过追踪，得知load 方法，执行了2次。想一想，执行load 本来是为了交换方法，那执行2次，意思是将原本交换过的方法实现，又交换回去了——白干了，这也是出现越界崩溃的原因。</p>
+<h4 id="7-2-3-解决"><a href="#7-2-3-解决" class="headerlink" title="7.2.3 解决"></a>7.2.3 解决</h4><p>解决的方法很简单，将该方法设置成单例，通过 onceToken 来保证交换过程只会走一次：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">+</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>load<span class="token punctuation">{</span>
+    <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"执行load!"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">static</span> dispatch_once_t onceToken<span class="token punctuation">;</span>
+    <span class="token function">dispatch_once</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>onceToken<span class="token punctuation">,</span> <span class="token operator">^</span><span class="token punctuation">{</span>
+            Method oriMethod <span class="token operator">=</span> <span class="token function">class_getInstanceMethod</span><span class="token punctuation">(</span><span class="token function">NSClassFromString</span><span class="token punctuation">(</span>@<span class="token string">"__NSArrayI"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> @<span class="token function">selector</span><span class="token punctuation">(</span>objectAtIndex<span class="token operator">:</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Method swiMethod <span class="token operator">=</span> <span class="token function">class_getInstanceMethod</span><span class="token punctuation">(</span><span class="token punctuation">[</span>self <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> @<span class="token function">selector</span><span class="token punctuation">(</span>lj_objectAtIndex<span class="token operator">:</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">method_exchangeImplementations</span><span class="token punctuation">(</span>oriMethod<span class="token punctuation">,</span> swiMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这样，继续执行虽然执行2次<code>load</code>, 但是内部的交换实现，只会执行一次。</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">04</span> <span class="token number">00</span><span class="token punctuation">:</span><span class="token number">13</span><span class="token punctuation">:</span><span class="token number">53.061523</span><span class="token operator">+</span><span class="token number">0800</span> SWZ<span class="token punctuation">[</span><span class="token number">7778</span><span class="token punctuation">:</span><span class="token number">482862</span><span class="token punctuation">]</span> 执行load<span class="token operator">!</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">04</span> <span class="token number">00</span><span class="token punctuation">:</span><span class="token number">13</span><span class="token punctuation">:</span><span class="token number">56.011281</span><span class="token operator">+</span><span class="token number">0800</span> SWZ<span class="token punctuation">[</span><span class="token number">7778</span><span class="token punctuation">:</span><span class="token number">482862</span><span class="token punctuation">]</span> 执行load<span class="token operator">!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>结果如下，虽然load 执行2次，交换方法只执行1次</p>
+<p><img src="/p/41032/008.png" alt></p>
+<h3 id="7-3-坑点2-待交换子类未实现"><a href="#7-3-坑点2-待交换子类未实现" class="headerlink" title="7.3 坑点2 - 待交换子类未实现"></a>7.3 坑点2 - 待交换子类未实现</h3><h4 id="7-3-1-症状"><a href="#7-3-1-症状" class="headerlink" title="7.3.1 症状"></a>7.3.1 症状</h4><p>先创建一个案发现场，如下：</p>
+<ul>
+<li>父类某方法A并实现</li>
+<li>子类继承父类</li>
+<li>其他业务向子类交换该A方法</li>
+<li>执行父类该方法A，查看结果</li>
+</ul>
+<p>如下所示：</p>
+<ol>
+<li><p>创建父类<code>Animal</code>，以及子类<code>Dog</code>， 其中父类拥有并实现<code>run</code> 的类方法</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">@interface Animal <span class="token operator">:</span> NSObject
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>run<span class="token punctuation">;</span>
+@end
+
+@interface Dog <span class="token operator">:</span> Animal
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>其他业务场景，向子类申请交换了 run 的实现，run 换成了play，在Dog.m 执行：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">+</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>load<span class="token punctuation">{</span>
+    <span class="token keyword">static</span> dispatch_once_t onceToken<span class="token punctuation">;</span>
+    <span class="token function">dispatch_once</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>onceToken<span class="token punctuation">,</span> <span class="token operator">^</span><span class="token punctuation">{</span>
+        Method oriMethod <span class="token operator">=</span> <span class="token function">class_getInstanceMethod</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> @<span class="token function">selector</span><span class="token punctuation">(</span>run<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Method swiMethod <span class="token operator">=</span> <span class="token function">class_getInstanceMethod</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> @<span class="token function">selector</span><span class="token punctuation">(</span>play<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">method_exchangeImplementations</span><span class="token punctuation">(</span>oriMethod<span class="token punctuation">,</span> swiMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>play<span class="token punctuation">{</span>
+    <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"%s"</span><span class="token punctuation">,</span> <span class="token constant">__func__</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>检查此时子类与父类的的run 方法</p>
+<p>生成两个实例，执行<code>run</code> 方法</p>
+<pre><code>   Animal *a = [[Animal alloc] init];
+   [a run];
+
+   Dog *d = [[Dog alloc ] init];
+   [d run];</code></pre><p>结果如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">04</span> <span class="token number">00</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">33.474658</span><span class="token operator">+</span><span class="token number">0800</span> SWZ<span class="token punctuation">[</span><span class="token number">8188</span><span class="token punctuation">:</span><span class="token number">509782</span><span class="token punctuation">]</span> <span class="token operator">-</span><span class="token punctuation">[</span><span class="token function">Dog</span><span class="token punctuation">(</span>Exchange<span class="token punctuation">)</span> play<span class="token punctuation">]</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">04</span> <span class="token number">00</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">33.474795</span><span class="token operator">+</span><span class="token number">0800</span> SWZ<span class="token punctuation">[</span><span class="token number">8188</span><span class="token punctuation">:</span><span class="token number">509782</span><span class="token punctuation">]</span> <span class="token operator">-</span><span class="token punctuation">[</span><span class="token function">Dog</span><span class="token punctuation">(</span>Exchange<span class="token punctuation">)</span> play<span class="token punctuation">]</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</li>
+</ol>
+<p><strong>总结：可见子类方法执行了新方法<code>play</code>，但是同时父类的run 方法也给换走了，执行了新的play方法</strong></p>
+<h4 id="7-3-2-追踪分析"><a href="#7-3-2-追踪分析" class="headerlink" title="7.3.2. 追踪分析"></a>7.3.2. 追踪分析</h4><p>在分析之前，先明白现在的场景：</p>
+<ul>
+<li>父类有该方法及其实现</li>
+<li>子类并无该方法极其实现</li>
+</ul>
+<p>可见，业务场景向子类交换了该方法，子类查询方法并未找到，于是递归向父类查找，在父类的方法列表里查找成功，进而完成了交换过程。而父类下次调用该方法，结果使用了交换来的新方法。</p>
+<p>好一个坑爹滴子类……</p>
+<h4 id="7-3-3-解决"><a href="#7-3-3-解决" class="headerlink" title="7.3.3 解决"></a>7.3.3 解决</h4><p>面对如此坑爹的子类，解决方法只有一个，方法没有——自己实现。</p>
+<p>当子类需要交换某方法的时候，尝试向自己添加待交换走的方法，以防自己未实现，不得不去找父类交换：</p>
+<pre class="line-numbers language-c"><code class="language-c">BOOL success <span class="token operator">=</span> <span class="token function">class_addMethod</span><span class="token punctuation">(</span><span class="token punctuation">[</span>Dog class<span class="token punctuation">]</span><span class="token punctuation">,</span> oriSEL<span class="token punctuation">,</span> swiIMP<span class="token punctuation">,</span> <span class="token function">method_getTypeEncoding</span><span class="token punctuation">(</span>oriMethod<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>然后，如果添加成功，即自身本来并未实现，借着添加的机会实现了。</p>
+<p>接下来做的就是，将新添加的方法与目标方法交换：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">       <span class="token keyword">if</span> <span class="token punctuation">(</span>success<span class="token punctuation">)</span> 
+            <span class="token function">class_replaceMethod</span><span class="token punctuation">(</span><span class="token punctuation">[</span>Dog <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                swiSEL<span class="token punctuation">,</span>
+                                oriIMP<span class="token punctuation">,</span>
+                                <span class="token function">method_getTypeEncoding</span><span class="token punctuation">(</span>oriMethod<span class="token punctuation">)</span>
+                                <span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>当然， 如果添加失败，即原本就有，那么按原来的逻辑，直接交换两种方法即可</p>
+<p>贴一下完整的完善的逻辑如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">+</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>load<span class="token punctuation">{</span>
+    <span class="token keyword">static</span> dispatch_once_t onceToken<span class="token punctuation">;</span>
+    <span class="token function">dispatch_once</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>onceToken<span class="token punctuation">,</span> <span class="token operator">^</span><span class="token punctuation">{</span>
+
+        SEL oriSEL <span class="token operator">=</span> @<span class="token function">selector</span><span class="token punctuation">(</span>run<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        SEL swiSEL <span class="token operator">=</span> @<span class="token function">selector</span><span class="token punctuation">(</span>play<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        Method oriMethod <span class="token operator">=</span> <span class="token function">class_getInstanceMethod</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> @<span class="token function">selector</span><span class="token punctuation">(</span>run<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Method swiMethod <span class="token operator">=</span> <span class="token function">class_getInstanceMethod</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> @<span class="token function">selector</span><span class="token punctuation">(</span>play<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        IMP oriIMP <span class="token operator">=</span> <span class="token function">method_getImplementation</span><span class="token punctuation">(</span>oriMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        IMP swiIMP <span class="token operator">=</span> <span class="token function">method_getImplementation</span><span class="token punctuation">(</span>swiMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        BOOL success <span class="token operator">=</span> <span class="token function">class_addMethod</span><span class="token punctuation">(</span><span class="token punctuation">[</span>Dog <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> oriSEL<span class="token punctuation">,</span> swiIMP<span class="token punctuation">,</span> <span class="token function">method_getTypeEncoding</span><span class="token punctuation">(</span>oriMethod<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>success<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">class_replaceMethod</span><span class="token punctuation">(</span><span class="token punctuation">[</span>Dog <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                swiSEL<span class="token punctuation">,</span>
+                                oriIMP<span class="token punctuation">,</span>
+                                <span class="token function">method_getTypeEncoding</span><span class="token punctuation">(</span>oriMethod<span class="token punctuation">)</span>
+                                <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            <span class="token function">method_exchangeImplementations</span><span class="token punctuation">(</span>oriMethod<span class="token punctuation">,</span> swiMethod<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="7-4-坑点2-待交换子类父类实现"><a href="#7-4-坑点2-待交换子类父类实现" class="headerlink" title="7.4 坑点2 - 待交换子类父类实现"></a>7.4 坑点2 - 待交换子类父类实现</h3><h4 id="7-4-1-症状"><a href="#7-4-1-症状" class="headerlink" title="7.4.1 症状"></a>7.4.1 症状</h4><p>上面的代码，解决了子类未实现不得不向父类索取，并拿出来交换的弊端。</p>
+<p>那么如果该方法，父类都没实现呢？就是将父类的 <code>run</code>方法实现注释，会如何，再走一遍——</p>
+<p><img src="/p/41032/009.png" alt></p>
+<p>不出意外，瘪犊子了。</p>
+<h4 id="7-4-2-追踪分析"><a href="#7-4-2-追踪分析" class="headerlink" title="7.4.2 追踪分析"></a>7.4.2 追踪分析</h4><p>这里很明白得出结论是，想要像某个类交换方法，结果该类以及向上的父类都没实现，毫无意外会造成崩溃。该怎么办呢？</p>
+<p>先看一下一级一级的关系：</p>
+<ul>
+<li>交换方法——&gt;找当前类要<ul>
+<li>找不到当前类的方法实现——找父类要<ul>
+<li>找不到父类的方法实现——崩溃</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>结合<strong>7.4</strong> 里的逻辑，追根溯源，是父类没有实现，那么需要做的是，先给父类添加一个<strong>空的实现</strong>，以避免崩溃。</p>
+<p>然后在子类交换方法的过程中，子类会完善自身的添加方法实现，再去交换方法（这部分的逻辑是7.3）</p>
+<h4 id="7-4-3-解决"><a href="#7-4-3-解决" class="headerlink" title="7.4.3 解决"></a>7.4.3 解决</h4><p>在交换方法时，先判断原方法是否存在，如果不存在，添加一个空方法实现。</p>
+<p>添加部分如下:</p>
+<pre class="line-numbers language-c"><code class="language-c">        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>oriIMP<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">class_addMethod</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> oriSEL<span class="token punctuation">,</span> swiIMP<span class="token punctuation">,</span> <span class="token function">method_getTypeEncoding</span><span class="token punctuation">(</span>swiMethod<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">method_setImplementation</span><span class="token punctuation">(</span>swiMethod<span class="token punctuation">,</span> <span class="token function">imp_implementationWithBlock</span><span class="token punctuation">(</span><span class="token operator">^</span><span class="token punctuation">(</span>id self<span class="token punctuation">,</span> SEL _cmd<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>全文如下：</p>
+<pre><code>+ (void)load{
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+
+        SEL oriSEL = @selector(run);
+        SEL swiSEL = @selector(play);
+
+        Method oriMethod = class_getInstanceMethod(self, @selector(run));
+        Method swiMethod = class_getInstanceMethod(self, @selector(play));
+
+        IMP oriIMP = method_getImplementation(oriMethod);
+        IMP swiIMP = method_getImplementation(swiMethod);
+
+        if (!oriIMP) {
+            class_addMethod(self, oriSEL, swiIMP, method_getTypeEncoding(swiMethod));
+            method_setImplementation(swiMethod, imp_implementationWithBlock(^(id self, SEL _cmd){
+            }));
+        }
+
+        BOOL success = class_addMethod(self, oriSEL, swiIMP, method_getTypeEncoding(oriMethod));
+        if (success) {
+            class_replaceMethod([Dog class],
+                                swiSEL,
+                                oriIMP,
+                                method_getTypeEncoding(oriMethod)
+                                );
+        }else{
+            method_exchangeImplementations(oriMethod, swiMethod);
+
+        }
+    });
+}</code></pre><h2 id="Z、总结"><a href="#Z、总结" class="headerlink" title="Z、总结"></a>Z、总结</h2><p>在这篇文章，初步汇总了一下关于Runtime 几个典型的问题，比如基础的SEL、IMP 的关系，以及self 和super 的区别，以及后面深一点的weak 的底层实现，还有业务上用得最多的黑魔法——方法交换使用过程中的几点坑，如果深刻理解了其内部实现，自然能避开这些坑。</p>
+<p>希望在日后更深刻的理会这些原理，欢迎大家有问题留言交流。</p>
+
             </div>
             <hr/>
 
