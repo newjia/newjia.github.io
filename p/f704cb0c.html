@@ -388,14 +388,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.5k
+                    1.8k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    7 分
                 </div>
                 
 
@@ -613,7 +613,7 @@
 </li>
 </ol>
 <h3 id="3-2-Getter-方法"><a href="#3-2-Getter-方法" class="headerlink" title="3.2 Getter 方法"></a>3.2 Getter 方法</h3><p>getter 方法与 Setter 方法相仿</p>
-<h2 id="四、KVC-实用小技巧"><a href="#四、KVC-实用小技巧" class="headerlink" title="四、KVC 实用小技巧"></a>四、KVC 实用小技巧</h2><blockquote>
+<h2 id="四、KVC-实用小技巧"><a href="#四、KVC-实用小技巧" class="headerlink" title="四、KVC 实用小技巧"></a>四、KVC 实用小技巧</h2><h3 id="4-1-自动转换类型"><a href="#4-1-自动转换类型" class="headerlink" title="4.1 自动转换类型"></a>4.1 自动转换类型</h3><blockquote>
 <p>KVC 具备自动转换数据类型的功能</p>
 </blockquote>
 <p>当我们对Int 类型的属性，添加字符串的类型，正常是这样的</p>
@@ -626,6 +626,35 @@
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token punctuation">[</span>person setValue<span class="token operator">:</span>@<span class="token string">"20"</span> forKey<span class="token operator">:</span>@<span class="token string">"age"</span><span class="token punctuation">]</span><span class="token punctuation">;</span> <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <p><img src="/p/f704cb0c/003.png" alt></p>
 <p>可见是可以执行的，在通过KVC 设置之后，自动转换成了<code>int</code>类型，整个数据成为了NSCFNumber。可见其灵活程度！</p>
+<h3 id="4-2-空值报警"><a href="#4-2-空值报警" class="headerlink" title="4.2 空值报警"></a>4.2 空值报警</h3><p>总有些时候，设置值可能会异常为空，那怎么办呢？可以通过重写空值报警来避免异常</p>
+<ul>
+<li><p>设值为空重写</p>
+<pre><code>- (void)setNilValueForKey:(NSString *)key{
+    NSLog(@&quot;报告! 设置 %@ 是空值&quot;,key);
+}</code></pre></li>
+<li><p>取值为空重写</p>
+<pre><code>- (id)valueForUndefinedKey:(NSString *)key{
+    NSLog(@&quot;报告!!!: %@ 没有这个key - 给你一个其他的吧,别奔溃了!&quot;,key);
+    return @&quot;Master 牛逼&quot;;
+}</code></pre></li>
+</ul>
+<h3 id="4-3-键值验证"><a href="#4-3-键值验证" class="headerlink" title="4.3 键值验证"></a>4.3 键值验证</h3><pre><code>NSError *error;
+    NSString *name = @&quot;Good&quot;;
+    if (![person validateValue:&amp;name forKey:@&quot;names&quot; error:&amp;error]) {
+        NSLog(@&quot;%@&quot;,error);
+    }else{
+        NSLog(@&quot;%@&quot;,[person valueForKey:@&quot;name&quot;]);
+    }</code></pre><p>实现方法里，可以这样写</p>
+<pre><code>//MARK: - 键值验证 - 容错 - 派发 - 消息转发
+
+- (BOOL)validateValue:(inout id  _Nullable __autoreleasing *)ioValue forKey:(NSString *)inKey error:(out NSError *__autoreleasing  _Nullable *)outError{
+    if([inKey isEqualToString:@&quot;name&quot;]){
+        [self setValue:[NSString stringWithFormat:@&quot;里面修改一下: %@&quot;,*ioValue] forKey:inKey];
+        return YES;
+    }
+    *outError = [[NSError alloc]initWithDomain:[NSString stringWithFormat:@&quot;%@ 不是 %@ 的属性&quot;,inKey,self] code:10088 userInfo:nil];
+    return NO;
+}</code></pre><h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>总的来说，KVC 是比较简单的一个章节，其原理是对类内部逐级查验，从set 方法、直接赋值开关、isKey 等键的取值实现赋值和取值的过程。</p>
 
             </div>
             <hr/>
