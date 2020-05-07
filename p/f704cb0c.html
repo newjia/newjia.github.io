@@ -740,7 +740,8 @@ NSString <span class="token operator">*</span>objectInKeyAtIndex <span class="to
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 </li>
 </ul>
-<h3 id="4-3-键值验证"><a href="#4-3-键值验证" class="headerlink" title="4.3 键值验证"></a>4.3 键值验证</h3><pre class="line-numbers language-cpp"><code class="language-cpp">NSError <span class="token operator">*</span>error<span class="token punctuation">;</span>
+<h3 id="4-3-键值验证"><a href="#4-3-键值验证" class="headerlink" title="4.3 键值验证"></a>4.3 键值验证</h3><p>当类对应的键的值还是找不到，即将要报错了，我们还是可以自行挽救一下——先验证对应的键值是否成功，如果不成功，自行报错并写补救方法。</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">NSError <span class="token operator">*</span>error<span class="token punctuation">;</span>
     NSString <span class="token operator">*</span>name <span class="token operator">=</span> @<span class="token string">"Good"</span><span class="token punctuation">;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">[</span>person validateValue<span class="token operator">:</span><span class="token operator">&amp;</span>name forKey<span class="token operator">:</span>@<span class="token string">"names"</span> error<span class="token operator">:</span><span class="token operator">&amp;</span>error<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"%@"</span><span class="token punctuation">,</span>error<span class="token punctuation">)</span><span class="token punctuation">;</span>
