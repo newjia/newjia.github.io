@@ -396,14 +396,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.8k
+                    2.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    7 分
+                    10 分
                 </div>
                 
 
@@ -620,7 +620,99 @@
 <pre class="line-numbers language-cpp"><code class="language-cpp">@<span class="token keyword">throw</span> <span class="token punctuation">[</span>NSException exceptionWithName<span class="token operator">:</span>@<span class="token string">"UnknownKeyException"</span> reason<span class="token operator">:</span><span class="token punctuation">[</span>NSString stringWithFormat<span class="token operator">:</span>@<span class="token string">"****[%@ %@]: this class is not key value coding-compliant for the key name.****"</span><span class="token punctuation">,</span>self<span class="token punctuation">,</span><span class="token function">NSStringFromSelector</span><span class="token punctuation">(</span>_cmd<span class="token punctuation">)</span><span class="token punctuation">]</span> userInfo<span class="token operator">:</span>nil<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 </ol>
-<h3 id="3-2-Getter-方法"><a href="#3-2-Getter-方法" class="headerlink" title="3.2 Getter 方法"></a>3.2 Getter 方法</h3><p>getter 方法与 Setter 方法相仿</p>
+<h3 id="3-2-Getter-方法"><a href="#3-2-Getter-方法" class="headerlink" title="3.2 Getter 方法"></a>3.2 Getter 方法</h3><p>getter 方法与 Setter 方法相仿，继续进行一下</p>
+<ol>
+<li><p>设置自定义的getter 方法。代码如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span>id<span class="token punctuation">)</span>lj_valueForKey<span class="token operator">:</span> <span class="token punctuation">(</span>NSString <span class="token operator">*</span><span class="token punctuation">)</span>key<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>判断key，保证不为空</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">if</span> <span class="token punctuation">(</span>key <span class="token operator">==</span> nil  <span class="token operator">||</span> key<span class="token punctuation">.</span>length <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> 
+   <span class="token keyword">return</span> nil<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</li>
+<li><p>找到对应的get<key>、<key>、countOf<key> 、objectIn<key>AtIndex 等直接取值的方法。后两种一般是集合类型（数组等）用到的方法。</key></key></key></key></p>
+<ol>
+<li><p>先对键<code>Key</code> 进行大写转换</p>
+<pre><code>// key 要大写
+NSString *Key = key.capitalizedString;</code></pre></li>
+<li><p>用get、countOf、objectIn 等方法，对key拼接</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// 拼接方法</span>
+NSString <span class="token operator">*</span>getKey <span class="token operator">=</span> <span class="token punctuation">[</span>NSString stringWithFormat<span class="token operator">:</span>@<span class="token string">"get%@"</span><span class="token punctuation">,</span>Key<span class="token punctuation">]</span><span class="token punctuation">;</span>
+NSString <span class="token operator">*</span>countOfKey <span class="token operator">=</span> <span class="token punctuation">[</span>NSString stringWithFormat<span class="token operator">:</span>@<span class="token string">"countOf%@"</span><span class="token punctuation">,</span>Key<span class="token punctuation">]</span><span class="token punctuation">;</span>
+NSString <span class="token operator">*</span>objectInKeyAtIndex <span class="token operator">=</span> <span class="token punctuation">[</span>NSString stringWithFormat<span class="token operator">:</span>@<span class="token string">"objectIn%@AtIndex:"</span><span class="token punctuation">,</span>Key<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>判断本类是否相应对应的get<key>、countOf<key>、objectIn<key>AtIndex 方法，如果有，就执行该方法，直接获取到对应的值。</key></key></key></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">pragma</span> clang diagnostic push</span>
+<span class="token macro property">#<span class="token directive keyword">pragma</span> clang diagnostic ignored "-Warc-performSelector-leaks"</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>self respondsToSelector<span class="token operator">:</span><span class="token function">NSSelectorFromString</span><span class="token punctuation">(</span>getKey<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span>self performSelector<span class="token operator">:</span><span class="token function">NSSelectorFromString</span><span class="token punctuation">(</span>getKey<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>self respondsToSelector<span class="token operator">:</span><span class="token function">NSSelectorFromString</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span>self performSelector<span class="token operator">:</span><span class="token function">NSSelectorFromString</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>self respondsToSelector<span class="token operator">:</span><span class="token function">NSSelectorFromString</span><span class="token punctuation">(</span>countOfKey<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>self respondsToSelector<span class="token operator">:</span><span class="token function">NSSelectorFromString</span><span class="token punctuation">(</span>objectInKeyAtIndex<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">int</span> num <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">[</span>self performSelector<span class="token operator">:</span><span class="token function">NSSelectorFromString</span><span class="token punctuation">(</span>countOfKey<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            NSMutableArray <span class="token operator">*</span>mArray <span class="token operator">=</span> <span class="token punctuation">[</span>NSMutableArray arrayWithCapacity<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">&lt;</span>num<span class="token number">-1</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                num <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">[</span>self performSelector<span class="token operator">:</span><span class="token function">NSSelectorFromString</span><span class="token punctuation">(</span>countOfKey<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j<span class="token operator">&lt;</span>num<span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                id objc <span class="token operator">=</span> <span class="token punctuation">[</span>self performSelector<span class="token operator">:</span><span class="token function">NSSelectorFromString</span><span class="token punctuation">(</span>objectInKeyAtIndex<span class="token punctuation">)</span> withObject<span class="token operator">:</span>@<span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+                <span class="token punctuation">[</span>mArray addObject<span class="token operator">:</span>objc<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> mArray<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token macro property">#<span class="token directive keyword">pragma</span> clang diagnostic pop</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+</li>
+<li><p>此时判断能否直接赋值实例变量。用到的是该类的<code>accessInstanceVariablesDirectly</code> 属性是否开启。</p>
+<ul>
+<li><p>如果已打开，则表示可以通过取其 _<key>、_is<key>、<key>、is<key> 来取值，跳到5</key></key></key></key></p>
+</li>
+<li><p>若未打开，抛出异常，表示找不到该键对应值</p>
+<p>相关代码如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token punctuation">[</span>self<span class="token punctuation">.</span><span class="token keyword">class</span> <span class="token class-name">accessInstanceVariablesDirectly</span><span class="token punctuation">]</span> <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        @<span class="token keyword">throw</span> <span class="token punctuation">[</span>NSException exceptionWithName<span class="token operator">:</span>@<span class="token string">"LGUnknownKeyException"</span> reason<span class="token operator">:</span><span class="token punctuation">[</span>NSString stringWithFormat<span class="token operator">:</span>@<span class="token string">"****[%@ valueForUndefinedKey:]: this class is not key value coding-compliant for the key name.****"</span><span class="token punctuation">,</span>self<span class="token punctuation">]</span> userInfo<span class="token operator">:</span>nil<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li><p>找到实例变量，进行取值</p>
+<ul>
+<li><p>定义一个收集实例变量的可变数组：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    NSMutableArray <span class="token operator">*</span>mArray <span class="token operator">=</span> <span class="token punctuation">[</span>NSMutableArray arrayWithCapacity<span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    Ivar <span class="token operator">*</span>ivars <span class="token operator">=</span> <span class="token function">class_copyIvarList</span><span class="token punctuation">(</span><span class="token punctuation">[</span>self <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">&lt;</span>count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Ivar ivar <span class="token operator">=</span> ivars<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>ivarNameChar <span class="token operator">=</span> <span class="token function">ivar_getName</span><span class="token punctuation">(</span>ivar<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        NSString <span class="token operator">*</span>ivarName <span class="token operator">=</span> <span class="token punctuation">[</span>NSString stringWithUTF8String<span class="token operator">:</span>ivarNameChar<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"ivarName == %@"</span><span class="token punctuation">,</span>ivarName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">[</span>mArray addObject<span class="token operator">:</span>ivarName<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">free</span><span class="token punctuation">(</span>ivars<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>依次判断该数组是否包含键关键字，其顺序为 _key——&gt; _isKey——&gt; key——&gt; isKey，通过找到的关键字，进行取值</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    NSString <span class="token operator">*</span>_key <span class="token operator">=</span> <span class="token punctuation">[</span>NSString stringWithFormat<span class="token operator">:</span>@<span class="token string">"_%@"</span><span class="token punctuation">,</span>key<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    NSString <span class="token operator">*</span>_isKey <span class="token operator">=</span> <span class="token punctuation">[</span>NSString stringWithFormat<span class="token operator">:</span>@<span class="token string">"_is%@"</span><span class="token punctuation">,</span>Key<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    NSString <span class="token operator">*</span>isKey <span class="token operator">=</span> <span class="token punctuation">[</span>NSString stringWithFormat<span class="token operator">:</span>@<span class="token string">"is%@"</span><span class="token punctuation">,</span>Key<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>mArray containsObject<span class="token operator">:</span>_key<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Ivar ivar <span class="token operator">=</span> <span class="token function">class_getInstanceVariable</span><span class="token punctuation">(</span><span class="token punctuation">[</span>self <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> _key<span class="token punctuation">.</span>UTF8String<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">object_getIvar</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> ivar<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>mArray containsObject<span class="token operator">:</span>_isKey<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Ivar ivar <span class="token operator">=</span> <span class="token function">class_getInstanceVariable</span><span class="token punctuation">(</span><span class="token punctuation">[</span>self <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> _isKey<span class="token punctuation">.</span>UTF8String<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">object_getIvar</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> ivar<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>mArray containsObject<span class="token operator">:</span>key<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Ivar ivar <span class="token operator">=</span> <span class="token function">class_getInstanceVariable</span><span class="token punctuation">(</span><span class="token punctuation">[</span>self <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> key<span class="token punctuation">.</span>UTF8String<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">object_getIvar</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> ivar<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">[</span>mArray containsObject<span class="token operator">:</span>isKey<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Ivar ivar <span class="token operator">=</span> <span class="token function">class_getInstanceVariable</span><span class="token punctuation">(</span><span class="token punctuation">[</span>self <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> isKey<span class="token punctuation">.</span>UTF8String<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">object_getIvar</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> ivar<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+</ol>
 <h2 id="四、KVC-实用小技巧"><a href="#四、KVC-实用小技巧" class="headerlink" title="四、KVC 实用小技巧"></a>四、KVC 实用小技巧</h2><h3 id="4-1-自动转换类型"><a href="#4-1-自动转换类型" class="headerlink" title="4.1 自动转换类型"></a>4.1 自动转换类型</h3><blockquote>
 <p>KVC 具备自动转换数据类型的功能</p>
 </blockquote>
@@ -666,7 +758,7 @@
     <span class="token operator">*</span>outError <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>NSError alloc<span class="token punctuation">]</span>initWithDomain<span class="token operator">:</span><span class="token punctuation">[</span>NSString stringWithFormat<span class="token operator">:</span>@<span class="token string">"%@ 不是 %@ 的属性"</span><span class="token punctuation">,</span>inKey<span class="token punctuation">,</span>self<span class="token punctuation">]</span> code<span class="token operator">:</span><span class="token number">10088</span> userInfo<span class="token operator">:</span>nil<span class="token punctuation">]</span><span class="token punctuation">;</span>
     <span class="token keyword">return</span> NO<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>总的来说，KVC 是比较简单的一个章节，其原理是对类内部逐级查验，从set 方法、直接赋值开关、isKey 等键的取值实现赋值和取值的过程。</p>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>总的来说，KVC 是比较简单的一个章节，其原理是对类内部逐级查验，从set 方法、直接赋值开关、isKey 等键的取值实现赋值和取值的过程。而实现自定义KVC，则是依照逻辑一步一步写成。</p>
 
             </div>
             <hr/>
