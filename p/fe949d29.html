@@ -721,7 +721,7 @@ Method classMethod <span class="token operator">=</span> <span class="token func
         [self kc_hookOrigInstanceMenthod:NSSelectorFromString(@&quot;dealloc&quot;) newInstanceMenthod:@selector(myDealloc)];
     });
 }</code></pre><h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><p>总的来说，自定义的KVO 和自定义的KVC 很类似，一步一步，生成子类，完善方法，isa 转向；而移除时，倒叙进行，isa 指回去之后，移除观察就可以了，而动态子类会保留，以便下次使用。</p>
-<p>关于自定义KVO 的Demo 已经上传至我的Github ，欢迎下载参考</p>
+<p>关于自定义KVO 的Demo 已经上传至<a href="https://github.com/newjia/rewriteKVO" target="_blank" rel="noopener">我的Github</a> ，欢迎下载参考</p>
 
             </div>
             <hr/>
