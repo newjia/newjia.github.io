@@ -515,7 +515,7 @@ Class <span class="token class-name">newClass</span> <span class="token operator
 <h4 id="1-3-4-注册该动态子类"><a href="#1-3-4-注册该动态子类" class="headerlink" title="1.3.4 注册该动态子类"></a>1.3.4 注册该动态子类</h4><p>也就是讲这个新的 <code>NSKVONotifying_xx</code> 的类注册到（非元）类的散列表中</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">objc_registerClassPair</span><span class="token punctuation">(</span>newClass<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 <h4 id="1-3-5-添加class-方法。即给新的动态子类，添加class-方法"><a href="#1-3-5-添加class-方法。即给新的动态子类，添加class-方法" class="headerlink" title="1.3.5 添加class 方法。即给新的动态子类，添加class 方法"></a>1.3.5 添加class 方法。即给新的动态子类，添加<code>class</code> 方法</h4><p>首先是给这个类添加自定义的<code>lj_class</code> 方法，即使得该动态子类继承自原类。</p>
-<p>这里涉及到给当前的对象——的类——的父类，建立联系</p>
+<p>这里涉及到给当前的动态子类的父类——即原来的类，建立联系</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp">Class <span class="token class-name">lj_class</span><span class="token punctuation">(</span>id self<span class="token punctuation">,</span> SEL _cmd<span class="token punctuation">)</span><span class="token punctuation">{</span>
     <span class="token keyword">return</span> <span class="token function">class_getSuperclass</span><span class="token punctuation">(</span><span class="token function">object_getClass</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
@@ -982,37 +982,32 @@ Method classMethod <span class="token operator">=</span> <span class="token func
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/p/fe949d29.html">
+                <a href="/p/e318a7b3.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg" class="responsive-img" alt="【底层探索】- KVO（下）自定义KVO">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/10.jpg" class="responsive-img" alt="【底层探索】- 多线程(一)">
                         
-                        <span class="card-title">【底层探索】- KVO（下）自定义KVO</span>
+                        <span class="card-title">【底层探索】- 多线程(一)</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            序上文中，初步探索了KVO的使用以及背后的实现原理，这次来自己实现一个KVO，一方面在过程中加深理解，另一方面可以感受一下使用场景。
-根据上文总结，KVO的实现一共有3部分：
+                            一、线程定义1.1 基本概念
+线程（Thread），有时被称为轻量级进程（Lightweight Progress, LWP），是程序执行流的最小单位。
 
-添加KVO监听方法
-KVO 通知实现方法
-KVO 移除方法
-
-
+一个标准的线程由线程ID、当前指令指针（PC）、寄存器集合和堆栈组成。通常意义上，一
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-05-08
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-05-09
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -1021,16 +1016,19 @@ KVO 移除方法
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/底层/">
-                        <span class="chip bg-color">底层</span>
+                    <a href="/tags/多线程/">
+                        <span class="chip bg-color">多线程</span>
                     </a>
                     
-                    <a href="/tags/KVO/">
-                        <span class="chip bg-color">KVO</span>
+                    <a href="/tags/线程/">
+                        <span class="chip bg-color">线程</span>
+                    </a>
+                    
+                    <a href="/tags/进程/">
+                        <span class="chip bg-color">进程</span>
                     </a>
                     
                 </div>
