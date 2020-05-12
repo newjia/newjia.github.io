@@ -392,7 +392,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    515
+                    673
                 </div>
                 
 
@@ -465,7 +465,32 @@
 <p><img src="/p/bd5c42bb/004.png" alt></p>
 <h4 id="C、回答：-1"><a href="#C、回答：-1" class="headerlink" title="C、回答："></a>C、回答：</h4><p>打印结果 &gt;= 10</p>
 <h4 id="D、验证"><a href="#D、验证" class="headerlink" title="D、验证"></a>D、验证</h4><p><img src="/p/bd5c42bb/003.png" alt></p>
-<h2 id="二、GCD-栅栏函数"><a href="#二、GCD-栅栏函数" class="headerlink" title="二、GCD 栅栏函数"></a>二、GCD 栅栏函数</h2><h2 id="三、GCD-调度组"><a href="#三、GCD-调度组" class="headerlink" title="三、GCD 调度组"></a>三、GCD 调度组</h2><h2 id="四、GCD-的source-讲解"><a href="#四、GCD-的source-讲解" class="headerlink" title="四、GCD 的source 讲解"></a>四、GCD 的source 讲解</h2>
+<h4 id="E、引申-信号量"><a href="#E、引申-信号量" class="headerlink" title="E、引申 - 信号量"></a>E、引申 - 信号量</h4><p>如何准确的打印本题的数值，达到10的结果呢？</p>
+<p>可以使用信号量，可以有效的避免异步函数造成任务不可控。主要流程有如下几点</p>
+<ul>
+<li>创建信号量</li>
+<li>信号等待，即锁住线程。信号量 -1</li>
+<li>执行业务，解锁开关，即业务不执行完，线程无法往后走。信号量 + 1</li>
+</ul>
+<p>如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">    <span class="token comment" spellcheck="true">// 1. 创建信号量</span>
+        dispatch_semaphore_t sem <span class="token operator">=</span> <span class="token function">dispatch_semaphore_create</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    __block <span class="token keyword">int</span> a <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>a <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">dispatch_async</span><span class="token punctuation">(</span><span class="token function">dispatch_get_global_queue</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">^</span><span class="token punctuation">{</span>
+            a<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"a = %d \n"</span><span class="token punctuation">,</span> a<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 解锁线程</span>
+            <span class="token function">dispatch_semaphore_signal</span><span class="token punctuation">(</span>sem<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 等待信号、锁住线程</span>
+        <span class="token function">dispatch_semaphore_wait</span><span class="token punctuation">(</span>sem<span class="token punctuation">,</span> DISPATCH_TIME_FOREVER<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>成功打印结果如下：</p>
+<p><img src="/p/bd5c42bb/005.png" alt></p>
+<h2 id="二、GCD-栅栏函数"><a href="#二、GCD-栅栏函数" class="headerlink" title="二、GCD 栅栏函数"></a>二、GCD 栅栏函数</h2><p>​    </p>
+<h2 id="三、GCD-调度组"><a href="#三、GCD-调度组" class="headerlink" title="三、GCD 调度组"></a>三、GCD 调度组</h2><h2 id="四、GCD-的source-讲解"><a href="#四、GCD-的source-讲解" class="headerlink" title="四、GCD 的source 讲解"></a>四、GCD 的source 讲解</h2>
             </div>
             <hr/>
 
