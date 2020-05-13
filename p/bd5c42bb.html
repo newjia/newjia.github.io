@@ -631,9 +631,9 @@
 <h2 id="五、信号量"><a href="#五、信号量" class="headerlink" title="五、信号量"></a>五、信号量</h2><p>如何准确的打印第一题的数值，达到10的结果呢？</p>
 <p>可以使用信号量，可以有效的避免异步函数造成任务不可控。主要流程有如下几点</p>
 <ul>
-<li>创建信号量 + 1</li>
-<li>信号等待，即锁住线程。信号量 -1</li>
-<li>执行业务，解锁开关，即业务不执行完，线程无法往后走。信号量 + 1</li>
+<li>创建信号量  </li>
+<li>信号等待，即锁住线程。信号量–</li>
+<li>执行业务，解锁开关，即业务不执行完，线程无法往后走。信号量++</li>
 </ul>
 <p>如下：</p>
 <pre class="line-numbers language-c"><code class="language-c">    <span class="token comment" spellcheck="true">// 1. 创建信号量</span>
