@@ -404,14 +404,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    980
+                    1.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    3 分
+                    5 分
                 </div>
                 
 
@@ -510,7 +510,35 @@
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>查找流程如下图:</p>
 <p><img src="/p/87f3f6a9/002.png" alt></p>
-<h3 id="2-3-插值查找"><a href="#2-3-插值查找" class="headerlink" title="2.3 插值查找"></a>2.3 插值查找</h3><h3 id="2-2-斐波拉契查找"><a href="#2-2-斐波拉契查找" class="headerlink" title="2.2 斐波拉契查找"></a>2.2 斐波拉契查找</h3><h2 id="三、动态查找"><a href="#三、动态查找" class="headerlink" title="三、动态查找"></a>三、动态查找</h2>
+<h3 id="2-3-插值查找"><a href="#2-3-插值查找" class="headerlink" title="2.3 插值查找"></a>2.3 插值查找</h3><h4 id="2-3-1-折半改进"><a href="#2-3-1-折半改进" class="headerlink" title="2.3.1 折半改进"></a>2.3.1 折半改进</h4><p>由于折半查找会从中间开始查找，一旦超过一定量级，查找任务还是比较繁重。所以考虑是否还有改进空间</p>
+<p>查找代码中求 <code>mid</code>的计算公式可以改进为：</p>
+<p>$$<br>mid = \frac{low+high}{2} = low + \frac{1}{2} (high - low)<br>$$<br>也就是 mid等于最下标 <code>low</code> 加上 最高下标 <code>high</code> 与<code>low</code> 的差值的<strong>一半</strong>。</p>
+<p>考虑将这个<strong>一半</strong>改进为以下方案：<br>$$<br>mid = low + \frac{ key - a [low]}{ a[high] - a[low]}(high - low)<br>$$<br><strong>改进的好处：</strong>可以大大减少查找的次数。</p>
+<p>比如数组 <strong>{6,12,18,25,31,37,43,50,56,62,68,75,82,88,96}</strong>，查找18 ，需要查找4步才可以找到</p>
+<p>使用新公示，需要  $\frac{ key - a [low]}{a[high] - a[low]}$ = $ \frac{(18 - 12)}{(96 - 12)} \approx 0.071$，那么此时 $mid\approx 1 + 0.071\times (15-1) = 1.994$，取整后，只需要查询2次即可，大大提升了效率。</p>
+<p>这样的到了另一种有虚表查找算法，插值查找法。</p>
+<h4 id="2-3-2-核心概念"><a href="#2-3-2-核心概念" class="headerlink" title="2.3.2 核心概念"></a>2.3.2 核心概念</h4><p><strong>插值查找法(Interpolation Search)</strong> 是根据要查找的关键字<code>key</code> 与查找表中最大最小记录的关键字比较后的查找方法，其核心就在于插值公示:<br>$$<br>\frac{key - a[low]}{a[high] - a[low]}<br>$$<br><strong>缺点：</strong>不适合数字差距不均匀的数组。如{0, 1, 2, 1000, 30000} </p>
+<h4 id="2-3-2-算法实现"><a href="#2-3-2-算法实现" class="headerlink" title="2.3.2 算法实现"></a>2.3.2 算法实现</h4><p>由上可知，只需要改进一行代码</p>
+<pre class="line-numbers language-c"><code class="language-c">  <span class="token comment" spellcheck="true">// 插值查找</span>
+<span class="token keyword">int</span> <span class="token function">Binary_Search</span><span class="token punctuation">(</span><span class="token keyword">int</span> <span class="token operator">*</span>a<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">,</span> <span class="token keyword">int</span> key<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">int</span> low<span class="token punctuation">,</span> high<span class="token punctuation">,</span> mid<span class="token punctuation">;</span>
+    low <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    high <span class="token operator">=</span> n<span class="token punctuation">;</span>
+    <span class="token keyword">while</span> <span class="token punctuation">(</span>low <span class="token operator">&lt;=</span> high<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//  插值公示</span>
+        mid <span class="token operator">=</span> low <span class="token operator">+</span> <span class="token punctuation">(</span>high <span class="token operator">-</span> low<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token punctuation">(</span>key <span class="token operator">-</span> a<span class="token punctuation">[</span>low<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token punctuation">(</span>a<span class="token punctuation">[</span>high<span class="token punctuation">]</span> <span class="token operator">-</span> a<span class="token punctuation">[</span>low<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>key <span class="token operator">&lt;</span> a<span class="token punctuation">[</span>mid<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            high <span class="token operator">=</span> mid <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>key <span class="token operator">></span> a<span class="token punctuation">[</span>mid<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            low <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            <span class="token keyword">return</span> mid<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-2-斐波拉契查找"><a href="#2-2-斐波拉契查找" class="headerlink" title="2.2 斐波拉契查找"></a>2.2 斐波拉契查找</h3><h2 id="三、动态查找"><a href="#三、动态查找" class="headerlink" title="三、动态查找"></a>三、动态查找</h2><h3 id="3-1-二叉排序树"><a href="#3-1-二叉排序树" class="headerlink" title="3.1 二叉排序树"></a>3.1 二叉排序树</h3><h4 id="3-1-1-定义"><a href="#3-1-1-定义" class="headerlink" title="3.1.1 定义"></a>3.1.1 定义</h4><h4 id="3-1-2-查找"><a href="#3-1-2-查找" class="headerlink" title="3.1.2 查找"></a>3.1.2 查找</h4><h4 id="3-1-3-插入"><a href="#3-1-3-插入" class="headerlink" title="3.1.3 插入"></a>3.1.3 插入</h4><h4 id="3-2-4-删除"><a href="#3-2-4-删除" class="headerlink" title="3.2.4 删除"></a>3.2.4 删除</h4>
             </div>
             <hr/>
 
