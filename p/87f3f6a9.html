@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="李佳的技术博客">
+    <meta name="keywords" content="【数据结构与算法】关于查找的常见算法, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>李佳的技术博客</title>
+    <title>【数据结构与算法】关于查找的常见算法 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/0.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/11.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title"></h1>
+                    <h1 class="description center-align post-title">【数据结构与算法】关于查找的常见算法</h1>
                 </div>
             </div>
         </div>
@@ -365,9 +365,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/二分法/">
+                                <span class="chip bg-color">二分法</span>
+                            </a>
+                        
+                            <a href="/tags/斐波那契/">
+                                <span class="chip bg-color">斐波那契</span>
+                            </a>
+                        
+                            <a href="/tags/插值/">
+                                <span class="chip bg-color">插值</span>
+                            </a>
+                        
+                            <a href="/tags/二叉搜索树/">
+                                <span class="chip bg-color">二叉搜索树</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -388,14 +404,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.7k
+                    3.6k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    15 分
+                    14 分
                 </div>
                 
 
@@ -411,16 +427,9 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>title: 【数据结构与算法】关于查找的常见算法<br>tags:</p>
-<ul>
-<li>二分法</li>
-<li>斐波那契</li>
-<li>插值</li>
-<li>二叉搜索树<br>abbrlink: 87f3f6a9<br>date: 2020-05-13 23:03:56<br>top:<br>cover:<br>mathjax: true</li>
-</ul>
-<h2 id="一、概论"><a href="#一、概论" class="headerlink" title="一、概论"></a>一、概论</h2><h3 id="1-1-基本概念"><a href="#1-1-基本概念" class="headerlink" title="1.1 基本概念"></a>1.1 基本概念</h3><p><strong>查找</strong>（searching）就是根据给定的某个值，在查找表中确定一个其关键字等于给定制的数据元素（或记录）。</p>
+                <h2 id="一、概论"><a href="#一、概论" class="headerlink" title="一、概论"></a>一、概论</h2><h3 id="1-1-基本概念"><a href="#1-1-基本概念" class="headerlink" title="1.1 基本概念"></a>1.1 基本概念</h3><p><strong>查找</strong>（searching）就是根据给定的某个值，在查找表中确定一个其关键字等于给定制的数据元素（或记录）。</p>
 <p><strong>查找表</strong>（search table）是由同一类型的数据元素（或记录）构成的组合。例如下图：</p>
-<p><img src="/p/0513search/001.png" alt></p>
+<p><img src="/p/87f3f6a9/001.png" alt></p>
 <p><strong>关键字（key）</strong>三数据元素中某个数据项的值，又称为键值。用它可以标示一个记录的某个数据项，我们称为关键码。</p>
 <h3 id="1-2-分类"><a href="#1-2-分类" class="headerlink" title="1.2 分类"></a>1.2 分类</h3><p>按照表查找方式来分有辆大众：静态查找表和动态查找表。</p>
 <p><strong>静态查找表（Static Search Table）： 只做查找操作的查找表</strong>，主要操作有：</p>
@@ -500,7 +509,7 @@
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <p>查找流程如下图:</p>
-<p><img src="/p/0513search/002.png" alt></p>
+<p><img src="/p/87f3f6a9/002.png" alt></p>
 <h3 id="2-3-插值查找"><a href="#2-3-插值查找" class="headerlink" title="2.3 插值查找"></a>2.3 插值查找</h3><h4 id="2-3-1-折半改进"><a href="#2-3-1-折半改进" class="headerlink" title="2.3.1 折半改进"></a>2.3.1 折半改进</h4><p>由于折半查找会从中间开始查找，一旦超过一定量级，查找任务还是比较繁重。所以考虑是否还有改进空间</p>
 <p>查找代码中求 <code>mid</code>的计算公式可以改进为：</p>
 <p>$$<br>mid = \frac{low+high}{2} = low + \frac{1}{2} (high - low)<br>$$<br>也就是 mid等于最下标 <code>low</code> 加上 最高下标 <code>high</code> 与<code>low</code> 的差值的<strong>一半</strong>。</p>
@@ -574,13 +583,13 @@
 <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> low<span class="token punctuation">,</span> high<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> i<span class="token punctuation">,</span> k<span class="token punctuation">;</span>
 low <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> high <span class="token operator">=</span> n<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>其中 <code>low</code> 、<code>high</code>分别为数组最低下标，默认 high为最大</p>
-<p><img src="/p/0513search/004.png" alt></p>
+<p><img src="/p/87f3f6a9/004.png" alt></p>
 </li>
 <li><p>计算 n 位于斐波那契数列的位置</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">while</span> <span class="token punctuation">(</span>n <span class="token operator">></span> F<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token number">1</span>
     k<span class="token operator">++</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 <p>由于上文给出的数组长度$n = 10$，得出 $F[6] &lt; n &lt; F[7]$， 所以此时 $k = 7$，在队列中如图示</p>
-<p><img src="/p/0513search/003.png" alt></p>
+<p><img src="/p/87f3f6a9/003.png" alt></p>
 </li>
 </ul>
 <ul>
@@ -605,7 +614,7 @@ low <span class="token operator">=</span> <span class="token number">1</span><sp
 </li>
 </ul>
 <p>这一步中 key 为59， a[mid] 及a[8] 为73，所以$key&lt;a[mid]$，需要进行调整， 如下图所示</p>
-<p><img src="/p/0513search/005.png" alt></p>
+<p><img src="/p/87f3f6a9/005.png" alt></p>
 <p>此时各项<strong>参数结果</strong>为：$k = 6, low = 1, mid = 8, high = 7$</p>
 </li>
 <li><p>继续循环查找。</p>
@@ -622,7 +631,7 @@ low <span class="token operator">=</span> <span class="token number">1</span><sp
 <pre class="line-numbers language-c"><code class="language-c">k <span class="token operator">=</span> k <span class="token operator">-</span> <span class="token number">2</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 </ul>
-<p>实现示意图如下：<img src="/p/0513search/006.png" alt></p>
+<p>实现示意图如下：<img src="/p/87f3f6a9/006.png" alt></p>
 <p>此时各项<strong>参数结果</strong>为：$k = 4, low = 6, mid = 5, high = 7$</p>
 </li>
 <li><p>再次循环。</p>
@@ -640,7 +649,7 @@ low <span class="token operator">=</span> <span class="token number">1</span><sp
 </li>
 </ul>
 <p>实现示意图如下：</p>
-<p><img src="/p/0513search/007.png" alt></p>
+<p><img src="/p/87f3f6a9/007.png" alt></p>
 <p>此时各项<strong>参数结果</strong>为：$k = 3, low = 6, mid = 5, high = 6$</p>
 </li>
 <li><p>再次循环。</p>
@@ -675,7 +684,7 @@ low <span class="token operator">=</span> <span class="token number">1</span><sp
 <li>当 $key &gt; a[mid]$ 时，新范围是第 m+1 个到第 high 个，此时范围个数为 F[k-2] -1 个</li>
 </ol>
 <p>示意图如下：</p>
-<p><img src="/p/0513search/008.png" alt></p>
+<p><img src="/p/87f3f6a9/008.png" alt></p>
 <h4 id="2-2-2-算法实现"><a href="#2-2-2-算法实现" class="headerlink" title="2.2.2 算法实现"></a>2.2.2 算法实现</h4><p>先看看代码</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> F<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token keyword">int</span> <span class="token function">Fibonnaci_Search</span><span class="token punctuation">(</span><span class="token keyword">int</span> <span class="token operator">*</span>a<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">,</span> <span class="token keyword">int</span> key<span class="token punctuation">)</span>
@@ -766,8 +775,8 @@ low <span class="token operator">=</span> <span class="token number">1</span><sp
 </ol>
 </li>
 <li><p>示意图如下：</p>
-<p><img src="/p/0513search/009.png" alt></p>
-<p><img src="/p/0513search/010.png" alt></p>
+<p><img src="/p/87f3f6a9/009.png" alt></p>
+<p><img src="/p/87f3f6a9/010.png" alt></p>
 </li>
 </ol>
 <h4 id="3-1-3-插入"><a href="#3-1-3-插入" class="headerlink" title="3.1.3 插入"></a>3.1.3 插入</h4><p>插入的流程有以下几个步骤</p>
@@ -860,15 +869,15 @@ low <span class="token operator">=</span> <span class="token number">1</span><sp
 <li>找到目标结点 $8$，标记为 p</li>
 <li>将p 赋值给临时变量 q，再将其左子树赋值给临时变量 s</li>
 </ul>
-<p><img src="/p/0513search/011.png" alt></p>
+<p><img src="/p/87f3f6a9/011.png" alt></p>
 <ul>
 <li>循环找到左子树的右结点，知道右侧尽头，得到结点$7$，将临时变量<code>s</code>指向该结点</li>
 </ul>
-<p><img src="/p/0513search/012.png" alt></p>
+<p><img src="/p/87f3f6a9/012.png" alt></p>
 <ul>
 <li>将删除结点的数值赋值为 临时变量 s-&gt; data，即 <code>p-&gt;data = s-&gt;data</code>。</li>
 </ul>
-<p><img src="/p/0513search/013.png" alt></p>
+<p><img src="/p/87f3f6a9/013.png" alt></p>
 <ul>
 <li>最后一步，将目标结点7 进行<strong>释放</strong>，至此，删除完成。</li>
 </ul>
@@ -876,24 +885,24 @@ low <span class="token operator">=</span> <span class="token number">1</span><sp
 <ul>
 <li>这里的步骤和上文一样，赋值临时变量p，s</li>
 </ul>
-<p><img src="/p/0513search/014.png" alt></p>
+<p><img src="/p/87f3f6a9/014.png" alt></p>
 <ul>
 <li>找到目标结点6，将临时变量s 指向6</li>
 </ul>
-<p><img src="/p/0513search/015.png" alt></p>
+<p><img src="/p/87f3f6a9/015.png" alt></p>
 <ul>
 <li>将删除结点的数值赋值为 临时变量 s-&gt; data，即 <code>p-&gt;data = s-&gt;data</code>。此时相当于结点6 被删除，它的子结点需要妥善处理。</li>
 </ul>
-<p><img src="/p/0513search/016.png" alt></p>
+<p><img src="/p/87f3f6a9/016.png" alt></p>
 <ul>
 <li><p>此时如果 p 和 q 指向不相同，则将 6 的子树交给 它的父结点。</p>
 <p>即 <code>q-&gt;rChild = s-&gt;lChild</code>。这样节点6 留下的左结点被链接进入树了。</p>
 </li>
 </ul>
-<p><img src="/p/0513search/017.png" alt></p>
+<p><img src="/p/87f3f6a9/017.png" alt></p>
 <ul>
 <li><p>最后一步，free 掉删除的目标结点</p>
-<p><img src="/p/0513search/017.png" alt></p>
+<p><img src="/p/87f3f6a9/017.png" alt></p>
 </li>
 </ul>
 <h4 id="3-2-5-总结"><a href="#3-2-5-总结" class="headerlink" title="3.2.5 总结"></a>3.2.5 总结</h4><p>二叉排序树是以连接的方式存储，保持了链式存储结构在执行插入和删除操作时不用移动元素的优点，只要找到合适的插入和删除位置后，仅需修改链接指针即可。</p>
@@ -922,7 +931,7 @@ low <span class="token operator">=</span> <span class="token number">1</span><sp
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/p/0.html">http://nilsli.com/p/0.html</a>
+                    <a href="http://nilsli.com/p/87f3f6a9.html">http://nilsli.com/p/87f3f6a9.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -959,7 +968,23 @@ low <span class="token operator">=</span> <span class="token number">1</span><sp
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/二分法/">
+                                    <span class="chip bg-color">二分法</span>
+                                </a>
+                            
+                                <a href="/tags/斐波那契/">
+                                    <span class="chip bg-color">斐波那契</span>
+                                </a>
+                            
+                                <a href="/tags/插值/">
+                                    <span class="chip bg-color">插值</span>
+                                </a>
+                            
+                                <a href="/tags/二叉搜索树/">
+                                    <span class="chip bg-color">二叉搜索树</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -1154,26 +1179,22 @@ low <span class="token operator">=</span> <span class="token number">1</span><sp
                 <i class="far fa-dot-circle"></i>&nbsp;本篇
             </div>
             <div class="card">
-                <a href="/p/0.html">
+                <a href="/p/87f3f6a9.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/0.jpg" class="responsive-img" alt="">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/11.jpg" class="responsive-img" alt="【数据结构与算法】关于查找的常见算法">
                         
-                        <span class="card-title"></span>
+                        <span class="card-title">【数据结构与算法】关于查找的常见算法</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            title: 【数据结构与算法】关于查找的常见算法tags:
+                            一、概论1.1 基本概念查找（searching）就是根据给定的某个值，在查找表中确定一个其关键字等于给定制的数据元素（或记录）。
+查找表（search table）是由同一类型的数据元素（或记录）构成的组合。例如下图：
 
-二分法
-斐波那契
-插值
-二叉搜索树abbrlink: 87f3f6a9date: 2020-05-13 23:03:56top:cover:mathjax: true
-
-一、概
+关键字（key）
                         
                     </div>
                     <div class="publish-info">
@@ -1189,6 +1210,26 @@ low <span class="token operator">=</span> <span class="token number">1</span><sp
                     </div>
                 </div>
 
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/二分法/">
+                        <span class="chip bg-color">二分法</span>
+                    </a>
+                    
+                    <a href="/tags/斐波那契/">
+                        <span class="chip bg-color">斐波那契</span>
+                    </a>
+                    
+                    <a href="/tags/插值/">
+                        <span class="chip bg-color">插值</span>
+                    </a>
+                    
+                    <a href="/tags/二叉搜索树/">
+                        <span class="chip bg-color">二叉搜索树</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
@@ -1375,6 +1416,13 @@ code[class*="language-"], pre[class*="language-"] { white-space: pre !important;
 
 </main>
 
+
+<script src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$', '$'], ['\(', '\)']]}
+    });
+</script>
 
 
     <footer class="page-footer bg-color">
