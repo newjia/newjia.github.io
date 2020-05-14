@@ -404,14 +404,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    1.6k
+                    3.1k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    6 分
+                    12 分
                 </div>
                 
 
@@ -488,7 +488,7 @@
 <li>若给定值大于中间记录的关键字中，则在中间记录的右半区继续查找。</li>
 </ul>
 <p>不断重复上述过程直到查找成功，或所有查找区域无记录，查找失败位置。</p>
-<p>举例：现在有个数组<code>{6,12,18,25,31,37,43,50,56,62,68,75,82,88,96}</code>，查找其中 <code>88</code> 的序号</p>
+<p>举例：现在有个数组 $&lt;!–￼0–&gt;$，查找其中 $88$ 的序号</p>
 <p>代码实现如下：</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token comment" spellcheck="true">// 折半查找</span>
 <span class="token keyword">int</span> <span class="token function">Binary_Search</span><span class="token punctuation">(</span><span class="token keyword">int</span> <span class="token operator">*</span>a<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">,</span> <span class="token keyword">int</span> key<span class="token punctuation">)</span>
@@ -514,32 +514,12 @@
 <p>查找代码中求 <code>mid</code>的计算公式可以改进为：</p>
 <p>$$<br>mid = \frac{low+high}{2} = low + \frac{1}{2} (high - low)<br>$$<br>也就是 mid等于最下标 <code>low</code> 加上 最高下标 <code>high</code> 与<code>low</code> 的差值的<strong>一半</strong>。</p>
 <p>考虑将这个<strong>一半</strong>改进为以下方案：<br>$$<br>mid = low + \frac{ key - a [low]}{ a[high] - a[low]}(high - low)<br>$$<br><strong>改进的好处：</strong>可以大大减少查找的次数。</p>
-<p>比如数组 <strong>{6,12,18,25,31,37,43,50,56,62,68,75,82,88,96}</strong>，查找18 ，需要查找4步才可以找到</p>
+<p>比如数组 $&lt;!–￼1–&gt;$，查找<strong>18</strong> ，按照<strong>折半查找</strong>需要查找4步才可以找到</p>
 <p>使用新公示，需要  $\frac{ key - a [low]}{a[high] - a[low]}$ = $ \frac{(18 - 12)}{(96 - 12)} \approx 0.071$，那么此时 $mid\approx 1 + 0.071\times (15-1) = 1.994$，取整后，只需要查询2次即可，大大提升了效率。</p>
 <p>这样的到了另一种有虚表查找算法，插值查找法。</p>
-<h4 id="2-3-2-核心概念"><a href="#2-3-2-核心概念" class="headerlink" title="2.3.2 核心概念"></a>2.3.2 核心概念</h4><p><strong>插值查找法(Interpolation Search)</strong> 是根据要查找的关键字<code>key</code> 与查找表中最大最小记录的关键字比较后的查找方法，其核心就在于插值公示:<br>$$<br>\frac{key - a[low]}{a[high] - a[low]}<br>$$<br><strong>缺点：</strong>不适合数字差距不均匀的数组。如{0, 1, 2, 1000, 30000} </p>
-<h4 id="2-3-2-算法实现"><a href="#2-3-2-算法实现" class="headerlink" title="2.3.2 算法实现"></a>2.3.2 算法实现</h4><p>由上可知，只需要改进一行代码</p>
-<pre class="line-numbers language-c"><code class="language-c">  <span class="token comment" spellcheck="true">// 插值查找</span>
-<span class="token keyword">int</span> <span class="token function">Binary_Search</span><span class="token punctuation">(</span><span class="token keyword">int</span> <span class="token operator">*</span>a<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">,</span> <span class="token keyword">int</span> key<span class="token punctuation">)</span>
-<span class="token punctuation">{</span>
-    <span class="token keyword">int</span> low<span class="token punctuation">,</span> high<span class="token punctuation">,</span> mid<span class="token punctuation">;</span>
-    low <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
-    high <span class="token operator">=</span> n<span class="token punctuation">;</span>
-    <span class="token keyword">while</span> <span class="token punctuation">(</span>low <span class="token operator">&lt;=</span> high<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token comment" spellcheck="true">//  插值公示</span>
-        mid <span class="token operator">=</span> low <span class="token operator">+</span> <span class="token punctuation">(</span>high <span class="token operator">-</span> low<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token punctuation">(</span>key <span class="token operator">-</span> a<span class="token punctuation">[</span>low<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token punctuation">(</span>a<span class="token punctuation">[</span>high<span class="token punctuation">]</span> <span class="token operator">-</span> a<span class="token punctuation">[</span>low<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>key <span class="token operator">&lt;</span> a<span class="token punctuation">[</span>mid<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            high <span class="token operator">=</span> mid <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>key <span class="token operator">></span> a<span class="token punctuation">[</span>mid<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
-            low <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
-            <span class="token keyword">return</span> mid<span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h3 id="2-2-斐波那契查找"><a href="#2-2-斐波那契查找" class="headerlink" title="2.2 斐波那契查找"></a>2.2 斐波那契查找</h3><p><strong>斐波那契查找（Fibonacci Search）</strong>，利用了黄金分割来实现。</p>
-<p>先定义一个斐波那契数列</p>
+<h4 id="2-3-2-核心概念"><a href="#2-3-2-核心概念" class="headerlink" title="2.3.2 核心概念"></a>2.3.2 核心概念</h4><p><strong>插值查找法(Interpolation Search)</strong> 是根据要查找的关键字<code>key</code> 与查找表中最大最小记录的关键字比较后的查找方法，其核心就在于插值公示:<br>$$<br>\frac{key - a[low]}{a[high] - a[low]}<br>$$<br><strong>缺点：</strong>不适合数字差距不均匀的数组。如 $&lt;!–￼2–&gt;$，此时  $n = 10$，需要查找的键为 $key = 99$</p>
+<ul>
+<li><p>先定义一个斐波那契数列 <code>F[n]</code> </p>
 <table>
 <thead>
 <tr>
@@ -570,7 +550,120 @@
 <td>34</td>
 </tr>
 </tbody></table>
-<h4 id="2-2-1-算法实现"><a href="#2-2-1-算法实现" class="headerlink" title="2.2.1 算法实现"></a>2.2.1 算法实现</h4><p>先看看代码</p>
+<p>  它原理之前有学习过，实现原理是<strong>递归原理</strong>，代码实现如下：</p>
+<pre class="line-numbers language-c"><code class="language-c">      F<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+      F<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+      <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">100</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          F<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> F<span class="token punctuation">[</span>i <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token operator">+</span> F<span class="token punctuation">[</span>i <span class="token operator">-</span> <span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>定义变量和下表</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> low<span class="token punctuation">,</span> high<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> i<span class="token punctuation">,</span> k<span class="token punctuation">;</span>
+low <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> high <span class="token operator">=</span> n<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>其中 <code>low</code> 、<code>high</code>分别为数组最低下标，默认 high为最大</p>
+<p><img src="/p/87f3f6a9/004.png" alt></p>
+</li>
+<li><p>计算 n 位于斐波那契数列的位置</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">while</span> <span class="token punctuation">(</span>n <span class="token operator">></span> F<span class="token punctuation">[</span>k<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token number">1</span>
+    k<span class="token operator">++</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>由于上文给出的数组长度$n = 10$，得出 $F[6] &lt; n &lt; F[7]$， 所以此时 $k = 7$，在队列中如图示</p>
+<p><img src="/p/87f3f6a9/003.png" alt></p>
+</li>
+</ul>
+<ul>
+<li><p>将不满的数值补全，用<code>a[n]</code>，<strong>为什么</strong>补齐？</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> n<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> F<span class="token punctuation">[</span>k<span class="token punctuation">]</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        a<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> a<span class="token punctuation">[</span>n<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>开始查找：</p>
+<ol>
+<li><p>设定初始条件 $low &lt;= high$，假设查找 n = 10，需要查找key = 59</p>
+</li>
+<li><p>计算当前分割下标，$mid = low + F[k - 1] -1$， 此时$mid = 1 + F[7-1] -1 =8$</p>
+</li>
+<li><p>判断，若 $key &lt; a[mid]$ ，即如果查找记录小于当前分割记录</p>
+<ul>
+<li><p>最高下标调整到分隔下标的 $mid -1$ 处</p>
+<pre class="line-numbers language-c"><code class="language-c">high <span class="token operator">=</span> mid <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>斐波那契数列下标减$1$位</p>
+<pre class="line-numbers language-c"><code class="language-c">k<span class="token operator">--</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ul>
+<p>这一步中 key 为59， a[mid] 及a[8] 为73，所以$key&lt;a[mid]$，需要进行调整， 如下图所示</p>
+<p><img src="/p/87f3f6a9/005.png" alt></p>
+<p>此时各项<strong>参数结果</strong>为：$k = 6, low = 1, mid = 8, high = 7$</p>
+</li>
+<li><p>继续循环查找。</p>
+<ol>
+<li>计算当前分隔的下标：$mid = F[6-1] - 1 = 5$ 。</li>
+<li>继续判断 key 与 a[mid]，此时 $a[5] = 47 &lt; key$，</li>
+<li>执行两个步骤：</li>
+</ol>
+<ul>
+<li><p>最低下标调整到分割下标 $mid + 1$ 处</p>
+<pre class="line-numbers language-c"><code class="language-c">low <span class="token operator">=</span> mid <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>斐波那契数列下标减2位</p>
+<pre class="line-numbers language-c"><code class="language-c">k <span class="token operator">=</span> k <span class="token operator">-</span> <span class="token number">2</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ul>
+<p>实现示意图如下：<img src="/p/87f3f6a9/006.png" alt></p>
+<p>此时各项<strong>参数结果</strong>为：$k = 4, low = 6, mid = 5, high = 7$</p>
+</li>
+<li><p>再次循环。</p>
+<ol>
+<li>计算当前分隔的下标：$mid = 6 + F[4-1] -1 = 7$。</li>
+<li>继续判断 key 与 a[mid] 的大小，此时 $a[7] = 62 &gt; key$，因此执行第三步的策略。</li>
+<li>重复一下如下：</li>
+</ol>
+<ul>
+<li><p>最高下标调整到分隔下标的 $mid -1$ 处</p>
+<pre class="line-numbers language-c"><code class="language-c">high <span class="token operator">=</span> mid <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>斐波那契数列下标减$1$位</p>
+<pre class="line-numbers language-c"><code class="language-c">k<span class="token operator">--</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ul>
+<p>实现示意图如下：</p>
+<p><img src="/p/87f3f6a9/007.png" alt></p>
+<p>此时各项<strong>参数结果</strong>为：$k = 3, low = 6, mid = 5, high = 6$</p>
+</li>
+<li><p>再次循环。</p>
+<ol>
+<li><p>计算当前分隔的下标：$mid = 6 + F[3-1] =1 = 6$</p>
+</li>
+<li><p>判断 key 与 a[mid] ，此时 a[6] = 59 = key 。说明查找到，进行返回数组下标，返回值为 $6$</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">if</span><span class="token punctuation">(</span>mid <span class="token operator">&lt;</span> n<span class="token punctuation">)</span>
+    <span class="token keyword">return</span> mid<span class="token punctuation">;</span>
+<span class="token keyword">else</span>
+    <span class="token keyword">return</span> n<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>回答为什么补齐$a[n]$</p>
+<p>在循环查找的过程中，如果查找的$key=99$，</p>
+<p>那么第一次查找时， </p>
+<ul>
+<li>$mid = 8$；</li>
+<li>$low = mid + 1 = 9$</li>
+<li>$k = k - 2 = 7 - 2 = 5$</li>
+</ul>
+<p>第二次循环时，此时改变分隔mid 下标的值，$mid =low + F[k - 1] - 1 = 9 + 3 - 1 = 11$， 而此时a[mid] 为a[11] ，数组a 中的11位时没有值，会导致下一步与 key 的比较失败，为了避免情况发生，对上文中将不满的数值补全，用 <code>a[i] = a[n]</code>。</p>
+</li>
+</ul>
+<h4 id="2-2-2-斐波那契算法核心"><a href="#2-2-2-斐波那契算法核心" class="headerlink" title="2.2.2 斐波那契算法核心"></a>2.2.2 斐波那契算法核心</h4><p>根据上文的查找流程，总结一下算法核心</p>
+<ol>
+<li>当 $key = a[mid]$ 时，查找成功</li>
+<li>当 $key &lt; a[mid]$ 时，新范围是第 low 个到第 mid -1 个，此时范围个数为 F[k - 1] - 1  个 </li>
+<li>当 $key &gt; a[mid]$ 时，新范围是第 m+1 个到第 high 个，此时范围个数为 F[k-2] -1 个</li>
+</ol>
+<p>示意图如下：</p>
+<p><img src="/p/87f3f6a9/008.png" alt></p>
+<h4 id="2-2-2-算法实现"><a href="#2-2-2-算法实现" class="headerlink" title="2.2.2 算法实现"></a>2.2.2 算法实现</h4><p>先看看代码</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> F<span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token keyword">int</span> <span class="token function">Fibonnaci_Search</span><span class="token punctuation">(</span><span class="token keyword">int</span> <span class="token operator">*</span>a<span class="token punctuation">,</span> <span class="token keyword">int</span> n<span class="token punctuation">,</span> <span class="token keyword">int</span> key<span class="token punctuation">)</span>
 <span class="token punctuation">{</span>
@@ -606,7 +699,150 @@
     <span class="token punctuation">}</span>
     <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="三、动态查找"><a href="#三、动态查找" class="headerlink" title="三、动态查找"></a>三、动态查找</h2><h3 id="3-1-二叉排序树"><a href="#3-1-二叉排序树" class="headerlink" title="3.1 二叉排序树"></a>3.1 二叉排序树</h3><h4 id="3-1-1-定义"><a href="#3-1-1-定义" class="headerlink" title="3.1.1 定义"></a>3.1.1 定义</h4><h4 id="3-1-2-查找"><a href="#3-1-2-查找" class="headerlink" title="3.1.2 查找"></a>3.1.2 查找</h4><h4 id="3-1-3-插入"><a href="#3-1-3-插入" class="headerlink" title="3.1.3 插入"></a>3.1.3 插入</h4><h4 id="3-2-4-删除"><a href="#3-2-4-删除" class="headerlink" title="3.2.4 删除"></a>3.2.4 删除</h4>
+<h3 id="2-6-查找效率"><a href="#2-6-查找效率" class="headerlink" title="2.6 查找效率"></a>2.6 查找效率</h3><p>三种查找方式的公式如下，三种方式各有优劣，适合不同场景:</p>
+<ul>
+<li>折半查找: $mid = (low + high) / 2$</li>
+<li>插值查找，适合: $mid = low + \frac{key - a[low]}{a[high] - a[low]} * (high - low)$</li>
+<li>斐波那契查找: $mid = low + F[k - 1] - 1$</li>
+</ul>
+<p>优劣点即使用场景：</p>
+<ul>
+<li>折半查找：适合数据规模较小，执行效率高</li>
+<li>插值查找：适合数据规模较大，比折半查找更高效，但规模较小，以数值递增波动较大时与折半查找区别不大；</li>
+<li>斐波那契：相比插值查找，适合数据递增波动较大的场景。</li>
+</ul>
+<h2 id="三、动态查找"><a href="#三、动态查找" class="headerlink" title="三、动态查找"></a>三、动态查找</h2><h3 id="3-1-二叉排序树"><a href="#3-1-二叉排序树" class="headerlink" title="3.1 二叉排序树"></a>3.1 二叉排序树</h3><h4 id="3-1-1-定义"><a href="#3-1-1-定义" class="headerlink" title="3.1.1 定义"></a>3.1.1 定义</h4><p>二叉排序树（Binary Sort Tree），又称为二叉查找树。它是一种空树，或者具有下列性质的二叉树：</p>
+<ul>
+<li>若它的左子树不空，则右子树上所有结点的值均小于它的根结点的值</li>
+<li>若它的右子树不空，则左子树上所有结点的值均大于它的根结点的值</li>
+<li>它的左、右子树分别为二叉排序树</li>
+</ul>
+<h4 id="3-1-2-查找"><a href="#3-1-2-查找" class="headerlink" title="3.1.2 查找"></a>3.1.2 查找</h4><ol>
+<li><p>二叉树的结构如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> BitNode<span class="token punctuation">{</span>
+    <span class="token keyword">int</span> data<span class="token punctuation">;</span>                                                 <span class="token comment" spellcheck="true">// 数据域</span>
+    <span class="token keyword">struct</span> BitNode <span class="token operator">*</span>lChild<span class="token punctuation">,</span> <span class="token operator">*</span>rChild<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// 指针分别指向左、右子树</span>
+<span class="token punctuation">}</span>BitNode<span class="token punctuation">,</span> <span class="token operator">*</span>BiTree<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>代码实现如下:</p>
+<pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">SearchBST</span><span class="token punctuation">(</span>BiTree T<span class="token punctuation">,</span> <span class="token keyword">int</span> key<span class="token punctuation">,</span> BiTree f<span class="token punctuation">,</span> BiTree <span class="token operator">*</span>p<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>T<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token operator">*</span>p <span class="token operator">=</span> f<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> FALSE<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span> key <span class="token operator">==</span> T<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token operator">*</span>p <span class="token operator">=</span> T<span class="token punctuation">;</span>
+        <span class="token keyword">return</span> SUCCESS<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>key <span class="token operator">&lt;</span> T<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">SearchBST</span><span class="token punctuation">(</span>T<span class="token operator">-></span>lChild<span class="token punctuation">,</span> key<span class="token punctuation">,</span> T<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">SearchBST</span><span class="token punctuation">(</span>T<span class="token operator">-></span>rChild<span class="token punctuation">,</span> key<span class="token punctuation">,</span> T<span class="token punctuation">,</span> p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>分析查找流程:</p>
+<ol>
+<li>判断树的有效性</li>
+<li>指针 f 指向 T 结点的双亲，如果第一次，使用值为 <code>NULL</code></li>
+<li>判断结点数值与 目标值元素结点的数据是否相等<ol>
+<li>结点的值与目标值相等——指针 p 指向元素结点，返回成功</li>
+<li>如果目标值<code>key</code>小于元素结点数据，在左子树上，进行查找函数递归</li>
+<li>如果目标 <code>key</code>大于元素结点数据，在右子树上，进行查找函数递归</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>示意图如下：</p>
+<p><img src="/p/87f3f6a9/009.png" alt></p>
+<p><img src="/p/87f3f6a9/010.png" alt></p>
+</li>
+</ol>
+<h4 id="3-1-3-插入"><a href="#3-1-3-插入" class="headerlink" title="3.1.3 插入"></a>3.1.3 插入</h4><p>插入的流程有以下几个步骤</p>
+<ul>
+<li>先查找目标元素，如果存在，无需插入，返回</li>
+<li>如果不存在，判断 目标值 <code>key</code> 与 指针<code>p</code><ul>
+<li>如果大于，则 插入 s 为左孩子</li>
+<li>如果小于，则插入 s 为右孩子</li>
+</ul>
+</li>
+</ul>
+<p>代码实现如下</p>
+<pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">InsertBST</span><span class="token punctuation">(</span>BiTree <span class="token operator">*</span>T<span class="token punctuation">,</span> <span class="token keyword">int</span> key<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    BiTree p<span class="token punctuation">,</span> s<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">SearchBST</span><span class="token punctuation">(</span><span class="token operator">*</span>T<span class="token punctuation">,</span> key<span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>p<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        s <span class="token operator">=</span> <span class="token punctuation">(</span>BiTree<span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>BiTree<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        s<span class="token operator">-></span>data <span class="token operator">=</span> key<span class="token punctuation">;</span>
+        s<span class="token operator">-></span>lChild <span class="token operator">=</span> s<span class="token operator">-></span>rChild <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>p<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token operator">*</span>T <span class="token operator">=</span> s<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>key <span class="token operator">&lt;</span> p<span class="token operator">-></span>data<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            p<span class="token operator">-></span>lChild <span class="token operator">=</span> s<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            p<span class="token operator">-></span>rChild <span class="token operator">=</span> s<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> SUCCESS<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+        <span class="token keyword">return</span> FALSE<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="3-2-4-删除"><a href="#3-2-4-删除" class="headerlink" title="3.2.4 删除"></a>3.2.4 删除</h4><p>删除结点有三种情况分析:</p>
+<ul>
+<li>叶子结点</li>
+<li>仅有左/右子树的结点</li>
+<li>左右子树都有结点的</li>
+</ul>
+<p>对应的策略如下：</p>
+<ul>
+<li><p>当删除叶子结点：</p>
+<p>无需操作，free 即可</p>
+</li>
+<li><p>当删除仅有左/右子树的结点时：</p>
+<p>将它的原子树移动到它的位置，替代他即可</p>
+</li>
+<li><p>当删除结点左右子树都有结点时：</p>
+<ul>
+<li>找到待删结点的前缀</li>
+<li>重接q 的右子树</li>
+<li>重接q 的左子树</li>
+</ul>
+<p>代码实现如下：</p>
+<pre class="line-numbers language-c"><code class="language-c">Status <span class="token function">DeleteBST</span><span class="token punctuation">(</span>BiTree <span class="token operator">*</span>p<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    BiTree q<span class="token punctuation">,</span>s<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 右子树为空</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token operator">*</span>p<span class="token punctuation">)</span><span class="token operator">-></span>rChild <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        q <span class="token operator">=</span> <span class="token operator">*</span>p<span class="token punctuation">;</span>
+        <span class="token operator">*</span>p <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>p<span class="token punctuation">)</span><span class="token operator">-></span>lChild<span class="token punctuation">;</span>
+        <span class="token function">free</span><span class="token punctuation">(</span>q<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 左子树为空</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token operator">*</span>p<span class="token punctuation">)</span><span class="token operator">-></span>lChild <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+        q <span class="token operator">=</span> <span class="token operator">*</span>p<span class="token punctuation">;</span>
+        <span class="token operator">*</span>p <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>p<span class="token punctuation">)</span><span class="token operator">-></span>rChild<span class="token punctuation">;</span>
+        <span class="token function">free</span><span class="token punctuation">(</span>q<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 左右子树均不为空</span>
+    <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+        q <span class="token operator">=</span> <span class="token operator">*</span>p<span class="token punctuation">;</span>
+        s <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>p<span class="token punctuation">)</span><span class="token operator">-></span>lChild<span class="token punctuation">;</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>s<span class="token operator">-></span>rChild<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            q <span class="token operator">=</span> s<span class="token punctuation">;</span>
+            s <span class="token operator">=</span> s<span class="token operator">-></span>rChild<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">(</span><span class="token operator">*</span>p<span class="token punctuation">)</span><span class="token operator">-></span>data <span class="token operator">=</span> s<span class="token operator">-></span>data<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>q<span class="token operator">!=</span> <span class="token operator">*</span>p<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            q<span class="token operator">-></span>rChild <span class="token operator">=</span> s<span class="token operator">-></span>lChild<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            q<span class="token operator">-></span>lChild <span class="token operator">=</span> s<span class="token operator">-></span>lChild<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">free</span><span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> SUCCESS<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+
             </div>
             <hr/>
 
