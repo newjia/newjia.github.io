@@ -560,24 +560,25 @@
                 DC_FLAG_BARRIER <span class="token operator">|</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
 <p>从<code>unlikely</code>来看，是尝试获取栅栏+同步的实现。内部实现看看：</p>
-<pre><code>_dispatch_sync_f_slow(dispatch_queue_class_t top_dqu, void *ctxt,
-        dispatch_function_t func, uintptr_t top_dc_flags,
-        dispatch_queue_class_t dqu, uintptr_t dc_flags)
-{
-        struct dispatch_sync_context_s dsc = {
-        .dc_flags    = DC_FLAG_SYNC_WAITER | dc_flags,
-        .dc_func     = _dispatch_async_and_wait_invoke,
-        .dc_ctxt     = &amp;dsc,
-        .dc_other    = top_dq,
-        .dc_priority = pp | _PTHREAD_PRIORITY_ENFORCE_FLAG,
-        .dc_voucher  = _voucher_get(),
-        .dsc_func    = func,
-        .dsc_ctxt    = ctxt,
-        .dsc_waiter  = _dispatch_tid_self(),
-    };
-    _dispatch_trace_item_push(top_dq, &amp;dsc);
-    __DISPATCH_WAIT_FOR_QUEUE__(&amp;dsc, dq);
-}</code></pre><ul>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token function">_dispatch_sync_f_slow</span><span class="token punctuation">(</span>dispatch_queue_class_t top_dqu<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>ctxt<span class="token punctuation">,</span>
+        dispatch_function_t func<span class="token punctuation">,</span> uintptr_t top_dc_flags<span class="token punctuation">,</span>
+        dispatch_queue_class_t dqu<span class="token punctuation">,</span> uintptr_t dc_flags<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+        <span class="token keyword">struct</span> dispatch_sync_context_s dsc <span class="token operator">=</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span>dc_flags    <span class="token operator">=</span> DC_FLAG_SYNC_WAITER <span class="token operator">|</span> dc_flags<span class="token punctuation">,</span>
+        <span class="token punctuation">.</span>dc_func     <span class="token operator">=</span> _dispatch_async_and_wait_invoke<span class="token punctuation">,</span>
+        <span class="token punctuation">.</span>dc_ctxt     <span class="token operator">=</span> <span class="token operator">&amp;</span>dsc<span class="token punctuation">,</span>
+        <span class="token punctuation">.</span>dc_other    <span class="token operator">=</span> top_dq<span class="token punctuation">,</span>
+        <span class="token punctuation">.</span>dc_priority <span class="token operator">=</span> pp <span class="token operator">|</span> _PTHREAD_PRIORITY_ENFORCE_FLAG<span class="token punctuation">,</span>
+        <span class="token punctuation">.</span>dc_voucher  <span class="token operator">=</span> <span class="token function">_voucher_get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">.</span>dsc_func    <span class="token operator">=</span> func<span class="token punctuation">,</span>
+        <span class="token punctuation">.</span>dsc_ctxt    <span class="token operator">=</span> ctxt<span class="token punctuation">,</span>
+        <span class="token punctuation">.</span>dsc_waiter  <span class="token operator">=</span> <span class="token function">_dispatch_tid_self</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token function">_dispatch_trace_item_push</span><span class="token punctuation">(</span>top_dq<span class="token punctuation">,</span> <span class="token operator">&amp;</span>dsc<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">__DISPATCH_WAIT_FOR_QUEUE__</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>dsc<span class="token punctuation">,</span> dq<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
 <li><p>队列里面，将结构体类型的<strong>上下文</strong>进行压栈。</p>
 </li>
 <li><p>接下来是重点，接下来有个<code>__DISPATCH_WAIT_FOR_QUEUE__</code> 的宏，看看实现如下：</p>
