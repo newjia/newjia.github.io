@@ -1,101 +1,433 @@
-<!DOCTYPE html>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="utf-8">
-  
+<!DOCTYPE HTML>
+<html lang="zh-CN">
 
-  
-  <title>【数据结构与算法】-（6）栈 | 李佳的技术博客</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="【数据结构与算法】-（1）基础篇  【数据结构与算法】-（2）线性表基础  【数据结构与算法】-（3）循环链表（单向）  【数据结构与算法】-（4）双向链表和双向循环链表  【数据结构与算法】-（5）链表面试题解析  【数据结构与算法】-（6）栈  【数据结构与算法】-（7）队列  1. 概念1.1 定义 栈 (stack) 是限定仅在表尾进行插入和删除操作的线性表   栈的插入操作（push">
-<meta name="keywords" content="数据结构,算法,栈,队列">
-<meta property="og:type" content="article">
-<meta property="og:title" content="【数据结构与算法】-（6）栈">
-<meta property="og:url" content="http://nilsli.com/p/7914b7d0.html">
-<meta property="og:site_name" content="李佳的技术博客">
-<meta property="og:description" content="【数据结构与算法】-（1）基础篇  【数据结构与算法】-（2）线性表基础  【数据结构与算法】-（3）循环链表（单向）  【数据结构与算法】-（4）双向链表和双向循环链表  【数据结构与算法】-（5）链表面试题解析  【数据结构与算法】-（6）栈  【数据结构与算法】-（7）队列  1. 概念1.1 定义 栈 (stack) 是限定仅在表尾进行插入和删除操作的线性表   栈的插入操作（push">
-<meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://nilsli.com/p/7914b7d0/001.png">
-<meta property="og:image" content="http://nilsli.com/p/7914b7d0/002.png">
-<meta property="og:image" content="http://nilsli.com/p/7914b7d0/003.png">
-<meta property="og:image" content="http://nilsli.com/p/7914b7d0/004.png">
-<meta property="og:updated_time" content="2020-04-26T15:33:52.610Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="【数据结构与算法】-（6）栈">
-<meta name="twitter:description" content="【数据结构与算法】-（1）基础篇  【数据结构与算法】-（2）线性表基础  【数据结构与算法】-（3）循环链表（单向）  【数据结构与算法】-（4）双向链表和双向循环链表  【数据结构与算法】-（5）链表面试题解析  【数据结构与算法】-（6）栈  【数据结构与算法】-（7）队列  1. 概念1.1 定义 栈 (stack) 是限定仅在表尾进行插入和删除操作的线性表   栈的插入操作（push">
-<meta name="twitter:image" content="http://nilsli.com/p/7914b7d0/001.png">
-  
-    <link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
-  
-  
-    <link rel="icon" href="/favicon.png">
-  
-  
-  <link rel="stylesheet" href="/css/style.css">
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="【数据结构与算法】-（6）栈, 李佳的技术博客">
+    <meta name="description" content>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【数据结构与算法】-（6）栈 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+
+    <script src="/libs/jquery/jquery.min.js"></script>
+    
+<link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
 <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
-</html>
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">李佳的技术博客</a>
-      </h1>
-      
-        <h2 id="subtitle-wrap">
-          <a href="/" id="subtitle">「疾如風，徐如林，侵掠如火，不動如山」</a>
-        </h2>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://nilsli.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-      <div class="outer">
-        <section id="main"><article id="post-0411stackNqueue" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/p/7914b7d0.html" class="article-date">
-  <time datetime="2020-04-11T13:37:54.000Z" itemprop="datePublished">2020-04-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      【数据结构与算法】-（6）栈
-    </h1>
-  
 
-      </header>
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
     
-    <div class="article-entry" itemprop="articleBody">
+    <a href="/" class="waves-effect waves-light">
       
-        <blockquote>
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/2.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【数据结构与算法】-（6）栈</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/算法/">
+                                <span class="chip bg-color">算法</span>
+                            </a>
+                        
+                            <a href="/tags/数据结构/">
+                                <span class="chip bg-color">数据结构</span>
+                            </a>
+                        
+                            <a href="/tags/栈/">
+                                <span class="chip bg-color">栈</span>
+                            </a>
+                        
+                            <a href="/tags/队列/">
+                                <span class="chip bg-color">队列</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-04-11
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.5k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    6 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
 <p> <a href="https://nilsli.com/p/43384.html">【数据结构与算法】-（1）基础篇</a></p>
 <p> <a href="https://nilsli.com/p/43366.html">【数据结构与算法】-（2）线性表基础</a></p>
 <p> <a href="https://nilsli.com/p/54688.html">【数据结构与算法】-（3）循环链表（单向）</a></p>
@@ -320,147 +652,693 @@
 <p>这样的结构，其实也是递归的应用，这种应用叫做递归工作站，其结构示意图如下:</p>
 <p><img src="/p/7914b7d0/004.png" alt="递归过程与工作栈"></p>
 
-      
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/7914b7d0.html">http://nilsli.com/p/7914b7d0.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
     </div>
-    <footer class="article-footer">
-      <a data-url="http://nilsli.com/p/7914b7d0.html" data-id="ckagb7kr10002d4rj5tx4uzut" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/栈/">栈</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/队列/">队列</a></li></ul>
 
-    </footer>
-  </div>
-  
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/算法/">
+                                    <span class="chip bg-color">算法</span>
+                                </a>
+                            
+                                <a href="/tags/数据结构/">
+                                    <span class="chip bg-color">数据结构</span>
+                                </a>
+                            
+                                <a href="/tags/栈/">
+                                    <span class="chip bg-color">栈</span>
+                                </a>
+                            
+                                <a href="/tags/队列/">
+                                    <span class="chip bg-color">队列</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
     
-<nav id="article-nav">
-  
-    <a href="/p/c0a767bd.html" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          【数据结构与算法】-（7）队列
-        
-      </div>
-    </a>
-  
-  
-    <a href="/p/50518edc.html" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">【数据结构与算法】-（5）链表面试题解析</div>
-    </a>
-  
-</nav>
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="/libs/share/js/social-share.min.js"></script>
+    
 
-  
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-04-11T21-37-54',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/c0a767bd.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/9.jpg" class="responsive-img" alt="【数据结构与算法】-（7）队列">
+                        
+                        <span class="card-title">【数据结构与算法】-（7）队列</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            队列 (queue) 是只允许在一端进行插入操作、而在另一端进行删除操作的线性表
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-14
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/算法/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/数据结构/">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                    <a href="/tags/队列/">
+                        <span class="chip bg-color">队列</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/50518edc.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/19.jpg" class="responsive-img" alt="【数据结构与算法】-（5）链表面试题解析">
+                        
+                        <span class="card-title">【数据结构与算法】-（5）链表面试题解析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+ 【数据结构与算法】-（1）基础篇
+ 【数据结构与算法】-（2）线性表基础
+ 【数据结构与算法】-（3）循环链表（单向）
+ 【数据结构与算法】-（4）双向链表和双向循环链表
+ 【数据结构与算法】-（5）链表面试题解析
+ 【数据结构与算法】
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-09
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/算法/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/线性表/">
+                        <span class="chip bg-color">线性表</span>
+                    </a>
+                    
+                    <a href="/tags/链表/">
+                        <span class="chip bg-color">链表</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
 </article>
 
-</section>
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
         
-          <aside id="sidebar">
-  
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">分类</h3>
-    <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ios/">ios</a></li></ul>
-    </div>
-  </div>
+
+</main>
 
 
-  
+
+    <footer class="page-footer bg-color">
     
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签</h3>
-    <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/2020/">2020</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AVL/">AVL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apple/">Apple</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BF/">BF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Class/">Class</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flutter/">Flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GCD/">GCD</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IT/">IT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP/">KMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVC/">KVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVO/">KVO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NASA/">NASA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RK/">RK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDWebImage/">SDWebImage</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SaaS/">SaaS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alloc/">alloc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/appstore/">appstore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cache-t/">cache_t</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dyld/">dyld</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hyper/">hyper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ios/">ios</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/load/">load</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msgSend/">msgSend</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/objc/">objc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/runtime/">runtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swift/">swift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/universallink/">universallink</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/上架/">上架</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/下架/">下架</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二分法/">二分法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉搜索树/">二叉搜索树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉树/">二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/产品/">产品</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/产品经理/">产品经理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/人生哲理/">人生哲理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/休闲/">休闲</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存/">内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创业/">创业</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/加载/">加载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/卫星/">卫星</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原生/">原生</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/去重/">去重</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动优化/">启动优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图/">图</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/基础/">基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大前端，跨栈/">大前端，跨栈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/太空/">太空</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符串查找/">字符串查找</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符查找/">字符查找</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/对齐/">对齐</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/小问题/">小问题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/平衡二叉树/">平衡二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/底层/">底层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/底层，源码，懒加载，分类/">底层，源码，懒加载，分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/循环/">循环</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/微信/">微信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/感想/">感想</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/成员变量/">成员变量</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拓扑/">拓扑</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/插值/">插值</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/斐波那契/">斐波那契</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杭州/">杭州</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/栈/">栈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/树/">树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息转发/">消息转发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/混合交互/">混合交互</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/理论/">理论</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/科技/">科技</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/类/">类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线性表/">线性表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/结构/">结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/苹果商店/">苹果商店</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/西湖/">西湖</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/调优/">调优</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程/">进程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进阶/">进阶</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/链表/">链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/锁/">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/队列/">队列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/项目/">项目</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/项目经理/">项目经理</a></li></ul>
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
     </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">标签云</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/2020/" style="font-size: 11.43px;">2020</a> <a href="/tags/AVL/" style="font-size: 10px;">AVL</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BF/" style="font-size: 10px;">BF</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/Flutter/" style="font-size: 10px;">Flutter</a> <a href="/tags/GCD/" style="font-size: 11.43px;">GCD</a> <a href="/tags/IT/" style="font-size: 10px;">IT</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/KVC/" style="font-size: 10px;">KVC</a> <a href="/tags/KVO/" style="font-size: 11.43px;">KVO</a> <a href="/tags/NASA/" style="font-size: 10px;">NASA</a> <a href="/tags/RK/" style="font-size: 10px;">RK</a> <a href="/tags/SDWebImage/" style="font-size: 10px;">SDWebImage</a> <a href="/tags/SaaS/" style="font-size: 10px;">SaaS</a> <a href="/tags/alloc/" style="font-size: 10px;">alloc</a> <a href="/tags/appstore/" style="font-size: 10px;">appstore</a> <a href="/tags/cache-t/" style="font-size: 10px;">cache_t</a> <a href="/tags/dyld/" style="font-size: 10px;">dyld</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hyper/" style="font-size: 10px;">hyper</a> <a href="/tags/iOS/" style="font-size: 15.71px;">iOS</a> <a href="/tags/ios/" style="font-size: 18.57px;">ios</a> <a href="/tags/load/" style="font-size: 10px;">load</a> <a href="/tags/msgSend/" style="font-size: 10px;">msgSend</a> <a href="/tags/objc/" style="font-size: 12.86px;">objc</a> <a href="/tags/runtime/" style="font-size: 11.43px;">runtime</a> <a href="/tags/swift/" style="font-size: 10px;">swift</a> <a href="/tags/universallink/" style="font-size: 10px;">universallink</a> <a href="/tags/上架/" style="font-size: 10px;">上架</a> <a href="/tags/下架/" style="font-size: 10px;">下架</a> <a href="/tags/二分法/" style="font-size: 10px;">二分法</a> <a href="/tags/二叉搜索树/" style="font-size: 10px;">二叉搜索树</a> <a href="/tags/二叉树/" style="font-size: 10px;">二叉树</a> <a href="/tags/产品/" style="font-size: 10px;">产品</a> <a href="/tags/产品经理/" style="font-size: 10px;">产品经理</a> <a href="/tags/人生哲理/" style="font-size: 10px;">人生哲理</a> <a href="/tags/休闲/" style="font-size: 11.43px;">休闲</a> <a href="/tags/内存/" style="font-size: 11.43px;">内存</a> <a href="/tags/创业/" style="font-size: 10px;">创业</a> <a href="/tags/加载/" style="font-size: 10px;">加载</a> <a href="/tags/卫星/" style="font-size: 10px;">卫星</a> <a href="/tags/原生/" style="font-size: 10px;">原生</a> <a href="/tags/去重/" style="font-size: 10px;">去重</a> <a href="/tags/启动优化/" style="font-size: 10px;">启动优化</a> <a href="/tags/图/" style="font-size: 10px;">图</a> <a href="/tags/基础/" style="font-size: 11.43px;">基础</a> <a href="/tags/多线程/" style="font-size: 12.86px;">多线程</a> <a href="/tags/大前端，跨栈/" style="font-size: 10px;">大前端，跨栈</a> <a href="/tags/太空/" style="font-size: 10px;">太空</a> <a href="/tags/字符串查找/" style="font-size: 10px;">字符串查找</a> <a href="/tags/字符查找/" style="font-size: 10px;">字符查找</a> <a href="/tags/对齐/" style="font-size: 11.43px;">对齐</a> <a href="/tags/小问题/" style="font-size: 10px;">小问题</a> <a href="/tags/平衡二叉树/" style="font-size: 10px;">平衡二叉树</a> <a href="/tags/底层/" style="font-size: 20px;">底层</a> <a href="/tags/底层，源码，懒加载，分类/" style="font-size: 10px;">底层，源码，懒加载，分类</a> <a href="/tags/开发/" style="font-size: 10px;">开发</a> <a href="/tags/循环/" style="font-size: 11.43px;">循环</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/感想/" style="font-size: 10px;">感想</a> <a href="/tags/成员变量/" style="font-size: 10px;">成员变量</a> <a href="/tags/拓扑/" style="font-size: 10px;">拓扑</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/数据结构/" style="font-size: 14.29px;">数据结构</a> <a href="/tags/斐波那契/" style="font-size: 10px;">斐波那契</a> <a href="/tags/杭州/" style="font-size: 10px;">杭州</a> <a href="/tags/栈/" style="font-size: 10px;">栈</a> <a href="/tags/树/" style="font-size: 10px;">树</a> <a href="/tags/消息转发/" style="font-size: 10px;">消息转发</a> <a href="/tags/混合交互/" style="font-size: 10px;">混合交互</a> <a href="/tags/源码/" style="font-size: 18.57px;">源码</a> <a href="/tags/理论/" style="font-size: 11.43px;">理论</a> <a href="/tags/科技/" style="font-size: 10px;">科技</a> <a href="/tags/算法/" style="font-size: 17.14px;">算法</a> <a href="/tags/类/" style="font-size: 15.71px;">类</a> <a href="/tags/线性表/" style="font-size: 11.43px;">线性表</a> <a href="/tags/线程/" style="font-size: 11.43px;">线程</a> <a href="/tags/结构/" style="font-size: 14.29px;">结构</a> <a href="/tags/苹果商店/" style="font-size: 10px;">苹果商店</a> <a href="/tags/西湖/" style="font-size: 10px;">西湖</a> <a href="/tags/调优/" style="font-size: 10px;">调优</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/进阶/" style="font-size: 10px;">进阶</a> <a href="/tags/链表/" style="font-size: 12.86px;">链表</a> <a href="/tags/锁/" style="font-size: 10px;">锁</a> <a href="/tags/队列/" style="font-size: 11.43px;">队列</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a> <a href="/tags/项目/" style="font-size: 10px;">项目</a> <a href="/tags/项目经理/" style="font-size: 10px;">项目经理</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">归档</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">最新文章</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/p/d4ce128d.html">【数据结构与算法】查找算法（二）平衡二叉树</a>
-          </li>
-        
-          <li>
-            <a href="/p/87f3f6a9.html">【数据结构与算法】查找算法（一）</a>
-          </li>
-        
-          <li>
-            <a href="/p/96e21745.html">【数据结构与算法10】拓扑排序</a>
-          </li>
-        
-          <li>
-            <a href="/p/48b87814.html">锁分析</a>
-          </li>
-        
-          <li>
-            <a href="/p/5abeee19.html">【底层探索】- 多线程三（GCD源码分析）</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      &copy; 2020 李佳<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
 </footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
     </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="/libs/materialize/materialize.min.js"></script>
+    <script src="/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="/libs/aos/aos.js"></script>
+    <script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
     
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    
 
+    
 
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
-  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+    
 
+    
 
-<script src="/js/script.js"></script>
+    
+    
+    
+    <script src="/libs/instantpage/instantpage.js" type="module"></script>
+    
 
-
-
-  </div>
 </body>
+
 </html>
