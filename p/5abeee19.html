@@ -1,0 +1,1302 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="【底层探索】- 多线程三（GCD源码分析）, 李佳的技术博客">
+    <meta name="description" content>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【底层探索】- 多线程三（GCD源码分析） | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/20.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【底层探索】- 多线程三（GCD源码分析）</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/多线程/">
+                                <span class="chip bg-color">多线程</span>
+                            </a>
+                        
+                            <a href="/tags/GCD/">
+                                <span class="chip bg-color">GCD</span>
+                            </a>
+                        
+                            <a href="/tags/源码/">
+                                <span class="chip bg-color">源码</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-05-12
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.4k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    6 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>本篇采用的libdispatch 源码来自<a href="https://opensource.apple.com/tarballs/libdispatch/libdispatch-1173.60.1.tar.gz" target="_blank" rel="noopener">苹果官方文档-libdispatch-1173.60.1</a></p>
+</blockquote>
+<h2 id="〇、序言"><a href="#〇、序言" class="headerlink" title="〇、序言"></a>〇、序言</h2><p>前面两篇文章多线程的概念和应用（<a href="https://nilsli.com/p/e318a7b3.html">【底层探索】- 多线程(一)</a>、<a href="https://nilsli.com/p/bd5c42bb.html">【底层探索】- 多线程三（GCD应用）</a>），再加上平时经常在使用，下面来探索一下源码层面上的实现，加深对多线程的理解。</p>
+<h2 id="一、同步函数-sync-实现"><a href="#一、同步函数-sync-实现" class="headerlink" title="一、同步函数 (sync) 实现"></a>一、同步函数 (sync) 实现</h2><h3 id="1-1-代码展示"><a href="#1-1-代码展示" class="headerlink" title="1.1 代码展示"></a>1.1 代码展示</h3><p>先看看同步函数，实现一个同步函数如下所示:</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token function">dispatch_sync</span><span class="token punctuation">(</span><span class="token function">dispatch_queue_create</span><span class="token punctuation">(</span><span class="token string">"doramon"</span><span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">^</span><span class="token punctuation">{</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"ichi"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>会正常打印结果如下：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">2020-05-19 01:31:41.178163+0800 ASYNC<span class="token punctuation">[</span>19636:766754<span class="token punctuation">]</span> ichi<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="1-2-源码探究"><a href="#1-2-源码探究" class="headerlink" title="1.2 源码探究"></a>1.2 源码探究</h3><p>为了知道<code>dispatch_sync</code>的实现原理，直接在 <a href="https://opensource.apple.com/tarballs/libdispatch/libdispatch-1173.60.1.tar.gz" target="_blank" rel="noopener">libdispatch</a>，里搜索关键字，结果如下：</p>
+<p><img src="/p/5abeee19/001.png" alt></p>
+<p>得到dispatch_sync 的方法实现如下：</p>
+<pre class="line-numbers language-c"><code class="language-c">DISPATCH_NOINLINE
+<span class="token keyword">void</span>
+<span class="token function">dispatch_sync</span><span class="token punctuation">(</span>dispatch_queue_t dq<span class="token punctuation">,</span> dispatch_block_t work<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    uintptr_t dc_flags <span class="token operator">=</span> DC_FLAG_BLOCK<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">unlikely</span><span class="token punctuation">(</span><span class="token function">_dispatch_block_has_private_data</span><span class="token punctuation">(</span>work<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">_dispatch_sync_block_with_privdata</span><span class="token punctuation">(</span>dq<span class="token punctuation">,</span> work<span class="token punctuation">,</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">_dispatch_sync_f</span><span class="token punctuation">(</span>dq<span class="token punctuation">,</span> work<span class="token punctuation">,</span> <span class="token function">_dispatch_Block_invoke</span><span class="token punctuation">(</span>work<span class="token punctuation">)</span><span class="token punctuation">,</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>实现代码里<code>unlikely</code> 这部分，意思是不太可能进入该分支，暂不考虑。</p>
+<p>主要关心<code>_dispatch_sync_f(dq, work, _dispatch_Block_invoke(work), dc_flags);</code> 的实现，这里的block 回调参数<code>work</code>，被传入下一个实现，继续探寻，得到一个中转函数：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token function">_dispatch_sync_f</span><span class="token punctuation">(</span>dispatch_queue_t dq<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>ctxt<span class="token punctuation">,</span> dispatch_function_t func<span class="token punctuation">,</span>
+        uintptr_t dc_flags<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">_dispatch_sync_f_inline</span><span class="token punctuation">(</span>dq<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func<span class="token punctuation">,</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>得到实现函数入下:</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">DISPATCH_ALWAYS_INLINE
+<span class="token keyword">static</span> <span class="token keyword">inline</span> <span class="token keyword">void</span>
+<span class="token function">_dispatch_sync_f_inline</span><span class="token punctuation">(</span>dispatch_queue_t dq<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>ctxt<span class="token punctuation">,</span>
+        dispatch_function_t func<span class="token punctuation">,</span> uintptr_t dc_flags<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">// 串行 来到这里</span>
+    <span class="token comment" spellcheck="true">//</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">likely</span><span class="token punctuation">(</span>dq<span class="token operator">-</span><span class="token operator">></span>dq_width <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">_dispatch_barrier_sync_f</span><span class="token punctuation">(</span>dq<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func<span class="token punctuation">,</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">unlikely</span><span class="token punctuation">(</span><span class="token function">dx_metatype</span><span class="token punctuation">(</span>dq<span class="token punctuation">)</span> <span class="token operator">!=</span> _DISPATCH_LANE_TYPE<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">DISPATCH_CLIENT_CRASH</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">"Queue type doesn't support dispatch_sync"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    dispatch_lane_t dl <span class="token operator">=</span> <span class="token function">upcast</span><span class="token punctuation">(</span>dq<span class="token punctuation">)</span><span class="token punctuation">.</span>_dl<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// Global concurrent queues and queues bound to non-dispatch threads</span>
+    <span class="token comment" spellcheck="true">// always fall into the slow case, see DISPATCH_ROOT_QUEUE_STATE_INIT_VALUE</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">unlikely</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">_dispatch_queue_try_reserve_sync_width</span><span class="token punctuation">(</span>dl<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">_dispatch_sync_f_slow</span><span class="token punctuation">(</span>dl<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> dl<span class="token punctuation">,</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">unlikely</span><span class="token punctuation">(</span>dq<span class="token operator">-</span><span class="token operator">></span>do_targetq<span class="token operator">-</span><span class="token operator">></span>do_targetq<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">_dispatch_sync_recurse</span><span class="token punctuation">(</span>dl<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func<span class="token punctuation">,</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">_dispatch_introspection_sync_begin</span><span class="token punctuation">(</span>dl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">_dispatch_sync_invoke_and_complete</span><span class="token punctuation">(</span>dl<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func <span class="token function">DISPATCH_TRACE_ARG</span><span class="token punctuation">(</span>
+            <span class="token function">_dispatch_trace_item_sync_push_pop</span><span class="token punctuation">(</span>dq<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func<span class="token punctuation">,</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里关键函数有两个：</p>
+<ul>
+<li><p>_dispatch_barrier_sync_f 函数。此时dq_width = 1，会进入栅栏函数，即<strong>队列宽度为1</strong>——同时只可以执行1个任务，也就是栅栏函数的原理。</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">likely</span><span class="token punctuation">(</span>dq<span class="token operator">-></span>dq_width <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">_dispatch_barrier_sync_f</span><span class="token punctuation">(</span>dq<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func<span class="token punctuation">,</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>继续探寻一下栅栏函数的内部实现，接下来的又是一个通用的函数：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token function">_dispatch_barrier_sync_f</span><span class="token punctuation">(</span>dispatch_queue_t dq<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>ctxt<span class="token punctuation">,</span>
+        dispatch_function_t func<span class="token punctuation">,</span> uintptr_t dc_flags<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">_dispatch_barrier_sync_f_inline</span><span class="token punctuation">(</span>dq<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func<span class="token punctuation">,</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>继续往下探索实现：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token function">dispatch_barrier_sync_f_inline</span><span class="token punctuation">(</span>dispatch_queue_t dq<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>ctxt<span class="token punctuation">,</span>
+        dispatch_function_t func<span class="token punctuation">,</span> uintptr_t dc_flags<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    dispatch_tid tid <span class="token operator">=</span> <span class="token function">_dispatch_tid_self</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">unlikely</span><span class="token punctuation">(</span><span class="token function">dx_metatype</span><span class="token punctuation">(</span>dq<span class="token punctuation">)</span> <span class="token operator">!=</span> _DISPATCH_LANE_TYPE<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">DISPATCH_CLIENT_CRASH</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token string">"Queue type doesn't support dispatch_sync"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    dispatch_lane_t dl <span class="token operator">=</span> <span class="token function">upcast</span><span class="token punctuation">(</span>dq<span class="token punctuation">)</span><span class="token punctuation">.</span>_dl<span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// The more correct thing to do would be to merge the qos of the thread</span>
+    <span class="token comment" spellcheck="true">// that just acquired the barrier lock into the queue state.</span>
+    <span class="token comment" spellcheck="true">//</span>
+    <span class="token comment" spellcheck="true">// However this is too expensive for the fast path, so skip doing it.</span>
+    <span class="token comment" spellcheck="true">// The chosen tradeoff is that if an enqueue on a lower priority thread</span>
+    <span class="token comment" spellcheck="true">// contends with this fast path, this thread may receive a useless override.</span>
+    <span class="token comment" spellcheck="true">//</span>
+    <span class="token comment" spellcheck="true">// Global concurrent queues and queues bound to non-dispatch threads</span>
+    <span class="token comment" spellcheck="true">// always fall into the slow case, see DISPATCH_ROOT_QUEUE_STATE_INIT_VALUE</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">unlikely</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">_dispatch_queue_try_acquire_barrier_sync</span><span class="token punctuation">(</span>dl<span class="token punctuation">,</span> tid<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">_dispatch_sync_f_slow</span><span class="token punctuation">(</span>dl<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func<span class="token punctuation">,</span> DC_FLAG_BARRIER<span class="token punctuation">,</span> dl<span class="token punctuation">,</span>
+                DC_FLAG_BARRIER <span class="token operator">|</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">unlikely</span><span class="token punctuation">(</span>dl<span class="token operator">-></span>do_targetq<span class="token operator">-></span>do_targetq<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">_dispatch_sync_recurse</span><span class="token punctuation">(</span>dl<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func<span class="token punctuation">,</span>
+                DC_FLAG_BARRIER <span class="token operator">|</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">_dispatch_introspection_sync_begin</span><span class="token punctuation">(</span>dl<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">_dispatch_lane_barrier_sync_invoke_and_complete</span><span class="token punctuation">(</span>dl<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func
+            <span class="token function">DISPATCH_TRACE_ARG</span><span class="token punctuation">(</span><span class="token function">_dispatch_trace_item_sync_push_pop</span><span class="token punctuation">(</span>
+                    dq<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func<span class="token punctuation">,</span> dc_flags <span class="token operator">|</span> DC_FLAG_BARRIER<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这个才是完整的实现：</p>
+<ol>
+<li><p><code>_dispatch_tid_self</code>：获取当前线程的ID，内部的实现是一个这样的宏：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">define</span> _dispatch_tid_self()        ((dispatch_tid)_dispatch_thread_port())</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>接着看这个<code>port</code> 究竟是什么，还是一个宏。</p>
+<p><strong>在32位环境</strong>下，只是将<code>0</code> 进行了语义转换：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">if</span> defined(_WIN32)</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> _dispatch_thread_port() ((mach_port_t)0)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>否则，在<strong>开启线程本地存储</strong>下，获取线程详细信息：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">if</span> DISPATCH_USE_DIRECT_TSD</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> _dispatch_thread_port() ((mach_port_t)(uintptr_t)\
+        _dispatch_thread_getspecific(_PTHREAD_TSD_SLOT_MACH_THREAD_SELF))</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><strong>未开启直接本地线程存储</strong>情况下，是这样的实现:</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">define</span> _dispatch_thread_port() pthread_mach_thread_np(_dispatch_thread_self())</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>继续追踪，刨根问底儿，看看<code>getspecific</code> 究竟是实现了什么：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">define</span> _dispatch_thread_getspecific(key) \
+    (_dispatch_get_tsd_base()->key)</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> _dispatch_thread_setspecific(key, value) \
+    (void)(_dispatch_get_tsd_base()->key = (value))</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>get 的时候，看到了key；set的时候，可以观察到是按照KEY-VALUE 的格式存储到内存中。好的，这个部分 先暂时到这里，知道了获取tid 的流程。</p>
+</li>
+<li><p><strong>_dispatch_sync_f_slow</strong> 函数：</p>
+<p>这个分支的函数实现是：</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">unlikely</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">_dispatch_queue_try_acquire_barrier_sync</span><span class="token punctuation">(</span>dl<span class="token punctuation">,</span> tid<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">_dispatch_sync_f_slow</span><span class="token punctuation">(</span>dl<span class="token punctuation">,</span> ctxt<span class="token punctuation">,</span> func<span class="token punctuation">,</span> DC_FLAG_BARRIER<span class="token punctuation">,</span> dl<span class="token punctuation">,</span>
+                DC_FLAG_BARRIER <span class="token operator">|</span> dc_flags<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>从<code>unlikely</code>来看，是尝试获取栅栏+同步的实现。内部实现看看：</p>
+<pre><code>_dispatch_sync_f_slow(dispatch_queue_class_t top_dqu, void *ctxt,
+        dispatch_function_t func, uintptr_t top_dc_flags,
+        dispatch_queue_class_t dqu, uintptr_t dc_flags)
+{
+        struct dispatch_sync_context_s dsc = {
+        .dc_flags    = DC_FLAG_SYNC_WAITER | dc_flags,
+        .dc_func     = _dispatch_async_and_wait_invoke,
+        .dc_ctxt     = &amp;dsc,
+        .dc_other    = top_dq,
+        .dc_priority = pp | _PTHREAD_PRIORITY_ENFORCE_FLAG,
+        .dc_voucher  = _voucher_get(),
+        .dsc_func    = func,
+        .dsc_ctxt    = ctxt,
+        .dsc_waiter  = _dispatch_tid_self(),
+    };
+    _dispatch_trace_item_push(top_dq, &amp;dsc);
+    __DISPATCH_WAIT_FOR_QUEUE__(&amp;dsc, dq);
+}</code></pre><ul>
+<li><p>队列里面，将结构体类型的<strong>上下文</strong>进行压栈。</p>
+</li>
+<li><p>接下来是重点，接下来有个<code>__DISPATCH_WAIT_FOR_QUEUE__</code> 的宏，看看实现如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token function">__DISPATCH_WAIT_FOR_QUEUE__</span><span class="token punctuation">(</span>dispatch_sync_context_t dsc<span class="token punctuation">,</span> dispatch_queue_t dq<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    uint64_t dq_state <span class="token operator">=</span> <span class="token function">_dispatch_wait_prepare</span><span class="token punctuation">(</span>dq<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">unlikely</span><span class="token punctuation">(</span><span class="token function">_dq_state_drain_locked_by</span><span class="token punctuation">(</span>dq_state<span class="token punctuation">,</span> dsc<span class="token operator">-></span>dsc_waiter<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">DISPATCH_CLIENT_CRASH</span><span class="token punctuation">(</span><span class="token punctuation">(</span>uintptr_t<span class="token punctuation">)</span>dq_state<span class="token punctuation">,</span>
+                <span class="token string">"dispatch_sync called on queue "</span>
+                <span class="token string">"already owned by current thread"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里的<strong>dq_state</strong> 状态是队列中等待的状态，而 <strong>unlikely</strong> 判断的是<code>_dq_state_drain_locked_by(dq_state, dsc-&gt;dsc_waiter)</code>，即当前线程的上下文<code>dsc</code>与队列等待比较。</p>
+<p>具体实现如何：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token function">_dq_state_drain_locked_by</span><span class="token punctuation">(</span>uint64_t dq_state<span class="token punctuation">,</span> dispatch_tid tid<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">_dispatch_lock_is_locked_by</span><span class="token punctuation">(</span><span class="token punctuation">(</span>dispatch_lock<span class="token punctuation">)</span>dq_state<span class="token punctuation">,</span> tid<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token comment" spellcheck="true">// 实现如下：</span>
+<span class="token function">_dispatch_lock_is_locked_by</span><span class="token punctuation">(</span>dispatch_lock lock_value<span class="token punctuation">,</span> dispatch_tid tid<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// equivalent to _dispatch_lock_owner(lock_value) == tid</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>lock_value <span class="token operator">^</span> tid<span class="token punctuation">)</span> <span class="token operator">&amp;</span> DLOCK_OWNER_MASK<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p> 可以看到，是将<code>lock_value</code>（队列等待状态） 与 <code>tid</code>（当前线程ID）做异或判断，如果两者不同，返回TRUE 。而<code>DLOCK_OWNER_MASK</code>的实现是一个确定的16进制数，可以不用考虑 </p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">define</span> DLOCK_OWNER_MASK            ((dispatch_lock)0xfffffffc)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>回到上一个函数再继续看，当<code>_dq_state_drain_locked_by</code> 函数返回结果为1时，会触发<code>CRASH</code>，并报错如下：</p>
+<pre class="line-numbers language-c"><code class="language-c">        <span class="token function">DISPATCH_CLIENT_CRASH</span><span class="token punctuation">(</span><span class="token punctuation">(</span>uintptr_t<span class="token punctuation">)</span>dq_state<span class="token punctuation">,</span>
+                <span class="token string">"dispatch_sync called on queue "</span>
+                <span class="token string">"already owned by current thread"</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>同步函数调用（失败），已被当前线程持有</p>
+</blockquote>
+<p>这就是<strong>线程死锁</strong>的由来</p>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="1-3-小结"><a href="#1-3-小结" class="headerlink" title="1.3 小结"></a>1.3 小结</h3><ol>
+<li>同步函数的创建，是建立在资源的<strong>独占性</strong>，即同时只可以执行一个任务。</li>
+<li>当队列宽度等于1，此时任务依次执行</li>
+<li>当队列等待与当前线程任务不一致时，会导致线程死锁，即同步函数调用一个被当前线程占用的资源（这是不允许的，互斥性的），会导致崩溃的出现。</li>
+</ol>
+<h2 id="二、任务调度执行-task-实现"><a href="#二、任务调度执行-task-实现" class="headerlink" title="二、任务调度执行 (task) 实现"></a>二、任务调度执行 (task) 实现</h2><h2 id="三、异步函数-async-实现"><a href="#三、异步函数-async-实现" class="headerlink" title="三、异步函数 (async) 实现"></a>三、异步函数 (async) 实现</h2><h2 id="四、信号量-semaphore-实现"><a href="#四、信号量-semaphore-实现" class="headerlink" title="四、信号量 (semaphore) 实现"></a>四、信号量 (semaphore) 实现</h2><h2 id="五、调度组-group-实现"><a href="#五、调度组-group-实现" class="headerlink" title="五、调度组 (group) 实现"></a>五、调度组 (group) 实现</h2><h2 id="六、分发源-source-实现"><a href="#六、分发源-source-实现" class="headerlink" title="六、分发源 (source) 实现"></a>六、分发源 (source) 实现</h2>
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/5abeee19.html">http://nilsli.com/p/5abeee19.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/多线程/">
+                                    <span class="chip bg-color">多线程</span>
+                                </a>
+                            
+                                <a href="/tags/GCD/">
+                                    <span class="chip bg-color">GCD</span>
+                                </a>
+                            
+                                <a href="/tags/源码/">
+                                    <span class="chip bg-color">源码</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-05-12T17-05-50',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/48b87814.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/11.jpg" class="responsive-img" alt="锁分析">
+                        
+                        <span class="card-title">锁分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-05-13
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/锁/">
+                        <span class="chip bg-color">锁</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/919af6b6.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg" class="responsive-img" alt="【数据结构与算法】-（9）二叉树与顺序表实现">
+                        
+                        <span class="card-title">【数据结构与算法】-（9）二叉树与顺序表实现</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+【数据结构与算法】-（1）基础篇
+【数据结构与算法】-（2）线性表基础
+【数据结构与算法】-（3）循环链表（单向）
+【数据结构与算法】-（4）双向链表和双向循环链表
+【数据结构与算法】-（5）链表面试题解析
+【数据结构与算法】-（6）栈
+
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-26
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/数据结构/">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                    <a href="/tags/树/">
+                        <span class="chip bg-color">树</span>
+                    </a>
+                    
+                    <a href="/tags/二叉树/">
+                        <span class="chip bg-color">二叉树</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
