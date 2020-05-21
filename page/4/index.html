@@ -1,1191 +1,795 @@
-<!DOCTYPE HTML>
-<html lang="zh-CN">
-
-
+<!DOCTYPE html>
+<html>
 <head><meta name="generator" content="Hexo 3.9.0">
-    <meta charset="utf-8">
-    <meta name="keywords" content="李佳的技术博客">
-    <meta name="description" content>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="renderer" content="webkit|ie-stand|ie-comp">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- Global site tag (gtag.js) - Google Analytics -->
+  <meta charset="utf-8">
+  
 
-
-    <title>李佳的技术博客</title>
-    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
-
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
-
-    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
-    
-<link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+  
+  <title>李佳的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="李佳的技术博客">
+<meta property="og:url" content="http://nilsli.com/page/4/index.html">
+<meta property="og:site_name" content="李佳的技术博客">
+<meta property="og:locale" content="zh-CN">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="李佳的技术博客">
+  
+    <link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/style.css">
 <link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
 <link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
-
-
+</html>
 <body>
-    <header class="navbar-fixed">
-    <nav id="headNav" class="bg-color nav-transparent">
-        <div id="navContainer" class="nav-wrapper container">
-            <div class="brand-logo">
-                <a href="/" class="waves-effect waves-light">
-                    
-                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
-                    
-                    <span class="logo-span">李佳的技术博客</span>
-                </a>
-            </div>
-            
-
-<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
-<ul class="right nav-menu">
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/" class="waves-effect waves-light">
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">李佳的技术博客</a>
+      </h1>
       
-      <i class="fas fa-home" style="zoom: 0.6;"></i>
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">「疾如風，徐如林，侵掠如火，不動如山」</a>
+        </h2>
       
-      <span>首页</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/tags" class="waves-effect waves-light">
-      
-      <i class="fas fa-tags" style="zoom: 0.6;"></i>
-      
-      <span>标签</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/categories" class="waves-effect waves-light">
-      
-      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
-      
-      <span>分类</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/archives" class="waves-effect waves-light">
-      
-      <i class="fas fa-archive" style="zoom: 0.6;"></i>
-      
-      <span>归档</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/about" class="waves-effect waves-light">
-      
-      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
-      
-      <span>关于</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/contact" class="waves-effect waves-light">
-      
-      <i class="fas fa-comments" style="zoom: 0.6;"></i>
-      
-      <span>留言板</span>
-    </a>
-    
-  </li>
-  
-  <li class="hide-on-med-and-down nav-item">
-    
-    <a href="/friends" class="waves-effect waves-light">
-      
-      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
-      
-      <span>友情链接</span>
-    </a>
-    
-  </li>
-  
-  <li>
-    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
-      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
-    </a>
-  </li>
-</ul>
-
-<div id="mobile-nav" class="side-nav sidenav">
-
-    <div class="mobile-head bg-color">
-        
-        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
-        
-        <div class="logo-name">李佳的技术博客</div>
-        <div class="logo-desc">
-            
-            Never really desperate, only the lost of the soul.
-            
-        </div>
     </div>
-
-    
-
-    <ul class="menu-list mobile-menu-list">
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
         
-        <li class="m-nav-item">
-	  
-		<a href="/" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-home"></i>
-			
-			首页
-		</a>
-          
-        </li>
+          <a class="main-nav-link" href="/">Home</a>
         
-        <li class="m-nav-item">
-	  
-		<a href="/tags" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-tags"></i>
-			
-			标签
-		</a>
-          
-        </li>
+          <a class="main-nav-link" href="/archives">Archives</a>
         
-        <li class="m-nav-item">
-	  
-		<a href="/categories" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-bookmark"></i>
-			
-			分类
-		</a>
-          
-        </li>
+      </nav>
+      <nav id="sub-nav">
         
-        <li class="m-nav-item">
-	  
-		<a href="/archives" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-archive"></i>
-			
-			归档
-		</a>
-          
-        </li>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <li class="m-nav-item">
-	  
-		<a href="/about" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-user-circle"></i>
-			
-			关于
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/contact" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-comments"></i>
-			
-			留言板
-		</a>
-          
-        </li>
-        
-        <li class="m-nav-item">
-	  
-		<a href="/friends" class="waves-effect waves-light">
-			
-			    <i class="fa-fw fas fa-address-book"></i>
-			
-			友情链接
-		</a>
-          
-        </li>
-        
-        
-    </ul>
-</div>
-
-        </div>
-
-        
-    </nav>
-
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://nilsli.com"></form>
+      </div>
+    </div>
+  </div>
 </header>
-
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-memoryAlignPrinciple" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/43162.html" class="article-date">
+  <time datetime="2019-12-22T03:05:11.000Z" itemprop="datePublished">2019-12-22</time>
+</a>
     
-    <div class="bg-cover pd-header about-cover">
-    <div class="container">
-    <div class="row">
-    <div class="col s10 offset-s1 m8 offset-m2 l8 offset-l2">
-        <div class="brand">
-            <div class="title center-align">
-                
-                「疾如風，徐如林，侵掠如火，不動如山」
-                
-            </div>
-
-            <div class="description center-align">
-                
-                
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<script>
-    // 每天切换 banner 图.  Switch banner image every day.
-    $('.bg-cover').css('background-image', 'url(https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/banner/' + new Date().getDay() + '.jpg)');
-</script>
-
-
-    </div>
-</div>
-
-
-<main class="content">
-
+  </div>
+  <div class="article-inner">
     
-
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/43162.html">OC底层研究2--内存对齐原理</a>
+    </h1>
+  
 
-    <!-- 所有文章卡片 -->
-    <article id="articles" class="container articles">
-        <div class="row article-row">
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/43162.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/16.jpg" class="responsive-img" alt="OC底层研究2--内存对齐原理">
-                            
-                            <span class="card-title">OC底层研究2--内存对齐原理</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-本页所使用的objc runtime 756.2，来自GITHUB
-
-开始继续学习研究OC源码，今天看的是OC的内存原理，以及对齐原理的分析。
-1.概念内存对齐在数据结构中，是比较基础也比较重要的一环，对于iOS开发，研究底层更免不了要了
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-22
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/底层/">
-                            <span class="chip bg-color">底层</span>
-                        </a>
-                        
-                        <a href="/tags/ios/">
-                            <span class="chip bg-color">ios</span>
-                        </a>
-                        
-                        <a href="/tags/源码/">
-                            <span class="chip bg-color">源码</span>
-                        </a>
-                        
-                        <a href="/tags/对齐/">
-                            <span class="chip bg-color">对齐</span>
-                        </a>
-                        
-                        <a href="/tags/内存/">
-                            <span class="chip bg-color">内存</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/19251.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg" class="responsive-img" alt="OC 底层研究1--alloc和init原理">
-                            
-                            <span class="card-title">OC 底层研究1--alloc和init原理</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                
-本页所使用的objc runtime 756.2，来自GITHUB
-
-1. 题目开始学习研究OC源码，今天看的是对象的初始化，也就是alloc以及init的分析。
-2. 附流程图如下 
-3. 内容3.1引子我们先看一段代码，Person类
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-16
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/底层/">
-                            <span class="chip bg-color">底层</span>
-                        </a>
-                        
-                        <a href="/tags/ios/">
-                            <span class="chip bg-color">ios</span>
-                        </a>
-                        
-                        <a href="/tags/源码/">
-                            <span class="chip bg-color">源码</span>
-                        </a>
-                        
-                        <a href="/tags/alloc/">
-                            <span class="chip bg-color">alloc</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/5621.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/19.jpg" class="responsive-img" alt="使用Runtime获取第三方成员变量">
-                            
-                            <span class="card-title">使用Runtime获取第三方成员变量</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                我们使用第三方库，有时候需要获取其成员变量。方法如下：
-导入runtime
-#import &lt;objc/runtime.h>
-声明一个Person类
-@interface Person : NSObject
-{
-    NSStrin
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-12-12
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/ios/">
-                            <span class="chip bg-color">ios</span>
-                        </a>
-                        
-                        <a href="/tags/runtime/">
-                            <span class="chip bg-color">runtime</span>
-                        </a>
-                        
-                        <a href="/tags/进阶/">
-                            <span class="chip bg-color">进阶</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/2840.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/6.jpg" class="responsive-img" alt="Flutter 深入学习">
-                            
-                            <span class="card-title">Flutter 深入学习</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                引言Flutter是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。 Flutter可以与现有的代码一起工作。在全世界，Flutter正在被越来越多的开发者和组织使用，并且Flutter是完全免费、开源的。
-
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-10-31
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/Flutter/">
-                            <span class="chip bg-color">Flutter</span>
-                        </a>
-                        
-                        <a href="/tags/iOS/">
-                            <span class="chip bg-color">iOS</span>
-                        </a>
-                        
-                        <a href="/tags/大前端，跨栈/">
-                            <span class="chip bg-color">大前端，跨栈</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/56253.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg" class="responsive-img" alt="【译】产品经理vs项目经理：如何区别他们">
-                            
-                            <span class="card-title">【译】产品经理vs项目经理：如何区别他们</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                （原链接在此）序言大公司和较大的团队常常存在许多战略部门与角色。因此，人们往往会对其中众多角色岗位一脸懵逼不足为奇。
-不同的经理在团队中的关键职责是否那么容易区分呢？举个栗子，一个产品经理和项目经理的角色就有很多共同点。据说，这些经理中每一
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-08-23
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/项目经理/">
-                            <span class="chip bg-color">项目经理</span>
-                        </a>
-                        
-                        <a href="/tags/产品经理/">
-                            <span class="chip bg-color">产品经理</span>
-                        </a>
-                        
-                        <a href="/tags/IT/">
-                            <span class="chip bg-color">IT</span>
-                        </a>
-                        
-                        <a href="/tags/产品/">
-                            <span class="chip bg-color">产品</span>
-                        </a>
-                        
-                        <a href="/tags/项目/">
-                            <span class="chip bg-color">项目</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/49163.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/23.jpg" class="responsive-img" alt="iOS开发中的问题集锦">
-                            
-                            <span class="card-title">iOS开发中的问题集锦</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                开发中难免遇到各式各样的小问题，平时收集一下，汇总如下，按Q（问题）和 A（解决方法）。
-Q1遇到unable to index file详细内容：
-​        详细内容：
-        unable to index file 
-
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-07-28
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/iOS/">
-                            <span class="chip bg-color">iOS</span>
-                        </a>
-                        
-                        <a href="/tags/swift/">
-                            <span class="chip bg-color">swift</span>
-                        </a>
-                        
-                        <a href="/tags/小问题/">
-                            <span class="chip bg-color">小问题</span>
-                        </a>
-                        
-                        <a href="/tags/git/">
-                            <span class="chip bg-color">git</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/21620.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/16.jpg" class="responsive-img" alt="【译】从阿波罗7号卫星上俯瞰加州南部">
-                            
-                            <span class="card-title">【译】从阿波罗7号卫星上俯瞰加州南部</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                这是从阿波罗7号上拍摄的加州南部的照片
-
-图片来自 NASA
-这片照片拍摄于1968年10月12日，由阿波罗7号航天器在执行它的绕地飞行第18圈时拍摄。拍摄时对地高度为124海里，加州海岸线上的穆古岬向南一直到欧申赛德，都能尽收眼底。透过云
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-07-24
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/NASA/">
-                            <span class="chip bg-color">NASA</span>
-                        </a>
-                        
-                        <a href="/tags/太空/">
-                            <span class="chip bg-color">太空</span>
-                        </a>
-                        
-                        <a href="/tags/卫星/">
-                            <span class="chip bg-color">卫星</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/59473.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/23.jpg" class="responsive-img" alt="【译】SaaS发展历程">
-                            
-                            <span class="card-title">【译】SaaS发展历程</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                撰稿人：Neeraj Agrawal
-梗概：　　总结了成功的SaaS公司上市前的发展轨迹：找到 product-market fit，年入$200万（ARR），然后进入T2D3阶段 - 连续两年ARR翻三倍，然后连续三年翻两倍。ARR至少$
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2019-07-24
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/创业/">
-                            <span class="chip bg-color">创业</span>
-                        </a>
-                        
-                        <a href="/tags/SaaS/">
-                            <span class="chip bg-color">SaaS</span>
-                        </a>
-                        
-                        <a href="/tags/科技/">
-                            <span class="chip bg-color">科技</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/51950.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg" class="responsive-img" alt="如何在苹果AppStore 上下架应用">
-                            
-                            <span class="card-title">如何在苹果AppStore 上下架应用</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                序言：作为开发者，如何快捷的在苹果商店下架上架App，请看图吧如何下架1. 进入开发者中心 itunesConnect
- 
-
-2. 选择相应的App
-3. 如图，选择价格与销售范围—— 下架
-4. 等等10分钟左右，再次搜索，此时AppSt
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2018-07-24
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/ios/">
-                            <span class="chip bg-color">ios</span>
-                        </a>
-                        
-                        <a href="/tags/appstore/">
-                            <span class="chip bg-color">appstore</span>
-                        </a>
-                        
-                        <a href="/tags/上架/">
-                            <span class="chip bg-color">上架</span>
-                        </a>
-                        
-                        <a href="/tags/下架/">
-                            <span class="chip bg-color">下架</span>
-                        </a>
-                        
-                        <a href="/tags/苹果商店/">
-                            <span class="chip bg-color">苹果商店</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/14198.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/6.jpg" class="responsive-img" alt="图解SDWebImage(读sdwebimage源码分析)">
-                            
-                            <span class="card-title">图解SDWebImage(读sdwebimage源码分析)</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                最近在看一些第三方库的源码，其中SDWebImage 尤其让人惊叹，尝试用XMind 画出原理，以后有机会， 会增加更多的细节图。
-大纲如下：
-
-
-
-
-图片缓存的实现如下：
-以下为异步下载部分：
-
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2018-02-24
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/ios/">
-                            <span class="chip bg-color">ios</span>
-                        </a>
-                        
-                        <a href="/tags/开发/">
-                            <span class="chip bg-color">开发</span>
-                        </a>
-                        
-                        <a href="/tags/SDWebImage/">
-                            <span class="chip bg-color">SDWebImage</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/7421.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/21.jpg" class="responsive-img" alt="通过Universal Link在微信页面中唤起原生App">
-                            
-                            <span class="card-title">通过Universal Link在微信页面中唤起原生App</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                因微信封杀，已失效，微信大刀威武！
-在某些电商项目，或者是社交媒体的分享页面中，我们经常会看到在页面的顶端或者底部遇到有【打开App】或者【下载App】这样的按钮。比较友好的产品经理，会做设备识别，以及检测APP是否安装，来做打开或者下载A
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2017-06-24
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/iOS/">
-                            <span class="chip bg-color">iOS</span>
-                        </a>
-                        
-                        <a href="/tags/原生/">
-                            <span class="chip bg-color">原生</span>
-                        </a>
-                        
-                        <a href="/tags/微信/">
-                            <span class="chip bg-color">微信</span>
-                        </a>
-                        
-                        <a href="/tags/universallink/">
-                            <span class="chip bg-color">universallink</span>
-                        </a>
-                        
-                        <a href="/tags/hyper/">
-                            <span class="chip bg-color">hyper</span>
-                        </a>
-                        
-                        <a href="/tags/混合交互/">
-                            <span class="chip bg-color">混合交互</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-            <div class="article col s12 m6 l4" data-aos="zoom-in">
-                <div class="card">
-                    <a href="/p/31557.html">
-                        <div class="card-image">
-                            
-                            
-                            <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/0.jpg" class="responsive-img" alt="下棋">
-                            
-                            <span class="card-title">下棋</span>
-                        </div>
-                    </a>
-
-                    <div class="card-content article-content">
-                        <div class="summary block-with-text">
-                            
-                                在公园和大爷下象棋，有点紧张。走了第一步后，大爷沉默了很久说：“你是新手吧？”“大爷你怎么知道？”“我在这玩了几年，第一步走帅的真不多。”“不应该让领导先走吗？”
- 
-
-                            
-                        </div>
-                        <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2016-03-24
-                            </span>
-                            <span class="publish-author">
-                                
-                                <i class="fas fa-user fa-fw"></i>
-                                李佳
-                                
-                            </span>
-                        </div>
-                    </div>
-
-                    
-                    <div class="card-action article-tags">
-                        
-                        <a href="/tags/休闲/">
-                            <span class="chip bg-color">休闲</span>
-                        </a>
-                        
-                        <a href="/tags/人生哲理/">
-                            <span class="chip bg-color">人生哲理</span>
-                        </a>
-                        
-                    </div>
-                    
-                </div>
-            </div>
-            
-        </div>
-    </article>
-
-</main>
-
-
-<div class="container paging">
-    <div class="row">
-        <div class="col s6 m4 l4">
-            
-            <a href="/page/3/"
-               class="left btn-floating btn-large waves-effect waves-light bg-color">
-                <i class="fas fa-angle-left"></i>
-            </a>
-            
-        </div>
-        <div class="page-info col m4 l4 hide-on-small-only">
-            <div class="center-align b-text-gray">4 / 4</div>
-        </div>
-        <div class="col s6 m4 l4">
-            
-            <a class="right btn-floating btn-large disabled">
-                <i class="fas fa-angle-right"></i>
-            </a>
-            
-        </div>
-    </div>
-</div>
-
-
-
-
-    <footer class="page-footer bg-color">
+      </header>
     
-    <div class="container row center-align" style="margin-bottom: 15px !important;">
-        <div class="col s12 m8 l8 copy-right">
-            Copyright&nbsp;&copy;
-            <span id="year">2018</span>
-            <a href="http://nilsli.com" target="_blank">李佳</a>
-            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
-            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
-            <br>
-            
-            
-            
-            
-            
-            
-            <span id="busuanzi_container_site_pv">
-                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
-                    class="white-color"></span>&nbsp;次
-            </span>
-            
-            
-            <span id="busuanzi_container_site_uv">
-                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
-                    class="white-color"></span>&nbsp;人
-            </span>
-            
-            <br>
-            
-            <span id="sitetime">载入运行时间...</span>
-            <script>
-                function siteTime() {
-                    var seconds = 1000;
-                    var minutes = seconds * 60;
-                    var hours = minutes * 60;
-                    var days = hours * 24;
-                    var years = days * 365;
-                    var today = new Date();
-                    var startYear = "2018";
-                    var startMonth = "6";
-                    var startDate = "28";
-                    var startHour = "0";
-                    var startMinute = "0";
-                    var startSecond = "0";
-                    var todayYear = today.getFullYear();
-                    var todayMonth = today.getMonth() + 1;
-                    var todayDate = today.getDate();
-                    var todayHour = today.getHours();
-                    var todayMinute = today.getMinutes();
-                    var todaySecond = today.getSeconds();
-                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
-                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
-                    var diff = t2 - t1;
-                    var diffYears = Math.floor(diff / years);
-                    var diffDays = Math.floor((diff / days) - diffYears * 365);
-                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
-                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
-                        minutes);
-                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
-                        diffMinutes * minutes) / seconds);
-                    if (startYear == todayYear) {
-                        document.getElementById("year").innerHTML = todayYear;
-                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
-                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
-                    } else {
-                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
-                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
-                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
-                    }
-                }
-                setInterval(siteTime, 1000);
-            </script>
-            
-            <br>
-            
-        </div>
-        <div class="col s12 m4 l4 social-link social-statis">
-    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
-        <i class="fab fa-github"></i>
-    </a>
-
-
-
-    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
-        <i class="fas fa-envelope-open"></i>
-    </a>
-
-
-
-
-
-
-
-
-
-
-
-
-
-</div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本页所使用的objc runtime 756.2，来自<a href="https://github.com/RetVal/objc-runtime" target="_blank" rel="noopener">GITHUB</a></p>
+</blockquote>
+<p>开始继续学习研究OC源码，今天看的是OC的内存原理，以及对齐原理的分析。</p>
+<h4 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h4><p>内存对齐在数据结构中，是比较基础也比较重要的一环，对于iOS开发，研究底层更免不了要了解他们的原理，方便我们更透彻的学习iOS的原理。</p>
+<p>我们先来一段维基百科的<a href="https://en.wikipedia.org/wiki/Data_structure_alignment" target="_blank" rel="noopener">数据结构对齐</a>的相关知识。</p>
+<blockquote>
+<p>内存对齐，也可以理解为数据结构对齐（Data structure alignment），是代码编译后在内存的布局与使用方式。包括三方面内容：<strong>数据对齐</strong>、<strong>数据结构填充</strong>（padding）与<strong>包入</strong>（packing）。</p>
+</blockquote>
+<p>下图是内存中各类型属性所占的空间大小：</p>
+<p><img src="/p/43162/010.png" alt></p>
+        
+          <p class="article-more-link">
+            <a href="/p/43162.html#more">Read More</a>
+          </p>
+        
+      
     </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/43162.html" data-id="ckagb7kv4004gd4rj84v4tvq8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ios/">ios</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存/">内存</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/对齐/">对齐</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/底层/">底层</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/源码/">源码</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-pricipleofalloc" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/19251.html" class="article-date">
+  <time datetime="2019-12-16T07:31:51.000Z" itemprop="datePublished">2019-12-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/19251.html">OC 底层研究1--alloc和init原理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>本页所使用的objc runtime 756.2，来自<a href="https://github.com/RetVal/objc-runtime" target="_blank" rel="noopener">GITHUB</a></p>
+</blockquote>
+<h3 id="1-题目"><a href="#1-题目" class="headerlink" title="1. 题目"></a>1. 题目</h3><p>开始学习研究OC源码，今天看的是对象的初始化，也就是alloc以及init的分析。</p>
+<h3 id="2-附流程图如下"><a href="#2-附流程图如下" class="headerlink" title="2. 附流程图如下"></a>2. 附流程图如下</h3><p> <img src="/p/19251/121601.png" alt></p>
+<h3 id="3-内容"><a href="#3-内容" class="headerlink" title="3. 内容"></a>3. 内容</h3><h4 id="3-1引子"><a href="#3-1引子" class="headerlink" title="3.1引子"></a>3.1引子</h4><p>我们先看一段代码，Person类的初始化，打印p1,p2,p3对象，以及指向他们的指针：</p>
+<pre><code class="objective-c">    Person *p1 = [Person alloc];
+    Person *p2 = [p1 init];
+    Person *p3 = [p1 init];
+
+    NSLog(@&quot;%@ -- %p&quot;, p1, &amp;p1);
+    NSLog(@&quot;%@ -- %p&quot;, p2, &amp;p2);
+    NSLog(@&quot;%@ -- %p&quot;, p3, &amp;p3);</code></pre>
+<p>打印结果是：</p>
+<img src="/p/19251/121602.png" style="zoom:50%;">
+
+<p>这里为什么p1相同的情况下，经过init后的p2，p3 的地址都不一样呢，我们要用这个图来分析:</p>
+<img src="/p/19251/121603.png" style="zoom:50%;">
+
+<p>在这里，我们<strong>[Person alloc]</strong>创建了一个p 对象的内存空间，而<strong>[p1 init]</strong>则是创建同样是指向p1的指针p2，p3，因为和p1 内存空间一致，所以地址均为0x6000024f4950，但是指向该3个指针的指针不一样，所以&amp;p1, &amp;p2, &amp;p3 地址不一致。 </p>
+<h4 id="3-2源码分析："><a href="#3-2源码分析：" class="headerlink" title="3.2源码分析："></a>3.2源码分析：</h4><p>alloc 步骤如下</p>
+<h6 id="1-alloc"><a href="#1-alloc" class="headerlink" title="1. alloc"></a><strong>1. alloc</strong></h6><p>该步骤主要为创建对象，<strong>申请内存空间</strong>。相关objc源代码如下</p>
+<pre><code class="cpp">+ (id)alloc {
+    return _objc_rootAlloc(self);
+}</code></pre>
+<p></p>
+        
+          <p class="article-more-link">
+            <a href="/p/19251.html#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/19251.html" data-id="ckagb7kvh004vd4rjq9iujs8w" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/alloc/">alloc</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ios/">ios</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/底层/">底层</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/源码/">源码</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-runtimes" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/5621.html" class="article-date">
+  <time datetime="2019-12-12T07:04:43.000Z" itemprop="datePublished">2019-12-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/5621.html">使用Runtime获取第三方成员变量</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我们使用第三方库，有时候需要获取其成员变量。方法如下：</p>
+<p><strong>导入runtime</strong></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token macro property">#<span class="token directive keyword">import</span> &lt;objc/runtime.h></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><strong>声明一个Person类</strong></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">@interface Person <span class="token operator">:</span> NSObject
+<span class="token punctuation">{</span>
+    NSString <span class="token operator">*</span>address<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+@<span class="token function">property</span><span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span>strong<span class="token punctuation">)</span>NSString <span class="token operator">*</span>name<span class="token punctuation">;</span>
+@<span class="token function">property</span><span class="token punctuation">(</span>nonatomic<span class="token punctuation">,</span>assign<span class="token punctuation">)</span>NSInteger age<span class="token punctuation">;</span>
+
+@end<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>使用runtime获取私有属性</strong></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">//遍历获取Person类所有的成员变量IvarList</span>
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span> getAllIvarList <span class="token punctuation">{</span>
+    <span class="token keyword">unsigned</span> <span class="token keyword">int</span> methodCount <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    Ivar <span class="token operator">*</span> ivars <span class="token operator">=</span> <span class="token function">class_copyIvarList</span><span class="token punctuation">(</span><span class="token punctuation">[</span>Person <span class="token keyword">class</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>methodCount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> methodCount<span class="token punctuation">;</span> i <span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Ivar ivar <span class="token operator">=</span> ivars<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> name <span class="token operator">=</span> <span class="token function">ivar_getName</span><span class="token punctuation">(</span>ivar<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span> type <span class="token operator">=</span> <span class="token function">ivar_getTypeEncoding</span><span class="token punctuation">(</span>ivar<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"Person拥有的成员变量的类型为%s，名字为 %s "</span><span class="token punctuation">,</span>type<span class="token punctuation">,</span> name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">free</span><span class="token punctuation">(</span>ivars<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>打印结果如下：</strong></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token number">2019</span><span class="token operator">-</span><span class="token number">12</span><span class="token operator">-</span><span class="token number">12</span> <span class="token number">15</span><span class="token operator">:</span><span class="token number">14</span><span class="token operator">:</span><span class="token number">02.115744</span><span class="token operator">+</span><span class="token number">0800</span> PersonRuntime<span class="token punctuation">[</span><span class="token number">11576</span><span class="token operator">:</span><span class="token number">1071364</span><span class="token punctuation">]</span> Person拥有的成员变量的类型为@<span class="token string">"NSString"</span>，名字为 address 
+<span class="token number">2019</span><span class="token operator">-</span><span class="token number">12</span><span class="token operator">-</span><span class="token number">12</span> <span class="token number">15</span><span class="token operator">:</span><span class="token number">14</span><span class="token operator">:</span><span class="token number">02.115902</span><span class="token operator">+</span><span class="token number">0800</span> PersonRuntime<span class="token punctuation">[</span><span class="token number">11576</span><span class="token operator">:</span><span class="token number">1071364</span><span class="token punctuation">]</span> Person拥有的成员变量的类型为@<span class="token string">"NSString"</span>，名字为 _name 
+<span class="token number">2019</span><span class="token operator">-</span><span class="token number">12</span><span class="token operator">-</span><span class="token number">12</span> <span class="token number">15</span><span class="token operator">:</span><span class="token number">14</span><span class="token operator">:</span><span class="token number">02.115997</span><span class="token operator">+</span><span class="token number">0800</span> PersonRuntime<span class="token punctuation">[</span><span class="token number">11576</span><span class="token operator">:</span><span class="token number">1071364</span><span class="token punctuation">]</span> Person拥有的成员变量的类型为q，名字为 _age 
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/5621.html" data-id="ckagb7kvg004td4rj7crig2ck" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ios/">ios</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/runtime/">runtime</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/进阶/">进阶</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Flutter-beginer" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/2840.html" class="article-date">
+  <time datetime="2019-10-31T10:00:19.000Z" itemprop="datePublished">2019-10-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/2840.html">Flutter 深入学习</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>Flutter是谷歌的移动UI框架，可以快速在iOS和Android上构建高质量的原生用户界面。 Flutter可以与现有的代码一起工作。在全世界，Flutter正在被越来越多的开发者和组织使用，并且Flutter是完全免费、开源的。</p>
+<h5 id="1-快速开发"><a href="#1-快速开发" class="headerlink" title="1.快速开发"></a>1.快速开发</h5><p>毫秒级的热重载，修改后，您的应用界面会立即更新。使用丰富的、完全可定制的widget在几分钟内构建原生界面。</p>
+<h5 id="2-富有表现力和灵活的UI"><a href="#2-富有表现力和灵活的UI" class="headerlink" title="2.富有表现力和灵活的UI"></a>2.富有表现力和灵活的UI</h5><p>快速发布聚焦于原生体验的功能。分层的架构允许您完全自定义，从而实现难以置信的快速渲染和富有表现力、灵活的设计。</p>
+<h5 id="3-原生性能"><a href="#3-原生性能" class="headerlink" title="3.原生性能"></a>3.原生性能</h5><p>Flutter包含了许多核心的widget，如滚动、导航、图标和字体等，这些都可以在iOS和Android上达到原生应用一样的性能。</p>
+        
+          <p class="article-more-link">
+            <a href="/p/2840.html#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/2840.html" data-id="ckagb7krw000ud4rjei7zkc7h" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Flutter/">Flutter</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大前端，跨栈/">大前端，跨栈</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-pmvspm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/56253.html" class="article-date">
+  <time datetime="2019-08-23T07:16:02.000Z" itemprop="datePublished">2019-08-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/56253.html">【译】产品经理vs项目经理：如何区别他们</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h6 id="（原链接在此）"><a href="#（原链接在此）" class="headerlink" title="（原链接在此）"></a>（<a href="https://habr.com/en/company/hygger/blog/462919/" target="_blank" rel="noopener">原链接在此</a>）</h6><h3 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h3><p>大公司和较大的团队常常存在许多战略部门与角色。因此，人们往往会对其中众多角色岗位一脸懵逼不足为奇。</p>
+<p>不同的经理在团队中的关键职责是否那么容易区分呢？举个栗子，一个产品经理和项目经理的角色就有很多共同点。据说，这些经理中每一个人在他的生命中起码听过这样直接的问题：他们（产品经理、项目经理）有区别吗？不过，也别急着埋怨他们或者觉得难堪，就因为他们对这些职能弄不清楚。产品经理和项目经理是完全不同的角色。这篇文章的目标是定义清楚这两种在软件开发公司里的关键位置的区别，让你彻底甩掉疑惑。</p>
+<p><img src="https://habrastorage.org/getpro/habr/post_images/eda/55f/a19/eda55fa19804f2f0d2fd819a7cf17ad8.jpg" alt></p>
+        
+          <p class="article-more-link">
+            <a href="/p/56253.html#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/56253.html" data-id="ckagb7kvc004md4rjrxpu6led" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IT/">IT</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/产品/">产品</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/产品经理/">产品经理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/项目/">项目</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/项目经理/">项目经理</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-tips-on-swift" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/49163.html" class="article-date">
+  <time datetime="2019-07-28T07:33:22.000Z" itemprop="datePublished">2019-07-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/49163.html">iOS开发中的问题集锦</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>开发中难免遇到各式各样的小问题，平时收集一下，汇总如下，按Q（问题）和 A（解决方法）。</p>
+<h4 id="Q1遇到unable-to-index-file"><a href="#Q1遇到unable-to-index-file" class="headerlink" title="Q1遇到unable to index file"></a>Q1遇到unable to index file</h4><p>详细内容：</p>
+<p>​        详细内容：</p>
+<pre class="line-numbers language-bash"><code class="language-bash">        unable to index <span class="token function">file</span> 
+
+        fatal: updating files failed<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>A 解决：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> reset HEAD qooxdoo<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h4 id="Q2-hexo部署后，CNAME会被自动删除"><a href="#Q2-hexo部署后，CNAME会被自动删除" class="headerlink" title="Q2  hexo部署后，CNAME会被自动删除"></a>Q2  hexo部署后，CNAME会被自动删除</h4><p>推送上去后，包含域名内容的CNAME 被删除，博客无法用域名解析。</p>
+<p><strong>A 解决：</strong></p>
+<p>出现这样的问题一般是CNAME 放在blog根目录下，正确是放在source 目录下。</p>
+<p>然后执行 部署推送</p>
+<p><code>hexo d -g</code></p>
+<p>问题得到解决。</p>
+<h4 id="Q3-This-copy-of-libswiftCore-dylib-requires-an-OS-version-prior-to-10-14-4"><a href="#Q3-This-copy-of-libswiftCore-dylib-requires-an-OS-version-prior-to-10-14-4" class="headerlink" title="Q3 This copy of libswiftCore.dylib requires an OS version prior to 10.14.4."></a>Q3 This copy of libswiftCore.dylib requires an OS version prior to 10.14.4.</h4><p>问题:</p>
+<p>在掘金<a href="https://juejin.im/post/5a3cc9a351882560b76c5ddf" target="_blank" rel="noopener">这篇文章</a>, 尝试配置SPM，通过命令创建包时，执行<code>swift run</code> 后，出现如下问题</p>
+<p><strong><img src="/p/49163/0806-001.png" alt="0806-001"></strong></p>
+<p><strong>A 解决：</strong></p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">cp</span> -r /usr/lib/swift/*.dylib /Applications/Xcode.app/Contents/Frameworks<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h4 id="Q4-Git-遇到了-early-EOF-index-pack-failed"><a href="#Q4-Git-遇到了-early-EOF-index-pack-failed" class="headerlink" title="Q4: Git 遇到了 early EOF index-pack failed"></a>Q4: Git 遇到了 early EOF index-pack failed</h4><pre class="line-numbers language-cpp"><code class="language-cpp">$ git clone https<span class="token operator">:</span><span class="token operator">/</span><span class="token operator">/</span>github<span class="token punctuation">.</span>com<span class="token operator">/</span>boostorg<span class="token operator">/</span>boost<span class="token punctuation">.</span>git
+Cloning into <span class="token string">'boost'</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+remote<span class="token operator">:</span> Counting objects<span class="token operator">:</span> <span class="token number">183543</span><span class="token punctuation">,</span> done<span class="token punctuation">.</span>
+remote<span class="token operator">:</span> Compressing objects<span class="token operator">:</span> <span class="token number">100</span><span class="token operator">%</span> <span class="token punctuation">(</span><span class="token number">69361</span><span class="token operator">/</span><span class="token number">69361</span><span class="token punctuation">)</span><span class="token punctuation">,</span> done<span class="token punctuation">.</span>
+fatal<span class="token operator">:</span> The remote end hung up unexpectedly
+fatal<span class="token operator">:</span> early <span class="token constant">EOF</span>
+fatal<span class="token operator">:</span> index<span class="token operator">-</span>pack failed<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>解决：</p>
+<pre class="line-numbers language-bash"><code class="language-bash"><span class="token function">git</span> config --add core.compression -1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>————————</p>
+<p>持续添加中</p>
+<p><img src="https://s3.amazonaws.com/com.twilio.prod.twilio-docs/images/iOSUsernotificationsSwift.width-1616.jpg" alt></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/49163.html" data-id="ckagb7kvu0050d4rj9fkbof5c" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/swift/">swift</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/小问题/">小问题</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-view-from-south-cali" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/21620.html" class="article-date">
+  <time datetime="2019-07-24T07:03:19.000Z" itemprop="datePublished">2019-07-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/21620.html">【译】从阿波罗7号卫星上俯瞰加州南部</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这是从阿波罗7号上拍摄的加州南部的照片</p>
+<p><img src="https://www.nasa.gov/sites/default/files/thumbnails/image/as07-11-2022.jpg" alt></p>
+<p>图片来自 <a href="http://nasa.org/" target="_blank" rel="noopener">NASA</a></p>
+<p>这片照片拍摄于1968年10月12日，由阿波罗7号航天器在执行它的绕地飞行第18圈时拍摄。拍摄时对地高度为124海里，加州海岸线上的穆古岬向南一直到欧申赛德，都能尽收眼底。透过云层，依稀能看见圣卡塔利娜岛屿。洛杉矶地区的近景则被从班宁市向西连绵100多英里直到马里海滩上空污染物所遮盖的模糊不清。在图片的上部（从左至右）能看见圣华金谷）在贝克斯菲尔德之外，特哈查比山脉,内华达山脉,欧文斯谷,死亡山谷以及莫哈韦沙漠。</p>
+<p>阿波罗7号于1968年10月11日升空，被亲切称为”华尔特，华里和唐·修”, 是首次载人发射火箭计划。该计划在载人行动期间证明了指令/服务仓任务模组技术、项目地面支援能力、阿波罗的空间交会能力，同时也实现了首次从太空进行实时电视直播。</p>
+<p><a href="https://www.nasa.gov/image-feature/southern-california-as-seen-from-apollo-7" target="_blank" rel="noopener">原文链接</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/21620.html" data-id="ckagb7kvp004yd4rjdgk7266u" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NASA/">NASA</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/卫星/">卫星</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/太空/">太空</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-journey-of-SaaS" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/59473.html" class="article-date">
+  <time datetime="2019-07-24T06:48:02.000Z" itemprop="datePublished">2019-07-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/59473.html">【译】SaaS发展历程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>撰稿人：<a href="https://www.linkedin.com/in/neerajagrawal2000/" target="_blank" rel="noopener">Neeraj Agrawal</a></p>
+<h3 id="梗概："><a href="#梗概：" class="headerlink" title="梗概："></a><strong>梗概：</strong></h3><p>　　总结了成功的SaaS公司上市前的发展轨迹：找到 product-market fit，年入$200万（ARR），然后进入T2D3阶段 - 连续两年ARR翻三倍，然后连续三年翻两倍。ARR至少$1亿，然后上市。</p>
+<p><strong>所谓T2D3：</strong></p>
+<p>　　连续两年 triple（三倍），然后连续三年 double（两倍）。<br>　　<br></p>
+        
+          <p class="article-more-link">
+            <a href="/p/59473.html#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/59473.html" data-id="ckagb7kuq0047d4rjwpegydew" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SaaS/">SaaS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/创业/">创业</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/科技/">科技</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-offline-app-from-app-store" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/51950.html" class="article-date">
+  <time datetime="2018-07-24T07:46:11.000Z" itemprop="datePublished">2018-07-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/51950.html">如何在苹果AppStore 上下架应用</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="序言："><a href="#序言：" class="headerlink" title="序言："></a>序言：</h3><h6 id="作为开发者，如何快捷的在苹果商店下架上架App，请看图吧"><a href="#作为开发者，如何快捷的在苹果商店下架上架App，请看图吧" class="headerlink" title="作为开发者，如何快捷的在苹果商店下架上架App，请看图吧"></a>作为开发者，如何快捷的在苹果商店下架上架App，请看图吧</h6><h3 id="如何下架"><a href="#如何下架" class="headerlink" title="如何下架"></a>如何下架</h3><h4 id="1-进入开发者中心-itunesConnect"><a href="#1-进入开发者中心-itunesConnect" class="headerlink" title="1. 进入开发者中心 itunesConnect"></a>1. 进入开发者中心 itunesConnect</h4><p><img src="/p/51950/1.png" alt></p>
+        
+          <p class="article-more-link">
+            <a href="/p/51950.html#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/51950.html" data-id="ckagb7kv9004id4rj0xovgghb" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/appstore/">appstore</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ios/">ios</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/上架/">上架</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/下架/">下架</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/苹果商店/">苹果商店</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-pic-of-sdwebimage" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/14198.html" class="article-date">
+  <time datetime="2018-02-24T07:33:15.000Z" itemprop="datePublished">2018-02-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/14198.html">图解SDWebImage(读sdwebimage源码分析)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>最近在看一些第三方库的源码，其中SDWebImage 尤其让人惊叹，尝试用XMind 画出原理，以后有机会， 会增加更多的细节图。</p>
+<h4 id="大纲如下："><a href="#大纲如下：" class="headerlink" title="大纲如下："></a>大纲如下：</h4><p><img src="/p/14198/sd1.png" alt></p>
+        
+          <p class="article-more-link">
+            <a href="/p/14198.html#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/14198.html" data-id="ckagb7kvb004ld4rjcekg76hz" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SDWebImage/">SDWebImage</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ios/">ios</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开发/">开发</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-wake-up-app-with-universal-link" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/7421.html" class="article-date">
+  <time datetime="2017-06-24T07:39:05.000Z" itemprop="datePublished">2017-06-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/7421.html">通过Universal Link在微信页面中唤起原生App</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>因微信封杀，已失效，微信大刀威武！</p>
+<p>在某些电商项目，或者是社交媒体的分享页面中，我们经常会看到在页面的顶端或者底部遇到有【打开App】或者【下载App】这样的按钮。比较友好的产品经理，会做设备识别，以及检测APP是否安装，来做打开或者下载App 的需求。<br>这些功能在Safari下使用location.href=”scheme://example” 即可实现。<br>但是在微信中，这方面做的比较恶心，微信下面几乎是全面屏蔽了唤起原生App 的功能，所有的启动都需要通过应用宝。</p>
+<p>在iOS 9以后，苹果推出了Universal Link 这个概念，解决了使用A标签，以及iFrame 的弊端。WWDC2015 Session 509 有介绍,通过Universal Link，将App 与网页端建立连接桥，可以从Safari 或者其他前端浏览器来识别并唤醒App，甚至是微信环境下也可以冲破障碍。</p>
+        
+          <p class="article-more-link">
+            <a href="/p/7421.html#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/7421.html" data-id="ckagb7kw60054d4rj1ip6bzuu" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hyper/">hyper</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/">iOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/universallink/">universallink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/原生/">原生</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/微信/">微信</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/混合交互/">混合交互</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-play-chess" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/p/31557.html" class="article-date">
+  <time datetime="2016-03-24T07:52:01.000Z" itemprop="datePublished">2016-03-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/p/31557.html">下棋</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在公园和大爷下象棋，有点紧张。<br>走了第一步后，大爷沉默了很久说：<br>“你是新手吧？”<br>“大爷你怎么知道？”<br>“我在这玩了几年，第一步走帅的真不多。”<br>“不应该让领导先走吗？”</p>
+<p> <img src="http://puui.qpic.cn/qqvideo_ori/0/l0626p7lcr5_496_280/0" alt></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://nilsli.com/p/31557.html" data-id="ckagb7kve004pd4rjcdk2nexk" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/人生哲理/">人生哲理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/休闲/">休闲</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/3/">&laquo; 上一页</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/ios/">ios</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/2020/">2020</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/AVL/">AVL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Apple/">Apple</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/BF/">BF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Class/">Class</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flutter/">Flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GCD/">GCD</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/IT/">IT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KMP/">KMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVC/">KVC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVO/">KVO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NASA/">NASA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RK/">RK</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SDWebImage/">SDWebImage</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SaaS/">SaaS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alloc/">alloc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/appstore/">appstore</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cache-t/">cache_t</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/dyld/">dyld</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hyper/">hyper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ios/">ios</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/load/">load</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/msgSend/">msgSend</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/objc/">objc</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/runtime/">runtime</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/swift/">swift</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/universallink/">universallink</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/上架/">上架</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/下架/">下架</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二分法/">二分法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉搜索树/">二叉搜索树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/二叉树/">二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/产品/">产品</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/产品经理/">产品经理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/人生哲理/">人生哲理</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/休闲/">休闲</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/内存/">内存</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/创业/">创业</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/加载/">加载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/卫星/">卫星</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/原生/">原生</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/去重/">去重</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/启动优化/">启动优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/图/">图</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/基础/">基础</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/多线程/">多线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/大前端，跨栈/">大前端，跨栈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/太空/">太空</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符串查找/">字符串查找</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/字符查找/">字符查找</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/对齐/">对齐</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/小问题/">小问题</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/平衡二叉树/">平衡二叉树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/底层/">底层</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/底层，源码，懒加载，分类/">底层，源码，懒加载，分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/开发/">开发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/循环/">循环</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/微信/">微信</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/感想/">感想</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/成员变量/">成员变量</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/拓扑/">拓扑</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/插值/">插值</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/数据结构/">数据结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/斐波那契/">斐波那契</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/杭州/">杭州</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/栈/">栈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/树/">树</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/消息转发/">消息转发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/混合交互/">混合交互</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/源码/">源码</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/理论/">理论</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/科技/">科技</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/算法/">算法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/类/">类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线性表/">线性表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/线程/">线程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/结构/">结构</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/苹果商店/">苹果商店</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/西湖/">西湖</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/调优/">调优</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进程/">进程</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/进阶/">进阶</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/链表/">链表</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/锁/">锁</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/队列/">队列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/面试/">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/项目/">项目</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/项目经理/">项目经理</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/2020/" style="font-size: 11.43px;">2020</a> <a href="/tags/AVL/" style="font-size: 10px;">AVL</a> <a href="/tags/Apple/" style="font-size: 10px;">Apple</a> <a href="/tags/BF/" style="font-size: 10px;">BF</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/Flutter/" style="font-size: 10px;">Flutter</a> <a href="/tags/GCD/" style="font-size: 11.43px;">GCD</a> <a href="/tags/IT/" style="font-size: 10px;">IT</a> <a href="/tags/KMP/" style="font-size: 10px;">KMP</a> <a href="/tags/KVC/" style="font-size: 10px;">KVC</a> <a href="/tags/KVO/" style="font-size: 11.43px;">KVO</a> <a href="/tags/NASA/" style="font-size: 10px;">NASA</a> <a href="/tags/RK/" style="font-size: 10px;">RK</a> <a href="/tags/SDWebImage/" style="font-size: 10px;">SDWebImage</a> <a href="/tags/SaaS/" style="font-size: 10px;">SaaS</a> <a href="/tags/alloc/" style="font-size: 10px;">alloc</a> <a href="/tags/appstore/" style="font-size: 10px;">appstore</a> <a href="/tags/cache-t/" style="font-size: 10px;">cache_t</a> <a href="/tags/dyld/" style="font-size: 10px;">dyld</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/hyper/" style="font-size: 10px;">hyper</a> <a href="/tags/iOS/" style="font-size: 15.71px;">iOS</a> <a href="/tags/ios/" style="font-size: 18.57px;">ios</a> <a href="/tags/load/" style="font-size: 10px;">load</a> <a href="/tags/msgSend/" style="font-size: 10px;">msgSend</a> <a href="/tags/objc/" style="font-size: 12.86px;">objc</a> <a href="/tags/runtime/" style="font-size: 11.43px;">runtime</a> <a href="/tags/swift/" style="font-size: 10px;">swift</a> <a href="/tags/universallink/" style="font-size: 10px;">universallink</a> <a href="/tags/上架/" style="font-size: 10px;">上架</a> <a href="/tags/下架/" style="font-size: 10px;">下架</a> <a href="/tags/二分法/" style="font-size: 10px;">二分法</a> <a href="/tags/二叉搜索树/" style="font-size: 10px;">二叉搜索树</a> <a href="/tags/二叉树/" style="font-size: 10px;">二叉树</a> <a href="/tags/产品/" style="font-size: 10px;">产品</a> <a href="/tags/产品经理/" style="font-size: 10px;">产品经理</a> <a href="/tags/人生哲理/" style="font-size: 10px;">人生哲理</a> <a href="/tags/休闲/" style="font-size: 11.43px;">休闲</a> <a href="/tags/内存/" style="font-size: 11.43px;">内存</a> <a href="/tags/创业/" style="font-size: 10px;">创业</a> <a href="/tags/加载/" style="font-size: 10px;">加载</a> <a href="/tags/卫星/" style="font-size: 10px;">卫星</a> <a href="/tags/原生/" style="font-size: 10px;">原生</a> <a href="/tags/去重/" style="font-size: 10px;">去重</a> <a href="/tags/启动优化/" style="font-size: 10px;">启动优化</a> <a href="/tags/图/" style="font-size: 10px;">图</a> <a href="/tags/基础/" style="font-size: 11.43px;">基础</a> <a href="/tags/多线程/" style="font-size: 12.86px;">多线程</a> <a href="/tags/大前端，跨栈/" style="font-size: 10px;">大前端，跨栈</a> <a href="/tags/太空/" style="font-size: 10px;">太空</a> <a href="/tags/字符串查找/" style="font-size: 10px;">字符串查找</a> <a href="/tags/字符查找/" style="font-size: 10px;">字符查找</a> <a href="/tags/对齐/" style="font-size: 11.43px;">对齐</a> <a href="/tags/小问题/" style="font-size: 10px;">小问题</a> <a href="/tags/平衡二叉树/" style="font-size: 10px;">平衡二叉树</a> <a href="/tags/底层/" style="font-size: 20px;">底层</a> <a href="/tags/底层，源码，懒加载，分类/" style="font-size: 10px;">底层，源码，懒加载，分类</a> <a href="/tags/开发/" style="font-size: 10px;">开发</a> <a href="/tags/循环/" style="font-size: 11.43px;">循环</a> <a href="/tags/微信/" style="font-size: 10px;">微信</a> <a href="/tags/感想/" style="font-size: 10px;">感想</a> <a href="/tags/成员变量/" style="font-size: 10px;">成员变量</a> <a href="/tags/拓扑/" style="font-size: 10px;">拓扑</a> <a href="/tags/插值/" style="font-size: 10px;">插值</a> <a href="/tags/数据结构/" style="font-size: 14.29px;">数据结构</a> <a href="/tags/斐波那契/" style="font-size: 10px;">斐波那契</a> <a href="/tags/杭州/" style="font-size: 10px;">杭州</a> <a href="/tags/栈/" style="font-size: 10px;">栈</a> <a href="/tags/树/" style="font-size: 10px;">树</a> <a href="/tags/消息转发/" style="font-size: 10px;">消息转发</a> <a href="/tags/混合交互/" style="font-size: 10px;">混合交互</a> <a href="/tags/源码/" style="font-size: 18.57px;">源码</a> <a href="/tags/理论/" style="font-size: 11.43px;">理论</a> <a href="/tags/科技/" style="font-size: 10px;">科技</a> <a href="/tags/算法/" style="font-size: 17.14px;">算法</a> <a href="/tags/类/" style="font-size: 15.71px;">类</a> <a href="/tags/线性表/" style="font-size: 11.43px;">线性表</a> <a href="/tags/线程/" style="font-size: 11.43px;">线程</a> <a href="/tags/结构/" style="font-size: 14.29px;">结构</a> <a href="/tags/苹果商店/" style="font-size: 10px;">苹果商店</a> <a href="/tags/西湖/" style="font-size: 10px;">西湖</a> <a href="/tags/调优/" style="font-size: 10px;">调优</a> <a href="/tags/进程/" style="font-size: 10px;">进程</a> <a href="/tags/进阶/" style="font-size: 10px;">进阶</a> <a href="/tags/链表/" style="font-size: 12.86px;">链表</a> <a href="/tags/锁/" style="font-size: 10px;">锁</a> <a href="/tags/队列/" style="font-size: 11.43px;">队列</a> <a href="/tags/面试/" style="font-size: 10px;">面试</a> <a href="/tags/项目/" style="font-size: 10px;">项目</a> <a href="/tags/项目经理/" style="font-size: 10px;">项目经理</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">四月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">三月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">二月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">一月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">十二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">十月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">七月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">七月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">三月 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/p/d4ce128d.html">【数据结构与算法】查找算法（二）平衡二叉树</a>
+          </li>
+        
+          <li>
+            <a href="/p/87f3f6a9.html">【数据结构与算法】查找算法（一）</a>
+          </li>
+        
+          <li>
+            <a href="/p/96e21745.html">【数据结构与算法10】拓扑排序</a>
+          </li>
+        
+          <li>
+            <a href="/p/48b87814.html">锁分析</a>
+          </li>
+        
+          <li>
+            <a href="/p/5abeee19.html">【底层探索】- 多线程三（GCD源码分析）</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 李佳<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
 </footer>
-
-<div class="progress-bar"></div>
-
-
-    <!-- 搜索遮罩框 -->
-<div id="searchModal" class="modal">
-    <div class="modal-content">
-        <div class="search-header">
-            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
-            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
-                   class="search-input">
-        </div>
-        <div id="searchResult"></div>
     </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
-<script type="text/javascript">
-$(function () {
-    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
-});
-</script>
-    <!-- 回到顶部按钮 -->
-<div id="backTop" class="top-scroll">
-    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
-        <i class="fas fa-arrow-up"></i>
-    </a>
-</div>
-
-
-    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
-
-    <!-- Baidu Analytics -->
-
-    <!-- Baidu Push -->
-
-<script>
-    (function () {
-        var bp = document.createElement('script');
-        var curProtocol = window.location.protocol.split(':')[0];
-        if (curProtocol === 'https') {
-            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-        } else {
-            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-        }
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(bp, s);
-    })();
-</script>
-
-    
-    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
-    
-    
-    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
     
 
-    
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
-    
 
-    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
 
-    
 
-    
-    
-    
-    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
-    
+<script src="/js/script.js"></script>
 
+
+
+  </div>
 </body>
-
 </html>

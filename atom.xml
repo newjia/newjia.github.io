@@ -123,17 +123,14 @@
     <link href="http://nilsli.com/p/5abeee19.html"/>
     <id>http://nilsli.com/p/5abeee19.html</id>
     <published>2020-05-12T09:05:50.000Z</published>
-    <updated>2020-05-21T04:52:13.183Z</updated>
+    <updated>2020-05-21T05:04:48.912Z</updated>
     
     <summary type="html">
     
-      
-      
-        
-        
-          
-        
-      
+      &lt;blockquote&gt;
+&lt;p&gt;本篇采用的libdispatch 源码来自&lt;a href=&quot;https://opensource.apple.com/tarballs/libdispatch/libdispatch-1173.60.1.tar.gz&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;苹果官方文档-libdispatch-1173.60.1&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&quot;〇、序言&quot;&gt;&lt;a href=&quot;#〇、序言&quot; class=&quot;headerlink&quot; title=&quot;〇、序言&quot;&gt;&lt;/a&gt;〇、序言&lt;/h2&gt;&lt;p&gt;前面两篇文章多线程的概念和应用（&lt;a href=&quot;https://nilsli.com/p/e318a7b3.html&quot;&gt;【底层探索】- 多线程(一)&lt;/a&gt;、&lt;a href=&quot;https://nilsli.com/p/bd5c42bb.html&quot;&gt;【底层探索】- 多线程三（GCD应用）&lt;/a&gt;），再加上平时经常在使用，下面来探索一下源码层面上的实现，加深对多线程的理解。&lt;/p&gt;
     
     </summary>
     
@@ -367,9 +364,9 @@
     
       <category term="算法" scheme="http://nilsli.com/tags/%E7%AE%97%E6%B3%95/"/>
     
-      <category term="队列" scheme="http://nilsli.com/tags/%E9%98%9F%E5%88%97/"/>
-    
       <category term="栈" scheme="http://nilsli.com/tags/%E6%A0%88/"/>
+    
+      <category term="队列" scheme="http://nilsli.com/tags/%E9%98%9F%E5%88%97/"/>
     
   </entry>
   
