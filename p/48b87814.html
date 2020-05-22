@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="锁分析, 李佳的技术博客">
+    <meta name="keywords" content="【多线程】锁分析, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>锁分析 | 李佳的技术博客</title>
+    <title>【多线程】锁分析 | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/11.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/16.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">锁分析</h1>
+                    <h1 class="description center-align post-title">【多线程】锁分析</h1>
                 </div>
             </div>
         </div>
@@ -392,14 +392,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    0
+                    3.9k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    16 分
                 </div>
                 
 
@@ -415,7 +415,494 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                
+                <h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><h3 id="1-1-同步"><a href="#1-1-同步" class="headerlink" title="1.1 同步"></a>1.1 同步</h3><p>为了避免多个线程同时读写同一个数据而产生不可预料的后果，我们要将各个线程对同一个数据的访问<strong>同步</strong>（Synchronization）。</p>
+<p>所谓<strong>同步</strong>，即指在一个线程访问数据未结束的时候，其他线程不得对同一个数据进行访问。如此，对数据的访问被原子化了。</p>
+<p>同步最常见的方法是使用<strong>锁</strong>（Lock）。</p>
+<h3 id="1-2-锁"><a href="#1-2-锁" class="headerlink" title="1.2 锁"></a>1.2 锁</h3><p>锁是一种非强制机制，每一个线程在访问数据或资源之前首先试图<strong>获取</strong>（Acquire）锁，并在访问结束之后释放（Release）锁。在锁已经被占用的时候试图获取锁时，线程会等待，直到锁重新可用。</p>
+<h2 id="二、类型"><a href="#二、类型" class="headerlink" title="二、类型"></a>二、类型</h2><p>在计算机开发中，锁通常有3大类：<strong>自旋锁、互斥锁、条件锁</strong>。</p>
+<h3 id="2-1-自旋锁（SpinLock）"><a href="#2-1-自旋锁（SpinLock）" class="headerlink" title="2.1 自旋锁（SpinLock）"></a>2.1 自旋锁（SpinLock）</h3><h4 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h4><p>线程反复检查变量是否可用。由于线程在这一过程中保持执行，因此属于忙等待。一旦获取了自旋锁，线程会一直保持该锁，直至显式释放自旋锁。自旋锁避免了进程上下文的调度开销，因此对于线程只会阻塞很短时间的场合是有效的。</p>
+<h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><ul>
+<li>OSSpinLock 因为<a href="https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/" target="_blank" rel="noopener">线程安全</a>，现已被废弃</li>
+</ul>
+<h3 id="2-2-互斥锁（Mutex）"><a href="#2-2-互斥锁（Mutex）" class="headerlink" title="2.2 互斥锁（Mutex）"></a>2.2 互斥锁（Mutex）</h3><h3 id="2-2-互斥锁（Mutex）-1"><a href="#2-2-互斥锁（Mutex）-1" class="headerlink" title="2.2 互斥锁（Mutex）"></a>2.2 互斥锁（Mutex）</h3><h4 id="特点-1"><a href="#特点-1" class="headerlink" title="特点"></a>特点</h4><p>防止两条线程同时对同一公共资源进行读写的机制。通过将代码切片成一个个临界区而实现。</p>
+<h4 id="例子-1"><a href="#例子-1" class="headerlink" title="例子"></a>例子</h4><ul>
+<li>pthread_mutex</li>
+<li>@synchronized</li>
+<li>NSLock </li>
+<li>os_unfair_lock</li>
+</ul>
+<h3 id="2-3-条件锁（Condition-Variable）"><a href="#2-3-条件锁（Condition-Variable）" class="headerlink" title="2.3 条件锁（Condition Variable）"></a>2.3 条件锁（Condition Variable）</h3><h4 id="特点-2"><a href="#特点-2" class="headerlink" title="特点"></a>特点</h4><p>作为一种同步手段，作用类似一个栅栏。当进程的某些资源要求不满足就进入休眠，也就是锁住。当资源被分配到了，条件锁打开，进程继续进行。</p>
+<h4 id="例子-2"><a href="#例子-2" class="headerlink" title="例子"></a>例子</h4><ul>
+<li>NSCondition</li>
+<li>NSConditionLock</li>
+</ul>
+<h3 id="2-4-递归锁-recursive"><a href="#2-4-递归锁-recursive" class="headerlink" title="2.4 递归锁(recursive)"></a>2.4 递归锁(recursive)</h3><h4 id="特点-3"><a href="#特点-3" class="headerlink" title="特点"></a>特点</h4><p>同一个线程可以加锁N 次而不会引起死锁</p>
+<h4 id="例子-3"><a href="#例子-3" class="headerlink" title="例子"></a>例子</h4><ul>
+<li>NSRecursiveLock</li>
+<li>pthread_mutex(recursive)</li>
+</ul>
+<h3 id="2-5-信号量（Semaphore）"><a href="#2-5-信号量（Semaphore）" class="headerlink" title="2.5 信号量（Semaphore）"></a>2.5 信号量（Semaphore）</h3><h4 id="特点-4"><a href="#特点-4" class="headerlink" title="特点"></a>特点</h4><p>允许多给写线程并发访问的资源，简称信号量，一个初始值为N的信号量允许N个线程并发放温。</p>
+<p>线程访问资源时做以下操作:</p>
+<ul>
+<li>信号值减1</li>
+<li>如果信号值小于0，则进入等待状态，否则继续执行</li>
+</ul>
+<p>线程访问完资源后，释放信号量时操作如下：</p>
+<ul>
+<li>信号量得值加1</li>
+<li>如果信号量的值小于1，唤醒一个等待中的线程</li>
+</ul>
+<h4 id="例子-4"><a href="#例子-4" class="headerlink" title="例子"></a>例子</h4><ul>
+<li>dispatch_semaphore</li>
+</ul>
+<h2 id="三、常见锁分析"><a href="#三、常见锁分析" class="headerlink" title="三、常见锁分析"></a>三、常见锁分析</h2><h3 id="3-1-递归锁-synchronized分析"><a href="#3-1-递归锁-synchronized分析" class="headerlink" title="3.1 递归锁 - @synchronized分析"></a>3.1 递归锁 - @synchronized分析</h3><h4 id="3-1-1-引子"><a href="#3-1-1-引子" class="headerlink" title="3.1.1 引子"></a>3.1.1 引子</h4><p>先编写    如下代码，并打开汇编诊断（Xcode中，Debug——Debug Flow——Always Show Dissembly）</p>
+<pre class="line-numbers language-c"><code class="language-c">    @<span class="token function">synchronizedd</span> <span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"hey jude"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>得到如下调用栈：</p>
+<p><img src="/p/48b87814/001.png" alt></p>
+<p>留意到有objc_sync_enter 以及objc_sync_exit，进入退出一一匹配，猜测可能就是锁的加锁与解锁。先不管了，找到<code>objc</code> <a href="https://opensource.apple.com/tarballs/objc4/" target="_blank" rel="noopener">开源库</a></p>
+<h4 id="3-1-2-objc-sync-enter"><a href="#3-1-2-objc-sync-enter" class="headerlink" title="3.1.2 objc_sync_enter"></a>3.1.2 objc_sync_enter</h4><p>在objc4 中可以找到objc_sync_enter 函数，它的作用是：开始锁住<code>obj</code>，如有必要，开辟递归互斥锁关联到<strong>obj</strong>，一旦锁被获取到，返回OBJC_SYNC_SUCCESS的标识</p>
+<blockquote>
+<p>// Begin synchronizing on ‘obj’. </p>
+<p>// Allocates recursive mutex associated with ‘obj’ if needed.</p>
+<p>// Returns OBJC_SYNC_SUCCESS once lock is acquired.  </p>
+</blockquote>
+<p>函数实现如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">objc_sync_enter</span><span class="token punctuation">(</span>id obj<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">int</span> result <span class="token operator">=</span> OBJC_SYNC_SUCCESS<span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>obj<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        SyncData<span class="token operator">*</span> data <span class="token operator">=</span> <span class="token function">id2data</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> ACQUIRE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">ASSERT</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        data<span class="token operator">-></span>mutex<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// @synchronizedd(nil) does nothing</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>DebugNilSync<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">_objc_inform</span><span class="token punctuation">(</span><span class="token string">"NIL SYNC DEBUG: @synchronizedd(nil); set a breakpoint on objc_sync_nil to debug"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">objc_sync_nil</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>分析一下方法实现：</p>
+<ul>
+<li><p>如果加锁目标对象不存在，不作操作</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token comment" spellcheck="true">// @synchronizedd(nil) does nothing</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>DebugNilSync<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">_objc_inform</span><span class="token punctuation">(</span><span class="token string">"NIL SYNC DEBUG: @synchronizedd(nil); set a breakpoint on objc_sync_nil to debug"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">objc_sync_nil</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注释已经写得很清楚了，does nothing。继续看<code>objc_sync_nil</code> 如何实现</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token function">BREAKPOINT_FUNCTION</span><span class="token punctuation">(</span>
+    <span class="token keyword">void</span> <span class="token function">objc_sync_nil</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>的确，啥也没干。这样也解释了某些场合下，锁一个空对象，是不会做操作的。</p>
+</li>
+<li><p>如果传入对象存在</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">if</span> <span class="token punctuation">(</span>obj<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   SyncData<span class="token operator">*</span> data <span class="token operator">=</span> <span class="token function">id2data</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> ACQUIRE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token function">ASSERT</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   data<span class="token operator">-></span>mutex<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>防止死锁：</strong>这里的SyncData 拥有<code>next</code> 指向的递归锁结构，好处就是最终总会有 object 为 nil，会跳出循环，不会死锁。</p>
+<p>这里的好处就是最终总会有 <code>object</code> 为 <code>nil</code>，会跳出循环，防止死锁。</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token function">alignas</span><span class="token punctuation">(</span>CacheLineSize<span class="token punctuation">)</span> SyncData <span class="token punctuation">{</span>
+    <span class="token keyword">struct</span> SyncData<span class="token operator">*</span> nextData<span class="token punctuation">;</span>
+    DisguisedPtr<span class="token operator">&lt;</span>objc_object<span class="token operator">></span> object<span class="token punctuation">;</span>
+    int32_t threadCount<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// number of THREADS using this block</span>
+    recursive_mutex_t mutex<span class="token punctuation">;</span>
+<span class="token punctuation">}</span> SyncData<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>里面有数据域：DisguisedPtr、threadCount、recursive_mutex_t，以及指针域：<code>SyncData* nextData</code></p>
+<p>继续看 <code>id2data</code> 的实现如下：</p>
+<ol>
+<li><p>查询<strong>当前</strong>单一线程的快速缓存文件匹配。</p>
+<p>如果有，对锁住的次数，根据传入参数类型(获取、释放、查看)，分别进行操作。</p>
+<ul>
+<li>如果是获取资源：锁次数++</li>
+<li>如果是释放资源：锁次数–。当然如果次数变为0，此时锁也不复存在，需要从快速缓存移除。</li>
+<li>如果是查看资源：不操作。</li>
+</ul>
+<p>相关代码精简如下：</p>
+<pre class="line-numbers language-c"><code class="language-c">SyncData <span class="token operator">*</span>data <span class="token operator">=</span> <span class="token punctuation">(</span>SyncData <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">tls_get_direct</span><span class="token punctuation">(</span>SYNC_DATA_DIRECT_KEY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        uintptr_t lockCount<span class="token punctuation">;</span>
+        <span class="token keyword">switch</span><span class="token punctuation">(</span>why<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                <span class="token keyword">case</span> ACQUIRE<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+            lockCount<span class="token operator">++</span><span class="token punctuation">;</span>
+            <span class="token keyword">case</span> RELEASE<span class="token punctuation">:</span>
+            lockCount<span class="token operator">--</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>lockCount <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// remove from fast cache</span>
+                     <span class="token function">tls_set_direct</span><span class="token punctuation">(</span>SYNC_DATA_DIRECT_KEY<span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token keyword">case</span> CHECK<span class="token punctuation">:</span>
+             <span class="token comment" spellcheck="true">// do nothing</span>
+             <span class="token keyword">break</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>查询<strong>所有</strong>线程内部缓存文件与锁持有对象的匹配</p>
+<p>首先会查找一个线程缓存<code>SyncCache</code>，查找的过程是这样的（有精简）：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">static</span> SyncCache <span class="token operator">*</span><span class="token function">fetch_cache</span><span class="token punctuation">(</span>bool create<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    _objc_pthread_data <span class="token operator">*</span>data<span class="token punctuation">;</span>
+
+    data <span class="token operator">=</span> <span class="token function">_objc_fetch_pthread_data</span><span class="token punctuation">(</span>create<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">/* 省略部分*/</span>
+    <span class="token comment" spellcheck="true">// Make sure there's at least one open slot in the list.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>data<span class="token operator">-></span>syncCache<span class="token operator">-></span>allocated <span class="token operator">==</span> data<span class="token operator">-></span>syncCache<span class="token operator">-></span>used<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        data<span class="token operator">-></span>syncCache<span class="token operator">-></span>allocated <span class="token operator">*</span><span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+        data<span class="token operator">-></span>syncCache <span class="token operator">=</span> <span class="token punctuation">(</span>SyncCache <span class="token operator">*</span><span class="token punctuation">)</span>
+            <span class="token function">realloc</span><span class="token punctuation">(</span>data<span class="token operator">-></span>syncCache<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>SyncCache<span class="token punctuation">)</span> 
+                    <span class="token operator">+</span> data<span class="token operator">-></span>syncCache<span class="token operator">-></span>allocated <span class="token operator">*</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>SyncCacheItem<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">return</span> data<span class="token operator">-></span>syncCache<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><p>先创建一个<code>_objc_pthread_data</code> 类型的线程数据</p>
+</li>
+<li><p>查看线程私有数据，如果有，就会更新<code>data</code></p>
+</li>
+<li><p>接下来对同步缓存容量查看，如果使用已满（allocated == used），会进行 *2 扩建扩容</p>
+</li>
+<li><p>接下来将同步缓存返回</p>
+</li>
+</ul>
+<p>有意思的是这个<code>syncCache</code> 是专门针对@synchronized 准备的，如下图</p>
+<p><img src="/p/48b87814/002.png" alt></p>
+<p>接下来根据缓存文件<code>SyncCache</code> 的存在，进行循环遍历，取出<code>cache</code>内的元素—— <code>SyncCacheItem</code> 结构体，根据传入参数类型(获取、释放、查看)，进行内部属性，分别进行操作。</p>
+<ul>
+<li><p>如果是获取资源：锁次数++</p>
+<pre class="line-numbers language-c"><code class="language-c"> <span class="token keyword">case</span> ACQUIRE<span class="token punctuation">:</span>
+      item<span class="token operator">-></span>lockCount<span class="token operator">++</span><span class="token punctuation">;</span><span class="token operator">=</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</li>
+<li><p>如果是释放资源：锁次数–。当然如果次数变为0，需要从线程缓存数据移除。</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">case</span> RELEASE<span class="token punctuation">:</span>
+    item<span class="token operator">-></span>lockCount<span class="token operator">--</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>item<span class="token operator">-></span>lockCount <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment" spellcheck="true">// remove from per-thread cache</span>
+      cache<span class="token operator">-></span>list<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token operator">=</span> cache<span class="token operator">-></span>list<span class="token punctuation">[</span><span class="token operator">--</span>cache<span class="token operator">-></span>used<span class="token punctuation">]</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>如果是查看资源：不操作。</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">case</span> CHECK<span class="token punctuation">:</span>
+    <span class="token comment" spellcheck="true">// do nothing</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</li>
+</ul>
+</li>
+<li><p>去已使用列表查找匹配对象（快速、慢速缓存均未找到）</p>
+<p>在介绍步骤之前，先普及一下已使用列表（in-use list） 的结构。在这个<code>id2data</code>函数执行初始时，执行了两个代码</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">static</span> SyncData<span class="token operator">*</span> <span class="token function">id2data</span><span class="token punctuation">(</span>id object<span class="token punctuation">,</span> <span class="token keyword">enum</span> usage why<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>    
+      spinlock_t <span class="token operator">*</span>lockp <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token function">LOCK_FOR_OBJ</span><span class="token punctuation">(</span>object<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    SyncData <span class="token operator">*</span><span class="token operator">*</span>listp <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token function">LIST_FOR_OBJ</span><span class="token punctuation">(</span>object<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>即生成了一个名为<code>lockp</code> 的自旋锁，以及<code>SyncData</code> 指针对象。而<code>LOCK_FOR_OBJ</code>与<code>LIST_FOR_OBJ</code>是两个宏操作，如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token comment" spellcheck="true">// Use multiple parallel lists to decrease contention among unrelated objects.</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> LOCK_FOR_OBJ(obj) sDataLists[obj].lock</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> LIST_FOR_OBJ(obj) sDataLists[obj].data</span>
+<span class="token keyword">static</span> StripedMap<span class="token operator">&lt;</span>SyncList<span class="token operator">></span> sDataLists<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>看得出都说在查找一个<code>sDataLists</code> 的列表元素的lock、data属性，这个表结构比较简单：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">struct</span> SyncList <span class="token punctuation">{</span>
+    SyncData <span class="token operator">*</span>data<span class="token punctuation">;</span>
+    spinlock_t lock<span class="token punctuation">;</span>
+    constexpr <span class="token function">SyncList</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token function">data</span><span class="token punctuation">(</span>nil<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">lock</span><span class="token punctuation">(</span>fork_unsafe_lock<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接下来重点关注一下<code>StripedMap</code> 这个类，可以成为条纹映射map，是一种结构<code>void* -&gt; T</code>的map，有一个<code>indexForPointer</code> 的函数，用来指向内部存储的对象——即缓存的syncData 对象</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">static</span> <span class="token keyword">unsigned</span> <span class="token keyword">int</span> <span class="token function">indexForPointer</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>p<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        uintptr_t addr <span class="token operator">=</span> reinterpret_cast<span class="token operator">&lt;</span>uintptr_t<span class="token operator">></span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>addr <span class="token operator">>></span> <span class="token number">4</span><span class="token punctuation">)</span> <span class="token operator">^</span> <span class="token punctuation">(</span>addr <span class="token operator">>></span> <span class="token number">9</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">%</span> StripeCount<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>好的，接下来看</p>
+<ul>
+<li><p>先加锁</p>
+</li>
+<li><p>如果找到，添加到快速缓存以及线程内缓存里</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">if</span> SUPPORT_DIRECT_THREAD_KEYS</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>fastCacheOccupied<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Save in fast thread cache</span>
+            <span class="token function">tls_set_direct</span><span class="token punctuation">(</span>SYNC_DATA_DIRECT_KEY<span class="token punctuation">,</span> result<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">tls_set_direct</span><span class="token punctuation">(</span>SYNC_COUNT_DIRECT_KEY<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> 
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+        <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Save in thread cache</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>cache<span class="token punctuation">)</span> cache <span class="token operator">=</span> <span class="token function">fetch_cache</span><span class="token punctuation">(</span>YES<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            cache<span class="token operator">-></span>list<span class="token punctuation">[</span>cache<span class="token operator">-></span>used<span class="token punctuation">]</span><span class="token punctuation">.</span>data <span class="token operator">=</span> result<span class="token punctuation">;</span>
+            cache<span class="token operator">-></span>list<span class="token punctuation">[</span>cache<span class="token operator">-></span>used<span class="token punctuation">]</span><span class="token punctuation">.</span>lockCount <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+            cache<span class="token operator">-></span>used<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>如果未找到，创建新的<code>data</code>，并加入到<code>datalist</code> 内部</p>
+<pre><code>    posix_memalign((void **)&amp;result, alignof(SyncData), sizeof(SyncData));
+    result-&gt;object = (objc_object *)object;
+    result-&gt;threadCount = 1;
+    new (&amp;result-&gt;mutex) recursive_mutex_t(fork_unsafe_lock);
+    result-&gt;nextData = *listp;
+    *listp = result;</code></pre></li>
+<li><p>解锁</p>
+</li>
+</ul>
+<p>小结：这个查找锁的过程，很类似方法查找的过程，先通过缓存查找，接着在方法列表里查找，如果查找不到，会创建一个并加入到列表以及二级缓存中，进行返回。</p>
+</li>
+<li><p>对已获取的<strong>data</strong> 加锁</p>
+<p>执行如下操作：</p>
+<pre class="line-numbers language-c"><code class="language-c">result <span class="token operator">=</span> data<span class="token operator">-></span>mutex<span class="token punctuation">.</span><span class="token function">tryLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这里会返回这个tryLock 的实现是一个递归互斥锁的执行结果，具体实现如下： </p>
+<pre class="line-numbers language-c"><code class="language-c">    bool <span class="token function">tryLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">os_unfair_recursive_lock_trylock</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>mLock<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">lockdebug_recursive_mutex_lock</span><span class="token punctuation">(</span>this<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> true<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> false<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+</li>
+</ul>
+<h4 id="3-1-3-objc-send-exit"><a href="#3-1-3-objc-send-exit" class="headerlink" title="3.1.3 objc_send_exit"></a>3.1.3 objc_send_exit</h4><p>分析完了enter，再看看如何对@synchronized 如何离开。</p>
+<p>函数主要操作是：</p>
+<ul>
+<li>终止同步锁obj，</li>
+<li>返回OBJC_SYNC_SUCCESS（成功） 或者OBJC_SYNC_NOT_OWNING_THREAD_ERROR（失败）</li>
+</ul>
+<blockquote>
+<p>// End synchronizing on ‘obj’. </p>
+<p>// Returns OBJC_SYNC_SUCCESS or OBJC_SYNC_NOT_OWNING_THREAD_ERROR</p>
+</blockquote>
+<ol>
+<li><p>查看同步数据是否存在</p>
+<p>主函数实现精简如下</p>
+<pre class="line-numbers language-c"><code class="language-c">      SyncData<span class="token operator">*</span> data <span class="token operator">=</span> <span class="token function">id2data</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> RELEASE<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            result <span class="token operator">=</span> OBJC_SYNC_NOT_OWNING_THREAD_ERROR<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            bool okay <span class="token operator">=</span> data<span class="token operator">-></span>mutex<span class="token punctuation">.</span><span class="token function">tryUnlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>okay<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                result <span class="token operator">=</span> OBJC_SYNC_NOT_OWNING_THREAD_ERROR<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>如果锁列表里找不到obj，即加锁对象不存在，退出并报出对象同步未拥有的线程错误</p>
+</li>
+<li><p>如果有找到，尝试解锁<code>tryUnlock</code>。这里的解锁也是递归锁的解锁，具体实现如下：</p>
+<pre class="line-numbers language-c"><code class="language-c">    bool <span class="token function">tryUnlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">os_unfair_recursive_lock_tryunlock4objc</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>mLock<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">lockdebug_recursive_mutex_unlock</span><span class="token punctuation">(</span>this<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> true<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> false<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>如果解锁失败，也报出对象同步未拥有的线程错误</p>
+</li>
+</ol>
+<h4 id="3-1-4-总结"><a href="#3-1-4-总结" class="headerlink" title="3.1.4 总结"></a>3.1.4 总结</h4><ol>
+<li>针对pthread 进行了封装，体现在tls 的查找机制。</li>
+<li>@synchronized 分为高速缓存、线程内数据缓存（tls）以及已使用对象的列表进行加锁缓存</li>
+<li>加锁为一个syncList 的列表，列表内有多个syncData 的对象</li>
+<li>外界对加锁对象的获取/释放，会相应的对同步数据节点的属性+1/-1</li>
+<li><strong>优点：采用缓存机制，不会产生死锁</strong></li>
+</ol>
+<h4 id="3-1-5-引申"><a href="#3-1-5-引申" class="headerlink" title="3.1.5 引申"></a>3.1.5 引申</h4><p>先看一下会打印什么，注意，这里对self.arr 进行了@synchronized 锁操作？</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">100000</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">dispatch_async</span><span class="token punctuation">(</span><span class="token function">dispatch_get_global_queue</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">^</span><span class="token punctuation">{</span>
+            @<span class="token function">synchronizedd</span> <span class="token punctuation">(</span>self<span class="token punctuation">.</span>arr<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                self<span class="token punctuation">.</span>arr <span class="token operator">=</span> <span class="token punctuation">[</span>NSMutableArray array<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果，会崩溃</p>
+<p><img src="/p/48b87814/003.png" alt></p>
+<p>为什么，注意到这个可变数组 <code>self.arr</code>  一直属于 nil，那上文源码中得知：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token comment" spellcheck="true">// @synchronizedd(nil) does nothing</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>DebugNilSync<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">_objc_inform</span><span class="token punctuation">(</span><span class="token string">"NIL SYNC DEBUG: @synchronizedd(nil); set a breakpoint on objc_sync_nil to debug"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>即去锁一个空对象，是不会有锁操作，反而会报错崩溃。</p>
+<p><strong>解决</strong></p>
+<p>解决方案也简单：</p>
+<p>对<code>self</code> 进行同步锁，这个似乎太臃肿了</p>
+<p>也可以使用引入NSLock 进行锁定，如下操作：</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">100000</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">dispatch_async</span><span class="token punctuation">(</span><span class="token function">dispatch_get_global_queue</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">^</span><span class="token punctuation">{</span>
+            NSLock <span class="token operator">*</span>lock  <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>NSLock alloc<span class="token punctuation">]</span> init<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            self<span class="token punctuation">.</span>arr <span class="token operator">=</span> <span class="token punctuation">[</span>NSMutableArray array<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token punctuation">[</span>lock lock<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>下面来分析一下<code>NSLock</code></p>
+<h3 id="3-2-互斥锁-NSLock-的分析"><a href="#3-2-互斥锁-NSLock-的分析" class="headerlink" title="3.2 互斥锁 - NSLock 的分析"></a>3.2 互斥锁 - NSLock 的分析</h3><p>大家都知道OC 中Foundation 并没有开源，所以无从查看NSLock 的实现，但是Swift 对Foundation 却开源了， 我们不妨曲线救国，在<em>Swift</em> 中一探究竟。相关Swift Foundation的源码可以在苹果的<a href="https://github.com/apple/swift-corelibs-foundation" target="_blank" rel="noopener">Github仓库</a> 下载</p>
+<h4 id="3-2-1-创建"><a href="#3-2-1-创建" class="headerlink" title="3.2.1 创建"></a>3.2.1 创建</h4><ol>
+<li><p>类的生成</p>
+<pre class="line-numbers language-swift"><code class="language-swift">open <span class="token keyword">class</span> <span class="token class-name">NSLock</span><span class="token punctuation">:</span> <span class="token builtin">NSObject</span><span class="token punctuation">,</span> <span class="token builtin">NSLocking</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 内部私有的互斥锁，容量创建为1</span>
+        <span class="token keyword">internal</span> <span class="token keyword">var</span> mutex <span class="token operator">=</span> _MutexPointer<span class="token punctuation">.</span><span class="token function">allocate</span><span class="token punctuation">(</span>capacity<span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>公用的<code>init</code>方法如下：</p>
+<pre class="line-numbers language-swift"><code class="language-swift">    <span class="token keyword">public</span> <span class="token keyword">override</span> <span class="token keyword">init</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token function">pthread_mutex_init</span><span class="token punctuation">(</span>mutex<span class="token punctuation">,</span> <span class="token constant">nil</span><span class="token punctuation">)</span>
+#<span class="token keyword">if</span> <span class="token function">os</span><span class="token punctuation">(</span>macOS<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token function">os</span><span class="token punctuation">(</span>iOS<span class="token punctuation">)</span>
+        <span class="token function">pthread_cond_init</span><span class="token punctuation">(</span>timeoutCond<span class="token punctuation">,</span> <span class="token constant">nil</span><span class="token punctuation">)</span>
+        <span class="token function">pthread_mutex_init</span><span class="token punctuation">(</span>timeoutMutex<span class="token punctuation">,</span> <span class="token constant">nil</span><span class="token punctuation">)</span>
+#endif
+#endif
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可见，这个类的初始化，对内部的<code>pthread_mutex_init</code> 进行了操作，初始化局部变量互斥锁mutex</p>
+</li>
+</ol>
+<h4 id="3-2-2-加锁"><a href="#3-2-2-加锁" class="headerlink" title="3.2.2 加锁"></a>3.2.2 加锁</h4><p>加锁的过程很简单，就是对内部这个互斥锁加锁</p>
+<pre class="line-numbers language-swift"><code class="language-swift">    open <span class="token keyword">func</span> <span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span>mutex<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这里使用的是常见的<code>pthread_mutex_lock</code> 函数用来操作互斥锁。这里的问题是，如果mutex 当前被锁住，执行函数，会让当前线程阻塞，直到<code>mutex</code>状态改变为可以执行位置。</p>
+<p>在这种情况下，大胆的猜测一下，当多次调用NSLock 的lock 方法时（递归），会反复调用mutex，造成锁等待，谁也开不了谁，最终线程阻塞，影响性能。</p>
+<p>可见 NSLock 虽好，可以有造成线程阻塞的风险，尤其是进行递归循环的时候。</p>
+<h4 id="3-2-3-解锁"><a href="#3-2-3-解锁" class="headerlink" title="3.2.3 解锁"></a>3.2.3 解锁</h4><pre class="line-numbers language-swift"><code class="language-swift">    open <span class="token keyword">func</span> <span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span>mutex<span class="token punctuation">)</span>
+#<span class="token keyword">if</span> <span class="token function">os</span><span class="token punctuation">(</span>macOS<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token function">os</span><span class="token punctuation">(</span>iOS<span class="token punctuation">)</span>
+        <span class="token comment" spellcheck="true">// Wakeup any threads waiting in lock(before:)</span>
+        <span class="token function">pthread_mutex_lock</span><span class="token punctuation">(</span>timeoutMutex<span class="token punctuation">)</span>
+        <span class="token function">pthread_cond_broadcast</span><span class="token punctuation">(</span>timeoutCond<span class="token punctuation">)</span>
+        <span class="token function">pthread_mutex_unlock</span><span class="token punctuation">(</span>timeoutMutex<span class="token punctuation">)</span>
+#endif
+#endif
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>解锁时，会对当前的<code>mutex</code> 进行解锁，以及超时解锁（使用）</p>
+<h3 id="3-3-递归锁与互斥锁区别"><a href="#3-3-递归锁与互斥锁区别" class="headerlink" title="3.3 递归锁与互斥锁区别"></a>3.3 递归锁与互斥锁区别</h3><h4 id="3-3-4-阻塞分析及解决"><a href="#3-3-4-阻塞分析及解决" class="headerlink" title="3.3.4 阻塞分析及解决"></a>3.3.4 阻塞分析及解决</h4><p>提问：下面会打印什么：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>showLock<span class="token punctuation">{</span>
+    NSLock <span class="token operator">*</span>lock <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>NSLock alloc<span class="token punctuation">]</span> init<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token function">dispatch_async</span><span class="token punctuation">(</span><span class="token function">dispatch_get_global_queue</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">^</span><span class="token punctuation">{</span>
+        <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">^</span>test<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        test <span class="token operator">=</span> <span class="token operator">^</span><span class="token punctuation">(</span><span class="token keyword">int</span> value<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token punctuation">[</span>lock lock<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"加锁🔐"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"value1      %d"</span><span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">test</span><span class="token punctuation">(</span>value <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"value2      %d"</span><span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"开锁🔐"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">[</span>lock unlock<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token function">test</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果会不会是 5-1 =4 ? 看一下打印如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">39</span><span class="token punctuation">:</span><span class="token number">13.720485</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">7989</span><span class="token punctuation">:</span><span class="token number">543814</span><span class="token punctuation">]</span> 加锁🔐
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">39</span><span class="token punctuation">:</span><span class="token number">13.720724</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">7989</span><span class="token punctuation">:</span><span class="token number">543814</span><span class="token punctuation">]</span> value1      <span class="token number">5</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>记过很残酷，block 只进行到第一个 NSLog 就不走了，第二个NSLog 都不再走了。</p>
+<p><strong>原因</strong>：递归调用普通的互斥锁，会造成<strong>线程阻塞</strong>（因为不会查询缓存）。block 反复调用自身block，都走不到</p>
+<p><strong>解决</strong>：使用<strong>递归锁</strong> NSCursiveLock 替换 NSLock</p>
+<p>即代码为：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>showLock<span class="token punctuation">{</span>
+    NSRecursiveLock <span class="token operator">*</span>lock <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>NSRecursiveLock alloc<span class="token punctuation">]</span> init<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token function">dispatch_async</span><span class="token punctuation">(</span><span class="token function">dispatch_get_global_queue</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">^</span><span class="token punctuation">{</span>
+        <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">^</span>test<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        test <span class="token operator">=</span> <span class="token operator">^</span><span class="token punctuation">(</span><span class="token keyword">int</span> value<span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token punctuation">[</span>lock lock<span class="token punctuation">]</span><span class="token punctuation">;</span>
+            <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"加锁🔐"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"value1      %d"</span><span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">test</span><span class="token punctuation">(</span>value <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token punctuation">[</span>lock unlock<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token function">test</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>打印结果如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">20.645879</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8048</span><span class="token punctuation">:</span><span class="token number">551083</span><span class="token punctuation">]</span> 加锁🔐
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">20.646149</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8048</span><span class="token punctuation">:</span><span class="token number">551083</span><span class="token punctuation">]</span> value1      <span class="token number">5</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">20.646378</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8048</span><span class="token punctuation">:</span><span class="token number">551083</span><span class="token punctuation">]</span> 加锁🔐
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">20.646562</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8048</span><span class="token punctuation">:</span><span class="token number">551083</span><span class="token punctuation">]</span> value1      <span class="token number">4</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">20.646739</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8048</span><span class="token punctuation">:</span><span class="token number">551083</span><span class="token punctuation">]</span> 加锁🔐
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">20.646890</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8048</span><span class="token punctuation">:</span><span class="token number">551083</span><span class="token punctuation">]</span> value1      <span class="token number">3</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">20.647074</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8048</span><span class="token punctuation">:</span><span class="token number">551083</span><span class="token punctuation">]</span> 加锁🔐
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">20.647220</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8048</span><span class="token punctuation">:</span><span class="token number">551083</span><span class="token punctuation">]</span> value1      <span class="token number">2</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">20.648720</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8048</span><span class="token punctuation">:</span><span class="token number">551083</span><span class="token punctuation">]</span> 加锁🔐
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">20.648967</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8048</span><span class="token punctuation">:</span><span class="token number">551083</span><span class="token punctuation">]</span> value1      <span class="token number">1</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">17</span><span class="token punctuation">:</span><span class="token number">51</span><span class="token punctuation">:</span><span class="token number">20.649133</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8048</span><span class="token punctuation">:</span><span class="token number">551083</span><span class="token punctuation">]</span> 加锁🔐<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>此时不再阻塞，递归锁顺利完成了任务</p>
+<p><strong>内部实现</strong>：继续在Swift Foundation 查看NSRecursiveLock 的实现，结果如下：</p>
+<pre class="line-numbers language-swift"><code class="language-swift"><span class="token function">withUnsafeMutablePointer</span><span class="token punctuation">(</span>to<span class="token punctuation">:</span> <span class="token operator">&amp;</span>attrib<span class="token punctuation">)</span> <span class="token punctuation">{</span> attrs <span class="token keyword">in</span>
+            <span class="token function">pthread_mutexattr_init</span><span class="token punctuation">(</span>attrs<span class="token punctuation">)</span>
+            <span class="token function">pthread_mutexattr_settype</span><span class="token punctuation">(</span>attrs<span class="token punctuation">,</span> <span class="token function">Int32</span><span class="token punctuation">(</span><span class="token constant">PTHREAD_MUTEX_RECURSIVE</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+            <span class="token function">pthread_mutex_init</span><span class="token punctuation">(</span>mutex<span class="token punctuation">,</span> attrs<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可见同 NSLock 类似，它的实现是调用<code>pthread_mutexattr_settype</code> 函数，并且类型为<code>PTHREAD_MUTEX_RECURSIVE</code></p>
+<h4 id="3-3-2-递归锁的死锁"><a href="#3-3-2-递归锁的死锁" class="headerlink" title="3.3.2 递归锁的死锁"></a>3.3.2 递归锁的死锁</h4><p>还是上面的例子，加一个for 循环，结果会如何呢？</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>showLock<span class="token punctuation">{</span>
+    NSRecursiveLock <span class="token operator">*</span>lock <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>NSRecursiveLock alloc<span class="token punctuation">]</span> init<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">dispatch_async</span><span class="token punctuation">(</span><span class="token function">dispatch_get_global_queue</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">^</span><span class="token punctuation">{</span>
+             <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">^</span>test<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+             test <span class="token operator">=</span> <span class="token operator">^</span><span class="token punctuation">(</span><span class="token keyword">int</span> value<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                 <span class="token punctuation">[</span>lock lock<span class="token punctuation">]</span><span class="token punctuation">;</span>
+                 <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"加锁🔐"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                 <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                     <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"value1      %d"</span><span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                     <span class="token function">test</span><span class="token punctuation">(</span>value <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                 <span class="token punctuation">}</span>
+                 <span class="token punctuation">[</span>lock unlock<span class="token punctuation">]</span><span class="token punctuation">;</span>
+             <span class="token punctuation">}</span><span class="token punctuation">;</span>
+             <span class="token function">test</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>结果很残酷，是这样的，又崩溃了（为什么要说又呢😿）</p>
+<p><img src="/p/48b87814/004.png" alt></p>
+<p>提示很明显，最后一行<code>String release</code> 释放一个野指针。。。</p>
+<p><strong>原因:</strong> for 循环在block 内部，对同一个对象进行了多次锁操作，最后大家都锁了一次，直到这个资源身上挂着N把锁，最后大家都无法一次性解锁——找不到解锁的出口 。</p>
+<p>即 操作1-&gt; 加锁1-&gt; 加锁2-&gt; 操作1结束 -(有2的锁)- 无法结束解锁——形成死锁 </p>
+<p><strong>解决:</strong>可以采用使用缓存的@synchronized ，因为它对对象进行所操作，会先从缓存查找是否有锁syncData 存在，如果有，直接返回而不加锁，保证锁的唯一性。</p>
+<p>操作如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>showLock<span class="token punctuation">{</span>
+
+    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">10</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+        <span class="token function">dispatch_async</span><span class="token punctuation">(</span><span class="token function">dispatch_get_global_queue</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">^</span><span class="token punctuation">{</span>
+
+            <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">^</span>test<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">int</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            test <span class="token operator">=</span> <span class="token operator">^</span><span class="token punctuation">(</span><span class="token keyword">int</span> value<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                @<span class="token function">synchronizedd</span> <span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"加锁🔐"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"value1      %d"</span><span class="token punctuation">,</span> value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        <span class="token function">test</span><span class="token punctuation">(</span>value <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+
+            <span class="token punctuation">}</span><span class="token punctuation">;</span>
+            <span class="token function">test</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>结果</strong>：也很和谐如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">18</span><span class="token operator">:</span><span class="token number">17</span><span class="token operator">:</span><span class="token number">02.225527</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8255</span><span class="token operator">:</span><span class="token number">571494</span><span class="token punctuation">]</span> 加锁🔐
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">18</span><span class="token operator">:</span><span class="token number">17</span><span class="token operator">:</span><span class="token number">02.225658</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8255</span><span class="token operator">:</span><span class="token number">571494</span><span class="token punctuation">]</span> value1      <span class="token number">5</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">18</span><span class="token operator">:</span><span class="token number">17</span><span class="token operator">:</span><span class="token number">02.225762</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8255</span><span class="token operator">:</span><span class="token number">571494</span><span class="token punctuation">]</span> 加锁🔐
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">18</span><span class="token operator">:</span><span class="token number">17</span><span class="token operator">:</span><span class="token number">02.225841</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8255</span><span class="token operator">:</span><span class="token number">571494</span><span class="token punctuation">]</span> value1      <span class="token number">4</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">18</span><span class="token operator">:</span><span class="token number">17</span><span class="token operator">:</span><span class="token number">02.225931</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8255</span><span class="token operator">:</span><span class="token number">571494</span><span class="token punctuation">]</span> 加锁🔐
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">18</span><span class="token operator">:</span><span class="token number">17</span><span class="token operator">:</span><span class="token number">02.226324</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8255</span><span class="token operator">:</span><span class="token number">571494</span><span class="token punctuation">]</span> value1      <span class="token number">3</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">18</span><span class="token operator">:</span><span class="token number">17</span><span class="token operator">:</span><span class="token number">02.226424</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8255</span><span class="token operator">:</span><span class="token number">571494</span><span class="token punctuation">]</span> 加锁🔐
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">18</span><span class="token operator">:</span><span class="token number">17</span><span class="token operator">:</span><span class="token number">02.226521</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8255</span><span class="token operator">:</span><span class="token number">571494</span><span class="token punctuation">]</span> value1      <span class="token number">2</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">18</span><span class="token operator">:</span><span class="token number">17</span><span class="token operator">:</span><span class="token number">02.226977</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8255</span><span class="token operator">:</span><span class="token number">571494</span><span class="token punctuation">]</span> 加锁🔐
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">18</span><span class="token operator">:</span><span class="token number">17</span><span class="token operator">:</span><span class="token number">02.227604</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8255</span><span class="token operator">:</span><span class="token number">571494</span><span class="token punctuation">]</span> value1      <span class="token number">1</span>
+<span class="token number">2020</span><span class="token operator">-</span><span class="token number">05</span><span class="token operator">-</span><span class="token number">22</span> <span class="token number">18</span><span class="token operator">:</span><span class="token number">17</span><span class="token operator">:</span><span class="token number">02.228490</span><span class="token operator">+</span><span class="token number">0800</span> DDD<span class="token punctuation">[</span><span class="token number">8255</span><span class="token operator">:</span><span class="token number">571494</span><span class="token punctuation">]</span> 加锁🔐<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="3-3-3-递归锁内部区别"><a href="#3-3-3-递归锁内部区别" class="headerlink" title="3.3.3 递归锁内部区别"></a>3.3.3 递归锁内部区别</h4><ul>
+<li>@synchronized 采用缓存机制，不会造成死锁</li>
+<li>NSRecursiveLock 异步循环调用时，会造成多次加锁，造成死锁 </li>
+</ul>
+<h4 id="3-3-4-应用场景"><a href="#3-3-4-应用场景" class="headerlink" title="3.3.4 应用场景"></a>3.3.4 应用场景</h4><ul>
+<li>普通场景下，涉及到安全，可以用NSLock</li>
+<li>循环调用时用 NSRecursiveLock</li>
+<li>循环调用时，如果要注意死锁，建议使用 @synchronized </li>
+</ul>
+<h3 id><a href="#" class="headerlink" title=" "></a> </h3>
             </div>
             <hr/>
 
@@ -727,27 +1214,31 @@ AOV 网在一个表示工程的有向图中，用定点表示活动，用弧表�
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/p/5abeee19.html">
+                <a href="/p/919af6b6.html">
                     <div class="card-image">
                         
                         
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/20.jpg" class="responsive-img" alt="【底层探索】- 多线程三（GCD源码分析）">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg" class="responsive-img" alt="【数据结构与算法】-（9）二叉树与顺序表实现">
                         
-                        <span class="card-title">【底层探索】- 多线程三（GCD源码分析）</span>
+                        <span class="card-title">【数据结构与算法】-（9）二叉树与顺序表实现</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
                             
-本篇采用的libdispatch 源码来自苹果官方文档-libdispatch-1173.60.1
+【数据结构与算法】-（1）基础篇
+【数据结构与算法】-（2）线性表基础
+【数据结构与算法】-（3）循环链表（单向）
+【数据结构与算法】-（4）双向链表和双向循环链表
+【数据结构与算法】-（5）链表面试题解析
+【数据结构与算法】-（6）栈
 
-〇、序言前面两篇文章多线程的概念和应用（【底层探索】- 多线程(一)、【底层探索】- 多线程三（GCD应用）），再加上平时经常在使用，下
                         
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-05-12
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-26
                             </span>
                         <span class="publish-author">
                             
@@ -760,16 +1251,16 @@ AOV 网在一个表示工程的有向图中，用定点表示活动，用弧表�
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/多线程/">
-                        <span class="chip bg-color">多线程</span>
+                    <a href="/tags/数据结构/">
+                        <span class="chip bg-color">数据结构</span>
                     </a>
                     
-                    <a href="/tags/GCD/">
-                        <span class="chip bg-color">GCD</span>
+                    <a href="/tags/树/">
+                        <span class="chip bg-color">树</span>
                     </a>
                     
-                    <a href="/tags/源码/">
-                        <span class="chip bg-color">源码</span>
+                    <a href="/tags/二叉树/">
+                        <span class="chip bg-color">二叉树</span>
                     </a>
                     
                 </div>
