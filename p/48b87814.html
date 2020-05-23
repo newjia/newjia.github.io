@@ -396,14 +396,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    3.9k
+                    4.4k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    16 分
+                    18 分
                 </div>
                 
 
@@ -906,7 +906,24 @@
 <li>循环调用时用 NSRecursiveLock</li>
 <li>循环调用时，如果要注意死锁，建议使用 @synchronized </li>
 </ul>
-<h3 id><a href="#" class="headerlink" title=" "></a> </h3>
+<h3 id="3-4-条件锁分析"><a href="#3-4-条件锁分析" class="headerlink" title="3.4 条件锁分析"></a>3.4 条件锁分析</h3><h4 id="A、NSCondiction"><a href="#A、NSCondiction" class="headerlink" title="A、NSCondiction"></a>A、NSCondiction</h4><p>实际上作为一个锁和一个线程检查器：锁主要为了当检测条件时保护数据源，执行条件引发的任务；县城检查其主要是根据条件决定是否运行线程，即线程是否被阻塞。</p>
+<p>执行起来，主要有4个步骤</p>
+<ol>
+<li><code>[condition lock]</code> : 一般用于多线程同时访问、修改同一个数据源，保证在同一时间内数据原只被访问、修改一次，其他线程的命令需要在 <code>lock</code>外等待，直到 <code>unlock</code> 才可以访问</li>
+<li><code>[condition unlock]</code>： 与<code>lock</code> 同时使用</li>
+<li><code>[condition wait]</code> ; 让当前线程处于等待状态</li>
+<li><code>[condition signal]</code>: CPU发信号高速县城不用再等待，可以继续执行了</li>
+</ol>
+<h4 id="B、NSConditionLock"><a href="#B、NSConditionLock" class="headerlink" title="B、NSConditionLock"></a>B、NSConditionLock</h4><p>是一种锁，一旦一个线程获得锁，其他线程一定等待。</p>
+<p>主要有如下几个步骤：</p>
+<ol>
+<li><code>[lock lock]</code> : 标识lock 期待获得锁，如果没有其他线程获得锁（此时不需要判断内部condition）那他能执行以下代码，如果已经有其他线程获得锁（可能是条件锁，或者无条件锁），则等待，知道其他线程解锁。</li>
+<li><code>[lock lockWhenCondition: A]</code>： 表示如果没有其它线程获得该锁，但是所内部的condition不等于条件A，他依然不能获得锁，仍然等待。如果内部的<code>condition</code> 等于条件A，并且没有其他线程获得该锁，则进入代码区，同时设置他获得该锁，其他任何线程都将等待它的代码完成，直至它解锁。</li>
+<li><code>[lock unlockWhenCondition: A]</code>：表示释放锁，同时把内部的condition 设置为A条件。</li>
+<li><code>return [xxx lockWhenCondition: A before: B]</code>表示如果锁定（没获得锁），并超过该时间则不再阻塞线程。但是需要注意的是：返回值是<strong>NO</strong>，它没有改变锁的状态，这个函数的目的在于可以实现两种状态下的处理。</li>
+</ol>
+<p>总结一下：所谓的condition（状态值）是证书，内部通过整数来比较条件。</p>
+
             </div>
             <hr/>
 
