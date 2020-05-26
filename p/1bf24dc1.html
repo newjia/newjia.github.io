@@ -396,14 +396,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    5.5k
+                    5.8k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    25 分
+                    26 分
                 </div>
                 
 
@@ -1150,7 +1150,64 @@ __Block_byref_a_0 <span class="token operator">*</span>__forwarding<span class="
 </ol>
 <h4 id="5-3-2-总结图"><a href="#5-3-2-总结图" class="headerlink" title="5.3.2 总结图"></a>5.3.2 总结图</h4><p>俗话说的好，有图有真相，将上述流程汇总成一张图，是这样的</p>
 <p><img src="/p/1bf24dc1/002.png" alt></p>
+<h2 id="六、release-与dispose"><a href="#六、release-与dispose" class="headerlink" title="六、release 与dispose"></a>六、release 与dispose</h2><p>当block 需要释放时，系统内做了哪些工作呢？先看看<code>_Block_object_dispose</code> 函数如下：</p>
+<pre><code>void _Block_object_dispose(const void *object, const int flags) {
+    switch (os_assumes(flags &amp; BLOCK_ALL_COPY_DISPOSE_FLAGS)) {
+      case BLOCK_FIELD_IS_BYREF | BLOCK_FIELD_IS_WEAK:
+      case BLOCK_FIELD_IS_BYREF:
+        // get rid of the __block data structure held in a Block
+        _Block_byref_release(object);
+        break;
+      case BLOCK_FIELD_IS_BLOCK:
+        _Block_release(object);
+        break;
+      case BLOCK_FIELD_IS_OBJECT:
+        _Block_release_object(object);
+        break;
+      case BLOCK_BYREF_CALLER | BLOCK_FIELD_IS_OBJECT:
+      case BLOCK_BYREF_CALLER | BLOCK_FIELD_IS_BLOCK:
+      case BLOCK_BYREF_CALLER | BLOCK_FIELD_IS_OBJECT | BLOCK_FIELD_IS_WEAK:
+      case BLOCK_BYREF_CALLER | BLOCK_FIELD_IS_BLOCK  | BLOCK_FIELD_IS_WEAK:
+        break;
+      default:
+        break;
+    }
+}</code></pre><p>可以看到，除了<code>BLOCK_FIELD_IS_BYREF</code>类型的情况，此种情况为通过__block修饰变量进入，其他情况直接调用release 或者不用操作即可。</p>
+<p><code>BLOCK_FIELD_IS_BYREF</code> 的情况下，需要调用release 方法，即<code>_Block_byref_release(object)</code>，继续查看如下</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">_Block_byref_release</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>arg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">struct</span> Block_byref <span class="token operator">*</span>byref <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">struct</span> Block_byref <span class="token operator">*</span><span class="token punctuation">)</span>arg<span class="token punctuation">;</span>
 
+    <span class="token comment" spellcheck="true">// dereference the forwarding pointer since the compiler isn't doing this anymore (ever?)</span>
+    byref <span class="token operator">=</span> byref<span class="token operator">-</span><span class="token operator">></span>forwarding<span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>byref<span class="token operator">-</span><span class="token operator">></span>flags <span class="token operator">&amp;</span> BLOCK_BYREF_NEEDS_FREE<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        int32_t refcount <span class="token operator">=</span> byref<span class="token operator">-</span><span class="token operator">></span>flags <span class="token operator">&amp;</span> BLOCK_REFCOUNT_MASK<span class="token punctuation">;</span>
+        <span class="token function">os_assert</span><span class="token punctuation">(</span>refcount<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">latching_decr_int_should_deallocate</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>byref<span class="token operator">-</span><span class="token operator">></span>flags<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>byref<span class="token operator">-</span><span class="token operator">></span>flags <span class="token operator">&amp;</span> BLOCK_BYREF_HAS_COPY_DISPOSE<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">struct</span> Block_byref_2 <span class="token operator">*</span>byref2 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">struct</span> Block_byref_2 <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>byref<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">(</span><span class="token operator">*</span>byref2<span class="token operator">-</span><span class="token operator">></span>byref_destroy<span class="token punctuation">)</span><span class="token punctuation">(</span>byref<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token function">free</span><span class="token punctuation">(</span>byref<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>释放的过程比较简单：</p>
+<ol>
+<li><p>isa 指回原对象</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">byref <span class="token operator">=</span> byref<span class="token operator">-</span><span class="token operator">></span>forwarding<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>生成一个新的<code>Block_byref_2</code> 指针``byref2<code>，指向</code>byref`下个内存位</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">struct</span> Block_byref_2 <span class="token operator">*</span>byref2 <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">struct</span> Block_byref_2 <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>byref<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>通过<code>byref2</code> 向原blog引用发送摧毁消息</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token punctuation">(</span><span class="token operator">*</span>byref2<span class="token operator">-</span><span class="token operator">></span>byref_destroy<span class="token punctuation">)</span><span class="token punctuation">(</span>byref<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>释放原block（byref）</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token function">free</span><span class="token punctuation">(</span>byref<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ol>
+<h2 id="七、block-的Hook-实现"><a href="#七、block-的Hook-实现" class="headerlink" title="七、block 的Hook 实现"></a>七、block 的Hook 实现</h2>
             </div>
             <hr/>
 
