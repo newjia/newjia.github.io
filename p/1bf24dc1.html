@@ -419,7 +419,10 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="一、Block概念"><a href="#一、Block概念" class="headerlink" title="一、Block概念"></a>一、Block概念</h2><h3 id="1-1-名词解释"><a href="#1-1-名词解释" class="headerlink" title="1.1 名词解释"></a>1.1 名词解释</h3><p>也成为匿名函数，是将函数及其执行上下文封装起来的对象。有参数和返回值。</p>
+                <blockquote>
+<p>出于需要，本文分析时引用苹果开源的libclosure 源码，请点击对比查看<a href="https://opensource.apple.com/tarballs/libclosure/" target="_blank" rel="noopener">苹果libclosure源码</a></p>
+</blockquote>
+<h2 id="一、Block概念"><a href="#一、Block概念" class="headerlink" title="一、Block概念"></a>一、Block概念</h2><h3 id="1-1-名词解释"><a href="#1-1-名词解释" class="headerlink" title="1.1 名词解释"></a>1.1 名词解释</h3><p>也成为匿名函数，是将函数及其执行上下文封装起来的对象。有参数和返回值。</p>
 <p>Block的结构是：__block_impl</p>
 <pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">struct</span> __block_impl <span class="token punctuation">{</span>
     <span class="token keyword">void</span> <span class="token operator">*</span>isa<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">// isa 对象</span>
@@ -1045,7 +1048,7 @@ __Block_byref_a_0 <span class="token operator">*</span>__forwarding<span class="
     <span class="token punctuation">}</span>
     <span class="token keyword">return</span> <span class="token punctuation">(</span><span class="token keyword">struct</span> Block_descriptor_3 <span class="token operator">*</span><span class="token punctuation">)</span>desc<span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<h2 id="五、block的copy-分析"><a href="#五、block的copy-分析" class="headerlink" title="五、block的copy 分析"></a>五、block的copy 分析</h2><h3 id="5-1-源码"><a href="#5-1-源码" class="headerlink" title="5.1 源码"></a>5.1 源码</h3><p>在<code>libclosure</code> 源码中，<code>runtime.app</code>这一页，<code>block_copy</code> 的函数实现如下所示：</p>
+<h2 id="五、block的copy-分析"><a href="#五、block的copy-分析" class="headerlink" title="五、block的copy 分析"></a>五、block的copy 分析</h2><h3 id="5-1-源码"><a href="#5-1-源码" class="headerlink" title="5.1 源码"></a>5.1 源码</h3><p>在<code>libclosure</code> 源码中，<code>runtime.cpp</code>这一页，<code>block_copy</code> 的函数实现如下所示：</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token operator">*</span><span class="token function">_Block_copy</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>arg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token keyword">struct</span> Block_layout <span class="token operator">*</span>aBlock<span class="token punctuation">;</span>
 
@@ -1424,10 +1427,11 @@ __Block_byref_a_0 <span class="token operator">*</span>__forwarding<span class="
                 <div class="card-content article-content">
                     <div class="summary block-with-text">
                         
-                            一、Block概念1.1 名词解释也成为匿名函数，是将函数及其执行上下文封装起来的对象。有参数和返回值。
-Block的结构是：__block_impl
-struct __block_impl {
-    void *isa;        
+                            
+出于需要，本文分析时引用苹果开源的libclosure 源码，请点击对比查看苹果libclosure源码
+
+一、Block概念1.1 名词解释也成为匿名函数，是将函数及其执行上下文封装起来的对象。有参数和返回值。
+Block的结构是：__
                         
                     </div>
                     <div class="publish-info">
