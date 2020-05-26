@@ -396,14 +396,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    5k
+                    5.5k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    23 分
+                    25 分
                 </div>
                 
 
@@ -870,7 +870,7 @@ __Block_byref_num5_0 <span class="token operator">*</span>__forwarding<span clas
             <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"%d"</span><span class="token punctuation">,</span> a<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span><span class="token punctuation">;</span>
         <span class="token function">block</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
-<p>可以看到，构造函数结构体有了变化;</p>
+<h4 id="3-4-1-CPP分析"><a href="#3-4-1-CPP分析" class="headerlink" title="3.4.1 CPP分析"></a>3.4.1 CPP分析</h4><p>可以看到，构造函数结构体有了变化;</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">struct</span> __main_block_impl_0 <span class="token punctuation">{</span>
   <span class="token keyword">struct</span> __block_impl impl<span class="token punctuation">;</span>
   <span class="token keyword">struct</span> __main_block_desc_0<span class="token operator">*</span> Desc<span class="token punctuation">;</span>
@@ -898,19 +898,78 @@ __Block_byref_a_0 <span class="token operator">*</span>__forwarding<span class="
 <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">__main_block_copy_0</span><span class="token punctuation">(</span><span class="token keyword">struct</span> __main_block_impl_0<span class="token operator">*</span>dst<span class="token punctuation">,</span> <span class="token keyword">struct</span> __main_block_impl_0<span class="token operator">*</span>src<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token function">_Block_object_assign</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>dst<span class="token operator">-</span><span class="token operator">></span>a<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span>src<span class="token operator">-</span><span class="token operator">></span>a<span class="token punctuation">,</span> <span class="token number">8</span><span class="token comment" spellcheck="true">/*BLOCK_FIELD_IS_BYREF*/</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">}</span>
 
 <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">__main_block_dispose_0</span><span class="token punctuation">(</span><span class="token keyword">struct</span> __main_block_impl_0<span class="token operator">*</span>src<span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token function">_Block_object_dispose</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token punctuation">)</span>src<span class="token operator">-</span><span class="token operator">></span>a<span class="token punctuation">,</span> <span class="token number">8</span><span class="token comment" spellcheck="true">/*BLOCK_FIELD_IS_BYREF*/</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="3-4-2-源码分析"><a href="#3-4-2-源码分析" class="headerlink" title="3.4.2 源码分析"></a>3.4.2 源码分析</h4><p>在上文中，我们看到关键函数是<code>_Block_object_assign</code>，打开<code>libclosure</code> 查看相应的函数实现，得到如下：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// When Blocks or Block_byrefs hold objects then their copy routine helpers use this entry point</span>
+<span class="token comment" spellcheck="true">// to do the assignment.</span>
+<span class="token keyword">void</span> <span class="token function">_Block_object_assign</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span>destArg<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>object<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">int</span> flags<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span><span class="token operator">*</span>dest <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">)</span>destArg<span class="token punctuation">;</span>
+    <span class="token keyword">switch</span> <span class="token punctuation">(</span><span class="token function">os_assumes</span><span class="token punctuation">(</span>flags <span class="token operator">&amp;</span> BLOCK_ALL_COPY_DISPOSE_FLAGS<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">case</span> BLOCK_FIELD_IS_OBJECT<span class="token operator">:</span>
+            <span class="token comment" spellcheck="true">/*省略*/</span>
+        <span class="token keyword">break</span><span class="token punctuation">;</span>
+
+      <span class="token keyword">case</span> BLOCK_FIELD_IS_BLOCK<span class="token operator">:</span>
+        <span class="token comment" spellcheck="true">/*省略*/</span>
+        <span class="token operator">*</span>dest <span class="token operator">=</span> <span class="token function">_Block_copy</span><span class="token punctuation">(</span>object<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">break</span><span class="token punctuation">;</span>
+
+      <span class="token keyword">case</span> BLOCK_FIELD_IS_BYREF <span class="token operator">|</span> BLOCK_FIELD_IS_WEAK<span class="token operator">:</span>
+      <span class="token keyword">case</span> BLOCK_FIELD_IS_BYREF<span class="token operator">:</span>
+        <span class="token comment" spellcheck="true">/*******
+         // copy the onstack __block container to the heap
+         // Note this __weak is old GC-weak/MRC-unretained.
+         // ARC-style __weak is handled by the copy helper directly.
+         __block ... x;
+         __weak __block ... x;
+         [^{ x; } copy];
+         ********/</span>
+
+        <span class="token operator">*</span>dest <span class="token operator">=</span> <span class="token function">_Block_byref_copy</span><span class="token punctuation">(</span>object<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注释简单的翻译是：当block 或者block 引用持有对象时，他们的拷贝常规帮助者会使用它们的入口点来做分配工作。</p>
+<p>里面的是现实对持有对象类型的switch，重点关注<code>BLOCK_FIELD_IS_BYREF</code>，注释已经说了</p>
+<blockquote>
+<p>copy the onstack __block container to the heap</p>
+<p>拷贝栈内__block 容器到堆</p>
+</blockquote>
+<p>太棒了， 这就是我们需要的实现函数，即对__block 的方法做出相应，拷贝到堆区，再来看函数 <code>_Block_byref_copy(object)</code> 具体的实现：</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">static</span> <span class="token keyword">struct</span> Block_byref <span class="token operator">*</span><span class="token function">_Block_byref_copy</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>arg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">struct</span> Block_byref <span class="token operator">*</span>src <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">struct</span> Block_byref <span class="token operator">*</span><span class="token punctuation">)</span>arg<span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>src<span class="token operator">-</span><span class="token operator">></span>forwarding<span class="token operator">-</span><span class="token operator">></span>flags <span class="token operator">&amp;</span> BLOCK_REFCOUNT_MASK<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// src points to stack</span>
+        <span class="token keyword">struct</span> Block_byref <span class="token operator">*</span>copy <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">struct</span> Block_byref <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span>src<span class="token operator">-</span><span class="token operator">></span>size<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        copy<span class="token operator">-</span><span class="token operator">></span>isa <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// byref value 4 is logical refcount of 2: one for caller, one for stack</span>
+        copy<span class="token operator">-</span><span class="token operator">></span>flags <span class="token operator">=</span> src<span class="token operator">-</span><span class="token operator">></span>flags <span class="token operator">|</span> BLOCK_BYREF_NEEDS_FREE <span class="token operator">|</span> <span class="token number">4</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 问题 - __block 修饰变量 block具有修改能力</span>
+        copy<span class="token operator">-</span><span class="token operator">></span>forwarding <span class="token operator">=</span> copy<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// patch heap copy to point to itself</span>
+        src<span class="token operator">-</span><span class="token operator">></span>forwarding <span class="token operator">=</span> copy<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// patch stack to point to heap copy</span>
+
+        copy<span class="token operator">-</span><span class="token operator">></span>size <span class="token operator">=</span> src<span class="token operator">-</span><span class="token operator">></span>size<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在这里可以看到，具体的实现了：</p>
 <ol>
-<li><p>第1行：指针拷贝出来的 a，进行了++.</p>
+<li><p>拷贝新的对象到堆区，并置空<code>isa</code></p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">        <span class="token keyword">struct</span> Block_byref <span class="token operator">*</span>copy <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">struct</span> Block_byref <span class="token operator">*</span><span class="token punctuation">)</span><span class="token function">malloc</span><span class="token punctuation">(</span>src<span class="token operator">-</span><span class="token operator">></span>size<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        copy<span class="token operator">-</span><span class="token operator">></span>isa <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 </li>
-<li><p>第2行：对a 指向对象的属性a 进行打印。</p>
+<li><p>将新的拷贝对象的flag 与之前栈区对象的flags的相等</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">        <span class="token comment" spellcheck="true">// byref value 4 is logical refcount of 2: one for caller, one for stack</span>
+        copy<span class="token operator">-</span><span class="token operator">></span>flags <span class="token operator">=</span> src<span class="token operator">-</span><span class="token operator">></span>flags <span class="token operator">|</span> BLOCK_BYREF_NEEDS_FREE <span class="token operator">|</span> <span class="token number">4</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
 </li>
-<li><p>第3行:  </p>
-<pre class="line-numbers language-c"><code class="language-c">        <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span>block<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">&amp;</span><span class="token function">__main_block_impl_0</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>__main_block_func_0<span class="token punctuation">,</span> <span class="token operator">&amp;</span>__main_block_desc_0_DATA<span class="token punctuation">,</span> <span class="token punctuation">(</span>__Block_byref_a_0 <span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>a<span class="token punctuation">,</span> <span class="token number">570425344</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>简化如下：</p>
-<pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">*</span>block<span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token operator">&amp;</span><span class="token function">__main_block_impl_0</span><span class="token punctuation">(</span>__main_block_func_0<span class="token punctuation">,</span> <span class="token operator">&amp;</span>__main_block_desc_0_DATA<span class="token punctuation">,</span> <span class="token operator">&amp;</span>a<span class="token punctuation">,</span><span class="token number">570425344</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-<p>即生成了函数指针、数据描述、以及变量<code>a</code> 的引用，以及构造函数的内存地址。</p>
+<li><p>将新的对象指向原对象，即进行指针拷贝——这个是__block 的关键，新的指向原对象，与原地址指向同一个内存空间，故具备修改能力！</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">        <span class="token comment" spellcheck="true">// 问题 - __block 修饰变量 block具有修改能力</span>
+        copy<span class="token operator">-</span><span class="token operator">></span>forwarding <span class="token operator">=</span> copy<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// patch heap copy to point to itself</span>
+        src<span class="token operator">-</span><span class="token operator">></span>forwarding <span class="token operator">=</span> copy<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// patch stack to point to heap copy</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>新对象大小与原对象大小相等</p>
+<pre class="line-numbers language-cpp"><code class="language-cpp">copy<span class="token operator">-</span><span class="token operator">></span>size <span class="token operator">=</span> src<span class="token operator">-</span><span class="token operator">></span>size<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 </li>
 </ol>
 <p><strong>总结：</strong>可见生成的a 是一个<code>__Block_byref_a_0</code> 类型结构体引用，而不是值拷贝的引用。<strong>__block 在作用于内部生成了变量的指针，通过改变指针指向的地址，来即改变原变量。</strong></p>
+<p>原理图如下：</p>
+<p><img src="/p/1bf24dc1/003.png" alt></p>
 <h2 id="四、签名"><a href="#四、签名" class="headerlink" title="四、签名"></a>四、签名</h2><h3 id="4-1-block-结构分析"><a href="#4-1-block-结构分析" class="headerlink" title="4.1 block 结构分析"></a>4.1 block 结构分析</h3><p>block 的结构如下：</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp"><span class="token keyword">struct</span> Block_layout <span class="token punctuation">{</span>
     <span class="token keyword">void</span> <span class="token operator">*</span>isa<span class="token punctuation">;</span>
