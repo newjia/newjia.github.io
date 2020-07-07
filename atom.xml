@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2020-05-27T04:13:22.643Z</updated>
+  <updated>2020-07-07T17:47:48.440Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>离屏渲染(Offscreen Render)详细解析</title>
+    <link href="http://nilsli.com/p/7f336030.html"/>
+    <id>http://nilsli.com/p/7f336030.html</id>
+    <published>2020-07-07T15:55:43.000Z</published>
+    <updated>2020-07-07T17:47:48.440Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          
+        
+      
+    
+    </summary>
+    
+    
+    
+      <category term="离屏渲染" scheme="http://nilsli.com/tags/%E7%A6%BB%E5%B1%8F%E6%B8%B2%E6%9F%93/"/>
+    
+      <category term="offscreen" scheme="http://nilsli.com/tags/offscreen/"/>
+    
+  </entry>
   
   <entry>
     <title>Block使用及原理探究</title>
@@ -48,7 +75,7 @@
     <link href="http://nilsli.com/p/d4ce128d.html"/>
     <id>http://nilsli.com/p/d4ce128d.html</id>
     <published>2020-05-15T12:09:01.000Z</published>
-    <updated>2020-05-16T07:19:27.840Z</updated>
+    <updated>2020-05-30T15:31:53.212Z</updated>
     
     <summary type="html">
     
@@ -462,9 +489,9 @@
     
       <category term="多线程" scheme="http://nilsli.com/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
     
-      <category term="GCD" scheme="http://nilsli.com/tags/GCD/"/>
-    
       <category term="线程" scheme="http://nilsli.com/tags/%E7%BA%BF%E7%A8%8B/"/>
+    
+      <category term="GCD" scheme="http://nilsli.com/tags/GCD/"/>
     
   </entry>
   
@@ -546,35 +573,6 @@
       <category term="底层" scheme="http://nilsli.com/tags/%E5%BA%95%E5%B1%82/"/>
     
       <category term="KVO" scheme="http://nilsli.com/tags/KVO/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【数据结构与算法】-（3）循环链表(单向)</title>
-    <link href="http://nilsli.com/p/54688.html"/>
-    <id>http://nilsli.com/p/54688.html</id>
-    <published>2020-04-02T08:06:27.000Z</published>
-    <updated>2020-04-26T18:06:20.066Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          
-        
-      
-    
-    </summary>
-    
-    
-      <category term="ios" scheme="http://nilsli.com/categories/ios/"/>
-    
-    
-      <category term="链表" scheme="http://nilsli.com/tags/%E9%93%BE%E8%A1%A8/"/>
-    
-      <category term="循环" scheme="http://nilsli.com/tags/%E5%BE%AA%E7%8E%AF/"/>
     
   </entry>
   
