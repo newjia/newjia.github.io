@@ -420,7 +420,9 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h2 id="〇、目标结果"><a href="#〇、目标结果" class="headerlink" title="〇、目标结果"></a>〇、目标结果</h2><p><img src="/p/d35ab8c1/001.gif" alt></p>
-<h2 id="二、分析过程"><a href="#二、分析过程" class="headerlink" title="二、分析过程"></a>二、分析过程</h2><h2 id="三、全部代码如下："><a href="#三、全部代码如下：" class="headerlink" title="三、全部代码如下："></a>三、全部代码如下：</h2><pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">"GLShaderManager.h"</span></span>
+<h2 id="二、分析过程"><a href="#二、分析过程" class="headerlink" title="二、分析过程"></a>二、分析过程</h2><p>分析流程简图如下</p>
+<p><img src="/p/d35ab8c1/002.png" alt="渲染流程简图"></p>
+<h2 id="三、全部代码如下："><a href="#三、全部代码如下：" class="headerlink" title="三、全部代码如下："></a>三、全部代码如下：</h2><pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">"GLShaderManager.h"</span></span>
 <span class="token comment" spellcheck="true">/*
  `#include&lt;GLShaderManager.h>` 移入了GLTool 着色器管理器（shader Mananger）类。没有着色器，我们就不能在OpenGL（核心框架）进行着色。着色器管理器不仅允许我们创建并管理着色器，还提供一组“存储着色器”，他们能够进行一些初步䄦基本的渲染操作。
  */</span>
@@ -949,9 +951,11 @@ GLfloat vVerts<span class="token punctuation">[</span><span class="token punctua
                     <div class="summary block-with-text">
                         
                             〇、目标结果
-二、分析过程三、全部代码如下：#include "GLShaderManager.h"
+二、分析过程分析流程简图如下
+
+三、全部代码如下：#include "GLShaderManager.h"
 /*
- `#include&lt;GLShaderManager.h>` 移入了GLTool 着色器管理器（shader Mananger
+ `#include&lt;GLShaderManager.h>` 移入了GLTool 着色器管理器（shade
                         
                     </div>
                     <div class="publish-info">
