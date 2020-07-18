@@ -404,7 +404,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    653
+                    641
                 </div>
                 
 
@@ -468,9 +468,9 @@
 </li>
 </ol>
 <h2 id="二、扩展：绘制三角形"><a href="#二、扩展：绘制三角形" class="headerlink" title="二、扩展：绘制三角形"></a>二、扩展：绘制三角形</h2><h3 id="2-1-业务代码"><a href="#2-1-业务代码" class="headerlink" title="2.1 业务代码"></a>2.1 业务代码</h3><p>上面的环境搭建好了，何不来个小小的Demo 来验证一下，输入业务代码如下：</p>
-<pre><code>#include &quot;GLTools.h&quot;
+<pre class="line-numbers language-c++"><code class="language-c++">#include "GLTools.h"
 
-#include &lt;GLUT/GLUT.h&gt;
+#include <GLUT/GLUT.h>
 
 GLBatch triangleBatch;
 
@@ -519,13 +519,13 @@ int main(int argc, char * argv[])
 {
     gltSetWorkingDirectory(argv[0]);
 
-    glutInit(&amp;argc, argv);
+    glutInit(&argc, argv);
 
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_STENCIL);
 
     glutInitWindowSize(800, 600);
 
-    glutCreateWindow(&quot;Triangle&quot;);
+    glutCreateWindow("Triangle");
 
     glutReshapeFunc(ChangeSize);
 
@@ -534,7 +534,7 @@ int main(int argc, char * argv[])
     GLenum err = glewInit();
 
     if (GLEW_OK != err) {
-        fprintf(stderr, &quot;glew error: %s\n&quot;, glewGetErrorString(err));
+        fprintf(stderr, "glew error: %s\n", glewGetErrorString(err));
         return 1;
     }
 
@@ -544,7 +544,8 @@ int main(int argc, char * argv[])
 
     return 0;
 }
-</code></pre><h3 id="2-2-小bug-解决"><a href="#2-2-小bug-解决" class="headerlink" title="2.2 小bug 解决"></a>2.2 小bug 解决</h3><p>运行后发现会出现如下bug，</p>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-2-小bug-解决"><a href="#2-2-小bug-解决" class="headerlink" title="2.2 小bug 解决"></a>2.2 小bug 解决</h3><p>运行后发现会出现如下bug，</p>
 <p><img src="/p/7b6be80a/012.png" alt> </p>
 <p>这里提示的是饮用方式的不对，修改根据提示修改，结果如下：</p>
 <p><img src="/p/7b6be80a/013.png" alt> </p>
