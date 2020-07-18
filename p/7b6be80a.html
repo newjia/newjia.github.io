@@ -404,7 +404,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    641
+                    646
                 </div>
                 
 
@@ -467,82 +467,82 @@
 </li>
 </ol>
 <h2 id="二、扩展：绘制三角形"><a href="#二、扩展：绘制三角形" class="headerlink" title="二、扩展：绘制三角形"></a>二、扩展：绘制三角形</h2><h3 id="2-1-业务代码"><a href="#2-1-业务代码" class="headerlink" title="2.1 业务代码"></a>2.1 业务代码</h3><p>上面的环境搭建好了，何不来个小小的Demo 来验证一下，输入业务代码如下：</p>
-<pre class="line-numbers language-c++"><code class="language-c++">#include "GLTools.h"
+<pre class="line-numbers language-c"><code class="language-c"><span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">"GLTools.h"</span></span>
 
-#include <GLUT/GLUT.h>
+<span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;GLUT/GLUT.h></span></span>
 
-GLBatch triangleBatch;
+GLBatch triangleBatch<span class="token punctuation">;</span>
 
-GLShaderManager shaderManager;
+GLShaderManager shaderManager<span class="token punctuation">;</span>
 
-void ChangeSize(int w, int h)
-{
-    glViewport(0, 0, w, h);
-}
+<span class="token keyword">void</span> <span class="token function">ChangeSize</span><span class="token punctuation">(</span><span class="token keyword">int</span> w<span class="token punctuation">,</span> <span class="token keyword">int</span> h<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">glViewport</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> w<span class="token punctuation">,</span> h<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-void SetupRC()
-{
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+<span class="token keyword">void</span> <span class="token function">SetupRC</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">glClearColor</span><span class="token punctuation">(</span><span class="token number">0.0f</span><span class="token punctuation">,</span> <span class="token number">0.0f</span><span class="token punctuation">,</span> <span class="token number">1.0f</span><span class="token punctuation">,</span> <span class="token number">1.0f</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    shaderManager.InitializeStockShaders();
+    shaderManager<span class="token punctuation">.</span><span class="token function">InitializeStockShaders</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    GLfloat vVerts[] = {
-        -0.5f, 0.0f, 0.0f,
-        0.5f, 0.0f, 0.0f,
-        0.0f, 0.5f, 0.0f,
-    };
+    GLfloat vVerts<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+        <span class="token operator">-</span><span class="token number">0.5f</span><span class="token punctuation">,</span> <span class="token number">0.0f</span><span class="token punctuation">,</span> <span class="token number">0.0f</span><span class="token punctuation">,</span>
+        <span class="token number">0.5f</span><span class="token punctuation">,</span> <span class="token number">0.0f</span><span class="token punctuation">,</span> <span class="token number">0.0f</span><span class="token punctuation">,</span>
+        <span class="token number">0.0f</span><span class="token punctuation">,</span> <span class="token number">0.5f</span><span class="token punctuation">,</span> <span class="token number">0.0f</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
 
-    triangleBatch.Begin(GL_TRIANGLES, 3);
+    triangleBatch<span class="token punctuation">.</span><span class="token function">Begin</span><span class="token punctuation">(</span>GL_TRIANGLES<span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    triangleBatch.CopyVertexData3f(vVerts);
+    triangleBatch<span class="token punctuation">.</span><span class="token function">CopyVertexData3f</span><span class="token punctuation">(</span>vVerts<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    triangleBatch.End();
-}
+    triangleBatch<span class="token punctuation">.</span><span class="token function">End</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-void RenderScene(void)
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+<span class="token keyword">void</span> <span class="token function">RenderScene</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">glClear</span><span class="token punctuation">(</span>GL_COLOR_BUFFER_BIT <span class="token operator">|</span> GL_DEPTH_BUFFER_BIT <span class="token operator">|</span> GL_STENCIL_BUFFER_BIT<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    GLfloat vRed[] = {
-        1.0f, 0.0f, 0.0f, 1.0f
-    };
+    GLfloat vRed<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+        <span class="token number">1.0f</span><span class="token punctuation">,</span> <span class="token number">0.0f</span><span class="token punctuation">,</span> <span class="token number">0.0f</span><span class="token punctuation">,</span> <span class="token number">1.0f</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
 
-    shaderManager.UseStockShader(GLT_SHADER_IDENTITY, vRed);
+    shaderManager<span class="token punctuation">.</span><span class="token function">UseStockShader</span><span class="token punctuation">(</span>GLT_SHADER_IDENTITY<span class="token punctuation">,</span> vRed<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    triangleBatch.Draw();
+    triangleBatch<span class="token punctuation">.</span><span class="token function">Draw</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    glutSwapBuffers();
-}
+    <span class="token function">glutSwapBuffers</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-int main(int argc, char * argv[])
-{
-    gltSetWorkingDirectory(argv[0]);
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">char</span> <span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">gltSetWorkingDirectory</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    glutInit(&argc, argv);
+    <span class="token function">glutInit</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>argc<span class="token punctuation">,</span> argv<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_STENCIL);
+    <span class="token function">glutInitDisplayMode</span><span class="token punctuation">(</span>GLUT_DOUBLE <span class="token operator">|</span> GLUT_RGBA <span class="token operator">|</span> GLUT_DEPTH <span class="token operator">|</span> GLUT_STENCIL<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    glutInitWindowSize(800, 600);
+    <span class="token function">glutInitWindowSize</span><span class="token punctuation">(</span><span class="token number">800</span><span class="token punctuation">,</span> <span class="token number">600</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    glutCreateWindow("Triangle");
+    <span class="token function">glutCreateWindow</span><span class="token punctuation">(</span><span class="token string">"Triangle"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    glutReshapeFunc(ChangeSize);
+    <span class="token function">glutReshapeFunc</span><span class="token punctuation">(</span>ChangeSize<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    glutDisplayFunc(RenderScene);
+    <span class="token function">glutDisplayFunc</span><span class="token punctuation">(</span>RenderScene<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    GLenum err = glewInit();
+    GLenum err <span class="token operator">=</span> <span class="token function">glewInit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    if (GLEW_OK != err) {
-        fprintf(stderr, "glew error: %s\n", glewGetErrorString(err));
-        return 1;
-    }
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>GLEW_OK <span class="token operator">!=</span> err<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">"glew error: %s\n"</span><span class="token punctuation">,</span> <span class="token function">glewGetErrorString</span><span class="token punctuation">(</span>err<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-    SetupRC();
+    <span class="token function">SetupRC</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    glutMainLoop();
+    <span class="token function">glutMainLoop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    return 0;
-}
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="2-2-小bug-解决"><a href="#2-2-小bug-解决" class="headerlink" title="2.2 小bug 解决"></a>2.2 小bug 解决</h3><p>运行后发现会出现如下bug，</p>
 <p><img src="/p/7b6be80a/012.png" alt> </p>
