@@ -4,6 +4,27 @@
   
     
     <entry>
+      <title>【番外】CoreAnimation 在渲染中的角色</title>
+      <link href="/p/cb55e9a6.html"/>
+      <url>/p/cb55e9a6.html</url>
+      
+        <content type="html"><![CDATA[<h2 id="一、CPU-与-GPU-的角色"><a href="#一、CPU-与-GPU-的角色" class="headerlink" title="一、CPU 与 GPU 的角色"></a>一、CPU 与 GPU 的角色</h2><table><thead><tr><th>类型</th><th>身份与作用</th><th>特点</th><th>特点</th></tr></thead><tbody><tr><td>CPU</td><td>运算核心/控制</td><td>逻辑复杂，处理数据</td><td>依赖性非常高，并发</td></tr><tr><td>GPU</td><td>绘图运算的微处理器</td><td></td><td>依赖性低，假并发</td></tr></tbody></table><h2 id="二、计算机显示方式"><a href="#二、计算机显示方式" class="headerlink" title="二、计算机显示方式"></a>二、计算机显示方式</h2><ul><li>随机扫描显示</li><li>光栅扫描显示<ul><li>电子束</li><li>左上角开始横向扫描</li><li>依次纵向扫描</li><li>由像素阵列组成</li><li>显示整个光栅所需的时间</li><li>和图像<strong>无关</strong></li><li>视觉暂留</li></ul></li><li>视觉暂留<ul><li>16帧-保证连贯</li></ul></li><li>光栅扫描结构<ul><li>显示器</li><li>视频控制器 - <ul><li>负责控制刷新 - 管理帧缓冲区与缓冲器</li><li>负责将帧缓冲区的内容绘制到显示器</li></ul></li><li>帧缓冲区<ul><li>由阵列组成</li><li>存储颜色值（黑白值）</li><li>又名：显存</li><li>连续的计算机存储空间，存储即将显示的渲染数据</li><li>计算：大小 60 * 60 的图片 = 60 * 60 * 4 （RGBA） = 14400bit</li></ul></li></ul></li><li>简单光山扫描显示系统结构<ul><li>系统总线<ul><li>CPU</li><li>系统内存</li><li>显示处理器  <ul><li>显示处理器存储区</li><li>帧缓冲区</li></ul></li></ul></li><li>显示控制器</li><li>显示器</li></ul></li><li>图片撕裂<ul><li>原因<ul><li>CPU 交互给GPU 未完成，未及时更新</li><li>帧缓冲区还是上一帧的内容</li></ul></li><li>苹果解决方案<ol><li>垂直同步 Vsync （Vertical sync）<ul><li>帧缓冲区加锁- </li><li>扫描未完成，显示图片全是上一帧的图片</li><li>保证图片的扫描是完整的 </li></ul></li><li>双缓冲区<ul><li>CPU 缓冲区</li><li>GPU 缓冲区</li></ul></li><li>缺点：<strong>掉帧</strong></li></ol></li></ul></li><li>掉帧：<ul><li>原因<ul><li>当接受到Vsync 垂直信号时，CPU/GPU 的 计算还未完成（准备好），控制器会从帧缓冲区取出并显示上一帧的图像，从而本帧为正确显示，成为掉帧</li></ul></li></ul></li><li>三缓冲区：<ul><li>CPU/GPU运算时，还有个缓冲区可以存储数据</li></ul></li><li><strong>屏幕卡顿</strong>的原因<ul><li>CPU/GPU 渲染流水线耗时过长，导致<strong>掉帧</strong></li><li>Vsync + doubleBuffering 为了解决屏幕撕裂，会付出掉帧的代价</li><li><strong>三缓冲区时</strong>：合理使用CPU/GPU，仅仅是减少了掉帧的次数</li></ul></li></ul><h2 id="三、渲染原理"><a href="#三、渲染原理" class="headerlink" title="三、渲染原理"></a>三、渲染原理</h2><h3 id="3-1-渲染流程"><a href="#3-1-渲染流程" class="headerlink" title="3.1 渲染流程"></a>3.1 渲染流程</h3><p>Display &lt;–&gt; GPU &lt;–&gt; GPU Driver &lt;–&gt; OpenGL ES/ Metal &lt;-&gt; CoreAnimation &lt;- APP</p><h3 id="3-2-iOS-下的CoreAnimation"><a href="#3-2-iOS-下的CoreAnimation" class="headerlink" title="3.2 iOS 下的CoreAnimation"></a>3.2 iOS 下的CoreAnimation</h3><h4 id="3-2-1-结构"><a href="#3-2-1-结构" class="headerlink" title="3.2.1 结构"></a>3.2.1 结构</h4><p>UIKit/AppKit为表层，来驱动 CoreAnimation 驱动 Metal/CoreGraphic 来驱动图形硬件</p><blockquote><p>Render, compose, and animate visual elements –Apple</p><p>渲染，构建，和将视觉组件构成动画 —— Apple</p></blockquote><h4 id="3-2-2-layer"><a href="#3-2-2-layer" class="headerlink" title="3.2.2 layer"></a>3.2.2 layer</h4><blockquote><h1 id="CALayer"><a href="#CALayer" class="headerlink" title="CALayer"></a>CALayer</h1><p>An object that manages image-based content and allows you to perform animations on that content.</p></blockquote><p>用来显示位图，比如有<code>content</code> 属性</p><ul><li><p>UIView</p><ul><li>绘制和动画</li><li>布局和子View 的管理</li><li>点击事件管理</li></ul></li><li><p>CALayer </p><ul><li>渲染</li><li>动画</li></ul></li></ul><h2 id="四、CoreAnimation步骤"><a href="#四、CoreAnimation步骤" class="headerlink" title="四、CoreAnimation步骤"></a>四、CoreAnimation步骤</h2><h3 id="4-1-Application-应用"><a href="#4-1-Application-应用" class="headerlink" title="4.1 Application - 应用"></a>4.1 Application - 应用</h3><ul><li>HandleEvents - 处理事件</li><li>Commit Transaction - 提交事件，如（图片解码）</li></ul><h3 id="4-2-RenderServer-渲染服务"><a href="#4-2-RenderServer-渲染服务" class="headerlink" title="4.2 RenderServer - 渲染服务"></a>4.2 RenderServer - 渲染服务</h3><p>主要做以下两组工作：</p><ul><li>Decode - 解码</li><li>Draw Calls - 显示调用（需要等待下一个Runloop）</li></ul><h3 id="4-3-GPU-操作"><a href="#4-3-GPU-操作" class="headerlink" title="4.3 GPU 操作"></a>4.3 GPU 操作</h3><ul><li>CoreAnimation 提交OpenGL</li><li>调用GPU 开启渲染流程<ul><li>顶点数据</li><li>顶点着色器</li><li>偏远着色器</li></ul></li></ul><h3 id="4-4-显示"><a href="#4-4-显示" class="headerlink" title="4.4 显示"></a>4.4 显示</h3><p>在下一个Runloop，从帧缓冲区提取数据，显示到屏幕</p><h2 id="五、GPU里发生了什么"><a href="#五、GPU里发生了什么" class="headerlink" title="五、GPU里发生了什么"></a>五、GPU里发生了什么</h2><p>GPU里，也就是帧缓冲区主要是处理绘制的过程，具体流程为：</p><ol><li>收到Buffer 数据 Command Buffer</li><li>顶点着色器处理</li><li>参数缓冲</li><li>偏远处理</li><li>渲染缓冲区</li></ol>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> CoreAnimation </tag>
+            
+            <tag> 核心动画 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>计算机视觉【003-OpenGL创建可移动的正方形】</title>
       <link href="/p/d35ab8c1.html"/>
       <url>/p/d35ab8c1.html</url>
@@ -370,9 +391,9 @@
             
             <tag> 数据结构 </tag>
             
-            <tag> 栈 </tag>
-            
             <tag> 队列 </tag>
+            
+            <tag> 栈 </tag>
             
         </tags>
       
@@ -439,9 +460,9 @@
             
             <tag> 多线程 </tag>
             
-            <tag> 线程 </tag>
-            
             <tag> GCD </tag>
+            
+            <tag> 线程 </tag>
             
         </tags>
       
@@ -550,9 +571,9 @@
       
         <tags>
             
-            <tag> KVC </tag>
-            
             <tag> 底层 </tag>
+            
+            <tag> KVC </tag>
             
         </tags>
       
@@ -752,9 +773,9 @@
             
             <tag> 结构 </tag>
             
-            <tag> 消息转发 </tag>
-            
             <tag> objc </tag>
+            
+            <tag> 消息转发 </tag>
             
         </tags>
       
