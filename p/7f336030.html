@@ -475,13 +475,11 @@
 <h2 id="4、产生的场景"><a href="#4、产生的场景" class="headerlink" title="4、产生的场景"></a>4、产生的场景</h2><h3 id="4-1-圆角"><a href="#4-1-圆角" class="headerlink" title="4.1 圆角"></a>4.1 圆角</h3><p>对，就是圆角，可能印象中，设置了圆角就会带来离屏渲染，真的是这样吗？</p>
 <p>先看看苹果对圆角（cornerRadius）的定义：</p>
 <blockquote>
-<h2 id="Declaration"><a href="#Declaration" class="headerlink" title="Declaration"></a>Declaration</h2><pre><code>@property CGFloat cornerRadius;</code></pre><h2 id="Discussion"><a href="#Discussion" class="headerlink" title="Discussion"></a>Discussion</h2><p>Setting the radius to a value greater than <code>0.0</code> causes the layer to begin drawing rounded corners on its background. By default, the corner radius does not apply to the image in the layer’s <a href="apple-reference-documentation://hc8wq1-J90" target="_blank" rel="noopener"><code>contents</code></a> property; it applies only to the background color and border of the layer. However, setting the <a href="apple-reference-documentation://hciTGlVHPz" target="_blank" rel="noopener"><code>masksToBounds</code></a> property to <code>YES</code> causes the content to be clipped to the rounded corners. </p>
-<p>The default value of this property is <code>0.0</code>.</p>
+<p>Setting the radius to a value greater than <code>0.0</code> causes the layer to begin drawing rounded corners on its background. By default, the corner radius does not apply to the image in the layer’s <a href="apple-reference-documentation://hc8wq1-J90" target="_blank" rel="noopener"><code>contents</code></a> property; it applies only to the background color and border of the layer. However, setting the <a href="apple-reference-documentation://hciTGlVHPz" target="_blank" rel="noopener"><code>masksToBounds</code></a> property to <code>YES</code> causes the content to be clipped to the rounded corners. </p>
 </blockquote>
 <p>简单的翻一下：</p>
 <blockquote>
 <p>当给定radius 超过0.0 会导致图层（layer）开始在<strong>其背景</strong>中绘制圆角。默认下，圆角半径不会应用到图层的内容属性的图像中；它只会应用到其背景和自身的边界线中。因此，将<code>maskToBounds</code>设置成<code>YES</code>，会导致内容切成圆角。</p>
-<p>默认值为0.0</p>
 </blockquote>
 <p>由此可以得到两个结论</p>
 <ul>
