@@ -472,6 +472,17 @@
 <li><strong>自动触发</strong></li>
 <li>空间有限制：大小为屏幕像素的2.5倍</li>
 </ul>
+<h3 id="3-4-离屏渲染的模式"><a href="#3-4-离屏渲染的模式" class="headerlink" title="3.4 离屏渲染的模式"></a>3.4 离屏渲染的模式</h3><ol>
+<li>拿到第一个图层，结果放入离屏渲染区</li>
+<li>拿到第二个图层，结果放入离屏渲染区</li>
+<li>拿到第三个图层，结果放入离屏渲染区</li>
+<li>从离屏渲染区，获取第一个图层，添加圆角</li>
+<li>从离屏渲染区，获取第二个图层，添加圆角</li>
+<li>从离屏渲染区，获取第三个图层，添加圆角</li>
+<li>3个图层，进行组合，放入帧缓冲区</li>
+<li>进行显示到屏幕</li>
+</ol>
+<p>小结： 多个图层特殊处理，每一步都需要临时的存出结果</p>
 <h2 id="4、产生的场景"><a href="#4、产生的场景" class="headerlink" title="4、产生的场景"></a>4、产生的场景</h2><h3 id="4-1-圆角"><a href="#4-1-圆角" class="headerlink" title="4.1 圆角"></a>4.1 圆角</h3><p>对，就是圆角，可能印象中，设置了圆角就会带来离屏渲染，真的是这样吗？</p>
 <p>先看看苹果对圆角（cornerRadius）的定义：</p>
 <blockquote>
@@ -501,17 +512,6 @@
 <li>采用了光栅化的 layer —— layer.shouldRasterize</li>
 <li>绘制了文字的 layer —— UILabel 、CATextLayer、 CoreText等</li>
 </ul>
-<h3 id="4-4-离屏渲染的模式"><a href="#4-4-离屏渲染的模式" class="headerlink" title="4.4 离屏渲染的模式"></a>4.4 离屏渲染的模式</h3><ol>
-<li>拿到第一个图层，结果放入离屏渲染区</li>
-<li>拿到第二个图层，结果放入离屏渲染区</li>
-<li>拿到第三个图层，结果放入离屏渲染区</li>
-<li>从离屏渲染区，获取第一个图层，添加圆角</li>
-<li>从离屏渲染区，获取第二个图层，添加圆角</li>
-<li>从离屏渲染区，获取第三个图层，添加圆角</li>
-<li>3个图层，进行组合，放入帧缓冲区</li>
-<li>进行显示到屏幕</li>
-</ol>
-<p>小结： 多个图层特殊处理，每一步都需要临时的存出结果</p>
 <h2 id="5、解决方案"><a href="#5、解决方案" class="headerlink" title="5、解决方案"></a>5、解决方案</h2><h3 id="5-1-方案一：单一图片圆角"><a href="#5-1-方案一：单一图片圆角" class="headerlink" title="5.1 方案一：单一图片圆角"></a>5.1 方案一：单一图片圆角</h3><p>设置切歌边角，以及圆角半径</p>
 <pre class="line-numbers language-cpp"><code class="language-cpp">imageView<span class="token punctuation">.</span>clipToBounds <span class="token operator">=</span> YES<span class="token punctuation">;</span>
 imageView<span class="token punctuation">.</span>layer<span class="token punctuation">.</span>cornerRadius <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
