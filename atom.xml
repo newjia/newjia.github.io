@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2020-07-21T16:11:16.364Z</updated>
+  <updated>2020-07-23T17:05:37.430Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>【番外】CoreAnimation 在渲染中的角色</title>
+    <title>【番外】计算机渲染及CoreAnimation</title>
     <link href="http://nilsli.com/p/cb55e9a6.html"/>
     <id>http://nilsli.com/p/cb55e9a6.html</id>
     <published>2020-07-19T01:09:13.000Z</published>
-    <updated>2020-07-21T16:11:16.364Z</updated>
+    <updated>2020-07-23T17:05:37.430Z</updated>
     
     <summary type="html">
     
@@ -36,10 +36,6 @@
     </summary>
     
     
-    
-      <category term="CoreAnimation" scheme="http://nilsli.com/tags/CoreAnimation/"/>
-    
-      <category term="核心动画" scheme="http://nilsli.com/tags/%E6%A0%B8%E5%BF%83%E5%8A%A8%E7%94%BB/"/>
     
   </entry>
   
@@ -106,7 +102,7 @@
     <link href="http://nilsli.com/p/7f336030.html"/>
     <id>http://nilsli.com/p/7f336030.html</id>
     <published>2020-07-07T15:55:43.000Z</published>
-    <updated>2020-07-21T18:01:48.321Z</updated>
+    <updated>2020-07-23T18:50:31.021Z</updated>
     
     <summary type="html">
     
