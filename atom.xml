@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://nilsli.com/"/>
-  <updated>2021-01-17T05:04:33.071Z</updated>
+  <updated>2021-01-17T05:07:06.134Z</updated>
   <id>http://nilsli.com/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://nilsli.com/p/440a10cd.html"/>
     <id>http://nilsli.com/p/440a10cd.html</id>
     <published>2021-01-17T05:00:48.000Z</published>
-    <updated>2021-01-17T05:04:33.071Z</updated>
+    <updated>2021-01-17T05:07:06.134Z</updated>
     
     <summary type="html">
     
@@ -62,9 +62,9 @@
     
       <category term="opengl" scheme="http://nilsli.com/tags/opengl/"/>
     
-      <category term="metal" scheme="http://nilsli.com/tags/metal/"/>
-    
       <category term="ios" scheme="http://nilsli.com/tags/ios/"/>
+    
+      <category term="metal" scheme="http://nilsli.com/tags/metal/"/>
     
   </entry>
   
@@ -355,7 +355,7 @@
     <link href="http://nilsli.com/p/919af6b6.html"/>
     <id>http://nilsli.com/p/919af6b6.html</id>
     <published>2020-04-26T04:09:11.000Z</published>
-    <updated>2021-01-17T05:02:25.493Z</updated>
+    <updated>2021-01-17T05:04:21.658Z</updated>
     
     <summary type="html">
     
