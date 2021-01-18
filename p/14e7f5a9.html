@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="【一起学Metal】01-Metal初体验, 李佳的技术博客">
+    <meta name="keywords" content="【数据结构与算法】-（11）霍夫曼编码（HuffmanCoding）, 李佳的技术博客">
     <meta name="description" content>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>【一起学Metal】01-Metal初体验 | 李佳的技术博客</title>
+    <title>【数据结构与算法】-（11）霍夫曼编码（HuffmanCoding） | 李佳的技术博客</title>
     <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
@@ -245,12 +245,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/10.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/21.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">【一起学Metal】01-Metal初体验</h1>
+                    <h1 class="description center-align post-title">【数据结构与算法】-（11）霍夫曼编码（HuffmanCoding）</h1>
                 </div>
             </div>
         </div>
@@ -365,21 +365,9 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                    <div class="article-tag">
-                        
-                            <a href="/tags/opengl/">
-                                <span class="chip bg-color">opengl</span>
-                            </a>
-                        
-                            <a href="/tags/metal/">
-                                <span class="chip bg-color">metal</span>
-                            </a>
-                        
-                            <a href="/tags/ios/">
-                                <span class="chip bg-color">ios</span>
-                            </a>
-                        
-                    </div>
+                          <div class="article-tag">
+                            <span class="chip bg-color">无标签</span>
+                          </div>
                     
                 </div>
                 <div class="col s5 right-align">
@@ -391,7 +379,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-08-21
+                    2021-01-17
                 </div>
                 
 
@@ -400,7 +388,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    473
+                    185
                 </div>
                 
 
@@ -423,18 +411,22 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="一、Metal-简介"><a href="#一、Metal-简介" class="headerlink" title="一、Metal 简介"></a>一、Metal 简介</h2><h3 id="2-1-概念"><a href="#2-1-概念" class="headerlink" title="2.1 概念"></a>2.1 概念</h3><p>Metal 是一个兼顾图形与计算功能的，面向底层、低开销的硬件加速应用程序接口（API），其类似于将 OpenGL 与 OpenCL 的功能集成到了同一个API上，最初支持它的系统是 iOS 8。Metal 使得 iOS 可以实现其他平台的类似功能，例如 Khronos Group 的跨平台 Vulkan 与 Microsoft Windows 上的 Direct3D 12。</p>
-<h3 id="2-2-历史"><a href="#2-2-历史" class="headerlink" title="2.2 历史"></a>2.2 历史</h3><p>2014年6月2日，Metal 开始支持iOS设备（仅支持Apple A7或更新款处理器的iPhone、iPad）；2015年6月8日，Metal 开始支持运行 OS X El Capitan 的Mac设备（仅2012年中或更新款机种）。</p>
-<p>2017年6月5日，Apple于WWDC宣布了Metal的第二个版本，支持macOS High Sierra、iOS 11和tvOS 11。由于受相同硬件支持，Metal 2并不是Metal的独立API。 Metal 2在Xcode中实现了更高效的分析和调试，加速了机器学习、降低了CPU工作负载、支持macOS上的虚拟现实以及Apple A11处理器的特性。</p>
-<p>在2020年WWDC 上，苹果宣布了Mac 移至 Apple Silicon计划。使用Apple 芯片的Mac电脑将突出Apple GPU的特征，这些曾在macOS 和iOS 上的体现过，也将能受益于Apple GPU的 贴图延迟渲染（TBDR）架构的特征。</p>
-<h3 id="2-3-支持的CPU"><a href="#2-3-支持的CPU" class="headerlink" title="2.3 支持的CPU"></a>2.3 支持的CPU</h3><p>在iOS，tvOS，macOS中，Metal 支持苹果设计的A7以后的单片系统。</p>
-<p>在macOS 中，metal也支持从HD4000 以后的 Intel 高清集成显示系统，也支持AMD GCM和 RDNA的GPU系列。</p>
-<p>NVIDIA CPU 也受支持，但支持新设备（10系列起的新设备）的Metal 驱动程序从macOS 起已失效。</p>
-<p><img src="/p/82a3d28c/01.jpg" alt="使用Metal的多人在线战斗竞技场游戏《虚荣》，运行于iPhone 6"></p>
-<p>By Super Evil Megacorp, CC BY-SA 3.0, <a href="https://commons.wikimedia.org/w/index.php?curid=37251144" target="_blank" rel="noopener">https://commons.wikimedia.org/w/index.php?curid=37251144</a></p>
-<h2 id="二、Metal-案例1：渐变背景"><a href="#二、Metal-案例1：渐变背景" class="headerlink" title="二、Metal 案例1：渐变背景"></a>二、Metal 案例1：渐变背景</h2><h3 id="2-1-效果一览"><a href="#2-1-效果一览" class="headerlink" title="2.1 效果一览"></a>2.1 效果一览</h3><p><img src="/p/82a3d28c/02.gif" alt></p>
-<h3 id="2-2-实现思路"><a href="#2-2-实现思路" class="headerlink" title="2.2 实现思路"></a>2.2 实现思路</h3><p><img src="/p/82a3d28c/03.png" alt></p>
-<h3 id="2-3-代码分析"><a href="#2-3-代码分析" class="headerlink" title="2.3 代码分析"></a>2.3 代码分析</h3><h2 id="三、Metal-案例2：绘制一个三角形"><a href="#三、Metal-案例2：绘制一个三角形" class="headerlink" title="三、Metal 案例2：绘制一个三角形"></a>三、Metal 案例2：绘制一个三角形</h2><h2 id="四、比较Metal-与OpenGL"><a href="#四、比较Metal-与OpenGL" class="headerlink" title="四、比较Metal 与OpenGL"></a>四、比较Metal 与OpenGL</h2><h2 id="五、小结"><a href="#五、小结" class="headerlink" title="五、小结"></a>五、小结</h2>
+                <blockquote>
+<p><a href="https://nilsli.com/p/43384.html">【数据结构与算法】-（1）基础篇</a></p>
+<p><a href="https://nilsli.com/p/43366.html">【数据结构与算法】-（2）线性表基础</a></p>
+<p><a href="https://nilsli.com/p/54688.html">【数据结构与算法】-（3）循环链表（单向）</a></p>
+<p><a href="https://nilsli.com/p/56790.html">【数据结构与算法】-（4）双向链表和双向循环链表</a></p>
+<p><a href="https://nilsli.com/p/50518edc.html">【数据结构与算法】-（5）链表面试题解析</a></p>
+<p><a href="https://nilsli.com/p/7914b7d0.html">【数据结构与算法】-（6）栈</a></p>
+<p><a href="https://nilsli.com/p/c0a767bd.html">【数据结构与算法】-（7）队列</a></p>
+<p><a href="https://nilsli.com/p/b0e10b1c.html">【数据结构与算法】-（8）栈之算法题</a></p>
+<p><a href="https://nilsli.com/p/cc625709.html">【数据结构与算法】-（8.1）字符串去重算法</a></p>
+<p><a href="https://nilsli.com/p/8a586c1e.html">【数据结构与算法】-（8.2）字符串搜索算法和RK&amp;BP算法</a></p>
+<p><a href="https://nilsli.com/p/22d3726c.html">【数据结构与算法】-（8.3）KMP算法</a></p>
+<p><a href="https://nilsli.com/p/919af6b6.html#toc-heading-15">【数据结构与算法】-（9）二叉树与顺序表实现</a></p>
+<p><a href="https://nilsli.com/p/919af6b6.html#toc-heading-15">【数据结构与算法】-（10）线索化二叉树</a></p>
+</blockquote>
+
             </div>
             <hr/>
 
@@ -459,7 +451,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://nilsli.com/p/82a3d28c.html">http://nilsli.com/p/82a3d28c.html</a>
+                    <a href="http://nilsli.com/p/14e7f5a9.html">http://nilsli.com/p/14e7f5a9.html</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -496,19 +488,7 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            
-                                <a href="/tags/opengl/">
-                                    <span class="chip bg-color">opengl</span>
-                                </a>
-                            
-                                <a href="/tags/metal/">
-                                    <span class="chip bg-color">metal</span>
-                                </a>
-                            
-                                <a href="/tags/ios/">
-                                    <span class="chip bg-color">ios</span>
-                                </a>
-                            
+                            <span class="chip bg-color">无标签</span>
                         </div>
                     
                 </div>
@@ -677,7 +657,7 @@
         repo: 'newjia.github.io',
         owner: 'newjia',
         admin: "newjia",
-        id: '2020-08-21T09-52-07',
+        id: '2021-01-17T19-24-12',
         distractionFreeMode: false  // Facebook-like distraction free mode
     });
 
@@ -698,9 +678,55 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="far fa-dot-circle"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/p/14e7f5a9.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/21.jpg" class="responsive-img" alt="【数据结构与算法】-（11）霍夫曼编码（HuffmanCoding）">
+                        
+                        <span class="card-title">【数据结构与算法】-（11）霍夫曼编码（HuffmanCoding）</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+【数据结构与算法】-（1）基础篇
+【数据结构与算法】-（2）线性表基础
+【数据结构与算法】-（3）循环链表（单向）
+【数据结构与算法】-（4）双向链表和双向循环链表
+【数据结构与算法】-（5）链表面试题解析
+【数据结构与算法】-（6）栈
+
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-01-17
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
             <div class="card">
                 <a href="/p/440a10cd.html">
                     <div class="card-image">
@@ -725,47 +751,8 @@
                         
                     </div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="far fa-clock fa-fw icon-date"></i>2021-01-17
-                        </span>
-                        <span class="publish-author">
-                            
-                            <i class="fas fa-user fa-fw"></i>
-                            李佳
-                            
-                        </span>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-        
-        
-        <div class="article col s12 m6" data-aos="fade-up">
-            <div class="article-badge right-badge text-color">
-                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="card">
-                <a href="/p/bb33e4b9.html">
-                    <div class="card-image">
-                        
-                        
-                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/0.jpg" class="responsive-img" alt="计算机视觉【03-OpenGL正背面剔除】">
-                        
-                        <span class="card-title">计算机视觉【03-OpenGL正背面剔除】</span>
-                    </div>
-                </a>
-                <div class="card-content article-content">
-                    <div class="summary block-with-text">
-                        
-                            一、概念1.1隐藏面消除绘制3D场景式，尤其是在透视投影时，需要决定目标的哪一部分展示，哪一部分隐藏。如下图所示，如果不做隐藏面消除的配置，在3D目标旋转时，会出现透视bug，有些不该出现的出现了。
-
-1.2深度测试二、实现深度测试2.1 
-                        
-                    </div>
-                    <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-24
+                                <i class="far fa-clock fa-fw icon-date"></i>2021-01-17
                             </span>
                         <span class="publish-author">
                             
@@ -774,14 +761,6 @@
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/OpenGl/">
-                        <span class="chip bg-color">OpenGl</span>
-                    </a>
-                    
                 </div>
                 
             </div>
