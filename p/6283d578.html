@@ -1,0 +1,1686 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="【类的加载】-（3）loading_images, 李佳的技术博客">
+    <meta name="description" content>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【类的加载】-（3）loading_images | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/15.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【类的加载】-（3）loading_images</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/类/">
+                                <span class="chip bg-color">类</span>
+                            </a>
+                        
+                            <a href="/tags/加载/">
+                                <span class="chip bg-color">加载</span>
+                            </a>
+                        
+                            <a href="/tags/load/">
+                                <span class="chip bg-color">load</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-04-01
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.5k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    11 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>本页所使用的objc runtime 756.2，来自 <a href="https://opensource.apple.com/tarballs/objc4" target="_blank" rel="noopener">Apple 开源文档</a></p>
+</blockquote>
+<blockquote>
+<p><strong>类的加载探寻系列:</strong><br>1、<a href="https://nilsli.com/p/29664.html">【类的加载】-（1）类的启动</a></p>
+<p>2、<a href="https://nilsli.com/p/38312.html">【类的加载】-（2）懒加载类与分类</a></p>
+<p>3、<a href="https://nilsli.com/p/6283d578.html">【类的加载】-（3）loading_images</a></p>
+</blockquote>
+<h2 id="一、加载镜像load-images"><a href="#一、加载镜像load-images" class="headerlink" title="一、加载镜像load_images"></a>一、加载镜像load_images</h2><p>前两篇文章学习了objc_init 中的主要方法<code>map_images</code> ，接下来学习加载镜像，先把源码摆出来：</p>
+<p>通过注视可以看到，主要执行了2件事务：</p>
+<ul>
+<li>找到 load 方法</li>
+<li>调用load 方法。</li>
+</ul>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span>
+<span class="token function">load_images</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>path __unused<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">struct</span> mach_header <span class="token operator">*</span>mh<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// Return without taking locks if there are no +load methods here.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">hasLoadMethods</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">const</span> headerType <span class="token operator">*</span><span class="token punctuation">)</span>mh<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+
+    recursive_mutex_locker_t <span class="token function">lock</span><span class="token punctuation">(</span>loadMethodLock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Discover load methods</span>
+    <span class="token punctuation">{</span>
+        mutex_locker_t <span class="token function">lock2</span><span class="token punctuation">(</span>runtimeLock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">prepare_load_methods</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">const</span> headerType <span class="token operator">*</span><span class="token punctuation">)</span>mh<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// Call +load methods (without runtimeLock - re-entrant)</span>
+    <span class="token function">call_load_methods</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中找到load 方法，是通过先找到其背后的类或者分类。</p>
+<h3 id="1-1-准备类"><a href="#1-1-准备类" class="headerlink" title="1.1 准备类"></a>1.1 准备类</h3><p>下面这行代码表示类</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">prepare_load_methods</span><span class="token punctuation">(</span><span class="token keyword">const</span> headerType <span class="token operator">*</span>mhdr<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    size_t count<span class="token punctuation">,</span> i<span class="token punctuation">;</span>
+
+    runtimeLock<span class="token punctuation">.</span><span class="token function">assertLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    classref_t <span class="token operator">*</span>classlist <span class="token operator">=</span> 
+        <span class="token function">_getObjc2NonlazyClassList</span><span class="token punctuation">(</span>mhdr<span class="token punctuation">,</span> <span class="token operator">&amp;</span>count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">schedule_class_load</span><span class="token punctuation">(</span><span class="token function">remapClass</span><span class="token punctuation">(</span>classlist<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    category_t <span class="token operator">*</span><span class="token operator">*</span>categorylist <span class="token operator">=</span> <span class="token function">_getObjc2NonlazyCategoryList</span><span class="token punctuation">(</span>mhdr<span class="token punctuation">,</span> <span class="token operator">&amp;</span>count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> count<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        category_t <span class="token operator">*</span>cat <span class="token operator">=</span> categorylist<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        Class cls <span class="token operator">=</span> <span class="token function">remapClass</span><span class="token punctuation">(</span>cat<span class="token operator">-></span>cls<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>cls<span class="token punctuation">)</span> <span class="token keyword">continue</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// category for ignored weak-linked class</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>cls<span class="token operator">-></span><span class="token function">isSwiftStable</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">_objc_fatal</span><span class="token punctuation">(</span><span class="token string">"Swift class extensions and categories on Swift "</span>
+                        <span class="token string">"classes are not allowed to have +load methods"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token function">realizeClassWithoutSwift</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">assert</span><span class="token punctuation">(</span>cls<span class="token operator">-></span><span class="token function">ISA</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span><span class="token function">isRealized</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">add_category_to_loadable_list</span><span class="token punctuation">(</span>cat<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><p>找到类的列表：</p>
+<pre class="line-numbers language-c"><code class="language-c">classref_t <span class="token operator">*</span>classlist <span class="token operator">=</span> 
+        <span class="token function">_getObjc2NonlazyClassList</span><span class="token punctuation">(</span>mhdr<span class="token punctuation">,</span> <span class="token operator">&amp;</span>count<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</li>
+<li><p>准备load 方法，把类添加到可load 列表，将类标记为可执行</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">schedule_class_load</span><span class="token punctuation">(</span>Class cls<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>cls<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token function">assert</span><span class="token punctuation">(</span>cls<span class="token operator">-></span><span class="token function">isRealized</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// _read_images should realize</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>cls<span class="token operator">-></span><span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">-></span>flags <span class="token operator">&amp;</span> RW_LOADED<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Ensure superclass-first ordering</span>
+    <span class="token function">schedule_class_load</span><span class="token punctuation">(</span>cls<span class="token operator">-></span>superclass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token function">add_class_to_loadable_list</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    cls<span class="token operator">-></span><span class="token function">setInfo</span><span class="token punctuation">(</span>RW_LOADED<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>把类添加到可加载列表的实现</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">add_class_to_loadable_list</span><span class="token punctuation">(</span>Class cls<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    IMP method<span class="token punctuation">;</span>
+
+    loadMethodLock<span class="token punctuation">.</span><span class="token function">assertLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    method <span class="token operator">=</span> cls<span class="token operator">-></span><span class="token function">getLoadMethod</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>method<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// Don't bother if cls has no +load method</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>PrintLoading<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">_objc_inform</span><span class="token punctuation">(</span><span class="token string">"LOAD: class '%s' scheduled for +load"</span><span class="token punctuation">,</span> 
+                     cls<span class="token operator">-></span><span class="token function">nameForLogging</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>loadable_classes_used <span class="token operator">==</span> loadable_classes_allocated<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        loadable_classes_allocated <span class="token operator">=</span> loadable_classes_allocated<span class="token operator">*</span><span class="token number">2</span> <span class="token operator">+</span> <span class="token number">16</span><span class="token punctuation">;</span>
+        loadable_classes <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">struct</span> loadable_class <span class="token operator">*</span><span class="token punctuation">)</span>
+            <span class="token function">realloc</span><span class="token punctuation">(</span>loadable_classes<span class="token punctuation">,</span>
+                              loadable_classes_allocated <span class="token operator">*</span>
+                              <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token keyword">struct</span> loadable_class<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    loadable_classes<span class="token punctuation">[</span>loadable_classes_used<span class="token punctuation">]</span><span class="token punctuation">.</span>cls <span class="token operator">=</span> cls<span class="token punctuation">;</span>
+    loadable_classes<span class="token punctuation">[</span>loadable_classes_used<span class="token punctuation">]</span><span class="token punctuation">.</span>method <span class="token operator">=</span> method<span class="token punctuation">;</span>
+    loadable_classes_used<span class="token operator">++</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>把分类添加到可加载列表</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">add_category_to_loadable_list</span><span class="token punctuation">(</span>Category cat<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    IMP method<span class="token punctuation">;</span>
+
+    loadMethodLock<span class="token punctuation">.</span><span class="token function">assertLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    method <span class="token operator">=</span> <span class="token function">_category_getLoadMethod</span><span class="token punctuation">(</span>cat<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Don't bother if cat has no +load method</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>method<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>PrintLoading<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">_objc_inform</span><span class="token punctuation">(</span><span class="token string">"LOAD: category '%s(%s)' scheduled for +load"</span><span class="token punctuation">,</span> 
+                     <span class="token function">_category_getClassName</span><span class="token punctuation">(</span>cat<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">_category_getName</span><span class="token punctuation">(</span>cat<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>loadable_categories_used <span class="token operator">==</span> loadable_categories_allocated<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        loadable_categories_allocated <span class="token operator">=</span> loadable_categories_allocated<span class="token operator">*</span><span class="token number">2</span> <span class="token operator">+</span> <span class="token number">16</span><span class="token punctuation">;</span>
+        loadable_categories <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token keyword">struct</span> loadable_category <span class="token operator">*</span><span class="token punctuation">)</span>
+            <span class="token function">realloc</span><span class="token punctuation">(</span>loadable_categories<span class="token punctuation">,</span>
+                              loadable_categories_allocated <span class="token operator">*</span>
+                              <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token keyword">struct</span> loadable_category<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    loadable_categories<span class="token punctuation">[</span>loadable_categories_used<span class="token punctuation">]</span><span class="token punctuation">.</span>cat <span class="token operator">=</span> cat<span class="token punctuation">;</span>
+    loadable_categories<span class="token punctuation">[</span>loadable_categories_used<span class="token punctuation">]</span><span class="token punctuation">.</span>method <span class="token operator">=</span> method<span class="token punctuation">;</span>
+    loadable_categories_used<span class="token operator">++</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>其中</p>
+<pre class="line-numbers language-c"><code class="language-c">Class cls <span class="token operator">=</span> <span class="token function">remapClass</span><span class="token punctuation">(</span>cat<span class="token operator">-></span>cls<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>这行代码，重映射了分类的类，即帮分类把懒加载的类进行了实现，否则分类无法找到可以依附的主类。</p>
+</li>
+</ul>
+<h3 id="1-2-调用-load-方法"><a href="#1-2-调用-load-方法" class="headerlink" title="1.2 调用 load 方法"></a>1.2 调用 load 方法</h3><p>源码如下：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">do</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 1. Repeatedly call class +loads until there aren't any more</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>loadable_classes_used <span class="token operator">></span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">call_class_loads</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">// 2. Call category +loads ONCE</span>
+        more_categories <span class="token operator">=</span> <span class="token function">call_category_loads</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// 3. Run more +loads if there are classes OR more untried categories</span>
+    <span class="token punctuation">}</span> <span class="token keyword">while</span> <span class="token punctuation">(</span>loadable_classes_used <span class="token operator">></span> <span class="token number">0</span>  <span class="token operator">||</span>  more_categories<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="1-2-1-调用类的load-方法"><a href="#1-2-1-调用类的load-方法" class="headerlink" title="1.2.1 调用类的load 方法"></a>1.2.1 调用类的load 方法</h4><ol>
+<li>列举可加载的类</li>
+<li>循环找到类的对应load 方法的method 函数</li>
+<li>向类发送该method 函数，完成调用</li>
+</ol>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">call_class_loads</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">int</span> i<span class="token punctuation">;</span>
+
+      <span class="token comment" spellcheck="true">//(1)</span>
+    <span class="token comment" spellcheck="true">// Detach current loadable list.</span>
+    <span class="token keyword">struct</span> loadable_class <span class="token operator">*</span>classes <span class="token operator">=</span> loadable_classes<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> used <span class="token operator">=</span> loadable_classes_used<span class="token punctuation">;</span>
+    loadable_classes <span class="token operator">=</span> nil<span class="token punctuation">;</span>
+    loadable_classes_allocated <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    loadable_classes_used <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+
+
+    <span class="token comment" spellcheck="true">// Call all +loads for the detached list.</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> used<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Class cls <span class="token operator">=</span> classes<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>cls<span class="token punctuation">;</span>
+          <span class="token comment" spellcheck="true">//(2)</span>
+        load_method_t load_method <span class="token operator">=</span> <span class="token punctuation">(</span>load_method_t<span class="token punctuation">)</span>classes<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>method<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>cls<span class="token punctuation">)</span> <span class="token keyword">continue</span><span class="token punctuation">;</span> 
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>PrintLoading<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">_objc_inform</span><span class="token punctuation">(</span><span class="token string">"LOAD: +[%s load]\n"</span><span class="token punctuation">,</span> cls<span class="token operator">-></span><span class="token function">nameForLogging</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">//(3)</span>
+        <span class="token punctuation">(</span><span class="token operator">*</span>load_method<span class="token punctuation">)</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> SEL_load<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment" spellcheck="true">// Destroy the detached list.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>classes<span class="token punctuation">)</span> <span class="token function">free</span><span class="token punctuation">(</span>classes<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="1-2-2-调用分类的load-方法"><a href="#1-2-2-调用分类的load-方法" class="headerlink" title="1.2.2 调用分类的load 方法"></a>1.2.2 调用分类的load 方法</h4><ol>
+<li><p>列举可加载的分类</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token comment" spellcheck="true">// Detach current loadable list.</span>
+    <span class="token keyword">struct</span> loadable_category <span class="token operator">*</span>cats <span class="token operator">=</span> loadable_categories<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> used <span class="token operator">=</span> loadable_categories_used<span class="token punctuation">;</span>
+    <span class="token keyword">int</span> allocated <span class="token operator">=</span> loadable_categories_allocated<span class="token punctuation">;</span>
+    loadable_categories <span class="token operator">=</span> nil<span class="token punctuation">;</span>
+    loadable_categories_allocated <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    loadable_categories_used <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>循环找到分类的对应load 方法的method 函数</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token comment" spellcheck="true">// Call all +loads for the detached list.</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> used<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Category cat <span class="token operator">=</span> cats<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>cat<span class="token punctuation">;</span>
+        load_method_t load_method <span class="token operator">=</span> <span class="token punctuation">(</span>load_method_t<span class="token punctuation">)</span>cats<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>method<span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+<ol start="3">
+<li><p>向分类发送该method 函数，完成调用</p>
+<pre class="line-numbers language-c"><code class="language-c"> <span class="token punctuation">(</span><span class="token operator">*</span>load_method<span class="token punctuation">)</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> SEL_load<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>释放可执行分类列表，保证程序启动<strong>只调用一次</strong>该加载。</p>
+<p>这里通过一个叫做<code>loadable_categories_used</code> 和<code>used</code> 的标识，来决定是否加载，并进行摧毁。</p>
+<p>把使用过的</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">int</span> used <span class="token operator">=</span> loadable_categories_used<span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">/****/</span>
+    shift <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> used<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>cats<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>cat<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            cats<span class="token punctuation">[</span>i<span class="token operator">-</span>shift<span class="token punctuation">]</span> <span class="token operator">=</span> cats<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            shift<span class="token operator">++</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    used <span class="token operator">-</span><span class="token operator">=</span> shift<span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// Destroy the new list.</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>loadable_categories<span class="token punctuation">)</span> <span class="token function">free</span><span class="token punctuation">(</span>loadable_categories<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+<h2 id="二、类的扩展-extension"><a href="#二、类的扩展-extension" class="headerlink" title="二、类的扩展-extension"></a>二、类的扩展-extension</h2><p>扩展的特性如下</p>
+<ul>
+<li>作为匿名的分类</li>
+<li>可以添加属性和方法</li>
+<li>生成时间：编译时作为类的一部分（ro）一起被编译</li>
+<li>如果有与主类同名扩展方法，会先执行扩展方法，因为attachList 内存前插，所以造成覆盖原方法的假象。</li>
+</ul>
+<h2 id="三、runtime-关联对象"><a href="#三、runtime-关联对象" class="headerlink" title="三、runtime 关联对象"></a>三、runtime 关联对象</h2><h3 id="3-1-介绍"><a href="#3-1-介绍" class="headerlink" title="3.1 介绍"></a>3.1 介绍</h3><h4 id="3-1-1-概念"><a href="#3-1-1-概念" class="headerlink" title="3.1.1 概念"></a>3.1.1 概念</h4><blockquote>
+<p>associatedObject又称关联对象。顾名思义，就是把一个对象关联到另外一个对象身上。</p>
+</blockquote>
+<h4 id="3-1-2-应用场景"><a href="#3-1-2-应用场景" class="headerlink" title="3.1.2 应用场景"></a>3.1.2 应用场景</h4><ul>
+<li><p>为分类添加属性时，用到添加setter和getter方法，在实现里需要将类与属性关联</p>
+</li>
+<li><p>给某个类添加一个临时的属性</p>
+</li>
+</ul>
+<h3 id="3-2-关联对象的使用"><a href="#3-2-关联对象的使用" class="headerlink" title="3.2 关联对象的使用"></a>3.2 关联对象的使用</h3><ol>
+<li><p>添加关联。</p>
+<p>主要用到<code>void objc_setAssociatedObject</code>  函数，</p>
+<p>源码的实现是：</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">objc_setAssociatedObject</span><span class="token punctuation">(</span>id object<span class="token punctuation">,</span> 
+                              <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>key<span class="token punctuation">,</span> 
+                              id value<span class="token punctuation">,</span> 
+                              objc_AssociationPolicy policy<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">_object_set_associative_reference</span><span class="token punctuation">(</span>object<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>key<span class="token punctuation">,</span> value<span class="token punctuation">,</span> policy<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li><p>参数一：id object : 给哪个对象添加属性，这里要给自己添加属性，用self。</p>
+</li>
+<li><p>参数二：void * == id key : 属性名，根据key获取关联对象的属性的值，在objc_getAssociatedObject中通过次key获得属性的值并返回。</p>
+</li>
+<li><p>参数三：id value : 关联的值，也就是set方法传入的值给属性去保存。</p>
+</li>
+<li><p>参数四：objc_AssociationPolicy policy : 策略，属性以什么形式保存。</p>
+<p><img src="/p/6283d578/001.png" alt="关联策略"></p>
+</li>
+</ul>
+<p>业务上，比如给当前的类把cate_name 作为属性绑定，业务代码如下</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token operator">-</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>setCate_name<span class="token punctuation">:</span><span class="token punctuation">(</span>NSString <span class="token operator">*</span><span class="token punctuation">)</span>cate_name<span class="token punctuation">{</span>
+
+    <span class="token function">objc_setAssociatedObject</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> @<span class="token string">"name"</span><span class="token punctuation">,</span>cate_name<span class="token punctuation">,</span> OBJC_ASSOCIATION_RETAIN_NONATOMIC<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>获取关联属性</p>
+<p>主要函数为：<code>objc_getAssociatedObject</code>方法</p>
+<p>查看源码的实现是：</p>
+<pre class="line-numbers language-c"><code class="language-c">id <span class="token function">objc_getAssociatedObject</span><span class="token punctuation">(</span>id object<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">void</span> <span class="token operator">*</span>key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">_object_get_associative_reference</span><span class="token punctuation">(</span>object<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这里两个参数：</p>
+<p> 参数一：id object : 获取哪个对象里面的关联的属性。</p>
+<p> 参数二：void * == id key : 什么属性，与objc_setAssociatedObject中的key相对应，即通过key值取出value。</p>
+<p><strong>业务实现</strong>：去除当前类中 name属性，作为cate_name 返回</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token operator">-</span><span class="token punctuation">(</span>NSString <span class="token operator">*</span><span class="token punctuation">)</span>cate_name<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">objc_getAssociatedObject</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> @<span class="token string">"name"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+<h3 id="3-1-关联对象关联原理"><a href="#3-1-关联对象关联原理" class="headerlink" title="3.1 关联对象关联原理"></a>3.1 关联对象关联原理</h3><ul>
+<li>程序运行时创建一个大大Hash 表</li>
+<li>通过manager 进入迭代器对每个类表查找</li>
+<li>如果找到，对新添加的属性进行绑定</li>
+<li>如果找不到，创建一个，进行绑定存储</li>
+</ul>
+<ol>
+<li><p>通过manager 管理</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token comment" spellcheck="true">// 关联对象的管理类</span>
+        AssociationsManager manager<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</li>
+<li><p>获取关联的 HashMap -&gt; 存储当前关联对象</p>
+<pre class="line-numbers language-c"><code class="language-c">AssociationsHashMap <span class="token operator">&amp;</span><span class="token function">associations</span><span class="token punctuation">(</span>manager<span class="token punctuation">.</span><span class="token function">associations</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>获取 AssociationsHashMap 的迭代器 - (对象的) 进行遍历</p>
+<pre class="line-numbers language-c"><code class="language-c">AssociationsHashMap<span class="token punctuation">:</span><span class="token punctuation">:</span>iterator i <span class="token operator">=</span> associations<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>disguised_object<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>根据key去获取关联属性的迭代器</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token comment" spellcheck="true">// 根据key去获取关联属性的迭代器</span>
+                ObjectAssociationMap<span class="token punctuation">:</span><span class="token punctuation">:</span>iterator j <span class="token operator">=</span> refs<span class="token operator">-></span><span class="token function">find</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>j <span class="token operator">!=</span> refs<span class="token operator">-></span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    old_association <span class="token operator">=</span> j<span class="token operator">-></span>second<span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 替换设置新值</span>
+                    j<span class="token operator">-></span>second <span class="token operator">=</span> <span class="token function">ObjcAssociation</span><span class="token punctuation">(</span>policy<span class="token punctuation">,</span> new_value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// 到最后了 - 直接设置新值</span>
+                    <span class="token punctuation">(</span><span class="token operator">*</span>refs<span class="token punctuation">)</span><span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">ObjcAssociation</span><span class="token punctuation">(</span>policy<span class="token punctuation">,</span> new_value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>没有对象的关联信息情况。创建map，通过key-value 存入</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">if</span> <span class="token punctuation">(</span>new_value<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment" spellcheck="true">/** 存在该对象，查找遍历，略过*/</span> 
+<span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+  ObjectAssociationMap <span class="token operator">*</span>refs <span class="token operator">=</span> new ObjectAssociationMap<span class="token punctuation">;</span>
+                associations<span class="token punctuation">[</span>disguised_object<span class="token punctuation">]</span> <span class="token operator">=</span> refs<span class="token punctuation">;</span>
+                <span class="token punctuation">(</span><span class="token operator">*</span>refs<span class="token punctuation">)</span><span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">ObjcAssociation</span><span class="token punctuation">(</span>policy<span class="token punctuation">,</span> new_value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                object<span class="token operator">-></span><span class="token function">setHasAssociatedObjects</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+<h3 id="3-2-关联对象查找原理"><a href="#3-2-关联对象查找原理" class="headerlink" title="3.2 关联对象查找原理"></a>3.2 关联对象查找原理</h3><p>主要有以下几个步骤：</p>
+<ol>
+<li><p>生成关联对象的管理类</p>
+<pre class="line-numbers language-c"><code class="language-c">AssociationsManager manager<span class="token punctuation">;</span>
+AssociationsHashMap <span class="token operator">&amp;</span><span class="token function">associations</span><span class="token punctuation">(</span>manager<span class="token punctuation">.</span><span class="token function">associations</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</li>
+</ol>
+<ol start="2">
+<li><p>生成伪装地址。处理参数 object 地址</p>
+<pre class="line-numbers language-c"><code class="language-c">disguised_ptr_t disguised_object <span class="token operator">=</span> <span class="token function">DISGUISE</span><span class="token punctuation">(</span>object<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ol>
+<ol start="3">
+<li><p>生成Hash表中所有对象的额迭代器</p>
+<pre class="line-numbers language-c"><code class="language-c">AssociationsHashMap<span class="token punctuation">:</span><span class="token punctuation">:</span>iterator i <span class="token operator">=</span> associations<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>disguised_object<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+</ol>
+<ol start="4">
+<li><p>对象内部继续生称迭代器，准备迭代属性</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">!=</span> associations<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            ObjectAssociationMap <span class="token operator">*</span>refs <span class="token operator">=</span> i<span class="token operator">-></span>second<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 内部对象的迭代器</span>
+            ObjectAssociationMap<span class="token punctuation">:</span><span class="token punctuation">:</span>iterator j <span class="token operator">=</span> refs<span class="token operator">-></span><span class="token function">find</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+<ol start="5">
+<li><p>查找——找到 - 把值和策略读取出来</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token comment" spellcheck="true">// 内部对象的迭代器</span>
+            ObjectAssociationMap<span class="token punctuation">:</span><span class="token punctuation">:</span>iterator j <span class="token operator">=</span> refs<span class="token operator">-></span><span class="token function">find</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>j <span class="token operator">!=</span> refs<span class="token operator">-></span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 找到 - 把值和策略读取出来</span>
+                ObjcAssociation <span class="token operator">&amp;</span>entry <span class="token operator">=</span> j<span class="token operator">-></span>second<span class="token punctuation">;</span>
+                value <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                policy <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">policy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// OBJC_ASSOCIATION_GETTER_RETAIN - 就会持有一下</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>policy <span class="token operator">&amp;</span> OBJC_ASSOCIATION_GETTER_RETAIN<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token function">objc_retain</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ol>
+<li><p>如果找到，就进行持有</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">if</span> <span class="token punctuation">(</span>policy <span class="token operator">&amp;</span> OBJC_ASSOCIATION_GETTER_RETAIN<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token function">objc_retain</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+</li>
+</ol>
+<p>完整的查找过程的源码如下:</p>
+<pre class="line-numbers language-c"><code class="language-c">id <span class="token function">_object_get_associative_reference</span><span class="token punctuation">(</span>id object<span class="token punctuation">,</span> <span class="token keyword">void</span> <span class="token operator">*</span>key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    id value <span class="token operator">=</span> nil<span class="token punctuation">;</span>
+    uintptr_t policy <span class="token operator">=</span> OBJC_ASSOCIATION_ASSIGN<span class="token punctuation">;</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 关联对象的管理类</span>
+        AssociationsManager manager<span class="token punctuation">;</span>
+        AssociationsHashMap <span class="token operator">&amp;</span><span class="token function">associations</span><span class="token punctuation">(</span>manager<span class="token punctuation">.</span><span class="token function">associations</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 生成伪装地址。处理参数 object 地址</span>
+        disguised_ptr_t disguised_object <span class="token operator">=</span> <span class="token function">DISGUISE</span><span class="token punctuation">(</span>object<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 所有对象的额迭代器</span>
+        AssociationsHashMap<span class="token punctuation">:</span><span class="token punctuation">:</span>iterator i <span class="token operator">=</span> associations<span class="token punctuation">.</span><span class="token function">find</span><span class="token punctuation">(</span>disguised_object<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>i <span class="token operator">!=</span> associations<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            ObjectAssociationMap <span class="token operator">*</span>refs <span class="token operator">=</span> i<span class="token operator">-></span>second<span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 内部对象的迭代器</span>
+            ObjectAssociationMap<span class="token punctuation">:</span><span class="token punctuation">:</span>iterator j <span class="token operator">=</span> refs<span class="token operator">-></span><span class="token function">find</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>j <span class="token operator">!=</span> refs<span class="token operator">-></span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 找到 - 把值和策略读取出来</span>
+                ObjcAssociation <span class="token operator">&amp;</span>entry <span class="token operator">=</span> j<span class="token operator">-></span>second<span class="token punctuation">;</span>
+                value <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">value</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                policy <span class="token operator">=</span> entry<span class="token punctuation">.</span><span class="token function">policy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// OBJC_ASSOCIATION_GETTER_RETAIN - 就会持有一下</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>policy <span class="token operator">&amp;</span> OBJC_ASSOCIATION_GETTER_RETAIN<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token function">objc_retain</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>value <span class="token operator">&amp;&amp;</span> <span class="token punctuation">(</span>policy <span class="token operator">&amp;</span> OBJC_ASSOCIATION_GETTER_AUTORELEASE<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">objc_autorelease</span><span class="token punctuation">(</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> value<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-3-实战"><a href="#3-3-实战" class="headerlink" title="3.3 实战"></a>3.3 实战</h3><h4 id="3-3-1-目标"><a href="#3-3-1-目标" class="headerlink" title="3.3.1 目标"></a>3.3.1 目标</h4><p>给<code>UIAlertController</code> 添加一个block 回调</p>
+<h4 id="3-3-2-添加前"><a href="#3-3-2-添加前" class="headerlink" title="3.3.2 添加前"></a>3.3.2 添加前</h4><p>添加钱，每个UIAlertAction 处理自己的逻辑，如果逻辑较多，业务分离开，不方便阅读。</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token operator">*</span>SIGNALERTCONTROLLER <span class="token operator">=</span> <span class="token string">"SIGNALERTCONTROLLER"</span><span class="token punctuation">;</span>
+
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>askUserAQuestion <span class="token punctuation">{</span>
+    UIAlertController <span class="token operator">*</span>ac <span class="token operator">=</span> <span class="token punctuation">[</span>UIAlertController alertControllerWithTitle<span class="token punctuation">:</span>@<span class="token string">"hai"</span> message<span class="token punctuation">:</span>@<span class="token string">"hey"</span> preferredStyle<span class="token punctuation">:</span>UIAlertControllerStyleAlert<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    UIAlertAction <span class="token operator">*</span>aa <span class="token operator">=</span> <span class="token punctuation">[</span>UIAlertAction actionWithTitle<span class="token punctuation">:</span>@<span class="token string">"aaa"</span> style<span class="token punctuation">:</span>UIAlertActionStyleDefault handler<span class="token punctuation">:</span><span class="token operator">^</span><span class="token punctuation">(</span>UIAlertAction <span class="token operator">*</span> _Nonnull action<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">[</span>self doFirst<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">]</span> <span class="token punctuation">;</span>
+    UIAlertAction <span class="token operator">*</span>bb <span class="token operator">=</span> <span class="token punctuation">[</span>UIAlertAction actionWithTitle<span class="token punctuation">:</span>@<span class="token string">"bb"</span> style<span class="token punctuation">:</span>UIAlertActionStyleDefault handler<span class="token punctuation">:</span><span class="token operator">^</span><span class="token punctuation">(</span>UIAlertAction <span class="token operator">*</span> _Nonnull action<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">[</span>self doSecond<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span><span class="token punctuation">]</span> <span class="token punctuation">;</span>
+    UIAlertAction <span class="token operator">*</span>cc <span class="token operator">=</span> <span class="token punctuation">[</span>UIAlertAction actionWithTitle<span class="token punctuation">:</span>@<span class="token string">"cc"</span> style<span class="token punctuation">:</span>UIAlertActionStyleCancel handler<span class="token punctuation">:</span><span class="token operator">^</span><span class="token punctuation">(</span>UIAlertAction <span class="token operator">*</span> _Nonnull action<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"cancel"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">]</span> <span class="token punctuation">;</span>
+    <span class="token punctuation">[</span>ac addAction<span class="token punctuation">:</span>aa<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span>ac addAction<span class="token punctuation">:</span>bb<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span>ac addAction<span class="token punctuation">:</span>cc<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span>self presentViewController<span class="token punctuation">:</span>ac animated<span class="token punctuation">:</span>YES completion<span class="token punctuation">:</span><span class="token operator">^</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="3-3-3-添加后"><a href="#3-3-3-添加后" class="headerlink" title="3.3.3 添加后"></a>3.3.3 添加后</h4><p>统一在block 中处理业务，逻辑更集中</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token operator">*</span>SIGNALERTCONTROLLER <span class="token operator">=</span> <span class="token string">"SIGNALERTCONTROLLER"</span><span class="token punctuation">;</span>
+
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>askUserAQuestion <span class="token punctuation">{</span>
+    UIAlertController <span class="token operator">*</span>ac <span class="token operator">=</span> <span class="token punctuation">[</span>UIAlertController alertControllerWithTitle<span class="token punctuation">:</span>@<span class="token string">"hai"</span> message<span class="token punctuation">:</span>@<span class="token string">"hey"</span> preferredStyle<span class="token punctuation">:</span>UIAlertControllerStyleAlert<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    UIAlertAction <span class="token operator">*</span>aa <span class="token operator">=</span> <span class="token punctuation">[</span>UIAlertAction actionWithTitle<span class="token punctuation">:</span>@<span class="token string">"aaa"</span> style<span class="token punctuation">:</span>UIAlertActionStyleDefault handler<span class="token punctuation">:</span><span class="token operator">^</span><span class="token punctuation">(</span>UIAlertAction <span class="token operator">*</span> _Nonnull action<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">^</span>block<span class="token punctuation">)</span> <span class="token punctuation">(</span>NSInteger<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">objc_getAssociatedObject</span><span class="token punctuation">(</span>ac<span class="token punctuation">,</span> SIGNALERTCONTROLLER <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">block</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">]</span> <span class="token punctuation">;</span>
+    UIAlertAction <span class="token operator">*</span>bb <span class="token operator">=</span> <span class="token punctuation">[</span>UIAlertAction actionWithTitle<span class="token punctuation">:</span>@<span class="token string">"bb"</span> style<span class="token punctuation">:</span>UIAlertActionStyleDefault handler<span class="token punctuation">:</span><span class="token operator">^</span><span class="token punctuation">(</span>UIAlertAction <span class="token operator">*</span> _Nonnull action<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">^</span>block<span class="token punctuation">)</span> <span class="token punctuation">(</span>NSInteger<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">objc_getAssociatedObject</span><span class="token punctuation">(</span>ac<span class="token punctuation">,</span> SIGNALERTCONTROLLER <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">block</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token punctuation">}</span><span class="token punctuation">]</span> <span class="token punctuation">;</span>
+    UIAlertAction <span class="token operator">*</span>cc <span class="token operator">=</span> <span class="token punctuation">[</span>UIAlertAction actionWithTitle<span class="token punctuation">:</span>@<span class="token string">"cc"</span> style<span class="token punctuation">:</span>UIAlertActionStyleCancel handler<span class="token punctuation">:</span><span class="token operator">^</span><span class="token punctuation">(</span>UIAlertAction <span class="token operator">*</span> _Nonnull action<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">^</span>block<span class="token punctuation">)</span> <span class="token punctuation">(</span>NSInteger<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token function">objc_getAssociatedObject</span><span class="token punctuation">(</span>ac<span class="token punctuation">,</span> SIGNALERTCONTROLLER <span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">block</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">]</span> <span class="token punctuation">;</span>
+    <span class="token punctuation">[</span>ac addAction<span class="token punctuation">:</span>aa<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span>ac addAction<span class="token punctuation">:</span>bb<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">[</span>ac addAction<span class="token punctuation">:</span>cc<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token keyword">void</span> <span class="token punctuation">(</span><span class="token operator">^</span>block<span class="token punctuation">)</span><span class="token punctuation">(</span>NSInteger<span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token operator">^</span><span class="token punctuation">(</span>NSInteger index<span class="token punctuation">)</span><span class="token punctuation">{</span>
+        <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"index--->   %ld"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">long</span><span class="token punctuation">)</span>index<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token punctuation">[</span>self doFirst<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>index <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+            <span class="token punctuation">[</span>self doSecond<span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token keyword">else</span><span class="token punctuation">{</span>
+            <span class="token function">NSLog</span><span class="token punctuation">(</span>@<span class="token string">"cancel"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+    <span class="token function">objc_setAssociatedObject</span><span class="token punctuation">(</span>ac<span class="token punctuation">,</span>
+                             SIGNALERTCONTROLLER<span class="token punctuation">,</span>
+                             block<span class="token punctuation">,</span>
+                             OBJC_ASSOCIATION_COPY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+    <span class="token punctuation">[</span>self presentViewController<span class="token punctuation">:</span>ac animated<span class="token punctuation">:</span>YES completion<span class="token punctuation">:</span><span class="token operator">^</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span>
+
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>doFirst<span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token operator">-</span> <span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">)</span>doSecond<span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="四、initialize-的调用"><a href="#四、initialize-的调用" class="headerlink" title="四、initialize 的调用"></a>四、initialize 的调用</h2><p>调用步骤如下</p>
+<ul>
+<li><p>lookUpImpOrForward</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token keyword">if</span> <span class="token punctuation">(</span>initialize <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>cls<span class="token operator">-></span><span class="token function">isInitialized</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        cls <span class="token operator">=</span> <span class="token function">initializeAndLeaveLocked</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> inst<span class="token punctuation">,</span> runtimeLock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// runtimeLock may have been dropped but is now locked again</span>
+
+        <span class="token comment" spellcheck="true">// If sel == initialize, class_initialize will send +initialize and </span>
+        <span class="token comment" spellcheck="true">// then the messenger will send +initialize again after this </span>
+        <span class="token comment" spellcheck="true">// procedure finishes. Of course, if this is not being called </span>
+        <span class="token comment" spellcheck="true">// from the messenger then it won't happen. 2778172</span>
+    <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<ul>
+<li><p>initializeAndLeaveLocked</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token comment" spellcheck="true">// Locking: caller must hold runtimeLock; this may drop and re-acquire it</span>
+<span class="token keyword">static</span> Class <span class="token function">initializeAndLeaveLocked</span><span class="token punctuation">(</span>Class cls<span class="token punctuation">,</span> id obj<span class="token punctuation">,</span> mutex_t<span class="token operator">&amp;</span> lock<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token function">initializeAndMaybeRelock</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> obj<span class="token punctuation">,</span> lock<span class="token punctuation">,</span> true<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<ul>
+<li><p>initializeAndMaybeRelock</p>
+<pre class="line-numbers language-c"><code class="language-c">    <span class="token comment" spellcheck="true">// runtimeLock is now unlocked, for +initialize dispatch</span>
+    <span class="token function">assert</span><span class="token punctuation">(</span>nonmeta<span class="token operator">-></span><span class="token function">isRealized</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">initializeNonMetaClass</span><span class="token punctuation">(</span>nonmeta<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<ul>
+<li><p>initializeNonMetaClass</p>
+<pre class="line-numbers language-c"><code class="language-c">        <span class="token punctuation">{</span>
+            <span class="token function">callInitialize</span><span class="token punctuation">(</span>cls<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>PrintInitializing<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">_objc_inform</span><span class="token punctuation">(</span><span class="token string">"INITIALIZE: thread %p: finished +[%s initialize]"</span><span class="token punctuation">,</span>
+                             <span class="token function">pthread_self</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> cls<span class="token operator">-></span><span class="token function">nameForLogging</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<ul>
+<li><p>callInitialize(cls);</p>
+<pre class="line-numbers language-c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">callInitialize</span><span class="token punctuation">(</span>Class cls<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span>Class<span class="token punctuation">,</span> SEL<span class="token punctuation">)</span><span class="token punctuation">)</span>objc_msgSend<span class="token punctuation">)</span><span class="token punctuation">(</span>cls<span class="token punctuation">,</span> SEL_initialize<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">asm</span><span class="token punctuation">(</span><span class="token string">""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<h2 id="五、面试题-load-与initialize-的区别"><a href="#五、面试题-load-与initialize-的区别" class="headerlink" title="五、面试题 load 与initialize 的区别"></a>五、面试题 load 与initialize 的区别</h2><h4 id="5-1-调用方式："><a href="#5-1-调用方式：" class="headerlink" title="5.1 调用方式："></a>5.1 调用方式：</h4><ul>
+<li>load 根据函数地址调用</li>
+<li>initialize 通过objc_msgSend 调用</li>
+</ul>
+<h4 id="5-2-调用时刻"><a href="#5-2-调用时刻" class="headerlink" title="5.2 调用时刻"></a>5.2 调用时刻</h4><ul>
+<li>load 属于runtime 加载类、分类的时候，只会调用一次</li>
+<li>initialize 方法上类第一次收到消息时，每个类调用一次，而父类的initialize 可能会调用多次 </li>
+</ul>
+<h4 id="5-3-调用顺序："><a href="#5-3-调用顺序：" class="headerlink" title="5.3 调用顺序："></a>5.3 调用顺序：</h4><ul>
+<li>load：<ul>
+<li>先编译那个类就先调用它的load，父类的load 方法优先。</li>
+<li>分类中也是先主类执行，后分类执行</li>
+</ul>
+</li>
+<li>initialize：和普通方法一样，因为执行的是objc_msgSend 。<ul>
+<li>先执行子类的initialize，如果没有，执行父类的。</li>
+<li>分类部分，如果分类有，执行分类，不执行主类的</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/6283d578.html">http://nilsli.com/p/6283d578.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/类/">
+                                    <span class="chip bg-color">类</span>
+                                </a>
+                            
+                                <a href="/tags/加载/">
+                                    <span class="chip bg-color">加载</span>
+                                </a>
+                            
+                                <a href="/tags/load/">
+                                    <span class="chip bg-color">load</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-04-01T12-58-01',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/43366.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/16.jpg" class="responsive-img" alt="【数据结构与算法】-（2）线性表基础">
+                        
+                        <span class="card-title">【数据结构与算法】-（2）线性表基础</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+ 【数据结构与算法】-（1）基础篇
+ 【数据结构与算法】-（2）线性表基础
+ 【数据结构与算法】-（3）循环链表（单向）
+ 【数据结构与算法】-（4）双向链表和双向循环链表
+ 【数据结构与算法】-（5）链表面试题解析
+ 【数据结构与算法】
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-01
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/数据结构/">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                    <a href="/tags/算法/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/iOS/">
+                        <span class="chip bg-color">iOS</span>
+                    </a>
+                    
+                    <a href="/tags/线性表/">
+                        <span class="chip bg-color">线性表</span>
+                    </a>
+                    
+                    <a href="/tags/理论/">
+                        <span class="chip bg-color">理论</span>
+                    </a>
+                    
+                    <a href="/tags/基础/">
+                        <span class="chip bg-color">基础</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/43384.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/10.jpg" class="responsive-img" alt="【数据结构与算法】-（1）基础篇">
+                        
+                        <span class="card-title">【数据结构与算法】-（1）基础篇</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            算法是解决特定问题对求解步骤的描述，在计算机中表现为指令的有限序列，并且每条指令表示一个或多个操作。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-31
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/数据结构/">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                    <a href="/tags/算法/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/iOS/">
+                        <span class="chip bg-color">iOS</span>
+                    </a>
+                    
+                    <a href="/tags/理论/">
+                        <span class="chip bg-color">理论</span>
+                    </a>
+                    
+                    <a href="/tags/基础/">
+                        <span class="chip bg-color">基础</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
