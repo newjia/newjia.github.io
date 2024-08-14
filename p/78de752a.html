@@ -1,0 +1,1280 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="【底层探索】- KVO（上）, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【底层探索】- KVO（上） | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/22.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【底层探索】- KVO（上）</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E5%BA%95%E5%B1%82/">
+                                <span class="chip bg-color">底层</span>
+                            </a>
+                        
+                            <a href="/tags/KVO/">
+                                <span class="chip bg-color">KVO</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-04-03
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.5k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    10 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="一、KVO-初探"><a href="#一、KVO-初探" class="headerlink" title="一、KVO 初探"></a>一、KVO 初探</h2><h3 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h3><blockquote>
+<p>Key-value observing is a mechanism that allows objects to be notified of changes to specified properties of other objects.</p>
+<p>键值观察（KVO）是一种机制，允许对象在其他对象的特定属性改变后得到通知。</p>
+</blockquote>
+<p>KVO 概念，参看 <a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/KeyValueObserving/KeyValueObserving.html">苹果开放文档</a></p>
+<h3 id="1-2-使用"><a href="#1-2-使用" class="headerlink" title="1.2 使用"></a>1.2 使用</h3><ul>
+<li><p>注册监听</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">addObserver</span>(<span class="keyword">_</span> <span class="params">observer</span>: <span class="type">NSObject</span>, </span><br><span class="line">      <span class="params">forKeyPath</span> <span class="params">keyPath</span>: <span class="type">String</span>, </span><br><span class="line">         <span class="params">options</span>: <span class="type">NSKeyValueObservingOptions</span> <span class="operator">=</span> [], </span><br><span class="line">         <span class="params">context</span>: <span class="type">UnsafeMutableRawPointer</span>?)</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>实现键值变换的通知</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)observeValueForKeyPath:(NSString *)keyPath </span><br><span class="line">                      ofObject:(id)object </span><br><span class="line">                        change:(NSDictionary&lt;NSKeyValueChangeKey, id&gt; *)change </span><br><span class="line">                       context:(<span class="type">void</span> *)context;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>移除监听，当不再需要监听事件时</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">removeObserver</span>(<span class="keyword">_</span> <span class="params">observer</span>: <span class="type">NSObject</span>, </span><br><span class="line">         <span class="params">forKeyPath</span> <span class="params">keyPath</span>: <span class="type">String</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="1-1-context-的作用"><a href="#1-1-context-的作用" class="headerlink" title="1.1 context 的作用"></a>1.1 context 的作用</h3><h4 id="1-1-1-介绍"><a href="#1-1-1-介绍" class="headerlink" title="1.1.1 介绍"></a>1.1.1 介绍</h4><p>添加KVO 的关键方法为</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)addObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options context:(nullable <span class="type">void</span> *)context;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>objserver - 观察者</li>
+<li>keyPath - 关键路径，即观察的重点，如属性</li>
+<li>options - 键值观察的策略选项。</li>
+<li>context - 观察上下文。</li>
+</ol>
+<h4 id="1-1-2-原因："><a href="#1-1-2-原因：" class="headerlink" title="1.1.2 原因："></a>1.1.2 原因：</h4><p>苹果文档 在<a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/KeyValueObserving/Articles/KVOBasics.html#//apple_ref/doc/uid/20002252-SW4">context 这一小节</a> 写到：</p>
+<blockquote>
+<p>A safer and more extensible approach is to use the context to ensure notifications you receive are destined for your observer and not a superclass.</p>
+<p>更安全和扩展性更好的获取方式，就是使用<code>context</code>来确保你收到的通知被指向你的观察者，而不是父类。</p>
+</blockquote>
+<p>可见上下文指针（<code>context</code>） 是用来区分多个对象同时使用使用相同的<code>keyPath</code>，这样无需区分不同对象，减少判断嵌套，提高性能。</p>
+<blockquote>
+<p>可以快速定位观察键，是的区分观察对象更加便利、安全、直接。</p>
+<p><strong>类似标签区别</strong></p>
+</blockquote>
+<h4 id="1-1-3-使用"><a href="#1-1-3-使用" class="headerlink" title="1.1.3 使用"></a>1.1.3 使用</h4><p>context 使用静态地址指针，用法如下：</p>
+<ul>
+<li><p>创建 context 指针</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> *PersonAccountBalanceContext = &amp;PersonAccountBalanceContext;</span><br><span class="line"><span class="type">static</span> <span class="type">void</span> *PersonAccountInterestRateContext = &amp;PersonAccountInterestRateContext;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将不同的context 注册在相同对象的观察者中</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)registerAsObserverForAccount:(Account*)account &#123;</span><br><span class="line">    [account addObserver:self</span><br><span class="line">              forKeyPath:@<span class="string">&quot;balance&quot;</span></span><br><span class="line">                 options:(NSKeyValueObservingOptionNew |</span><br><span class="line">                          NSKeyValueObservingOptionOld)</span><br><span class="line">                 context:PersonAccountBalanceContext];</span><br><span class="line"> </span><br><span class="line">    [account addObserver:self</span><br><span class="line">              forKeyPath:@<span class="string">&quot;interestRate&quot;</span></span><br><span class="line">                 options:(NSKeyValueObservingOptionNew |</span><br><span class="line">                          NSKeyValueObservingOptionOld)</span><br><span class="line">                  context:PersonAccountInterestRateContext];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="1-2-移除观察者的重要性"><a href="#1-2-移除观察者的重要性" class="headerlink" title="1.2 移除观察者的重要性"></a>1.2 移除观察者的重要性</h3><blockquote>
+<p>会触发隐藏的崩溃</p>
+</blockquote>
+<p>移除观察者，通常会使用这个方法</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)removeObserver:(NSObject *)observer forKeyPath:(NSString *)keyPath;</span><br></pre></td></tr></table></figure>
+
+<p>如果不移除，当被观察者被dealloc 后，观察者还在苦苦的观察它，长此以往，找不到对象</p>
+<p>会形成野指针，造成崩溃。</p>
+<p><del>类似女同事们默默喜欢关注吴尊好多年，结果突然你告诉我他早就脱单结婚了，女儿都八岁了，能不崩溃吗。</del></p>
+<h3 id="1-3-手动-自动观察开关"><a href="#1-3-手动-自动观察开关" class="headerlink" title="1.3 手动&#x2F;自动观察开关"></a>1.3 手动&#x2F;自动观察开关</h3><p>有些业务场景，经常需要变换对键的观察，由于需求的变换，可能之前一直在观察的值，这个版本就不需要在观察了，那么再去删除大量的观察代码肯定不是一件明智的事情（谁知道产品经理下一步会不会回退需求呢？）。</p>
+<p>可以通过开关<strong>自动观察指定键的对象按钮</strong>来实现</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">+ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)key;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>当需要手动来操作时，返回NO</p>
+<p>此时对需要改动的键值，手动添加<code>willChangeValueForKey</code> 和<code>didChangeValueForKey</code> 两个方法，这样是的被观察对象的观察策略生效。</p>
+<p>代码如下：</p>
+<p>业务代码对对象进行观察以及改变</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event&#123;</span><br><span class="line">   </span><br><span class="line">    [self.person willChangeValueForKey:@<span class="string">&quot;name&quot;</span>];</span><br><span class="line">    self.person.name  = @<span class="string">&quot;haha&quot;</span>;</span><br><span class="line">    [self.person didChangeValueForKey:@<span class="string">&quot;name&quot;</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>类的实现下，关闭自动</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 自动开关</span></span><br><span class="line">+ (BOOL) automaticallyNotifiesObserversForKey:(NSString *)key&#123;</span><br><span class="line">    <span class="keyword">return</span> NO;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>当需要自动观察指定的键时，返回YES</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 自动开关</span></span><br><span class="line">+ (BOOL) automaticallyNotifiesObserversForKey:(NSString *)key&#123;</span><br><span class="line">    <span class="keyword">return</span> YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="1-4-路径集合"><a href="#1-4-路径集合" class="headerlink" title="1.4 路径集合"></a>1.4 路径集合</h3><p>在某些场景下，观察对象手多个外接属性&#x2F;变量影响，也可以使用KVO。</p>
+<p>一个典型的场景，是在音乐&#x2F;电视剧下载时，由于某些专辑有多首歌曲，某些时候下载过程中，会有新的关联专辑加入进来，此时下载进度条可能满了之后会会退（奇怪的需求）。</p>
+<ul>
+<li><p>给对象添加一个下载进度的KVO 监测</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">[self.person addObserver:self forKeyPath:@<span class="string">&quot;downloadProgress&quot;</span> options:(NSKeyValueObservingOptionNew) context:<span class="literal">NULL</span>];</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>业务层，对简洁相关联的属性，进行增减。比如这里，使用到的是下载进度相关的”已写入数据”和”总数据”，当点击时，他们会依次添加</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">self.person.writtenData += <span class="number">10</span>;</span><br><span class="line">self.person.totalData += <span class="number">20</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>最后，在集合关联键值方法里，给他们<strong>绑定上关系</strong>。</p>
+<p>此时有3个关键键了，分别上：<strong>downloadProgress</strong>、<strong>totalData</strong>、<strong>writtenData</strong></p>
+<p>他们之间的关系是： 下载进度 &#x3D; 当前下载量 &#x2F; 总量 （downloadProgress &#x3D; writtenData &#x2F; totalData）</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">+ (NSSet&lt;NSString *&gt; *)keyPathsForValuesAffectingValueForKey:(NSString *)key&#123;</span><br><span class="line">    </span><br><span class="line">    NSSet *keyPaths = [super keyPathsForValuesAffectingValueForKey:key];</span><br><span class="line">    <span class="keyword">if</span> ([key isEqualToString:@<span class="string">&quot;downloadProgress&quot;</span>]) &#123;</span><br><span class="line">        NSArray *affectingKeys = @[@<span class="string">&quot;totalData&quot;</span>, @<span class="string">&quot;writtenData&quot;</span>];</span><br><span class="line">        keyPaths = [keyPaths setByAddingObjectsFromArray:affectingKeys];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> keyPaths;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="1-5-集合数组观察"><a href="#1-5-集合数组观察" class="headerlink" title="1.5 集合数组观察"></a>1.5 集合数组观察</h3><ul>
+<li><p>比如对某个数组添加观察。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">[self.person addObserver:self forKeyPath:@<span class="string">&quot;dateArray&quot;</span> options:(NSKeyValueObservingOptionNew) context:<span class="literal">NULL</span>];</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对数组进行改动。此时需要将其先改成可变数组，才能改动</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">[[self.person mutableArrayValueForKey: @<span class="string">&quot;dateArray&quot;</span>] addObject: @<span class="string">&quot;hello&quot;</span>];</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>原因：因为数组没有遵循KVC，并没有使用setter 方法</p>
+<h3 id="1-6-观察类型枚举"><a href="#1-6-观察类型枚举" class="headerlink" title="1.6 观察类型枚举"></a>1.6 观察类型枚举</h3><ul>
+<li>NSKeyValueChangeSetting</li>
+<li>NSKeyValueChangeInsertion</li>
+<li>NSKeyValueChangeRemoval</li>
+<li>NSKeyValueChangeReplacement</li>
+</ul>
+<h2 id="二、KVO-原理"><a href="#二、KVO-原理" class="headerlink" title="二、KVO 原理"></a>二、KVO 原理</h2><h3 id="2-1-概念"><a href="#2-1-概念" class="headerlink" title="2.1 概念"></a>2.1 概念</h3><blockquote>
+<p>Automatic key-value observing is implemented using a technique called <em>isa-swizzling</em>.</p>
+<p>自动KVO 使用isa 改变的技术来实现</p>
+</blockquote>
+<h3 id="2-2-动态生成子类"><a href="#2-2-动态生成子类" class="headerlink" title="2.2 动态生成子类"></a>2.2 动态生成子类</h3><p>为了分析所谓的动态生成子类，先写一段代码，生成一个<code>Dog</code> 的类，对其<code>name</code> 属性添加观察，并打印实例<code>d</code> 观察前和观察后的类名。代码如下:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">Dog *d = [[Dog alloc] init];</span><br><span class="line"><span class="built_in">NSLog</span>(@<span class="string">&quot;添加前-:    %s\n&quot;</span>, <span class="built_in">object_getClassName</span>(d));</span><br><span class="line">[d addObserver:self forKeyPath:@<span class="string">&quot;name&quot;</span> options:(NSKeyValueObservingOptionNew) context:<span class="literal">NULL</span>];</span><br><span class="line"><span class="built_in">NSLog</span>(@<span class="string">&quot;添加后-:    %s&quot;</span>, <span class="built_in">object_getClassName</span>(d));</span><br></pre></td></tr></table></figure>
+
+<p>运行，打印结果如下:</p>
+<ul>
+<li></li>
+</ul>
+<p><img src="/p/78de752a/001.png"></p>
+<p><strong>如何判断</strong>是子类呢，可以写个方法来打印当前<code>Dog</code> 类的子类列表</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 注册类的总数</span></span><br><span class="line"><span class="type">int</span> count = <span class="built_in">objc_getClassList</span>(<span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line"><span class="comment">// 创建一个数组， 其中包含给定对象</span></span><br><span class="line">NSMutableArray *mArray = [NSMutableArray arrayWithObject:[d <span class="keyword">class</span>]];</span><br><span class="line"><span class="comment">// 获取所有已注册的类</span></span><br><span class="line">Class* classes = (Class*)<span class="built_in">malloc</span>(<span class="built_in">sizeof</span>(Class)*count);</span><br><span class="line"><span class="built_in">objc_getClassList</span>(classes, count);</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i&lt;count; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> ([d <span class="keyword">class</span>] == <span class="built_in">class_getSuperclass</span>(classes[i])) &#123;</span><br><span class="line">        [mArray addObject:classes[i]];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">free</span>(classes);</span><br><span class="line"><span class="built_in">NSLog</span>(@<span class="string">&quot;classes = %@&quot;</span>, mArray);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>打印结果如下:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">2020</span><span class="number">-05</span><span class="number">-07</span> <span class="number">16</span>:<span class="number">54</span>:<span class="number">32.770527</span>+<span class="number">0800</span> MyKVO[<span class="number">8567</span>:<span class="number">500364</span>] 添加前-:    Dog</span><br><span class="line"></span><br><span class="line"><span class="number">2020</span><span class="number">-05</span><span class="number">-07</span> <span class="number">16</span>:<span class="number">54</span>:<span class="number">32.771302</span>+<span class="number">0800</span> MyKVO[<span class="number">8567</span>:<span class="number">500364</span>] 添加后-:    NSKVONotifying_Dog</span><br><span class="line"><span class="number">2020</span><span class="number">-05</span><span class="number">-07</span> <span class="number">16</span>:<span class="number">54</span>:<span class="number">32.788208</span>+<span class="number">0800</span> MyKVO[<span class="number">8567</span>:<span class="number">500364</span>] classes = (</span><br><span class="line">    Dog,</span><br><span class="line">    <span class="string">&quot;NSKVONotifying_Dog&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>果然生成了一个<code>NSKVONotifying_Dog</code> 基于<code>Dog</code> 类的子类</p>
+<blockquote>
+<p>当对某个对象实用KVO，会动态生成子类 NSKeyValueNotifying__XXX，这个类的isa 指向对象的类</p>
+</blockquote>
+<h3 id="2-3-键值观察的是setter方法"><a href="#2-3-键值观察的是setter方法" class="headerlink" title="2.3 键值观察的是setter方法"></a>2.3 键值观察的是setter方法</h3><p>我们知道KVO 是对属性做的键值观察，那么为什么不是成员变量呢？为了解决这个问题，不妨生成一个成员变量，对他做一下检测试试。</p>
+<ol>
+<li><p>先给类<code>Dog</code> 新增一个成员变量<code>age</code>，记得添加<code>@public</code>, 这样才能在外部访问</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">@interface Dog : NSObject</span><br><span class="line">&#123;</span><br><span class="line">    @<span class="keyword">public</span></span><br><span class="line">    NSString *age;</span><br><span class="line">&#125;</span><br><span class="line">@<span class="built_in">property</span> (copy, nonatomic) NSString *petName;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接下来给狗狗对象<code>d</code> 添加属性<code>petName</code>、成员变量<code>age</code> 的KVO方法</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">[self.d addObserver:self forKeyPath:@<span class="string">&quot;petName&quot;</span> options:(NSKeyValueObservingOptionNew) context:<span class="literal">NULL</span>];</span><br><span class="line">[self.d addObserver:self forKeyPath:@<span class="string">&quot;age&quot;</span> options:(NSKeyValueObservingOptionNew) context:<span class="literal">NULL</span>];</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加一个改变属性的点击事件。当点击屏幕，给d 的属性和成员变量赋值</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event&#123;</span><br><span class="line">    self.d.petName = @<span class="string">&quot;Jacob&quot;</span>;</span><br><span class="line">    <span class="built_in">NSLog</span>(@<span class="string">&quot;self.petName-%@&quot;</span>, self.d.petName);</span><br><span class="line">    </span><br><span class="line">    self.d-&gt;age = @<span class="string">&quot;18&quot;</span>;</span><br><span class="line">    <span class="built_in">NSLog</span>(@<span class="string">&quot;self.age-%@&quot;</span>, self.d-&gt;age);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行，点击屏幕，监控键值变化如下：</p>
+<p><img src="/p/78de752a/002.png"></p>
+</li>
+</ol>
+<p>可见打印结果中，<code>self.petName</code> 的值变化，得到了打印验证；而 <code>self.d-&gt;age</code> 作为公开出来的成员变量，并不会在其值发生改变打印。为什么呢?</p>
+<p>我们都知道属性创建之后，系统会自动配置setter 方法和getter 方法；</p>
+<p>而成员变量，则是需要手动添加setter&#x2F;getter 方法，区别就在setter 方法未实现。</p>
+<p>所以我们得知，<strong>KVO 监控的是变量的setter 方法</strong></p>
+<h3 id="2-4-动态子类会重写方法"><a href="#2-4-动态子类会重写方法" class="headerlink" title="2.4 动态子类会重写方法"></a>2.4 动态子类会重写方法</h3><p>在上文得知，会动态生成<code>NSKeyValueNotifying__XXX</code> 的子类后，不免想要看看这个新的类，究竟实现了那些内容。</p>
+<p>先看看类里面有哪些方法，写一个遍历类的方法：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> mark - 遍历方法-ivar-property</span></span><br><span class="line">- (<span class="type">void</span>)printClassAllMethod:(Class)cls&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(@<span class="string">&quot;*********************&quot;</span>);</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> count = <span class="number">0</span>;</span><br><span class="line">    Method *methodList = <span class="built_in">class_copyMethodList</span>(cls, &amp;count);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i&lt;count; i++) &#123;</span><br><span class="line">        Method method = methodList[i];</span><br><span class="line">        SEL sel = <span class="built_in">method_getName</span>(method);</span><br><span class="line">        IMP imp = <span class="built_in">class_getMethodImplementation</span>(cls, sel);</span><br><span class="line">        <span class="built_in">NSLog</span>(@<span class="string">&quot;%@-%p&quot;</span>,<span class="built_in">NSStringFromSelector</span>(sel),imp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(methodList);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输入这个新的类：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">[self printClassAllMethod: <span class="built_in">NSClassFromString</span>(@<span class="string">&quot;NSKVONotifying_Dog&quot;</span>)];</span><br></pre></td></tr></table></figure>
+
+<p>打印结果如下：</p>
+<p><img src="/p/78de752a/003.png"></p>
+<p>可见实现的类有如下:</p>
+<ul>
+<li>set 方法 ——setPetName</li>
+<li>class 方法</li>
+<li>dealloc 方法</li>
+<li>_isKVOA 键的标识</li>
+</ul>
+<h3 id="2-5-KVO移除时操作"><a href="#2-5-KVO移除时操作" class="headerlink" title="2.5 KVO移除时操作"></a>2.5 KVO移除时操作</h3><p>当对一个对象的监控结束后，会移除KVO 监控，这时候会发生什么呢？</p>
+<h4 id="2-5-1-isa-指回原类"><a href="#2-5-1-isa-指回原类" class="headerlink" title="2.5.1 isa 指回原类"></a>2.5.1 isa 指回原类</h4><p>试验一下，在<code>dealloc</code> 方法，添加移除方法，并在前后打印类的名字</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">NSLog(@&quot;移除前，类名为:    %s&quot;, object_getClassName(self.d));</span><br><span class="line">[self.d removeObserver:self  forKeyPath:@&quot;petName&quot;];</span><br><span class="line">[self.d removeObserver:self  forKeyPath:@&quot;age&quot;];</span><br><span class="line">NSLog(@&quot;移除后，类名为:    %s\n&quot;, object_getClassName(self.d));</span><br></pre></td></tr></table></figure>
+
+<p><img src="/p/78de752a/004.png"></p>
+<p>在这里可以清晰的看到，当移除KVO 观测属性值后，这个动态子类，又变回了<code>Dog</code>类，即isa 指向又从动态子类，指向了原来的类</p>
+<h4 id="2-5-2-动态子类会缓存"><a href="#2-5-2-动态子类会缓存" class="headerlink" title="2.5.2 动态子类会缓存"></a>2.5.2 动态子类会缓存</h4><p>那么移除KVO 后，动态子类是否销毁？</p>
+<p>打印一下当前<code>d </code> 的类的子类即可，先定义一个打印方法</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)printClasses:(Class)cls&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 注册类的总数</span></span><br><span class="line">    <span class="type">int</span> count = <span class="built_in">objc_getClassList</span>(<span class="literal">NULL</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">// 创建一个数组， 其中包含给定对象</span></span><br><span class="line">    NSMutableArray *mArray = [NSMutableArray arrayWithObject:cls];</span><br><span class="line">    <span class="comment">// 获取所有已注册的类</span></span><br><span class="line">    Class* classes = (Class*)<span class="built_in">malloc</span>(<span class="built_in">sizeof</span>(Class)*count);</span><br><span class="line">    <span class="built_in">objc_getClassList</span>(classes, count);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i&lt;count; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (cls == <span class="built_in">class_getSuperclass</span>(classes[i])) &#123;</span><br><span class="line">            [mArray addObject:classes[i]];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">free</span>(classes);</span><br><span class="line">    <span class="built_in">NSLog</span>(@<span class="string">&quot;classes = %@&quot;</span>, mArray);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行对<code>self.d</code> 的打印</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)dealloc&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(@<span class="string">&quot;*************移除前&quot;</span>);</span><br><span class="line">    [self printClasses:[self.d <span class="keyword">class</span>]];</span><br><span class="line">    [self.d removeObserver:self  forKeyPath:@<span class="string">&quot;petName&quot;</span>];</span><br><span class="line">    [self.d removeObserver:self  forKeyPath:@<span class="string">&quot;age&quot;</span>];</span><br><span class="line">    <span class="built_in">NSLog</span>(@<span class="string">&quot;*************移除后&quot;</span>);</span><br><span class="line">    [self printClasses:[self.d <span class="keyword">class</span>]];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>得到结果如下：</p>
+<p><img src="/p/78de752a/005.png"></p>
+<p>很显然，这里的NSKVONotifying_Dog， 依旧存在，我们可以大胆推断，这里应该是缓存下来，方便下次再进行调用。</p>
+<p>原理图如下：</p>
+<p><img src="/p/78de752a/006.png"></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/78de752a.html">http://nilsli.com/p/78de752a.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E5%BA%95%E5%B1%82/">
+                                    <span class="chip bg-color">底层</span>
+                                </a>
+                            
+                                <a href="/tags/KVO/">
+                                    <span class="chip bg-color">KVO</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-04-03T02-10-28',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/56790.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/13.jpg" class="responsive-img" alt="【数据结构与算法】-（4）双向链表和双向循环链表">
+                        
+                        <span class="card-title">【数据结构与算法】-（4）双向链表和双向循环链表</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+ 【数据结构与算法】-（1）基础篇
+ 【数据结构与算法】-（2）线性表基础
+ 【数据结构与算法】-（3）循环链表（单向）
+ 【数据结构与算法】-（4）双向链表和双向循环链表
+ 【数据结构与算法】-（5）链表面试题解析
+ 【数据结构与算法】
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-03
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E9%93%BE%E8%A1%A8/">
+                        <span class="chip bg-color">链表</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%BE%AA%E7%8E%AF/">
+                        <span class="chip bg-color">循环</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/54688.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/23.jpg" class="responsive-img" alt="【数据结构与算法】-（3）循环链表(单向)">
+                        
+                        <span class="card-title">【数据结构与算法】-（3）循环链表(单向)</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+【数据结构与算法】-（1）基础篇
+【数据结构与算法】-（2）线性表基础
+【数据结构与算法】-（3）循环链表（单向）
+【数据结构与算法】-（4）双向链表和双向循环链表
+【数据结构与算法】-（5）链表面试题解析
+【数据结构与算法】-（6）栈
+
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-02
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/ios/" class="post-category">
+                                    ios
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E9%93%BE%E8%A1%A8/">
+                        <span class="chip bg-color">链表</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%BE%AA%E7%8E%AF/">
+                        <span class="chip bg-color">循环</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

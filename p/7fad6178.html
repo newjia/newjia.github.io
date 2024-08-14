@@ -1,0 +1,1174 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="计算机视觉【02-OpenGL概念篇】, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>计算机视觉【02-OpenGL概念篇】 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/10.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">计算机视觉【02-OpenGL概念篇】</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/opengl/">
+                                <span class="chip bg-color">opengl</span>
+                            </a>
+                        
+                            <a href="/tags/%E9%9F%B3%E9%A2%91/">
+                                <span class="chip bg-color">音频</span>
+                            </a>
+                        
+                            <a href="/tags/%E8%A7%86%E9%A2%91/">
+                                <span class="chip bg-color">视频</span>
+                            </a>
+                        
+                            <a href="/tags/%E9%9F%B3%E8%A7%86%E9%A2%91/">
+                                <span class="chip bg-color">音视频</span>
+                            </a>
+                        
+                            <a href="/tags/%E8%BF%9B%E9%98%B6/">
+                                <span class="chip bg-color">进阶</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-07-06
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.8k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    6 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="一、计算机视觉简介"><a href="#一、计算机视觉简介" class="headerlink" title="一、计算机视觉简介"></a>一、计算机视觉简介</h2><h4 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念:"></a>1.1 概念:</h4><p><strong>计算机视觉</strong>（Computer Vision）是一门跨学科科学，用于处理计算机如何从数码相片或视频中获取高层次理解。从工程学的角度来讲，它的目的是理解并将人类视觉系统的工作任务自动化。</p>
+<blockquote>
+<p>计算机视觉（Computer vision）是一门研究如何使机器“看”的科学，更进一步的说，就是指用摄影机和计算机代替人眼对目标进行识别、跟踪和测量等机器视觉，并进一步做图像处理，用计算机处理成为更适合人眼观察或传送给仪器检测的图像。</p>
+<p>——黄亚勤《基于视线跟踪技术的眼控鼠标研究与实现》</p>
+</blockquote>
+<p><img src="https://photojournal.jpl.nasa.gov/jpeg/PIA04413.jpg" alt="NASA好奇号火星探测车（图片版权：NASA）"></p>
+<h4 id="1-2-演进历史"><a href="#1-2-演进历史" class="headerlink" title="1.2 演进历史"></a>1.2 演进历史</h4><p>从1960年后期，作为人工智能的先锋学科，计算机视觉在大学校园里开始开设。它起初被用来模拟人类视觉系统，借此赋予机器人智能的行为。在1966年，人们相信该目的可以被达成，通过将一枚摄像头附属到计算机上并让其”展示所看到“。</p>
+<p>真正将计算机视觉从流行的领域数字图像处理区别开来的时机，是一个将3D结构从图像中抽取出来并达到全景理解的需求。1970年代的一些研究，最终形成了现今存在的计算机视觉算法的早期框架，包括<strong>图像的边缘提取</strong>，<strong>线段标签</strong>，<strong>非多面体与多面体的模型</strong>，<strong>将对象表示为较小结构的互连</strong>，<strong>光流</strong>，和<strong>运动估计</strong>。</p>
+<p>接下来的<strong>十年</strong>见证了基于更多严谨的数学分析和计算机视觉量化的方向。这些包括了<strong>空间刻度</strong>概念，形状的多种线索提示比如<strong>阴影</strong>、<strong>纹理</strong>、<strong>焦点</strong>，以及被称为snakes 的轮廓模型。</p>
+<p>在1990年代，一些先前的研究话题变得比其他的更为活跃，三维重建引导了更好的相机标定的理解。随着相机标定的优化技术的发展，人们意识到，从摄影测量学领域的束调整理论中已经探索了许多想法。这推动了从多个图像中进行稀疏三维场景重建的方法。</p>
+<h4 id="1-2-关联领域："><a href="#1-2-关联领域：" class="headerlink" title="1.2 关联领域："></a>1.2 关联领域：</h4><ul>
+<li>人工智能</li>
+<li>信息工程</li>
+<li>固态物理学</li>
+<li>神经生物学</li>
+<li>信号处理</li>
+<li>其他领域</li>
+</ul>
+<h3 id="1-2-OpenGL-是什么"><a href="#1-2-OpenGL-是什么" class="headerlink" title="1.2 OpenGL 是什么"></a>1.2 OpenGL 是什么</h3><p>OpenGL（Open Graphic Library）是一种应用程序编程接口（Application Programming Interface, API），它是一种可以对图形硬件设备特性进行访问的软件库。</p>
+<h2 id="二、概念"><a href="#二、概念" class="headerlink" title="二、概念"></a>二、概念</h2><h3 id="1-上下文-Context："><a href="#1-上下文-Context：" class="headerlink" title="1. 上下文 Context："></a>1. <strong>上下文</strong> Context：</h3><p>一组完整的 OpenGL 状态变量。注意帧缓存的内容不属于OpenGL 状态的一部分，但是帧缓存的配置（以及相关的渲染缓存）属于它的一部分。</p>
+<h3 id="2-状态机"><a href="#2-状态机" class="headerlink" title="2. 状态机"></a>2. <strong>状态机</strong></h3><p>理论上是OpenGL用来形容状态的工具。它描述了对象在生命周期中的各种状态、状态间发生的转变、发生转变的原因、条件及转变中执行的过程。一般具有以下特点：</p>
+<ul>
+<li>有记忆功能，记忆当前的状态</li>
+<li>可以接收输入，根据输入的内容和自己的院线状态，修改自己当前状态，并且可以有对应的输出</li>
+<li>当进入特殊状态（如停机）的时候，变不再接受输入，停止工作。</li>
+</ul>
+<h3 id="3-渲染-Rendering"><a href="#3-渲染-Rendering" class="headerlink" title="3. 渲染 - Rendering"></a>3. <strong>渲染</strong> - Rendering</h3><p>将图形&#x2F;图像数据转换成2D空间图像的操作。</p>
+<ul>
+<li>渲染器 - Renderer<br>Apple Computer 的Mac OS X 操作系统的OpenGL 实现。由于一台计算机可能有多个图形功能的设备（如多个图形卡或软件实现），因此一台Mac OS X 机器上也许可以支持多个渲染器。</li>
+</ul>
+<h3 id="4-顶点数组-VertexArray"><a href="#4-顶点数组-VertexArray" class="headerlink" title="4. 顶点数组 VertexArray"></a>4. <strong>顶点数组</strong> VertexArray</h3><p>顶点数据的块（顶点坐标、纹理坐标、表面法线、RGBA颜色、颜色索引、边界标志）可以存储在一个数组中，然后通过使用单个OpenGL 命令的执行，设置多个几何图元。</p>
+<h3 id="5-顶点缓冲区-VertexBuffer"><a href="#5-顶点缓冲区-VertexBuffer" class="headerlink" title="5. 顶点缓冲区 VertexBuffer"></a>5. <strong>顶点缓冲区</strong> VertexBuffer</h3><p>绘制图形前，提前分配一块显存，将顶点数据预先传入显存中，这部分的显存，被称为顶点缓冲区。</p>
+<h3 id="6-管线-Pipeline"><a href="#6-管线-Pipeline" class="headerlink" title="6. 管线 Pipeline"></a>6. <strong>管线 Pipeline</strong></h3><p>就是一套流水线，负责管理渲染的过程</p>
+<h3 id="7-固定管线-fixed-function-pipeline"><a href="#7-固定管线-fixed-function-pipeline" class="headerlink" title="7. 固定管线 fixed-function pipeline"></a>7. <strong>固定管线</strong> fixed-function pipeline</h3><p>一种图形流水线，它包含其操作由程序可配置的一系列参数控制的处理过程。</p>
+<h3 id="8-可编程管线"><a href="#8-可编程管线" class="headerlink" title="8. 可编程管线"></a>8. <strong>可编程管线</strong></h3><p>它允许开发者使用更为灵活地操作来替代固定功能的操作。比如现在的OpenGL 管线是可编程的流水线，</p>
+<h3 id="9-着色器-Shader"><a href="#9-着色器-Shader" class="headerlink" title="9. 着色器 Shader"></a>9. <strong>着色器</strong> Shader</h3><p>执行程序的工程，输入数据（例如定点、图元、或片元）到管线的一个阶段，并产生不同类型的结果数据，准备作为管线中后级阶段的输入数据使用。</p>
+<ol>
+<li>固定着色器：也叫做存储着色器，</li>
+<li>自定义着色器</li>
+<li>顶点着色器</li>
+<li><strong>片元着色器</strong> fragment shader<br> 在光栅化完成之后执行的着色器。片元着色器的每个请求都是对一个光栅化之后的片元执行的。片元着色器也可以说是像素点着色器，负责处理一个个的像素点。如一个图像由120 * 120 像素点组成，就需要 120 * 120 &#x3D; 14400 次的GPU 运算</li>
+</ol>
+<h3 id="10-光栅化"><a href="#10-光栅化" class="headerlink" title="10. 光栅化"></a>10. <strong>光栅化</strong></h3><p>转换投影点、线或多边形，或者位图和图像的像素到片源信息，他们每一个都对应帧缓存中的一个像素。<br><strong>注意</strong>：所有的图元都会被光栅化，而不仅仅是点、线或多边形。</p>
+<h3 id="11-纹理"><a href="#11-纹理" class="headerlink" title="11. 纹理"></a>11. <strong>纹理</strong></h3><p>可以理解为图片。用来修改光栅化产生的片元颜色的1维或2维图像</p>
+<h3 id="12-混合-Blending"><a href="#12-混合-Blending" class="headerlink" title="12. 混合 Blending"></a>12. <strong>混合</strong> Blending</h3><p>混合可以理解为，将像素的颜色和帧缓冲区中颜色附着上的颜色混合在一起，达到新的颜色或者形状的效果。举个例子，可以将两个图层（透明度0.2 的粉色图层，透明度0.5的绿色图层）混合叠加在一起，这个过程就叫做混合</p>
+<h3 id="13-变换矩阵"><a href="#13-变换矩阵" class="headerlink" title="13. 变换矩阵"></a>13. <strong>变换矩阵</strong></h3><p>一个多维矩阵，用来描述顶点位置，进而帮助实现图像的平移、缩放、旋转变化的效果。</p>
+<h3 id="14-投影矩阵-Projection-MATRIX"><a href="#14-投影矩阵-Projection-MATRIX" class="headerlink" title="14. 投影矩阵 - Projection MATRIX"></a>14. <strong>投影矩阵</strong> - Projection MATRIX</h3><ul>
+<li><strong>正投影：</strong> 将图像完整的投影在2D平面上，关键字：【1：1】、【2D效果】。</li>
+<li><strong>透视投影：</strong> 将图像按照远小近大的原则投影在2D平面上，能产生3D的立体视觉效果。<br><img src="/p/7fad6178/001.png" alt="透视投影与正投影"></li>
+</ul>
+<h3 id="15-视口-Viewpoint"><a href="#15-视口-Viewpoint" class="headerlink" title="15. 视口 Viewpoint"></a>15. <strong>视口</strong> Viewpoint</h3><p>屏幕上的像素点集合，决定我们作为观察者在渲染的场景中看到的内容的大小。在开发中，常见的有全幅和局部的视口。</p>
+<ul>
+<li>全幅视口</li>
+<li>局部视口</li>
+</ul>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本章学习了随着抖音、美颜相机等流行的应用而变得火热的计算机视觉的概念，以及其底层OpenGL的相关名词，下一篇，将开始介绍其搭建过程。</p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/7fad6178.html">http://nilsli.com/p/7fad6178.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/opengl/">
+                                    <span class="chip bg-color">opengl</span>
+                                </a>
+                            
+                                <a href="/tags/%E9%9F%B3%E9%A2%91/">
+                                    <span class="chip bg-color">音频</span>
+                                </a>
+                            
+                                <a href="/tags/%E8%A7%86%E9%A2%91/">
+                                    <span class="chip bg-color">视频</span>
+                                </a>
+                            
+                                <a href="/tags/%E9%9F%B3%E8%A7%86%E9%A2%91/">
+                                    <span class="chip bg-color">音视频</span>
+                                </a>
+                            
+                                <a href="/tags/%E8%BF%9B%E9%98%B6/">
+                                    <span class="chip bg-color">进阶</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-07-06T11-24-57',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/7f336030.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/2.jpg" class="responsive-img" alt="离屏渲染-超详细解析">
+                        
+                        <span class="card-title">离屏渲染-超详细解析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            〇、序章作为一个面试中经常出现的话题，离屏渲染（Offscreen rendering）恐怕是极高频率提起的——最熟悉的陌生人，我们多少知道一点，也了解到由于它的出现，会带来的屏幕刷新卡顿，滑动式不跟手等体验，但是又不是知道的那么透彻。在这
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-07
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%A6%BB%E5%B1%8F%E6%B8%B2%E6%9F%93/">
+                        <span class="chip bg-color">离屏渲染</span>
+                    </a>
+                    
+                    <a href="/tags/offscreen/">
+                        <span class="chip bg-color">offscreen</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/1bf24dc1.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/23.jpg" class="responsive-img" alt="Block使用及原理探究">
+                        
+                        <span class="card-title">Block使用及原理探究</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+出于需要，本文分析时引用苹果开源的libclosure-74 源码，请点击对比查看苹果libclosure源码
+
+一、Block概念1.1 名词解释也成为匿名函数，是将函数及其执行上下文封装起来的对象。有参数和返回值。
+Block的结构是
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-05-24
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/block/">
+                        <span class="chip bg-color">block</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%8E%9F%E7%90%86/">
+                        <span class="chip bg-color">原理</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

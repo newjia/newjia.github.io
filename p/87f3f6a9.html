@@ -1,0 +1,1433 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="【数据结构与算法】查找算法（一）, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【数据结构与算法】查找算法（一） | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【数据结构与算法】查找算法（一）</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/">
+                                <span class="chip bg-color">二分法</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91/">
+                                <span class="chip bg-color">斐波那契</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%8F%92%E5%80%BC/">
+                                <span class="chip bg-color">插值</span>
+                            </a>
+                        
+                            <a href="/tags/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/">
+                                <span class="chip bg-color">二叉搜索树</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-05-13
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    3.8k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    15 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="一、概论"><a href="#一、概论" class="headerlink" title="一、概论"></a>一、概论</h2><h3 id="1-1-基本概念"><a href="#1-1-基本概念" class="headerlink" title="1.1 基本概念"></a>1.1 基本概念</h3><p><strong>查找</strong>（searching）就是根据给定的某个值，在查找表中确定一个其关键字等于给定制的数据元素（或记录）。</p>
+<p><strong>查找表</strong>（search table）是由同一类型的数据元素（或记录）构成的组合。例如下图：</p>
+<p><img src="/p/87f3f6a9/001.png"></p>
+<p><strong>关键字（key）</strong>三数据元素中某个数据项的值，又称为键值。用它可以标示一个记录的某个数据项，我们称为关键码。</p>
+<h3 id="1-2-分类"><a href="#1-2-分类" class="headerlink" title="1.2 分类"></a>1.2 分类</h3><p>按照表查找方式来分有辆大众：静态查找表和动态查找表。</p>
+<p><strong>静态查找表（Static Search Table）： 只做查找操作的查找表</strong>，主要操作有：</p>
+<ol>
+<li>查询某个“特定的”数据元素是否在查找表中</li>
+<li>检索某个“特点的“数据元素和各种属性</li>
+</ol>
+<p><strong>动态查找表（Dynamic Search Table）</strong>：<strong>在查找的过程中同时插入查找表中不存在的数据元素，或者从查找表中删除已经存在的某个数据元素</strong>。动态查找表的操作是两个：</p>
+<ol>
+<li>查找时插入数据元素</li>
+<li>查找时删除数据元素</li>
+</ol>
+<h2 id="二、静态查找"><a href="#二、静态查找" class="headerlink" title="二、静态查找"></a>二、静态查找</h2><h3 id="2-1-顺序查找"><a href="#2-1-顺序查找" class="headerlink" title="2.1 顺序查找"></a>2.1 顺序查找</h3><p><strong>顺序查找</strong>（Sequential Search）又叫线性查找，是最基本的查找技术，他的查找过程是：从表的第一个（或最后一个）记录开始，逐个进行记录的关键字和给定值比较，</p>
+<ol>
+<li>若某个记录的关键字和给定值相等，则查找成功，找到所查的记录；</li>
+<li>如果直到最后一个（或第一个）记录，其关键字和给定值比较都不等时，则表中没有所查的记录，查找不成功。</li>
+</ol>
+<h4 id="2-3-1-顺序查找算法"><a href="#2-3-1-顺序查找算法" class="headerlink" title="2.3.1 顺序查找算法"></a>2.3.1 顺序查找算法</h4><p>算法比较简单，在数组里遍历查找:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">Sequential_Search</span><span class="params">(<span class="type">int</span> *a, <span class="type">int</span> n, <span class="type">int</span> key)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">1</span>; i&lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (a[i] == key) &#123;</span><br><span class="line">            <span class="keyword">return</span> i;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-2-顺序查找优化"><a href="#2-3-2-顺序查找优化" class="headerlink" title="2.3.2 顺序查找优化"></a>2.3.2 顺序查找优化</h4><p>由于上述算法，每次都需要判断<code>i</code>是否越界，稍显复杂，我们对算法进行改进，在0位加入一个<strong>哨兵</strong>，可以减少一次让 i 与 n 比较，具体如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">Sequential_Search</span><span class="params">(<span class="type">int</span> *a, <span class="type">int</span> n, <span class="type">int</span> key)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    <span class="comment">// 1. 在0 位设置称为key，称为哨兵</span></span><br><span class="line">    a[<span class="number">0</span>] = key ;</span><br><span class="line">    i = n;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 2. 从尾部开始倒序循环</span></span><br><span class="line">    <span class="keyword">while</span> (a[i] != key) &#123;</span><br><span class="line">        i--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 3. 返回&gt;0 说明找到虚序号；=0 则 = key，表示查找失败</span></span><br><span class="line">    <span class="keyword">return</span> i;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里改动了3个步骤</p>
+<ol>
+<li>在0 位设置称为key，称为哨兵</li>
+<li><strong>循环倒置</strong>。从尾部开始倒序循环，好处是形成了一个完整循环（包括哨兵）</li>
+<li><strong>查找结果二合一</strong>：返回&gt;0 说明找到虚序号；&#x3D;0 则 &#x3D; key，表示查找失败</li>
+</ol>
+<h3 id="2-4-折半查找"><a href="#2-4-折半查找" class="headerlink" title="2.4 折半查找"></a>2.4 折半查找</h3><p><strong>折半查找（Binary Search）</strong>，又称为二分查找。</p>
+<p><strong>前提</strong>是线性表中的记录必须是关键码有序（通常从小到大有序），线性表必须采用顺序存储。</p>
+<p>折半查找的基本思想：</p>
+<ul>
+<li>在有序表中，去中间记录作为比较对象，若给定值与中间记录的关键字相等，则查找成功；</li>
+<li>若给定值小于中间记录的关键字，则在中间记录作伴去继续查找；</li>
+<li>若给定值大于中间记录的关键字中，则在中间记录的右半区继续查找。</li>
+</ul>
+<p>不断重复上述过程直到查找成功，或所有查找区域无记录，查找失败位置。</p>
+<p>举例：现在有个数组 $&lt;!–swig￼20–&gt;$，查找其中 $88$ 的序号</p>
+<p>代码实现如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 折半查找</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">Binary_Search</span><span class="params">(<span class="type">int</span> *a, <span class="type">int</span> n, <span class="type">int</span> key)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> low, high, mid;</span><br><span class="line">    low = <span class="number">1</span>;</span><br><span class="line">    high = n;</span><br><span class="line">    <span class="keyword">while</span> (low &lt;= high) &#123;</span><br><span class="line">        mid = (low + high) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (key &lt; a[mid]) &#123;</span><br><span class="line">            high = mid - <span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(key &gt; a[mid])&#123;</span><br><span class="line">            low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>查找流程如下图:</p>
+<p><img src="/p/87f3f6a9/002.png"></p>
+<h3 id="2-3-插值查找"><a href="#2-3-插值查找" class="headerlink" title="2.3 插值查找"></a>2.3 插值查找</h3><h4 id="2-3-1-折半改进"><a href="#2-3-1-折半改进" class="headerlink" title="2.3.1 折半改进"></a>2.3.1 折半改进</h4><p>由于折半查找会从中间开始查找，一旦超过一定量级，查找任务还是比较繁重。所以考虑是否还有改进空间</p>
+<p>查找代码中求 <code>mid</code>的计算公式可以改进为：</p>
+<p>$$<br>mid &#x3D; \frac{low+high}{2} &#x3D; low + \frac{1}{2} (high - low)<br>$$<br>也就是 mid等于最下标 <code>low</code> 加上 最高下标 <code>high</code> 与<code>low</code> 的差值的<strong>一半</strong>。</p>
+<p>考虑将这个<strong>一半</strong>改进为以下方案：<br>$$<br>mid &#x3D; low + \frac{ key - a [low]}{ a[high] - a[low]}(high - low)<br>$$<br><strong>改进的好处：</strong>可以大大减少查找的次数。</p>
+<p>比如数组  {6,12,18,25,31,37,43,50,56,62,68,75,82,88,96}，查找<strong>18</strong> ，按照<strong>折半查找</strong>需要查找4步才可以找到</p>
+<p>使用新公示，需要  $\frac{ key - a [low]}{a[high] - a[low]}$ &#x3D; $ \frac{(18 - 12)}{(96 - 12)} \approx 0.071$，那么此时 $mid\approx 1 + 0.071\times (15-1) &#x3D; 1.994$，取整后，只需要查询2次即可，大大提升了效率。</p>
+<p>这样的到了另一种有虚表查找算法，插值查找法。</p>
+<h4 id="2-3-2-核心概念"><a href="#2-3-2-核心概念" class="headerlink" title="2.3.2 核心概念"></a>2.3.2 核心概念</h4><p><strong>插值查找法(Interpolation Search)</strong> 是根据要查找的关键字<code>key</code> 与查找表中最大最小记录的关键字比较后的查找方法，其核心就在于插值公示:<br>$$<br>\frac{key - a[low]}{a[high] - a[low]}<br>$$<br><strong>缺点：</strong>不适合数字差距不均匀的数组。如 {0, 1, 2, 1000, 30000}</p>
+<h4 id="2-3-2-算法实现"><a href="#2-3-2-算法实现" class="headerlink" title="2.3.2 算法实现"></a>2.3.2 算法实现</h4><p>由上可知，只需要改进一行代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">  <span class="comment">// 插值查找</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">Binary_Search</span><span class="params">(<span class="type">int</span> *a, <span class="type">int</span> n, <span class="type">int</span> key)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> low, high, mid;</span><br><span class="line">    low = <span class="number">1</span>;</span><br><span class="line">    high = n;</span><br><span class="line">    <span class="keyword">while</span> (low &lt;= high) &#123;</span><br><span class="line">    		<span class="comment">//  插值公示</span></span><br><span class="line">        mid = low + (high - low) * (key - a[low]) / (a[high] - a[low]));</span><br><span class="line">        <span class="keyword">if</span> (key &lt; a[mid]) &#123;</span><br><span class="line">            high = mid - <span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(key &gt; a[mid])&#123;</span><br><span class="line">            low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-5-斐波那契查找"><a href="#2-5-斐波那契查找" class="headerlink" title="2.5 斐波那契查找"></a>2.5 斐波那契查找</h3><p><strong>斐波那契查找（Fibonacci Search）</strong>，利用了黄金分割来实现。</p>
+<p>查找的流程，先举例实现吧，假设给定一个数组 $a[10] &#x3D; $ {0, 1, 16, 24, 35, 47, 59, 62,73, 88, 99}, 此时$n &#x3D; 10$，需要查找的键为 $key &#x3D; 99$</p>
+<ul>
+<li><p>先定义一个斐波那契数列 <code>F[n]</code> </p>
+<table>
+<thead>
+<tr>
+<th>下标</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>F</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>5</td>
+<td>8</td>
+<td>13</td>
+<td>21</td>
+<td>34</td>
+</tr>
+</tbody></table>
+<p>  它原理之前有学习过，实现原理是<strong>递归原理</strong>，代码实现如下：</p>
+  <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">F[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">F[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">2</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">    F[i] = F[i <span class="number">-1</span>] + F[i - <span class="number">2</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>定义变量和下表</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> low, high, mid, i, k;</span><br><span class="line">low = <span class="number">1</span>, high = n;</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>low</code> 、<code>high</code>分别为数组最低下标，默认 high为最大</p>
+<p><img src="/p/87f3f6a9/004.png"></p>
+</li>
+<li><p>计算 n 位于斐波那契数列的位置</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> (n &gt; F[k]) <span class="number">-1</span></span><br><span class="line">	k++;</span><br></pre></td></tr></table></figure>
+
+<p>由于上文给出的数组长度$n &#x3D; 10$，得出 $F[6] &lt; n &lt; F[7]$， 所以此时 $k &#x3D; 7$，在队列中如图示</p>
+<p><img src="/p/87f3f6a9/003.png"></p>
+</li>
+<li><p>将不满的数值补全，用<code>a[n]</code>，<strong>为什么</strong>补齐？</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (i = n; i &lt; F[k] - <span class="number">1</span>; i++) &#123;</span><br><span class="line">    a[i] = a[n];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>开始查找：</p>
+<ol>
+<li><p>设定初始条件 $low &lt;&#x3D; high$，假设查找 n &#x3D; 10，需要查找key &#x3D; 59</p>
+</li>
+<li><p>计算当前分割下标，$mid &#x3D; low + F[k - 1] -1$， 此时$mid &#x3D; 1 + F[7-1] -1 &#x3D;8$</p>
+</li>
+<li><p>判断，若 $key &lt; a[mid]$ ，即如果查找记录小于当前分割记录</p>
+<ul>
+<li><p>最高下标调整到分隔下标的 $mid -1$ 处</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">high = mid <span class="number">-1</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>斐波那契数列下标减$1$位</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">k--;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>这一步中 key 为59， a[mid] 及a[8] 为73，所以$key&lt;a[mid]$，需要进行调整， 如下图所示</p>
+<p><img src="/p/87f3f6a9/005.png"></p>
+<p>此时各项<strong>参数结果</strong>为：$k &#x3D; 6, low &#x3D; 1, mid &#x3D; 8, high &#x3D; 7$</p>
+</li>
+<li><p>继续循环查找。</p>
+<ol>
+<li>计算当前分隔的下标：$mid &#x3D; F[6-1] - 1 &#x3D; 5$ 。</li>
+<li>继续判断 key 与 a[mid]，此时 $a[5] &#x3D; 47 &lt; key$，</li>
+<li>执行两个步骤：</li>
+</ol>
+<ul>
+<li><p>最低下标调整到分割下标 $mid + 1$ 处</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">low = mid + <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>斐波那契数列下标减2位</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">k = k - <span class="number">2</span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>实现示意图如下：<img src="/p/87f3f6a9/006.png"></p>
+<p>此时各项<strong>参数结果</strong>为：$k &#x3D; 4, low &#x3D; 6, mid &#x3D; 5, high &#x3D; 7$</p>
+</li>
+<li><p>再次循环。</p>
+<ol>
+<li>计算当前分隔的下标：$mid &#x3D; 6 + F[4-1] -1 &#x3D; 7$。</li>
+<li>继续判断 key 与 a[mid] 的大小，此时 $a[7] &#x3D; 62 &gt; key$，因此执行第三步的策略。</li>
+<li>重复一下如下：</li>
+</ol>
+<ul>
+<li><p>最高下标调整到分隔下标的 $mid -1$ 处</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">high = mid <span class="number">-1</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>斐波那契数列下标减$1$位</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">k--</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>实现示意图如下：</p>
+<p><img src="/p/87f3f6a9/007.png"></p>
+<p>此时各项<strong>参数结果</strong>为：$k &#x3D; 3, low &#x3D; 6, mid &#x3D; 5, high &#x3D; 6$</p>
+</li>
+<li><p>再次循环。</p>
+<ol>
+<li><p>计算当前分隔的下标：$mid &#x3D; 6 + F[3-1] &#x3D;1 &#x3D; 6$</p>
+</li>
+<li><p>判断 key 与 a[mid] ，此时 a[6] &#x3D; 59 &#x3D; key 。说明查找到，进行返回数组下标，返回值为 $6$</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(mid &lt; n)</span><br><span class="line">	<span class="keyword">return</span> mid;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	<span class="keyword">return</span> n;</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>回答为什么补齐$a[n]$</p>
+<p>在循环查找的过程中，如果查找的$key&#x3D;99$，</p>
+<p>那么第一次查找时， </p>
+<ul>
+<li>$mid &#x3D; 8$；</li>
+<li>$low &#x3D; mid + 1 &#x3D; 9$</li>
+<li>$k &#x3D; k - 2 &#x3D; 7 - 2 &#x3D; 5$</li>
+</ul>
+<p>第二次循环时，此时改变分隔mid 下标的值，$mid &#x3D;low + F[k - 1] - 1 &#x3D; 9 + 3 - 1 &#x3D; 11$， 而此时a[mid] 为a[11] ，数组a 中的11位时没有值，会导致下一步与 key 的比较失败，为了避免情况发生，对上文中将不满的数值补全，用 <code>a[i] = a[n]</code>。</p>
+</li>
+</ul>
+<h4 id="2-2-2-算法核心"><a href="#2-2-2-算法核心" class="headerlink" title="2.2.2 算法核心"></a>2.2.2 算法核心</h4><p>根据上文的查找流程，总结一下算法核心</p>
+<ol>
+<li>当 $key &#x3D; a[mid]$ 时，查找成功</li>
+<li>当 $key &lt; a[mid]$ 时，新范围是第 low 个到第 mid -1 个，此时范围个数为 F[k - 1] - 1  个 </li>
+<li>当 $key &gt; a[mid]$ 时，新范围是第 m+1 个到第 high 个，此时范围个数为 F[k-2] -1 个</li>
+</ol>
+<p>示意图如下：</p>
+<p><img src="/p/87f3f6a9/008.png"></p>
+<h4 id="2-2-2-算法实现"><a href="#2-2-2-算法实现" class="headerlink" title="2.2.2 算法实现"></a>2.2.2 算法实现</h4><p>先看看代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> F[<span class="number">100</span>];</span><br><span class="line"><span class="type">int</span> <span class="title function_">Fibonnaci_Search</span><span class="params">(<span class="type">int</span> *a, <span class="type">int</span> n, <span class="type">int</span> key)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> low, high, mid, i, k;</span><br><span class="line">    low = <span class="number">1</span>;</span><br><span class="line">    high = n;</span><br><span class="line">    k = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span> (n &gt; F[k] - <span class="number">1</span>) &#123;</span><br><span class="line">        k++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (i = n; i &lt; F[k] - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        a[i] = a[n];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (low &lt;= high) &#123;</span><br><span class="line">        mid = low + F[k <span class="number">-1</span>] <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">if</span> (key &lt; a[mid]) &#123;</span><br><span class="line">            high = mid <span class="number">-1</span>;</span><br><span class="line">            k--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (key &gt; a[mid])</span><br><span class="line">        &#123;</span><br><span class="line">            low = mid++;</span><br><span class="line">            k = k <span class="number">-2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (mid &lt;= n)</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="keyword">return</span> n;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-6-查找效率"><a href="#2-6-查找效率" class="headerlink" title="2.6 查找效率"></a>2.6 查找效率</h3><p>三种查找方式的公式如下，三种方式各有优劣，适合不同场景:</p>
+<ul>
+<li>折半查找: $mid &#x3D; (low + high) &#x2F; 2$</li>
+<li>插值查找，适合: $mid &#x3D; low + \frac{key - a[low]}{a[high] - a[low]} * (high - low)$</li>
+<li>斐波那契查找: $mid &#x3D; low + F[k - 1] - 1$</li>
+</ul>
+<p>优劣点即使用场景：</p>
+<ul>
+<li>折半查找：适合数据规模较小，执行效率高</li>
+<li>插值查找：适合数据规模较大，比折半查找更高效，但规模较小，以数值递增波动较大时与折半查找区别不大；</li>
+<li>斐波那契：相比插值查找，适合数据递增波动较大的场景。</li>
+</ul>
+<h2 id="三、动态查找"><a href="#三、动态查找" class="headerlink" title="三、动态查找"></a>三、动态查找</h2><h3 id="3-1-二叉排序树"><a href="#3-1-二叉排序树" class="headerlink" title="3.1 二叉排序树"></a>3.1 二叉排序树</h3><h4 id="3-1-1-定义"><a href="#3-1-1-定义" class="headerlink" title="3.1.1 定义"></a>3.1.1 定义</h4><p>二叉排序树（Binary Sort Tree），又称为二叉查找树。它是一种空树，或者具有下列性质的二叉树：</p>
+<ul>
+<li>若它的左子树不空，则右子树上所有结点的值均小于它的根结点的值</li>
+<li>若它的右子树不空，则左子树上所有结点的值均大于它的根结点的值</li>
+<li>它的左、右子树分别为二叉排序树</li>
+</ul>
+<h4 id="3-1-2-查找"><a href="#3-1-2-查找" class="headerlink" title="3.1.2 查找"></a>3.1.2 查找</h4><ol>
+<li><p>二叉树的结构如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">BitNode</span>&#123;</span></span><br><span class="line">    <span class="type">int</span> data;												 <span class="comment">// 数据域</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">BitNode</span> *<span class="title">lChild</span>, *<span class="title">rChild</span>;</span> <span class="comment">// 指针分别指向左、右子树</span></span><br><span class="line">&#125;BitNode, *BiTree;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>代码实现如下:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Status <span class="title function_">SearchBST</span><span class="params">(BiTree T, <span class="type">int</span> key, BiTree f, BiTree *p)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!T) &#123;</span><br><span class="line">        *p = f;</span><br><span class="line">        <span class="keyword">return</span> FALSE;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>( key == T-&gt;data)&#123;</span><br><span class="line">        *p = T;</span><br><span class="line">        <span class="keyword">return</span> SUCCESS;</span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span>(key &lt; T-&gt;data)&#123;</span><br><span class="line">        <span class="keyword">return</span> SearchBST(T-&gt;lChild, key, T, p);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SearchBST(T-&gt;rChild, key, T, p);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>分析查找流程:</p>
+<ol>
+<li>判断树的有效性</li>
+<li>指针 f 指向 T 结点的双亲，如果第一次，使用值为 <code>NULL</code></li>
+<li>判断结点数值与 目标值元素结点的数据是否相等<ol>
+<li>结点的值与目标值相等——指针 p 指向元素结点，返回成功</li>
+<li>如果目标值<code>key</code>小于元素结点数据，在左子树上，进行查找函数递归</li>
+<li>如果目标 <code>key</code>大于元素结点数据，在右子树上，进行查找函数递归</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>示意图如下：</p>
+<p><img src="/p/87f3f6a9/009.png"></p>
+<p><img src="/p/87f3f6a9/010.png"></p>
+</li>
+</ol>
+<h4 id="3-1-3-插入"><a href="#3-1-3-插入" class="headerlink" title="3.1.3 插入"></a>3.1.3 插入</h4><p>插入的流程有以下几个步骤</p>
+<ul>
+<li>先查找目标元素，如果存在，无需插入，返回</li>
+<li>如果不存在，判断 目标值 <code>key</code> 与 指针<code>p</code><ul>
+<li>如果大于，则 插入 s 为左孩子</li>
+<li>如果小于，则插入 s 为右孩子</li>
+</ul>
+</li>
+</ul>
+<p>代码实现如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Status <span class="title function_">InsertBST</span><span class="params">(BiTree *T, <span class="type">int</span> key)</span></span><br><span class="line">&#123;</span><br><span class="line">    BiTree p, s;</span><br><span class="line">    <span class="keyword">if</span> (!SearchBST(*T, key, <span class="literal">NULL</span>, &amp;p)) &#123;</span><br><span class="line">        s = (BiTree)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(BiTree));</span><br><span class="line">        s-&gt;data = key;</span><br><span class="line">        s-&gt;lChild = s-&gt;rChild = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">if</span> (!p) &#123;</span><br><span class="line">            *T = s;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span> (key &lt; p-&gt;data)&#123;</span><br><span class="line">            p-&gt;lChild = s;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            p-&gt;rChild = s;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> SUCCESS;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> FALSE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-4-删除"><a href="#3-2-4-删除" class="headerlink" title="3.2.4 删除"></a>3.2.4 删除</h4><p>删除结点有三种情况分析:</p>
+<ul>
+<li>叶子结点</li>
+<li>仅有左&#x2F;右子树的结点</li>
+<li>左右子树都有结点的</li>
+</ul>
+<p>对应的策略如下：</p>
+<ul>
+<li><p>当删除叶子结点：</p>
+<p>无需操作，free 即可</p>
+</li>
+<li><p>当删除仅有左&#x2F;右子树的结点时：</p>
+<p>将它的原子树移动到它的位置，替代他即可</p>
+</li>
+<li><p>当删除结点左右子树都有结点时：</p>
+<ul>
+<li>找到待删结点的前缀</li>
+<li>重接q 的右子树</li>
+<li>重接q 的左子树</li>
+</ul>
+</li>
+</ul>
+<p>代码实现如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Status <span class="title function_">DeleteBST</span><span class="params">(BiTree *p)</span></span><br><span class="line">&#123;</span><br><span class="line">    BiTree q,s;</span><br><span class="line">    <span class="comment">// 右子树为空</span></span><br><span class="line">    <span class="keyword">if</span> ((*p)-&gt;rChild == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        q = *p;</span><br><span class="line">        *p = (*p)-&gt;lChild;</span><br><span class="line">        <span class="built_in">free</span>(q);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 左子树为空</span></span><br><span class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span> ((*p)-&gt;lChild == <span class="literal">NULL</span>)&#123;</span><br><span class="line">        q = *p;</span><br><span class="line">        *p = (*p)-&gt;rChild;</span><br><span class="line">        <span class="built_in">free</span>(q);</span><br><span class="line">        </span><br><span class="line">    <span class="comment">// 左右子树均不为空</span></span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        q = *p;</span><br><span class="line">        s = (*p)-&gt;lChild;</span><br><span class="line">        <span class="keyword">while</span> (s-&gt;rChild) &#123;</span><br><span class="line">            q = s;</span><br><span class="line">            s = s-&gt;rChild;</span><br><span class="line">        &#125;</span><br><span class="line">        (*p)-&gt;data = s-&gt;data;</span><br><span class="line">        <span class="keyword">if</span> (q!= *p) &#123;</span><br><span class="line">            q-&gt;rChild = s-&gt;lChild;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            q-&gt;lChild = s-&gt;lChild;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">free</span>(s);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示意图如下：</strong></p>
+<ul>
+<li>找到目标结点 $8$，标记为 p</li>
+<li>将p 赋值给临时变量 q，再将其左子树赋值给临时变量 s</li>
+</ul>
+<p><img src="/p/87f3f6a9/011.png"></p>
+<ul>
+<li>循环找到左子树的右结点，知道右侧尽头，得到结点$7$，将临时变量<code>s</code>指向该结点</li>
+</ul>
+<p><img src="/p/87f3f6a9/012.png"></p>
+<ul>
+<li>将删除结点的数值赋值为 临时变量 s-&gt; data，即 <code>p-&gt;data = s-&gt;data</code>。</li>
+</ul>
+<p><img src="/p/87f3f6a9/013.png"></p>
+<ul>
+<li>最后一步，将目标结点7 进行<strong>释放</strong>，至此，删除完成。</li>
+</ul>
+<p>上述情况时最右侧结点为叶子结点，还有一种情况最右侧结点右子结点，该如何处理呢。</p>
+<ul>
+<li>这里的步骤和上文一样，赋值临时变量p，s</li>
+</ul>
+<p><img src="/p/87f3f6a9/014.png"></p>
+<ul>
+<li>找到目标结点6，将临时变量s 指向6</li>
+</ul>
+<p><img src="/p/87f3f6a9/015.png"></p>
+<ul>
+<li>将删除结点的数值赋值为 临时变量 s-&gt; data，即 <code>p-&gt;data = s-&gt;data</code>。此时相当于结点6 被删除，它的子结点需要妥善处理。</li>
+</ul>
+<p><img src="/p/87f3f6a9/016.png"></p>
+<ul>
+<li><p>此时如果 p 和 q 指向不相同，则将 6 的子树交给 它的父结点。</p>
+<p>即 <code>q-&gt;rChild = s-&gt;lChild</code>。这样节点6 留下的左结点被链接进入树了。</p>
+</li>
+</ul>
+<p><img src="/p/87f3f6a9/017.png"></p>
+<ul>
+<li><p>最后一步，free 掉删除的目标结点</p>
+<p><img src="/p/87f3f6a9/017.png"></p>
+</li>
+</ul>
+<h4 id="3-2-5-总结"><a href="#3-2-5-总结" class="headerlink" title="3.2.5 总结"></a>3.2.5 总结</h4><p>二叉排序树是以连接的方式存储，保持了链式存储结构在执行插入和删除操作时不用移动元素的优点，只要找到合适的插入和删除位置后，仅需修改链接指针即可。</p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/87f3f6a9.html">http://nilsli.com/p/87f3f6a9.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E4%BA%8C%E5%88%86%E6%B3%95/">
+                                    <span class="chip bg-color">二分法</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91/">
+                                    <span class="chip bg-color">斐波那契</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%8F%92%E5%80%BC/">
+                                    <span class="chip bg-color">插值</span>
+                                </a>
+                            
+                                <a href="/tags/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91/">
+                                    <span class="chip bg-color">二叉搜索树</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-05-13T23-03-56',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/d4ce128d.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/12.jpg" class="responsive-img" alt="【数据结构与算法】查找算法（二）平衡二叉树">
+                        
+                        <span class="card-title">【数据结构与算法】查找算法（二）平衡二叉树</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            一、概念
+平衡二叉树
+（Self-Balancing Banary Search Tree 或者 Height-Balanced Binary Search Tree），是一种二叉排序树，其中每一个结点的左子树和右子树的高度差至多等于1。
+
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-05-15
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/">
+                        <span class="chip bg-color">平衡二叉树</span>
+                    </a>
+                    
+                    <a href="/tags/AVL/">
+                        <span class="chip bg-color">AVL</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/96e21745.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/0.jpg" class="responsive-img" alt="【数据结构与算法10】拓扑排序">
+                        
+                        <span class="card-title">【数据结构与算法10】拓扑排序</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            一、概念定义
+拓扑排序，其实就是对一个有向图构造拓扑序列的过程。
+
+AOV 网在一个表示工程的有向图中，用定点表示活动，用弧表示活动之间的有限关系，这样的有向图为顶点表示活动的网，我们称为AOV 网(Activity On Vertex N
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-05-13
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%9B%BE/">
+                        <span class="chip bg-color">图</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%8B%93%E6%89%91/">
+                        <span class="chip bg-color">拓扑</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+<script src="https://cdn.bootcss.com/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$', '$'], ['\(', '\)']]}
+    });
+</script>
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

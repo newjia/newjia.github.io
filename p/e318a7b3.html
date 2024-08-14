@@ -1,0 +1,1279 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="【底层探索】- 多线程(一), 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【底层探索】- 多线程(一) | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/10.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【底层探索】- 多线程(一)</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+                                <span class="chip bg-color">多线程</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%BA%BF%E7%A8%8B/">
+                                <span class="chip bg-color">线程</span>
+                            </a>
+                        
+                            <a href="/tags/%E8%BF%9B%E7%A8%8B/">
+                                <span class="chip bg-color">进程</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-04-06
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.8k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    10 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="一、线程定义"><a href="#一、线程定义" class="headerlink" title="一、线程定义"></a>一、线程定义</h2><h3 id="1-1-基本概念"><a href="#1-1-基本概念" class="headerlink" title="1.1 基本概念"></a>1.1 基本概念</h3><blockquote>
+<p><strong>线程（Thread）</strong>，有时被称为<strong>轻量级进程（Lightweight Progress, LWP）</strong>，是程序执行流的最小单位。</p>
+</blockquote>
+<p>一个标准的线程由线程ID、当前指令指针（PC）、寄存器集合和堆栈组成。通常意义上，一个进程由一个到多个线程组成，各个线程之间共享程序的内存空间（包括代码段、数据段、堆等）及一些进程级等资源（如打开文件和信号）。一个经典的线程与进程关系如图所示。</p>
+<p><img src="/p/e318a7b3/001.png" alt="进程内的线程"></p>
+<p>归纳一下总结一下。</p>
+<ul>
+<li>线程是进程的基本执行单元，一个进程的所有任务都在线程中执行</li>
+<li>进程想要执行任务，必须得有线程，至少1条</li>
+<li>程序启动时，会默认开启一条线程，这条线程称为主线程或UI 线程</li>
+</ul>
+<h3 id="1-2-线程的访问权限"><a href="#1-2-线程的访问权限" class="headerlink" title="1.2 线程的访问权限"></a>1.2 线程的访问权限</h3><p>线程实际上也拥有自己的私有存储空间，包括一下方面</p>
+<ul>
+<li>栈</li>
+<li>线程局部存储（TLS，Thread Local Storage）。线程局部存储是某些操作系统为线程单独提供的私有空间，但通常只具有很有限的容量。</li>
+<li>寄存器。寄存器是执行流的基本数据，因此为线程私有。</li>
+</ul>
+<p>从C 程序角度看，数据在线程之间是否私有如下所示：</p>
+<p><img src="/p/e318a7b3/002.png"></p>
+<h2 id="二、进程的定义"><a href="#二、进程的定义" class="headerlink" title="二、进程的定义"></a>二、进程的定义</h2><p>进程时指在系统中正在进行的一个应用程序。每个进程之间时独立的内存空间和地址</p>
+<h3 id="面试题："><a href="#面试题：" class="headerlink" title="面试题："></a>面试题：</h3><p>每个iOS App 有几个进程，为何这样设计？</p>
+<p>iPhone 从早起1G 开始就显得比安卓系统更流畅，是因为它采用了<strong>单一进程</strong> 的策略。</p>
+<p>这样避免了进程的来回切换，CPU 消耗大大降低；另外在数据安全性上，才用单一沙盒机制，隔离文件，保证App 的独立性，提高安全系数。</p>
+<h2 id="三、线程与进程关系"><a href="#三、线程与进程关系" class="headerlink" title="三、线程与进程关系"></a>三、线程与进程关系</h2><p>他们的关系主要从以下几个方面考虑</p>
+<ul>
+<li>地址空间：<ul>
+<li><strong>线程：</strong> 同一地址的线程共享本进程的地址空间</li>
+<li><strong>进程：</strong>进程之间是独立的地址空间</li>
+</ul>
+</li>
+<li>资源拥有<ul>
+<li><strong>线程：</strong>同一进程哪都线程共享本进程的资源，如内存空间、I&#x2F;O、CPU 等</li>
+<li><strong>进程：</strong>进程之间的资源上独立的</li>
+</ul>
+</li>
+<li>健壮性——多进程比多线程健壮<ul>
+<li><strong>线程：</strong>进程内任意线程崩溃，会导致整个进程瘫痪。</li>
+<li><strong>进程：</strong>进程崩扩后，在保护模式下不会对其他进程发生影响。</li>
+</ul>
+</li>
+<li>资源消耗<ul>
+<li><strong>线程：</strong>进程切换时，消耗的资源大，效率高</li>
+<li><strong>进程：</strong>线程无法切换，只能互相通信，消耗的资源较小</li>
+</ul>
+</li>
+<li>执行过程<ul>
+<li><strong>线程：</strong>不能独立执行，必须依存在应用程序中，由应用程序提供多个线程执行控制</li>
+<li><strong>进程：</strong>每个独立的进程都有一个程序运行的入口、顺序执行序列和程序入口。</li>
+</ul>
+</li>
+<li>基本属性。<ul>
+<li><strong>线程：</strong>是处理器调度的基本单位。</li>
+<li><strong>进程：</strong>并不是。</li>
+</ul>
+</li>
+</ul>
+<h2 id="四、多线程"><a href="#四、多线程" class="headerlink" title="四、多线程"></a>四、多线程</h2><h3 id="4-1-多线程的原理"><a href="#4-1-多线程的原理" class="headerlink" title="4.1 多线程的原理"></a>4.1 多线程的原理</h3><blockquote>
+<p>CPU 在单位时间片里快速在各个线程之间切换</p>
+</blockquote>
+<p>不论是在多处理器的计算机上还是在单处理器的计算机上，线程总是”并发”执行的。当线程数量小于等于处理器数量时（并且操作系统支持多处理器），线程的并发是真正的并发，不同的线程运行在不同的处理器上，彼此之间互不相干。但对于线程数量大于处理器数量的情况，线程的并发会收到一些阻碍，因为此时至少有一个处理器会运行多个线程。</p>
+<p>在单处理器对应多线程的情况下，并发是一种模拟出来的状态。操作系统会让这些多线程程序轮流执行，每次进执行一小段时间（通常是几十到几百毫秒），这样每个线程就”看起来“在同事执行。</p>
+<p>处于运行中线程拥有一段可以执行的时间，这段时间称为<strong>时间片（Time Slice）</strong>。当时间片用尽，该进程将进入就绪状态。</p>
+<h3 id="4-2-多线程的好处"><a href="#4-2-多线程的好处" class="headerlink" title="4.2 多线程的好处"></a>4.2 多线程的好处</h3><ul>
+<li>多线程能改进应用的响应机制</li>
+<li>多线程能改进多核系统下的应用的实时表现</li>
+</ul>
+<h3 id="4-3-线程的生命周期"><a href="#4-3-线程的生命周期" class="headerlink" title="4.3 线程的生命周期"></a>4.3 线程的生命周期</h3><p>多线程的生命周期，一般有以下几个</p>
+<ul>
+<li>新建</li>
+<li><strong>运行 Running</strong>。此时线程正在执行</li>
+<li><strong>就绪 Ready</strong>。此时线程可以立即运行，但是CPU 已经被占用</li>
+<li><strong>堵塞 BLocked</strong>。此时CPU 正在执行sleep 方法&#x2F;锁等占用动作，此时其他线程无法执行。</li>
+<li>死亡。任务完成，或者强制退出线程</li>
+</ul>
+<p><img src="/p/e318a7b3/003.png"> </p>
+<h3 id="4-4-线程池的原理"><a href="#4-4-线程池的原理" class="headerlink" title="4.4 线程池的原理"></a>4.4 线程池的原理</h3><h4 id="4-4-1-执行流程"><a href="#4-4-1-执行流程" class="headerlink" title="4.4.1 执行流程"></a>4.4.1 执行流程</h4><ol>
+<li>判断线程池大小是否小于核心线程池等大小<ol>
+<li>如果否，继续判断工作队列是否已满<ol>
+<li>如果否，提交任务到工作队列</li>
+<li>创建线程去执行任务</li>
+</ol>
+</li>
+<li>如归是，线程队列已满，判断线程池是否都已在工作<ol>
+<li>如果是，交给饱和策略</li>
+<li>如果否，创建线程去执行任务</li>
+</ol>
+</li>
+</ol>
+</li>
+<li>如果小与，此时可以直接创建线程去执行任务</li>
+</ol>
+<p><img src="/p/e318a7b3/004.png"></p>
+<h4 id="4-4-2-策略"><a href="#4-4-2-策略" class="headerlink" title="4.4.2 策略"></a>4.4.2 策略</h4><p>这里需要找一下 Oracle <a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ThreadPoolExecutor.html">关于线程池执行器</a>的一些解释</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>策略名</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>static class</td>
+<td><strong><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ThreadPoolExecutor.AbortPolicy.html"> ThreadPoolExecutor.AbortPolicy</a></strong><br>抛出RejectedExecutionException 的异常，并阻止系统运行</td>
+</tr>
+<tr>
+<td>static class</td>
+<td><strong><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ThreadPoolExecutor.CallerRunsPolicy.html">ThreadPoolExecutor.CallerRunsPolicy</a></strong><br>拒绝任务，并在执行方法的调用线程里运行该拒绝任务，除非执行者被关闭，此时任务也会被弃用。</td>
+</tr>
+<tr>
+<td>static class</td>
+<td><strong><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ThreadPoolExecutor.DiscardOldestPolicy.html">ThreadPoolExecutor.DiscardOldestPolicy</a></strong><br>放弃执行最早的未完成请求，并尝试执行任务</td>
+</tr>
+<tr>
+<td>static class</td>
+<td><strong><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ThreadPoolExecutor.DiscardPolicy.html">ThreadPoolExecutor.DiscardPolicy</a></strong><br>任务被拒绝添加时，线程池丢弃被拒绝的任务</td>
+</tr>
+</tbody></table>
+<h3 id="4-5-线程和runloop-的关系"><a href="#4-5-线程和runloop-的关系" class="headerlink" title="4.5 线程和runloop 的关系"></a>4.5 线程和runloop 的关系</h3><p>概念上，主要有以下几个</p>
+<ol>
+<li>runloop 与线程是一一对应的，一个runloop 对应一个核心进程（因为runloop 是可以嵌套的，但是核心的只有一个），他们的关系保存在一个全局的字典里。</li>
+<li>runloop 是来管理线程的，当线程的runloop 被开启后，线程会在执行完任务后进入休眠状态，有了任务就会被唤醒去执行任务。</li>
+<li>runloop 在第一次获取时被创建，在线程时被销毁</li>
+<li>对于主线程来说，runloop 在程序一启动就默认创建好了</li>
+<li>对于子线程来说，runloop 是懒加载的，只有当我们使用的时候才会创建。所以在子线程用定时器要注意：确保子线程的runloop 被创建，不然定时器不会回调。</li>
+</ol>
+<h3 id="4-6-iOS-中的多线程"><a href="#4-6-iOS-中的多线程" class="headerlink" title="4.6 iOS 中的多线程"></a>4.6 iOS 中的多线程</h3><p>iOS 中一般有以下多线程</p>
+<ul>
+<li><p>GCD</p>
+<p>就是我们最常使用的Grand Central Dispatch。底层由C 语言写成，由苹果公司开发的一种用于多核处理器的应用优化技术，初始使用在Mac OS X 10.6 以及移动端的iOS 4 上。GCD 的名字起源于位于美国纽约曼哈顿中城的<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%A4%A7%E4%B8%AD%E5%A4%AE%E8%BD%A6%E7%AB%99/5354562?fr=aladdin">大中央总站</a>。</p>
+<p>示例：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (IBAction)analyzeDocument:(NSButton *)sender &#123;</span><br><span class="line">    <span class="built_in">dispatch_async</span>(<span class="built_in">dispatch_get_global_queue</span>(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">        NSDictionary *stats = [myDoc analyze];</span><br><span class="line">        <span class="built_in">dispatch_async</span>(<span class="built_in">dispatch_get_main_queue</span>(), ^&#123;</span><br><span class="line">            [myModel setDict:stats];</span><br><span class="line">            [myStatsView setNeedsDisplay:YES];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>NSThread</p>
+<p>是苹果公司基于GCD 包装的一种面向对象的管理线程的方式，可以由程序员自行创建线程及退出。</p>
+</li>
+<li><p>pThread</p>
+<p>即<strong>POSIX线程</strong>。POSIX 线程提供了一个基于C 语言的接口来创建线程。如果你不是在写Cocoa 应用，这恐怕是最理想的创建线程的选择。POSIX 接口相当简单也足够灵活的配置你的线程。</p>
+</li>
+<li><p>NSOperation</p>
+</li>
+</ul>
+<h2 id="五、线程间的通讯"><a href="#五、线程间的通讯" class="headerlink" title="五、线程间的通讯"></a>五、线程间的通讯</h2><p>这个也是面试题经常会问到的，无论是中级还是高级的面试题。</p>
+<p><a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/AboutThreads/AboutThreads.html#//apple_ref/doc/uid/10000057i-CH6-SW2">苹果官方</a> 线程相关的文档是这样介绍的，线程间的通讯如下：</p>
+<p><img src="/p/e318a7b3/005.png"></p>
+<p>一共有7种方式:</p>
+<ul>
+<li><p><strong>直接传递消息</strong>：可以从一个线程往任意一个线程发送消息。这种能力意味着一个线程能从根本上在任意一个其他的线程执行某方法。因为他们被执行在目标线程的环境下，在该线程下消息被自动连续的发送。</p>
+<p>比较常见的就是<code>performSelector</code></p>
+</li>
+<li><p><strong>全局变量：</strong>共享内存及共享对象，尽管共享变量快捷而渐变，但相比<strong>直接传递消息</strong>他们也更加不稳定。使用共享变量得用所活着其他同步机制格外小心的保护，以确保代码的准确性。一旦使用不当容易引起<strong>竞态条件</strong>、数据改变或者<strong>崩溃</strong>。</p>
+</li>
+<li><p><strong>Conditions</strong>：当一个线程执行了特定的部分代码，同步工具可以用来控制。你可以想象<code>conditions</code> 当作门卫，只有当状态条件满足的情况下，线程才允许执行。</p>
+</li>
+<li><p><strong>Runloop 资源</strong>：自定义runloop 资源用来在线程里接受应用特定的信息。因为他们是事件驱动，runloop 资源会在无任务时将你的线程休眠，改进线程的效率。</p>
+</li>
+<li><p><strong>端口与套接字：</strong>基于端口的通讯是一种在两个线程通讯更精密的方式，也是一种可靠的技术。更重要的是，端口和套接字能用来与外部实体进行通讯，例如其他进程和服务。为了效率期间，端口通过使用runloop 资源来实现，因此等待端口无事可做时，线程也会被休眠。</p>
+</li>
+<li><p><strong>消息队列：</strong>经典的多处理器服务为来管理进出的数据，制定了一个先进先出队列（FIFO）概念。尽管消息队列简单而方便，他们也不像其他通讯技术那样高效。</p>
+</li>
+<li><p><strong>对象分发：</strong>对象分发是一种Cocoa 技术，提供了基于端口高级实现。尽管在线程内使用这门技术也能用，但鉴于使用它会带来的性能开支，高度不建议使用。分发对象更适合于进程间的通信，尤其是当进程消耗已经很高的情况下（虱子多了不咬，债多了不愁）。</p>
+</li>
+</ul>
+<h2 id="六、线程的关闭"><a href="#六、线程的关闭" class="headerlink" title="六、线程的关闭"></a>六、线程的关闭</h2><p>建议在创建线程的时候，就设计好响应取消和退出线程的消息。对于长任务来说，这可能意味着周期性的停止工作而查看是否有消息到达。如果确实有消息进来——要求线程退出，线程可能接下来可以实现一些必须的清理工作，然后优雅的退出；否则继续工作。</p>
+<p>响应取消消息的方法是使用Runloop，看看下面的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)threadMainRoutine</span><br><span class="line">&#123;</span><br><span class="line">    BOOL moreWorkToDo = YES;</span><br><span class="line">    BOOL exitNow = NO;</span><br><span class="line">    NSRunLoop* runLoop = [NSRunLoop currentRunLoop];</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// Add the exitNow BOOL to the thread dictionary.</span></span><br><span class="line">    NSMutableDictionary* threadDict = [[NSThread currentThread] threadDictionary];</span><br><span class="line">    [threadDict setValue:[NSNumber numberWithBool:exitNow] forKey:@<span class="string">&quot;ThreadShouldExitNow&quot;</span>];</span><br><span class="line"> </span><br><span class="line">    <span class="comment">// Install an input source.</span></span><br><span class="line">    [self myInstallCustomInputSource];</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">while</span> (moreWorkToDo &amp;&amp; !exitNow)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Do one chunk of a larger body of work here.</span></span><br><span class="line">        <span class="comment">// Change the value of the moreWorkToDo Boolean when done.</span></span><br><span class="line"> </span><br><span class="line">        <span class="comment">// Run the run loop but timeout immediately if the input source isn&#x27;t waiting to fire.</span></span><br><span class="line">        [runLoop runUntilDate:[NSDate date]];</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// Check to see if an input source handler changed the exitNow value.</span></span><br><span class="line">        exitNow = [[threadDict valueForKey:@<span class="string">&quot;ThreadShouldExitNow&quot;</span>] boolValue];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/e318a7b3.html">http://nilsli.com/p/e318a7b3.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+                                    <span class="chip bg-color">多线程</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%BA%BF%E7%A8%8B/">
+                                    <span class="chip bg-color">线程</span>
+                                </a>
+                            
+                                <a href="/tags/%E8%BF%9B%E7%A8%8B/">
+                                    <span class="chip bg-color">进程</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-04-06T18-18-51',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/50518edc.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/19.jpg" class="responsive-img" alt="【数据结构与算法】-（5）链表面试题解析">
+                        
+                        <span class="card-title">【数据结构与算法】-（5）链表面试题解析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+ 【数据结构与算法】-（1）基础篇
+ 【数据结构与算法】-（2）线性表基础
+ 【数据结构与算法】-（3）循环链表（单向）
+ 【数据结构与算法】-（4）双向链表和双向循环链表
+ 【数据结构与算法】-（5）链表面试题解析
+ 【数据结构与算法】
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-09
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BA%BF%E6%80%A7%E8%A1%A8/">
+                        <span class="chip bg-color">线性表</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%93%BE%E8%A1%A8/">
+                        <span class="chip bg-color">链表</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/bd5c42bb.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/18.jpg" class="responsive-img" alt="【底层探索】- 多线程(二)GCD应用">
+                        
+                        <span class="card-title">【底层探索】- 多线程(二)GCD应用</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            一、面试题解析1.1 第一题A、提问：以下代码，会打印什么？
+dispatch_queue_t queue = dispatch_queue_create(&quot;lj&quot;, DISPATCH_QUEUE_SERIAL);NSL
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-05
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+                        <span class="chip bg-color">多线程</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BA%BF%E7%A8%8B/">
+                        <span class="chip bg-color">线程</span>
+                    </a>
+                    
+                    <a href="/tags/GCD/">
+                        <span class="chip bg-color">GCD</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

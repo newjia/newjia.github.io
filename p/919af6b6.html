@@ -1,0 +1,1357 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="【数据结构与算法】-（9）二叉树与顺序表实现, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【数据结构与算法】-（9）二叉树与顺序表实现 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【数据结构与算法】-（9）二叉树与顺序表实现</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+                                <span class="chip bg-color">数据结构</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%A0%91/">
+                                <span class="chip bg-color">树</span>
+                            </a>
+                        
+                            <a href="/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/">
+                                <span class="chip bg-color">二叉树</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-04-26
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    3.7k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    15 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p><a href="https://nilsli.com/p/43384.html">【数据结构与算法】-（1）基础篇</a></p>
+<p><a href="https://nilsli.com/p/43366.html">【数据结构与算法】-（2）线性表基础</a></p>
+<p><a href="https://nilsli.com/p/54688.html">【数据结构与算法】-（3）循环链表（单向）</a></p>
+<p><a href="https://nilsli.com/p/56790.html">【数据结构与算法】-（4）双向链表和双向循环链表</a></p>
+<p><a href="https://nilsli.com/p/50518edc.html">【数据结构与算法】-（5）链表面试题解析</a></p>
+<p><a href="https://nilsli.com/p/7914b7d0.html">【数据结构与算法】-（6）栈</a></p>
+<p><a href="https://nilsli.com/p/c0a767bd.html">【数据结构与算法】-（7）队列</a></p>
+<p><a href="https://nilsli.com/p/b0e10b1c.html">【数据结构与算法】-（8）栈之算法题</a></p>
+<p><a href="https://nilsli.com/p/cc625709.html">【数据结构与算法】-（8.1）字符串去重算法</a></p>
+<p><a href="https://nilsli.com/p/8a586c1e.html">【数据结构与算法】-（8.2）字符串搜索算法和RK&amp;BP算法</a></p>
+<p><a href="https://nilsli.com/p/22d3726c.html">【数据结构与算法】-（8.3）KMP算法</a></p>
+<p><a href="https://nilsli.com/p/919af6b6.html#toc-heading-15">【数据结构与算法】-（9）二叉树与顺序表实现</a></p>
+</blockquote>
+<h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><h3 id="1-1-树的定义"><a href="#1-1-树的定义" class="headerlink" title="1.1 树的定义"></a>1.1 树的定义</h3><blockquote>
+<p>树是 n （n ≥ 0）个结点的有限集。n&#x3D;0时称为空树。</p>
+<p>在任意一棵非空树中：（1）有且仅有一个特定的成为根（Root）的结点；（2）当 n &gt; 1 时，其余结点可分为m（m &gt; 0）个互不相交的有限集 T<sub>1</sub>、 T<sub>2</sub>、…… T<sub>m</sub>，其中每一个集合本身又是一棵树，并且称为根的子树（SubTree），如下图所示：</p>
+</blockquote>
+<p><img src="/p/919af6b6/001.png" alt="001"></p>
+<p>子树如下图所示：</p>
+<p><img src="/p/919af6b6/002.png"></p>
+<h3 id="1-2-树的其他特性"><a href="#1-2-树的其他特性" class="headerlink" title="1.2 树的其他特性"></a>1.2 树的其他特性</h3><ul>
+<li>度（Degree）：结点拥有的子树数成为结点的度。<ul>
+<li>度为0的结点成为叶子结点（Leaf）或终端结点</li>
+<li>度不为0的结点成为非终端结点或分枝结点。</li>
+</ul>
+</li>
+<li>层次（Level）：指从根开始定义起，结点所在的楼层。（按照根结点为1开始依次算起）</li>
+<li>深度（Depth）：树中结点的最大层次成为树的深度或高度。</li>
+<li>子结点、双亲结点：结点的子树的根成为该结点的孩子（Child），相应地，该结点成为孩子的双亲结点（Parent）</li>
+</ul>
+<p><img src="/p/919af6b6/003.png"></p>
+<h3 id="1-3-二叉树的定义"><a href="#1-3-二叉树的定义" class="headerlink" title="1.3 二叉树的定义"></a>1.3 二叉树的定义</h3><blockquote>
+<p>二叉树（Binary Tree） 是 n （n ≥ 0）个结点的有限集合，该集合或为空集（称为空二叉树），或者由一个根结点和两棵互不相交的、分别称为根结点的左子树和右子树的二叉树组成。</p>
+</blockquote>
+<p>因为二叉树最多只能由左结点和右结点，一个普遍的二叉树如图</p>
+<p><img src="/p/919af6b6/004.png"></p>
+<h3 id="1-4-二叉树的基本特点"><a href="#1-4-二叉树的基本特点" class="headerlink" title="1.4 二叉树的基本特点"></a>1.4 二叉树的基本特点</h3><h4 id="1-4-1-特点"><a href="#1-4-1-特点" class="headerlink" title="1.4.1 特点"></a>1.4.1 特点</h4><ul>
+<li>每个结点最多有两棵子树，所以二叉树中不存在度大于2度结点。</li>
+<li>左子树和右子树顺序不可颠倒。</li>
+<li>即使树中某结点只有一棵子树，也要区分他是左子树还是右子树。</li>
+</ul>
+<h4 id="1-4-2-基本形态"><a href="#1-4-2-基本形态" class="headerlink" title="1.4.2 基本形态"></a>1.4.2 基本形态</h4><ul>
+<li>空二叉树</li>
+<li>只有一个根结点</li>
+<li>根结点只有左子树</li>
+<li>根结点只有右子树</li>
+<li>根结点既有左子树也有右子树</li>
+</ul>
+<h3 id="1-5-特殊的二叉树"><a href="#1-5-特殊的二叉树" class="headerlink" title="1.5 特殊的二叉树"></a>1.5 特殊的二叉树</h3><h4 id="1-5-1-斜树"><a href="#1-5-1-斜树" class="headerlink" title="1.5.1 斜树"></a>1.5.1 斜树</h4><p>顾名思义，所有的结点都只有左子树或右子树。所有结点只有左子树的叫左斜树，只有右子树的成为右斜树，两者统称为斜树。</p>
+<p><img src="/p/919af6b6/005.png"></p>
+<h4 id="1-5-2-满二叉树"><a href="#1-5-2-满二叉树" class="headerlink" title="1.5.2 满二叉树"></a>1.5.2 满二叉树</h4><p>在一棵树中，如果所有的分支结点都存在左子树和右子树，并且所有的叶子都在同一层上，这样的二叉树称为满二叉树。</p>
+<p><img src="/p/919af6b6/006.png"></p>
+<h4 id="1-5-3-完全二叉树"><a href="#1-5-3-完全二叉树" class="headerlink" title="1.5.3 完全二叉树"></a>1.5.3 完全二叉树</h4><p>对一颗具有n个结点的二叉树按层序编号，如果编号为i（1≤ i ≤ n）的结点与同样深度的满二叉树中编号为i 的结点在二叉树中的位置完全相同，这棵二叉树称为完全二叉树。</p>
+<p>如下图所示，完全二叉树并不要求所有子结点全部填满，只需要子树树按顺序排列。</p>
+<p><img src="/p/919af6b6/007.png"></p>
+<p>换句通俗的话说，哥哥一家没生满二胎，弟弟一家不允许要孩子……🐶，否则就不是完全二叉树。</p>
+<p>如下图中，11节点丢失的情况下，不可以称为完全二叉树</p>
+<p><img src="/p/919af6b6/008.png"></p>
+<h2 id="二、二叉树的存储结构"><a href="#二、二叉树的存储结构" class="headerlink" title="二、二叉树的存储结构"></a>二、二叉树的存储结构</h2><h3 id="2-1-顺序存储结构"><a href="#2-1-顺序存储结构" class="headerlink" title="2.1 顺序存储结构"></a>2.1 顺序存储结构</h3><p>通常用数组来存储二叉树，先看看存储完全二叉树的情况</p>
+<p><img src="/p/919af6b6/014.png"></p>
+<p>可以看到，二叉树中的元素按照顺序依次放入开辟好的数组内存空间里。</p>
+<p>但是，凡事都有但是，在某些极端情况下，某一棵树，缺胳膊少腿儿，导致空间大大浪费，比如下图：</p>
+<p><img src="/p/919af6b6/015.png"></p>
+<p>这棵树只有4个有效的结点，但是却不得不开辟从A～M一共13个结点的内存空间，这种情况的树，使用数组结构来存储，对内存空间是一种浪费。</p>
+<h3 id="2-2-二叉链表"><a href="#2-2-二叉链表" class="headerlink" title="2.2 二叉链表"></a>2.2 二叉链表</h3><p>鉴于上文中数组结构无法更高效的表述二叉树，引入了链表的结构进行表述。</p>
+<p>由于二叉树结构最多有两个孩子，所以引入的链表结点，结构分别为数据域、左孩子指针、右孩子指针</p>
+<p>结点结构如下</p>
+<table>
+<thead>
+<tr>
+<th>左孩子</th>
+<th>数据</th>
+<th>右孩子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lChild</td>
+<td>data</td>
+<td>rChild</td>
+</tr>
+</tbody></table>
+<p>用代码来表述可以是这样的</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">BiTreeNode</span>&#123;</span></span><br><span class="line">		<span class="type">int</span> data;</span><br><span class="line">		BiTreeNode *lChild;</span><br><span class="line">		BITreeNode *rChild;</span><br><span class="line">&#125;BiTreeNode, *BiTree</span><br></pre></td></tr></table></figure>
+
+<p>把上文中较特殊的二叉树，用这样的结点表述的二叉树结构如下：</p>
+<p><img src="/p/919af6b6/016.png"></p>
+<h2 id="三、二叉树的遍历"><a href="#三、二叉树的遍历" class="headerlink" title="三、二叉树的遍历"></a>三、二叉树的遍历</h2><blockquote>
+<p>二叉树的遍历（traversing binary tree）是指从根结点出发，按照某种次序访问二叉树中所有结点，使得每个结点被访问一次且仅被访问一次。</p>
+</blockquote>
+<p>二叉树的遍历方法，主要有四种：</p>
+<h3 id="3-1-前序遍历"><a href="#3-1-前序遍历" class="headerlink" title="3.1 前序遍历"></a>3.1 前序遍历</h3><p>遍历的规则是若二叉树为空，空操作返回；否则先访问根结点，然后前序遍历左子树，再前序遍历右子树</p>
+<p>如图示：</p>
+<p><img src="/p/919af6b6/010.png"></p>
+<h3 id="3-2-中序遍历"><a href="#3-2-中序遍历" class="headerlink" title="3.2 中序遍历"></a>3.2 中序遍历</h3><p>遍历的规则是若二叉树为空，空操作返回；否则从根结点开始（但此时并不遍历根结点），先前序遍历左子树，先遍历访问根结点，再前序遍历右子树。</p>
+<p>如图示：</p>
+<p><img src="/p/919af6b6/011.png"></p>
+<h3 id="3-3-后序遍历"><a href="#3-3-后序遍历" class="headerlink" title="3.3 后序遍历"></a>3.3 后序遍历</h3><p>遍历的规则是若二叉树为空，空操作返回；否则从左到右先叶子后结点的方式遍历访问左右子树，最后访问根结点。</p>
+<p>如图示</p>
+<p><img src="/p/919af6b6/012.png"></p>
+<h3 id="3-4-层序遍历"><a href="#3-4-层序遍历" class="headerlink" title="3.4 层序遍历"></a>3.4 层序遍历</h3><p>遍历的规则是若二叉树为空，空操作返回；否则从树的第一层——也就是根结点开始访问，从上往下，在同一层时从左至右对结点逐个访问。</p>
+<p>访问顺序如图示：</p>
+<p><img src="/p/919af6b6/013.png"></p>
+<h2 id="三、顺序存储下的实现"><a href="#三、顺序存储下的实现" class="headerlink" title="三、顺序存储下的实现"></a>三、顺序存储下的实现</h2><h3 id="3-1-顺序存储的实现"><a href="#3-1-顺序存储的实现" class="headerlink" title="3.1 顺序存储的实现"></a>3.1 顺序存储的实现</h3><h4 id="3-1-1-二叉树基本操作"><a href="#3-1-1-二叉树基本操作" class="headerlink" title="3.1.1 二叉树基本操作"></a>3.1.1 二叉树基本操作</h4><ul>
+<li><p>初始化环境</p>
+<p>创建结点结构</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> level; <span class="comment">//结点层</span></span><br><span class="line">    <span class="type">int</span> order; <span class="comment">//本层的序号(按照满二叉树给定序号规则)</span></span><br><span class="line">&#125;Position;</span><br></pre></td></tr></table></figure>
+
+<p>以及其他辅助条件</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> MAXSIZE 100 <span class="comment">/* 存储空间初始分配量 */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MAX_TREE_SIZE 100 <span class="comment">/* 二叉树的最大结点数 */</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">int</span> Status;        <span class="comment">/* Status是函数的类型,其值是函数结果状态代码，如OK等 */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">int</span> CElemType;      <span class="comment">/* 树结点的数据类型，目前暂定为整型 */</span></span><br><span class="line"><span class="keyword">typedef</span> CElemType SqBiTree[MAX_TREE_SIZE]; <span class="comment">/* 0号单元存储根结点  */</span></span><br><span class="line">CElemType Nil = <span class="number">0</span>;   <span class="comment">/*设整型以0为空 或者以 INT_MAX(65535)*/</span></span><br></pre></td></tr></table></figure>
+
+</li>
+<li><p>初始化一个二叉树T</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Status <span class="title function_">InitBiTree</span><span class="params">(SqBiTree T)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; MAX_TREE_SIZE; i++) &#123;</span><br><span class="line">        <span class="comment">//将二叉树初始化值置空</span></span><br><span class="line">        T[i] = Nil;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>创建二叉树（放入数据）</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Status <span class="title function_">CreateBiTree</span><span class="params">(SqBiTree T)</span>&#123;</span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//printf(&quot;按层序输入结点的值(整型),0表示空结点, 输入999结束.结点数&lt;=%d\n&quot;,MAX_TREE_SIZE);</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     1      --&gt;1</span></span><br><span class="line"><span class="comment">     2     3   --&gt;2</span></span><br><span class="line"><span class="comment">     4  5  6   7 --&gt;3</span></span><br><span class="line"><span class="comment">     8  9 10       --&gt;4</span></span><br><span class="line"><span class="comment">     </span></span><br><span class="line"><span class="comment">     1 2 3 4 5 6 7 8 9 10 Nil Nil Nil</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (i &lt; <span class="number">10</span>) &#123;</span><br><span class="line">        T[i] = i+<span class="number">1</span>;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>,T[i]);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//结点不为空,且无双亲结点</span></span><br><span class="line">        <span class="keyword">if</span> (i != <span class="number">0</span> &amp;&amp; T[(i+<span class="number">1</span>)/<span class="number">2</span><span class="number">-1</span>] == Nil &amp;&amp; T[i] != Nil) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;出现无双亲的非根结点%d\n&quot;</span>,T[i]);</span><br><span class="line">            <span class="built_in">exit</span>(ERROR);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        i++;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//将空赋值给T的后面的结点</span></span><br><span class="line">    <span class="keyword">while</span> (i &lt; MAX_TREE_SIZE) &#123;</span><br><span class="line">        T[i] = Nil;</span><br><span class="line">        i++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>清空二叉树</p>
+<p>清空一棵二叉树，与构造一棵二傻树一样，只需将每个结点值置空即可。</p>
+<p>可以直接定义一个新函数，将两个函数对等。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> ClearBiTree InitBiTree</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>判断二叉树是否为空</p>
+<p>只需判断根结点是否为空</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Status <span class="title function_">BiTreeEmpty</span><span class="params">(SqBiTree T)</span>&#123;</span><br><span class="line">    <span class="comment">//根结点为空,则二叉树为空</span></span><br><span class="line">    <span class="keyword">return</span> T[<span class="number">0</span>] == Nil;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>获取二叉树的深度</p>
+<p>计算深度，需要看从当前结点，到根结点经历的路径条数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">BiTreeDepth</span><span class="params">(SqBiTree T)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="type">int</span> j = <span class="number">-1</span>;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//找到最后一个结点</span></span><br><span class="line">    <span class="comment">//MAX_TREE_SIZE -&gt; 100 -&gt; 10 目的找到最后一个结点10的位置</span></span><br><span class="line">    <span class="keyword">for</span> (i = MAX_TREE_SIZE<span class="number">-1</span> ; i&gt;=<span class="number">0</span>; i--) &#123;</span><br><span class="line">        <span class="keyword">if</span> (T[i] != Nil)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        j++;</span><br><span class="line">    &#125; <span class="keyword">while</span> ( powl(<span class="number">2</span>, j) &lt;= i); <span class="comment">//计算2的次幂</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-1-2-结点操作"><a href="#3-1-2-结点操作" class="headerlink" title="3.1.2 结点操作"></a>3.1.2 结点操作</h4><ul>
+<li><p>获取二叉树根结点的值</p>
+<p>只需计算数组T 首结点的值即可</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Status <span class="title function_">Root</span><span class="params">(SqBiTree T,CElemType *e)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (BiTreeEmpty(T)) &#123;</span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    *e = T[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>返回结点位置为e 的值</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">CElemType <span class="title function_">Value</span><span class="params">(SqBiTree T,Position e)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     Position.level -&gt; 结点层.表示第几层;</span></span><br><span class="line"><span class="comment">     Position.order -&gt; 本层的序号(按照满二叉树给定序号规则)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//pow(2,e.level-1) 找到层序</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,(<span class="type">int</span>)<span class="built_in">pow</span>(<span class="number">2</span>,e.level<span class="number">-1</span>));</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//e.order</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>,e.order);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//4+2-2;</span></span><br><span class="line">    <span class="keyword">return</span> T[(<span class="type">int</span>)<span class="built_in">pow</span>(<span class="number">2</span>, e.level<span class="number">-1</span>)+e.order<span class="number">-2</span>];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改结点位置e 的值</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Status <span class="title function_">Assign</span><span class="params">(SqBiTree T,Position e,CElemType value)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//找到当前e在数组中的具体位置索引</span></span><br><span class="line">    <span class="type">int</span> i = (<span class="type">int</span>)powl(<span class="number">2</span>, e.level<span class="number">-1</span>)+e.order <span class="number">-2</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//叶子结点的双亲为空</span></span><br><span class="line">    <span class="keyword">if</span> (value != Nil &amp;&amp;  T[(i+<span class="number">1</span>)/<span class="number">2</span><span class="number">-1</span>] == Nil) &#123;</span><br><span class="line">        <span class="keyword">return</span> ERROR;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//给双亲赋空值但是有叶子结点</span></span><br><span class="line">    <span class="keyword">if</span> (value == Nil &amp;&amp; (T[i*<span class="number">2</span>+<span class="number">1</span>] != Nil || T[i*<span class="number">2</span>+<span class="number">2</span>] != Nil)) &#123;</span><br><span class="line">        <span class="keyword">return</span>  ERROR;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    T[i] = value;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>获取结点位置e 的双亲</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">CElemType <span class="title function_">Parent</span><span class="params">(SqBiTree T, CElemType e)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//空树</span></span><br><span class="line">    <span class="keyword">if</span> (T[<span class="number">0</span>] == Nil) &#123;</span><br><span class="line">        <span class="keyword">return</span> Nil;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span> ; i &lt; MAX_TREE_SIZE; i++) &#123;</span><br><span class="line">        <span class="comment">//找到e</span></span><br><span class="line">        <span class="keyword">if</span> (T[i] == e) &#123;</span><br><span class="line">            <span class="keyword">return</span> T[(i+<span class="number">1</span>)/<span class="number">2</span> - <span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//没有找到</span></span><br><span class="line">    <span class="keyword">return</span> Nil;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>获取某结点的左孩子</p>
+<p>步骤为当前结点的</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">CElemType <span class="title function_">LeftChild</span><span class="params">(SqBiTree T,CElemType e)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//空树</span></span><br><span class="line">    <span class="keyword">if</span> (T[<span class="number">0</span>] == Nil) &#123;</span><br><span class="line">        <span class="keyword">return</span> Nil;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; MAX_TREE_SIZE<span class="number">-1</span>; i++) &#123;</span><br><span class="line">        <span class="comment">//找到e</span></span><br><span class="line">        <span class="keyword">if</span> (T[i] == e) &#123;</span><br><span class="line">            <span class="keyword">return</span> T[i*<span class="number">2</span>+<span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//没有找到</span></span><br><span class="line">    <span class="keyword">return</span> Nil;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取某结点的右孩子</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">CElemType <span class="title function_">RightChild</span><span class="params">(SqBiTree T,CElemType e)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//空树</span></span><br><span class="line">    <span class="keyword">if</span> (T[<span class="number">0</span>] == Nil) &#123;</span><br><span class="line">        <span class="keyword">return</span> Nil;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; MAX_TREE_SIZE<span class="number">-1</span>; i++) &#123;</span><br><span class="line">        <span class="comment">//找到e</span></span><br><span class="line">        <span class="keyword">if</span> (T[i] == e) &#123;</span><br><span class="line">            <span class="keyword">return</span> T[i*<span class="number">2</span>+<span class="number">2</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//没有找到</span></span><br><span class="line">    <span class="keyword">return</span> Nil;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>获取某结点的左兄弟</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">CElemType <span class="title function_">LeftSibling</span><span class="params">(SqBiTree T,CElemType e)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* 空树 */</span></span><br><span class="line">    <span class="keyword">if</span>(T[<span class="number">0</span>]==Nil)</span><br><span class="line">        <span class="keyword">return</span> Nil;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=MAX_TREE_SIZE<span class="number">-1</span>;i++)</span><br><span class="line">    <span class="comment">/* 找到e且其序号为偶数(是右孩子) */</span></span><br><span class="line">        <span class="keyword">if</span>(T[i]==e&amp;&amp;i%<span class="number">2</span>==<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> T[i<span class="number">-1</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> Nil; <span class="comment">/* 没找到e */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>获取某结点的右兄弟</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">CElemType <span class="title function_">RightSibling</span><span class="params">(SqBiTree T,CElemType e)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* 空树 */</span></span><br><span class="line">    <span class="keyword">if</span>(T[<span class="number">0</span>]==Nil)</span><br><span class="line">        <span class="keyword">return</span> Nil;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;=MAX_TREE_SIZE<span class="number">-1</span>;i++)</span><br><span class="line">    <span class="comment">/* 找到e且其序号为奇数(是左孩子) */</span></span><br><span class="line">        <span class="keyword">if</span>(T[i]==e&amp;&amp;i%<span class="number">2</span>==<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">return</span> T[i+<span class="number">1</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> Nil; <span class="comment">/* 没找到e */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-1-3-遍历二叉树"><a href="#3-1-3-遍历二叉树" class="headerlink" title="3.1.3 遍历二叉树"></a>3.1.3 遍历二叉树</h4><ul>
+<li><p>前序遍历</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">PreTraverse</span><span class="params">(SqBiTree T,<span class="type">int</span> e)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//打印结点数据</span></span><br><span class="line">    visit(T[e]);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//先序遍历左子树</span></span><br><span class="line">    <span class="keyword">if</span> (T[<span class="number">2</span> * e + <span class="number">1</span>] != Nil) &#123;</span><br><span class="line">        PreTraverse(T, <span class="number">2</span>*e+<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//最后先序遍历右子树</span></span><br><span class="line">    <span class="keyword">if</span> (T[<span class="number">2</span> * e + <span class="number">2</span>] != Nil) &#123;</span><br><span class="line">        PreTraverse(T, <span class="number">2</span>*e+<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Status <span class="title function_">PreOrderTraverse</span><span class="params">(SqBiTree T)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//树不为空</span></span><br><span class="line">    <span class="keyword">if</span> (!BiTreeEmpty(T)) &#123;</span><br><span class="line">        PreTraverse(T, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>  OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>中序遍历</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">InTraverse</span><span class="params">(SqBiTree T, <span class="type">int</span> e)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 左子树不空 */</span></span><br><span class="line">    <span class="keyword">if</span> (T[<span class="number">2</span>*e+<span class="number">1</span>] != Nil)</span><br><span class="line">        InTraverse(T, <span class="number">2</span>*e+<span class="number">1</span>);</span><br><span class="line">    </span><br><span class="line">    visit(T[e]);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 右子树不空 */</span></span><br><span class="line">    <span class="keyword">if</span> (T[<span class="number">2</span>*e+<span class="number">2</span>] != Nil)</span><br><span class="line">        InTraverse(T, <span class="number">2</span>*e+<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Status <span class="title function_">InOrderTraverse</span><span class="params">(SqBiTree T)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* 树不空 */</span></span><br><span class="line">    <span class="keyword">if</span> (!BiTreeEmpty(T)) &#123;</span><br><span class="line">        InTraverse(T, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>后序遍历</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">PostTraverse</span><span class="params">(SqBiTree T,<span class="type">int</span> e)</span></span><br><span class="line">&#123;   <span class="comment">/* 左子树不空 */</span></span><br><span class="line">    <span class="keyword">if</span>(T[<span class="number">2</span>*e+<span class="number">1</span>]!=Nil)</span><br><span class="line">        PostTraverse(T,<span class="number">2</span>*e+<span class="number">1</span>);</span><br><span class="line">    <span class="comment">/* 右子树不空 */</span></span><br><span class="line">    <span class="keyword">if</span>(T[<span class="number">2</span>*e+<span class="number">2</span>]!=Nil)</span><br><span class="line">        PostTraverse(T,<span class="number">2</span>*e+<span class="number">2</span>);</span><br><span class="line">    </span><br><span class="line">    visit(T[e]);</span><br><span class="line">&#125;</span><br><span class="line">Status <span class="title function_">PostOrderTraverse</span><span class="params">(SqBiTree T)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(!BiTreeEmpty(T)) <span class="comment">/* 树不空 */</span></span><br><span class="line">        PostTraverse(T,<span class="number">0</span>);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>层序遍历</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">LevelOrderTraverse</span><span class="params">(SqBiTree T)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="type">int</span> i = MAX_TREE_SIZE<span class="number">-1</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//找到最后一个非空结点的序号</span></span><br><span class="line">    <span class="keyword">while</span> (T[i] == Nil) i--;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//从根结点起,按层序遍历二叉树</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt;= i; j++)</span><br><span class="line">        <span class="comment">//只遍历非空结点</span></span><br><span class="line">        <span class="keyword">if</span> (T[j] != Nil)</span><br><span class="line">            visit(T[j]);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="3-2-链式存储的实现"><a href="#3-2-链式存储的实现" class="headerlink" title="3.2 链式存储的实现"></a>3.2 链式存储的实现</h3><h4 id="3-2-1-二叉树的基本操作"><a href="#3-2-1-二叉树的基本操作" class="headerlink" title="3.2.1 二叉树的基本操作"></a>3.2.1 二叉树的基本操作</h4><ul>
+<li><p>数据类型及结点结构如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">char</span> CElemType;</span><br><span class="line">CElemType Nil=<span class="string">&#x27; &#x27;</span>; <span class="comment">/* 字符型以空格符为空 */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">BiTNode</span>  /* 结点结构 */</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    CElemType data;        <span class="comment">/* 结点数据 */</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">BiTNode</span> *<span class="title">lchild</span>,*<span class="title">rchild</span>;</span> <span class="comment">/* 左右孩子指针 */</span></span><br><span class="line">&#125;BiTNode,*BiTree;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>初始化二叉树</p>
+<p>只需对当前二叉树赋值为空即可。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Status <span class="title function_">InitBiTree</span><span class="params">(BiTree *T)</span></span><br><span class="line">&#123;</span><br><span class="line">    *T=<span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建二叉树</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">CreateBiTree</span><span class="params">(BiTree *T)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    CElemType ch;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//获取字符</span></span><br><span class="line">    ch = str[indexs++];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//判断当前字符是否为&#x27;#&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> (ch == <span class="string">&#x27;#&#x27;</span>) &#123;</span><br><span class="line">        *T = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//创建新的结点</span></span><br><span class="line">        *T = (BiTree)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(BiTNode));</span><br><span class="line">        <span class="comment">//是否创建成功</span></span><br><span class="line">        <span class="keyword">if</span> (!*T) &#123;</span><br><span class="line">            <span class="built_in">exit</span>(OVERFLOW);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">/* 生成根结点 */</span></span><br><span class="line">        (*T)-&gt;data = ch;</span><br><span class="line">        <span class="comment">/* 构造左子树 */</span></span><br><span class="line">        CreateBiTree(&amp;(*T)-&gt;lchild);</span><br><span class="line">        <span class="comment">/* 构造右子树 */</span></span><br><span class="line">        CreateBiTree(&amp;(*T)-&gt;rchild);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>清空二叉树</p>
+<p>这里的逻辑与数组存储树一样的，逻辑等于初始化二叉树，用新函数来等同于它。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> ClearBiTree DestroyBiTree</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>销毁二叉树</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void DestroyBiTree(BiTree *T)</span><br><span class="line">&#123;</span><br><span class="line">    if(*T)</span><br><span class="line">    &#123;</span><br><span class="line">        /* 有左孩子 */</span><br><span class="line">        if((*T)-&gt;lchild)</span><br><span class="line">            DestroyBiTree(&amp;(*T)-&gt;lchild); /* 销毁左孩子子树 */</span><br><span class="line">        </span><br><span class="line">        /* 有右孩子 */</span><br><span class="line">        if((*T)-&gt;rchild)</span><br><span class="line">            DestroyBiTree(&amp;(*T)-&gt;rchild); /* 销毁右孩子子树 */</span><br><span class="line">        </span><br><span class="line">        free(*T); /* 释放根结点 */</span><br><span class="line">        </span><br><span class="line">        *T=NULL; /* 空指针赋0 */</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>判断二叉树是否为空</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Status <span class="title function_">BiTreeEmpty</span><span class="params">(BiTree T)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(T)</span><br><span class="line">        <span class="keyword">return</span> FALSE;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> TRUE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>获取二叉树的深度</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">BiTreeDepth</span><span class="params">(BiTree T)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="type">int</span> i,j;</span><br><span class="line">    <span class="keyword">if</span>(!T)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//计算左孩子的深度</span></span><br><span class="line">    <span class="keyword">if</span>(T-&gt;lchild)</span><br><span class="line">        i=BiTreeDepth(T-&gt;lchild);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        i=<span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//计算右孩子的深度</span></span><br><span class="line">    <span class="keyword">if</span>(T-&gt;rchild)</span><br><span class="line">        j=BiTreeDepth(T-&gt;rchild);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        j=<span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//比较i和j</span></span><br><span class="line">    <span class="keyword">return</span> i&gt;j?i+<span class="number">1</span>:j+<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-2-2-结点操作"><a href="#3-2-2-结点操作" class="headerlink" title="3.2.2 结点操作"></a>3.2.2 结点操作</h4><ul>
+<li><p>获取二叉树根结点的值</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">CElemType <span class="title function_">Root</span><span class="params">(BiTree T)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (BiTreeEmpty(T))</span><br><span class="line">        <span class="keyword">return</span> Nil;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> T-&gt;data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取指针p 指向的结点的值</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">CElemType <span class="title function_">Value</span><span class="params">(BiTree p)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> p-&gt;data;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>给p 指向的结点赋值</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">Assign</span><span class="params">(BiTree p,CElemType value)</span></span><br><span class="line">&#123;</span><br><span class="line">    p-&gt;data=value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-2-3-遍历操作"><a href="#3-2-3-遍历操作" class="headerlink" title="3.2.3 遍历操作"></a>3.2.3 遍历操作</h4><ul>
+<li><p>前序遍历</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">PreOrderTraverse</span><span class="params">(BiTree T)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(T==<span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,T-&gt;data);<span class="comment">/* 显示结点数据，可以更改为其它对结点操作 */</span></span><br><span class="line">    PreOrderTraverse(T-&gt;lchild); <span class="comment">/* 再先序遍历左子树 */</span></span><br><span class="line">    PreOrderTraverse(T-&gt;rchild); <span class="comment">/* 最后先序遍历右子树 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>中序遍历</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">InOrderTraverse</span><span class="params">(BiTree T)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(T==<span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    InOrderTraverse(T-&gt;lchild); <span class="comment">/* 中序遍历左子树 */</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,T-&gt;data);<span class="comment">/* 显示结点数据，可以更改为其它对结点操作 */</span></span><br><span class="line">    InOrderTraverse(T-&gt;rchild); <span class="comment">/* 最后中序遍历右子树 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>后序遍历</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">PostOrderTraverse</span><span class="params">(BiTree T)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(T==<span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    PostOrderTraverse(T-&gt;lchild); <span class="comment">/* 先后序遍历左子树  */</span></span><br><span class="line">    PostOrderTraverse(T-&gt;rchild); <span class="comment">/* 再后序遍历右子树  */</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%c&quot;</span>,T-&gt;data);<span class="comment">/* 显示结点数据，可以更改为其它对结点操作 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/919af6b6.html">http://nilsli.com/p/919af6b6.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+                                    <span class="chip bg-color">数据结构</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%A0%91/">
+                                    <span class="chip bg-color">树</span>
+                                </a>
+                            
+                                <a href="/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/">
+                                    <span class="chip bg-color">二叉树</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-04-26T12-09-11',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/48b87814.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/16.jpg" class="responsive-img" alt="【多线程】锁分析">
+                        
+                        <span class="card-title">【多线程】锁分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            一、概念1.1 同步为了避免多个线程同时读写同一个数据而产生不可预料的后果，我们要将各个线程对同一个数据的访问同步（Synchronization）。
+所谓同步，即指在一个线程访问数据未结束的时候，其他线程不得对同一个数据进行访问。如此，对
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-05-13
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+                        <span class="chip bg-color">多线程</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%94%81/">
+                        <span class="chip bg-color">锁</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/22d3726c.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg" class="responsive-img" alt="【数据结构与算法】-（8.3）KMP算法">
+                        
+                        <span class="card-title">【数据结构与算法】-（8.3）KMP算法</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+【数据结构与算法】-（1）基础篇
+【数据结构与算法】-（2）线性表基础
+【数据结构与算法】-（3）循环链表（单向）
+【数据结构与算法】-（4）双向链表和双向循环链表
+【数据结构与算法】-（5）链表面试题解析
+【数据结构与算法】-（6）栈
+
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-23
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/KMP/">
+                        <span class="chip bg-color">KMP</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9F%A5%E6%89%BE/">
+                        <span class="chip bg-color">字符串查找</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

@@ -1,0 +1,1360 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="【类的加载】-（3）loading_images, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【类的加载】-（3）loading_images | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/15.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【类的加载】-（3）loading_images</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E7%B1%BB/">
+                                <span class="chip bg-color">类</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%8A%A0%E8%BD%BD/">
+                                <span class="chip bg-color">加载</span>
+                            </a>
+                        
+                            <a href="/tags/load/">
+                                <span class="chip bg-color">load</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-04-01
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.7k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    13 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>本页所使用的objc runtime 756.2，来自 <a target="_blank" rel="noopener" href="https://opensource.apple.com/tarballs/objc4">Apple 开源文档</a></p>
+</blockquote>
+<blockquote>
+<p><strong>类的加载探寻系列:</strong><br>1、<a href="https://nilsli.com/p/29664.html">【类的加载】-（1）类的启动</a></p>
+<p>2、<a href="https://nilsli.com/p/38312.html">【类的加载】-（2）懒加载类与分类</a></p>
+<p>3、<a href="https://nilsli.com/p/6283d578.html">【类的加载】-（3）loading_images</a></p>
+</blockquote>
+<h2 id="一、加载镜像load-images"><a href="#一、加载镜像load-images" class="headerlink" title="一、加载镜像load_images"></a>一、加载镜像load_images</h2><p>前两篇文章学习了objc_init 中的主要方法<code>map_images</code> ，接下来学习加载镜像，先把源码摆出来：</p>
+<p>通过注视可以看到，主要执行了2件事务：</p>
+<ul>
+<li>找到 load 方法</li>
+<li>调用load 方法。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span></span><br><span class="line"><span class="title function_">load_images</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *path __unused, <span class="type">const</span> <span class="keyword">struct</span> mach_header *mh)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Return without taking locks if there are no +load methods here.</span></span><br><span class="line">    <span class="keyword">if</span> (!hasLoadMethods((<span class="type">const</span> headerType *)mh)) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">recursive_mutex_locker_t</span> <span class="title function_">lock</span><span class="params">(loadMethodLock)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Discover load methods</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="type">mutex_locker_t</span> <span class="title function_">lock2</span><span class="params">(runtimeLock)</span>;</span><br><span class="line">        prepare_load_methods((<span class="type">const</span> headerType *)mh);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Call +load methods (without runtimeLock - re-entrant)</span></span><br><span class="line">    call_load_methods();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中找到load 方法，是通过先找到其背后的类或者分类。</p>
+<h3 id="1-1-准备类"><a href="#1-1-准备类" class="headerlink" title="1.1 准备类"></a>1.1 准备类</h3><p>下面这行代码表示类</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">prepare_load_methods</span><span class="params">(<span class="type">const</span> headerType *mhdr)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">size_t</span> count, i;</span><br><span class="line"></span><br><span class="line">    runtimeLock.assertLocked();</span><br><span class="line"></span><br><span class="line">    <span class="type">classref_t</span> *classlist = </span><br><span class="line">        _getObjc2NonlazyClassList(mhdr, &amp;count);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">        schedule_class_load(remapClass(classlist[i]));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">category_t</span> **categorylist = _getObjc2NonlazyCategoryList(mhdr, &amp;count);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">        <span class="type">category_t</span> *cat = categorylist[i];</span><br><span class="line">        Class cls = remapClass(cat-&gt;cls);</span><br><span class="line">        <span class="keyword">if</span> (!cls) <span class="keyword">continue</span>;  <span class="comment">// category for ignored weak-linked class</span></span><br><span class="line">        <span class="keyword">if</span> (cls-&gt;isSwiftStable()) &#123;</span><br><span class="line">            _objc_fatal(<span class="string">&quot;Swift class extensions and categories on Swift &quot;</span></span><br><span class="line">                        <span class="string">&quot;classes are not allowed to have +load methods&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        realizeClassWithoutSwift(cls);</span><br><span class="line">        assert(cls-&gt;ISA()-&gt;isRealized());</span><br><span class="line">        add_category_to_loadable_list(cat);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>找到类的列表：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">classref_t</span> *classlist = </span><br><span class="line">        _getObjc2NonlazyClassList(mhdr, &amp;count);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>准备load 方法，把类添加到可load 列表，将类标记为可执行</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">schedule_class_load</span><span class="params">(Class cls)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!cls) <span class="keyword">return</span>;</span><br><span class="line">    assert(cls-&gt;isRealized());  <span class="comment">// _read_images should realize</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (cls-&gt;data()-&gt;flags &amp; RW_LOADED) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Ensure superclass-first ordering</span></span><br><span class="line">    schedule_class_load(cls-&gt;superclass);</span><br><span class="line"></span><br><span class="line">    add_class_to_loadable_list(cls);</span><br><span class="line">    cls-&gt;setInfo(RW_LOADED); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把类添加到可加载列表的实现</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">add_class_to_loadable_list</span><span class="params">(Class cls)</span></span><br><span class="line">&#123;</span><br><span class="line">    IMP method;</span><br><span class="line"></span><br><span class="line">    loadMethodLock.assertLocked();</span><br><span class="line"></span><br><span class="line">    method = cls-&gt;getLoadMethod();</span><br><span class="line">    <span class="keyword">if</span> (!method) <span class="keyword">return</span>;  <span class="comment">// Don&#x27;t bother if cls has no +load method</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (PrintLoading) &#123;</span><br><span class="line">        _objc_inform(<span class="string">&quot;LOAD: class &#x27;%s&#x27; scheduled for +load&quot;</span>, </span><br><span class="line">                     cls-&gt;nameForLogging());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (loadable_classes_used == loadable_classes_allocated) &#123;</span><br><span class="line">        loadable_classes_allocated = loadable_classes_allocated*<span class="number">2</span> + <span class="number">16</span>;</span><br><span class="line">        loadable_classes = (<span class="keyword">struct</span> loadable_class *)</span><br><span class="line">            <span class="built_in">realloc</span>(loadable_classes,</span><br><span class="line">                              loadable_classes_allocated *</span><br><span class="line">                              <span class="keyword">sizeof</span>(<span class="keyword">struct</span> loadable_class));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    loadable_classes[loadable_classes_used].cls = cls;</span><br><span class="line">    loadable_classes[loadable_classes_used].method = method;</span><br><span class="line">    loadable_classes_used++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把分类添加到可加载列表</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">add_category_to_loadable_list</span><span class="params">(Category cat)</span></span><br><span class="line">&#123;</span><br><span class="line">    IMP method;</span><br><span class="line"></span><br><span class="line">    loadMethodLock.assertLocked();</span><br><span class="line"></span><br><span class="line">    method = _category_getLoadMethod(cat);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Don&#x27;t bother if cat has no +load method</span></span><br><span class="line">    <span class="keyword">if</span> (!method) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (PrintLoading) &#123;</span><br><span class="line">        _objc_inform(<span class="string">&quot;LOAD: category &#x27;%s(%s)&#x27; scheduled for +load&quot;</span>, </span><br><span class="line">                     _category_getClassName(cat), _category_getName(cat));</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (loadable_categories_used == loadable_categories_allocated) &#123;</span><br><span class="line">        loadable_categories_allocated = loadable_categories_allocated*<span class="number">2</span> + <span class="number">16</span>;</span><br><span class="line">        loadable_categories = (<span class="keyword">struct</span> loadable_category *)</span><br><span class="line">            <span class="built_in">realloc</span>(loadable_categories,</span><br><span class="line">                              loadable_categories_allocated *</span><br><span class="line">                              <span class="keyword">sizeof</span>(<span class="keyword">struct</span> loadable_category));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    loadable_categories[loadable_categories_used].cat = cat;</span><br><span class="line">    loadable_categories[loadable_categories_used].method = method;</span><br><span class="line">    loadable_categories_used++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">Class cls = remapClass(cat-&gt;cls);</span><br></pre></td></tr></table></figure>
+
+<p>这行代码，重映射了分类的类，即帮分类把懒加载的类进行了实现，否则分类无法找到可以依附的主类。</p>
+</li>
+</ul>
+<h3 id="1-2-调用-load-方法"><a href="#1-2-调用-load-方法" class="headerlink" title="1.2 调用 load 方法"></a>1.2 调用 load 方法</h3><p>源码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="comment">// 1. Repeatedly call class +loads until there aren&#x27;t any more</span></span><br><span class="line">        <span class="keyword">while</span> (loadable_classes_used &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            call_class_loads();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 2. Call category +loads ONCE</span></span><br><span class="line">        more_categories = call_category_loads();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 3. Run more +loads if there are classes OR more untried categories</span></span><br><span class="line">    &#125; <span class="keyword">while</span> (loadable_classes_used &gt; <span class="number">0</span>  ||  more_categories);</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-1-调用类的load-方法"><a href="#1-2-1-调用类的load-方法" class="headerlink" title="1.2.1 调用类的load 方法"></a>1.2.1 调用类的load 方法</h4><ol>
+<li>列举可加载的类</li>
+<li>循环找到类的对应load 方法的method 函数</li>
+<li>向类发送该method 函数，完成调用</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">call_class_loads</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> i;</span><br><span class="line">    </span><br><span class="line">  	<span class="comment">//(1)</span></span><br><span class="line">    <span class="comment">// Detach current loadable list.</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">loadable_class</span> *<span class="title">classes</span> =</span> loadable_classes;</span><br><span class="line">    <span class="type">int</span> used = loadable_classes_used;</span><br><span class="line">    loadable_classes = nil;</span><br><span class="line">    loadable_classes_allocated = <span class="number">0</span>;</span><br><span class="line">    loadable_classes_used = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">  	</span><br><span class="line">    <span class="comment">// Call all +loads for the detached list.</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; used; i++) &#123;</span><br><span class="line">        Class cls = classes[i].cls;</span><br><span class="line">      	<span class="comment">//(2)</span></span><br><span class="line">        <span class="type">load_method_t</span> load_method = (<span class="type">load_method_t</span>)classes[i].method;</span><br><span class="line">        <span class="keyword">if</span> (!cls) <span class="keyword">continue</span>; </span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (PrintLoading) &#123;</span><br><span class="line">            _objc_inform(<span class="string">&quot;LOAD: +[%s load]\n&quot;</span>, cls-&gt;nameForLogging());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//(3)</span></span><br><span class="line">        (*load_method)(cls, SEL_load);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Destroy the detached list.</span></span><br><span class="line">    <span class="keyword">if</span> (classes) <span class="built_in">free</span>(classes);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-2-调用分类的load-方法"><a href="#1-2-2-调用分类的load-方法" class="headerlink" title="1.2.2 调用分类的load 方法"></a>1.2.2 调用分类的load 方法</h4><ol>
+<li><p>列举可加载的分类</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Detach current loadable list.</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">loadable_category</span> *<span class="title">cats</span> =</span> loadable_categories;</span><br><span class="line"><span class="type">int</span> used = loadable_categories_used;</span><br><span class="line"><span class="type">int</span> allocated = loadable_categories_allocated;</span><br><span class="line">loadable_categories = nil;</span><br><span class="line">loadable_categories_allocated = <span class="number">0</span>;</span><br><span class="line">loadable_categories_used = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>循环找到分类的对应load 方法的method 函数</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Call all +loads for the detached list.</span></span><br><span class="line"><span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; used; i++) &#123;</span><br><span class="line">    Category cat = cats[i].cat;</span><br><span class="line">    <span class="type">load_method_t</span> load_method = (<span class="type">load_method_t</span>)cats[i].method;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>向分类发送该method 函数，完成调用</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">(*load_method)(cls, SEL_load);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>释放可执行分类列表，保证程序启动<strong>只调用一次</strong>该加载。</p>
+<p>这里通过一个叫做<code>loadable_categories_used</code> 和<code>used</code> 的标识，来决定是否加载，并进行摧毁。</p>
+<p>把使用过的</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> used = loadable_categories_used;</span><br><span class="line"><span class="comment">/****/</span></span><br><span class="line">    shift = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; used; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (cats[i].cat) &#123;</span><br><span class="line">            cats[i-shift] = cats[i];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            shift++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    used -= shift;</span><br><span class="line">      </span><br><span class="line">    <span class="comment">// Destroy the new list.</span></span><br><span class="line">    <span class="keyword">if</span> (loadable_categories) <span class="built_in">free</span>(loadable_categories);</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="二、类的扩展-extension"><a href="#二、类的扩展-extension" class="headerlink" title="二、类的扩展-extension"></a>二、类的扩展-extension</h2><p>扩展的特性如下</p>
+<ul>
+<li>作为匿名的分类</li>
+<li>可以添加属性和方法</li>
+<li>生成时间：编译时作为类的一部分（ro）一起被编译</li>
+<li>如果有与主类同名扩展方法，会先执行扩展方法，因为attachList 内存前插，所以造成覆盖原方法的假象。</li>
+</ul>
+<h2 id="三、runtime-关联对象"><a href="#三、runtime-关联对象" class="headerlink" title="三、runtime 关联对象"></a>三、runtime 关联对象</h2><h3 id="3-1-介绍"><a href="#3-1-介绍" class="headerlink" title="3.1 介绍"></a>3.1 介绍</h3><h4 id="3-1-1-概念"><a href="#3-1-1-概念" class="headerlink" title="3.1.1 概念"></a>3.1.1 概念</h4><blockquote>
+<p>associatedObject又称关联对象。顾名思义，就是把一个对象关联到另外一个对象身上。</p>
+</blockquote>
+<h4 id="3-1-2-应用场景"><a href="#3-1-2-应用场景" class="headerlink" title="3.1.2 应用场景"></a>3.1.2 应用场景</h4><ul>
+<li><p>为分类添加属性时，用到添加setter和getter方法，在实现里需要将类与属性关联</p>
+</li>
+<li><p>给某个类添加一个临时的属性</p>
+</li>
+</ul>
+<h3 id="3-2-关联对象的使用"><a href="#3-2-关联对象的使用" class="headerlink" title="3.2 关联对象的使用"></a>3.2 关联对象的使用</h3><ol>
+<li><p>添加关联。</p>
+<p>主要用到<code>void objc_setAssociatedObject</code>  函数，</p>
+<p>源码的实现是：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">objc_setAssociatedObject</span><span class="params">(id object, </span></span><br><span class="line"><span class="params">                              <span class="type">const</span> <span class="type">void</span> *key, </span></span><br><span class="line"><span class="params">                              id value, </span></span><br><span class="line"><span class="params">                              objc_AssociationPolicy policy)</span> &#123;</span><br><span class="line">    _object_set_associative_reference(object, (<span class="type">void</span> *)key, value, policy);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>参数一：id object : 给哪个对象添加属性，这里要给自己添加属性，用self。</p>
+</li>
+<li><p>参数二：void * &#x3D;&#x3D; id key : 属性名，根据key获取关联对象的属性的值，在objc_getAssociatedObject中通过次key获得属性的值并返回。</p>
+</li>
+<li><p>参数三：id value : 关联的值，也就是set方法传入的值给属性去保存。</p>
+</li>
+<li><p>参数四：objc_AssociationPolicy policy : 策略，属性以什么形式保存。</p>
+<p><img src="/p/6283d578/001.png" alt="关联策略"></p>
+</li>
+</ul>
+<p>业务上，比如给当前的类把cate_name 作为属性绑定，业务代码如下</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">-(<span class="type">void</span>)setCate_name:(NSString *)cate_name&#123;</span><br><span class="line"></span><br><span class="line">    objc_setAssociatedObject(self, @<span class="string">&quot;name&quot;</span>,cate_name, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取关联属性</p>
+<p>主要函数为：<code>objc_getAssociatedObject</code>方法</p>
+<p>查看源码的实现是：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">id <span class="title function_">objc_getAssociatedObject</span><span class="params">(id object, <span class="type">const</span> <span class="type">void</span> *key)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> _object_get_associative_reference(object, (<span class="type">void</span> *)key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里两个参数：</p>
+<p> 参数一：id object : 获取哪个对象里面的关联的属性。</p>
+<p> 参数二：void * &#x3D;&#x3D; id key : 什么属性，与objc_setAssociatedObject中的key相对应，即通过key值取出value。</p>
+<p><strong>业务实现</strong>：去除当前类中 name属性，作为cate_name 返回</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">-(NSString *)cate_name&#123;</span><br><span class="line">    <span class="keyword">return</span> objc_getAssociatedObject(self, @<span class="string">&quot;name&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="3-1-关联对象关联原理"><a href="#3-1-关联对象关联原理" class="headerlink" title="3.1 关联对象关联原理"></a>3.1 关联对象关联原理</h3><ul>
+<li>程序运行时创建一个大大Hash 表</li>
+<li>通过manager 进入迭代器对每个类表查找</li>
+<li>如果找到，对新添加的属性进行绑定</li>
+<li>如果找不到，创建一个，进行绑定存储</li>
+</ul>
+<ol>
+<li><p>通过manager 管理</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 关联对象的管理类</span></span><br><span class="line">        AssociationsManager manager;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取关联的 HashMap -&gt; 存储当前关联对象</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">AssociationsHashMap &amp;<span class="title function_">associations</span><span class="params">(manager.associations())</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取 AssociationsHashMap 的迭代器 - (对象的) 进行遍历</p>
+</li>
+</ol>
+   <figure class="highlight c"><table><tr><td class="code"><pre><span class="line">AssociationsHashMap::iterator i = associations.find(disguised_object);</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><p>根据key去获取关联属性的迭代器</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 根据key去获取关联属性的迭代器</span></span><br><span class="line">                ObjectAssociationMap::iterator j = refs-&gt;find(key);</span><br><span class="line">                <span class="keyword">if</span> (j != refs-&gt;end()) &#123;</span><br><span class="line">                    old_association = j-&gt;second;</span><br><span class="line">                    <span class="comment">// 替换设置新值</span></span><br><span class="line">                    j-&gt;second = ObjcAssociation(policy, new_value);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">// 到最后了 - 直接设置新值</span></span><br><span class="line">                    (*refs)[key] = ObjcAssociation(policy, new_value);</span><br><span class="line">                &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>没有对象的关联信息情况。创建map，通过key-value 存入</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (new_value) &#123;</span><br><span class="line">  <span class="comment">/** 存在该对象，查找遍历，略过*/</span> </span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">  ObjectAssociationMap *refs = new ObjectAssociationMap;</span><br><span class="line">                associations[disguised_object] = refs;</span><br><span class="line">                (*refs)[key] = ObjcAssociation(policy, new_value);</span><br><span class="line">                object-&gt;setHasAssociatedObjects();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="3-2-关联对象查找原理"><a href="#3-2-关联对象查找原理" class="headerlink" title="3.2 关联对象查找原理"></a>3.2 关联对象查找原理</h3><p>主要有以下几个步骤：</p>
+<ol>
+<li><p>生成关联对象的管理类</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">AssociationsManager manager;</span><br><span class="line">AssociationsHashMap &amp;<span class="title function_">associations</span><span class="params">(manager.associations())</span>;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>生成伪装地址。处理参数 object 地址</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">disguised_ptr_t</span> disguised_object = DISGUISE(object);</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>生成Hash表中所有对象的额迭代器</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">AssociationsHashMap::iterator i = associations.find(disguised_object);</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>对象内部继续生称迭代器，准备迭代属性</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (i != associations.end()) &#123;</span><br><span class="line">            ObjectAssociationMap *refs = i-&gt;second;</span><br><span class="line">            <span class="comment">// 内部对象的迭代器</span></span><br><span class="line">            ObjectAssociationMap::iterator j = refs-&gt;find(key);</span><br><span class="line">            </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>查找——找到 - 把值和策略读取出来</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 内部对象的迭代器</span></span><br><span class="line">            ObjectAssociationMap::iterator j = refs-&gt;find(key);</span><br><span class="line">            <span class="keyword">if</span> (j != refs-&gt;end()) &#123;</span><br><span class="line">                <span class="comment">// 找到 - 把值和策略读取出来</span></span><br><span class="line">                ObjcAssociation &amp;entry = j-&gt;second;</span><br><span class="line">                value = entry.value();</span><br><span class="line">                policy = entry.policy();</span><br><span class="line">                <span class="comment">// OBJC_ASSOCIATION_GETTER_RETAIN - 就会持有一下</span></span><br><span class="line">                <span class="keyword">if</span> (policy &amp; OBJC_ASSOCIATION_GETTER_RETAIN) &#123;</span><br><span class="line">                    objc_retain(value);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>如果找到，就进行持有</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (policy &amp; OBJC_ASSOCIATION_GETTER_RETAIN) &#123;</span><br><span class="line">                       objc_retain(value);</span><br><span class="line">                   &#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ol>
+<p>完整的查找过程的源码如下:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">id _object_get_associative_reference(id object, <span class="type">void</span> *key) &#123;</span><br><span class="line">    id value = nil;</span><br><span class="line">    <span class="type">uintptr_t</span> policy = OBJC_ASSOCIATION_ASSIGN;</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 关联对象的管理类</span></span><br><span class="line">        AssociationsManager manager;</span><br><span class="line">        AssociationsHashMap &amp;<span class="title function_">associations</span><span class="params">(manager.associations())</span>;</span><br><span class="line">        <span class="comment">// 生成伪装地址。处理参数 object 地址</span></span><br><span class="line">        <span class="type">disguised_ptr_t</span> disguised_object = DISGUISE(object);</span><br><span class="line">        <span class="comment">// 所有对象的额迭代器</span></span><br><span class="line">        AssociationsHashMap::iterator i = associations.find(disguised_object);</span><br><span class="line">        <span class="keyword">if</span> (i != associations.end()) &#123;</span><br><span class="line">            ObjectAssociationMap *refs = i-&gt;second;</span><br><span class="line">            <span class="comment">// 内部对象的迭代器</span></span><br><span class="line">            ObjectAssociationMap::iterator j = refs-&gt;find(key);</span><br><span class="line">            <span class="keyword">if</span> (j != refs-&gt;end()) &#123;</span><br><span class="line">                <span class="comment">// 找到 - 把值和策略读取出来</span></span><br><span class="line">                ObjcAssociation &amp;entry = j-&gt;second;</span><br><span class="line">                value = entry.value();</span><br><span class="line">                policy = entry.policy();</span><br><span class="line">                <span class="comment">// OBJC_ASSOCIATION_GETTER_RETAIN - 就会持有一下</span></span><br><span class="line">                <span class="keyword">if</span> (policy &amp; OBJC_ASSOCIATION_GETTER_RETAIN) &#123;</span><br><span class="line">                    objc_retain(value);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (value &amp;&amp; (policy &amp; OBJC_ASSOCIATION_GETTER_AUTORELEASE)) &#123;</span><br><span class="line">        objc_autorelease(value);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-实战"><a href="#3-3-实战" class="headerlink" title="3.3 实战"></a>3.3 实战</h3><h4 id="3-3-1-目标"><a href="#3-3-1-目标" class="headerlink" title="3.3.1 目标"></a>3.3.1 目标</h4><p>给<code>UIAlertController</code> 添加一个block 回调</p>
+<h4 id="3-3-2-添加前"><a href="#3-3-2-添加前" class="headerlink" title="3.3.2 添加前"></a>3.3.2 添加前</h4><p>添加钱，每个UIAlertAction 处理自己的逻辑，如果逻辑较多，业务分离开，不方便阅读。</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> *SIGNALERTCONTROLLER = <span class="string">&quot;SIGNALERTCONTROLLER&quot;</span>;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)askUserAQuestion &#123;</span><br><span class="line">    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@<span class="string">&quot;hai&quot;</span> message:@<span class="string">&quot;hey&quot;</span> preferredStyle:UIAlertControllerStyleAlert];</span><br><span class="line">    UIAlertAction *aa = [UIAlertAction actionWithTitle:@<span class="string">&quot;aaa&quot;</span> style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">        [self doFirst];</span><br><span class="line">    &#125;] ;</span><br><span class="line">    UIAlertAction *bb = [UIAlertAction actionWithTitle:@<span class="string">&quot;bb&quot;</span> style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">        [self doSecond];</span><br><span class="line"></span><br><span class="line">    &#125;] ;</span><br><span class="line">    UIAlertAction *cc = [UIAlertAction actionWithTitle:@<span class="string">&quot;cc&quot;</span> style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">        NSLog(@<span class="string">&quot;cancel&quot;</span>);</span><br><span class="line">    &#125;] ;</span><br><span class="line">    [ac addAction:aa];</span><br><span class="line">    [ac addAction:bb];</span><br><span class="line">    [ac addAction:cc];</span><br><span class="line">    [self presentViewController:ac animated:YES completion:^&#123;&#125;];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="3-3-3-添加后"><a href="#3-3-3-添加后" class="headerlink" title="3.3.3 添加后"></a>3.3.3 添加后</h4><p>统一在block 中处理业务，逻辑更集中</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> *SIGNALERTCONTROLLER = <span class="string">&quot;SIGNALERTCONTROLLER&quot;</span>;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)askUserAQuestion &#123;</span><br><span class="line">    UIAlertController *ac = [UIAlertController alertControllerWithTitle:@<span class="string">&quot;hai&quot;</span> message:@<span class="string">&quot;hey&quot;</span> preferredStyle:UIAlertControllerStyleAlert];</span><br><span class="line">    UIAlertAction *aa = [UIAlertAction actionWithTitle:@<span class="string">&quot;aaa&quot;</span> style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">        <span class="type">void</span> (^block) (NSInteger) = objc_getAssociatedObject(ac, SIGNALERTCONTROLLER );</span><br><span class="line">        block(<span class="number">0</span>);</span><br><span class="line">    &#125;] ;</span><br><span class="line">    UIAlertAction *bb = [UIAlertAction actionWithTitle:@<span class="string">&quot;bb&quot;</span> style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">        <span class="type">void</span> (^block) (NSInteger) = objc_getAssociatedObject(ac, SIGNALERTCONTROLLER );</span><br><span class="line">        block(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    &#125;] ;</span><br><span class="line">    UIAlertAction *cc = [UIAlertAction actionWithTitle:@<span class="string">&quot;cc&quot;</span> style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) &#123;</span><br><span class="line">        <span class="type">void</span> (^block) (NSInteger) = objc_getAssociatedObject(ac, SIGNALERTCONTROLLER );</span><br><span class="line">        block(<span class="number">2</span>);</span><br><span class="line">    &#125;] ;</span><br><span class="line">    [ac addAction:aa];</span><br><span class="line">    [ac addAction:bb];</span><br><span class="line">    [ac addAction:cc];</span><br><span class="line">    <span class="type">void</span> (^block)(NSInteger) = ^(NSInteger index)&#123;</span><br><span class="line">        NSLog(@<span class="string">&quot;index---&gt;   %ld&quot;</span>, (<span class="type">long</span>)index);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (index == <span class="number">0</span>) &#123;</span><br><span class="line">            [self doFirst];</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span> (index == <span class="number">1</span>)&#123;</span><br><span class="line">            [self doSecond];</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            NSLog(@<span class="string">&quot;cancel&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    objc_setAssociatedObject(ac,</span><br><span class="line">                             SIGNALERTCONTROLLER,</span><br><span class="line">                             block,</span><br><span class="line">                             OBJC_ASSOCIATION_COPY);</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    [self presentViewController:ac animated:YES completion:^&#123;&#125;];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)doFirst&#123;&#125;</span><br><span class="line">- (<span class="type">void</span>)doSecond&#123;&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="四、initialize-的调用"><a href="#四、initialize-的调用" class="headerlink" title="四、initialize 的调用"></a>四、initialize 的调用</h2><p>调用步骤如下</p>
+<ul>
+<li><p>lookUpImpOrForward</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (initialize &amp;&amp; !cls-&gt;isInitialized()) &#123;</span><br><span class="line">    cls = initializeAndLeaveLocked(cls, inst, runtimeLock);</span><br><span class="line">    <span class="comment">// runtimeLock may have been dropped but is now locked again</span></span><br><span class="line">  </span><br><span class="line">    <span class="comment">// If sel == initialize, class_initialize will send +initialize and </span></span><br><span class="line">    <span class="comment">// then the messenger will send +initialize again after this </span></span><br><span class="line">    <span class="comment">// procedure finishes. Of course, if this is not being called </span></span><br><span class="line">    <span class="comment">// from the messenger then it won&#x27;t happen. 2778172</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>initializeAndLeaveLocked</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Locking: caller must hold runtimeLock; this may drop and re-acquire it</span></span><br><span class="line"><span class="type">static</span> Class <span class="title function_">initializeAndLeaveLocked</span><span class="params">(Class cls, id obj, <span class="type">mutex_t</span>&amp; lock)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> initializeAndMaybeRelock(cls, obj, lock, <span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>initializeAndMaybeRelock</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">// runtimeLock is now unlocked, for +initialize dispatch</span></span><br><span class="line">assert(nonmeta-&gt;isRealized());</span><br><span class="line">initializeNonMetaClass(nonmeta);</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>initializeNonMetaClass</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    callInitialize(cls);</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">if</span> (PrintInitializing) &#123;</span><br><span class="line">        _objc_inform(<span class="string">&quot;INITIALIZE: thread %p: finished +[%s initialize]&quot;</span>,</span><br><span class="line">                     pthread_self(), cls-&gt;nameForLogging());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>callInitialize(cls);</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">callInitialize</span><span class="params">(Class cls)</span></span><br><span class="line">&#123;</span><br><span class="line">    ((<span class="type">void</span>(*)(Class, SEL))objc_msgSend)(cls, SEL_initialize);</span><br><span class="line">    <span class="keyword">asm</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="五、面试题-load-与initialize-的区别"><a href="#五、面试题-load-与initialize-的区别" class="headerlink" title="五、面试题 load 与initialize 的区别"></a>五、面试题 load 与initialize 的区别</h2><h4 id="5-1-调用方式："><a href="#5-1-调用方式：" class="headerlink" title="5.1 调用方式："></a>5.1 调用方式：</h4><ul>
+<li>load 根据函数地址调用</li>
+<li>initialize 通过objc_msgSend 调用</li>
+</ul>
+<h4 id="5-2-调用时刻"><a href="#5-2-调用时刻" class="headerlink" title="5.2 调用时刻"></a>5.2 调用时刻</h4><ul>
+<li>load 属于runtime 加载类、分类的时候，只会调用一次</li>
+<li>initialize 方法上类第一次收到消息时，每个类调用一次，而父类的initialize 可能会调用多次</li>
+</ul>
+<h4 id="5-3-调用顺序："><a href="#5-3-调用顺序：" class="headerlink" title="5.3 调用顺序："></a>5.3 调用顺序：</h4><ul>
+<li>load：<ul>
+<li>先编译那个类就先调用它的load，父类的load 方法优先。</li>
+<li>分类中也是先主类执行，后分类执行</li>
+</ul>
+</li>
+<li>initialize：和普通方法一样，因为执行的是objc_msgSend 。<ul>
+<li>先执行子类的initialize，如果没有，执行父类的。</li>
+<li>分类部分，如果分类有，执行分类，不执行主类的</li>
+</ul>
+</li>
+</ul>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/6283d578.html">http://nilsli.com/p/6283d578.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E7%B1%BB/">
+                                    <span class="chip bg-color">类</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%8A%A0%E8%BD%BD/">
+                                    <span class="chip bg-color">加载</span>
+                                </a>
+                            
+                                <a href="/tags/load/">
+                                    <span class="chip bg-color">load</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-04-01T12-58-01',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/43366.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/16.jpg" class="responsive-img" alt="【数据结构与算法】-（2）线性表基础">
+                        
+                        <span class="card-title">【数据结构与算法】-（2）线性表基础</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+ 【数据结构与算法】-（1）基础篇
+ 【数据结构与算法】-（2）线性表基础
+ 【数据结构与算法】-（3）循环链表（单向）
+ 【数据结构与算法】-（4）双向链表和双向循环链表
+ 【数据结构与算法】-（5）链表面试题解析
+ 【数据结构与算法】
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-01
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BA%BF%E6%80%A7%E8%A1%A8/">
+                        <span class="chip bg-color">线性表</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                    <a href="/tags/iOS/">
+                        <span class="chip bg-color">iOS</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%90%86%E8%AE%BA/">
+                        <span class="chip bg-color">理论</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%9F%BA%E7%A1%80/">
+                        <span class="chip bg-color">基础</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/43384.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/10.jpg" class="responsive-img" alt="【数据结构与算法】-（1）基础篇">
+                        
+                        <span class="card-title">【数据结构与算法】-（1）基础篇</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            算法是解决特定问题对求解步骤的描述，在计算机中表现为指令的有限序列，并且每条指令表示一个或多个操作。
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-03-31
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                    <a href="/tags/iOS/">
+                        <span class="chip bg-color">iOS</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%90%86%E8%AE%BA/">
+                        <span class="chip bg-color">理论</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%9F%BA%E7%A1%80/">
+                        <span class="chip bg-color">基础</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

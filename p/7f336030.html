@@ -1,0 +1,1428 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="离屏渲染-超详细解析, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>离屏渲染-超详细解析 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/2.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">离屏渲染-超详细解析</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E7%A6%BB%E5%B1%8F%E6%B8%B2%E6%9F%93/">
+                                <span class="chip bg-color">离屏渲染</span>
+                            </a>
+                        
+                            <a href="/tags/offscreen/">
+                                <span class="chip bg-color">offscreen</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-07-07
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    4k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    15 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="〇、序章"><a href="#〇、序章" class="headerlink" title="〇、序章"></a>〇、序章</h2><p>作为一个面试中经常出现的话题，离屏渲染（Offscreen rendering）恐怕是极高频率提起的——最熟悉的陌生人，我们多少知道一点，也了解到由于它的出现，会带来的屏幕刷新卡顿，滑动式不跟手等体验，但是又不是知道的那么透彻。在这篇文章里，我将比较详细的讲解一下其概念、发生的场景，以及解决方案。</p>
+<h3 id="0-1-概念"><a href="#0-1-概念" class="headerlink" title="0.1 概念"></a>0.1 概念</h3><blockquote>
+<p>离屏渲染，就是计算机在帧缓冲区外另外开辟一个区域，用来存储多个复杂涂层的组合绘制结果的过程。</p>
+</blockquote>
+<p>说到离屏渲染的概念，先得了解计算机屏幕刷新原理，以及与之对应的屏内渲染。</p>
+<h4 id="①-屏内渲染（Inscreen-Rendering）："><a href="#①-屏内渲染（Inscreen-Rendering）：" class="headerlink" title="① 屏内渲染（Inscreen Rendering）："></a>① 屏内渲染（Inscreen Rendering）：</h4><p>CPU和GPU 可以在其自有的帧缓冲区（Frame Buffer Zone）内进行图像绘制，无需额外开辟空间，待绘制完成后将绘制结果直接进行渲染</p>
+<h4 id="②-离屏渲染（Offscreen-Rendering）："><a href="#②-离屏渲染（Offscreen-Rendering）：" class="headerlink" title="② 离屏渲染（Offscreen Rendering）："></a>② 离屏渲染（Offscreen Rendering）：</h4><p>CPU与GPU 在渲染图像之前，由于工作任务的繁重，需要在当前GPU 的双帧缓冲区之外，额外开辟一个缓冲区用来绘制图像，这个缓冲区被称为离屏缓冲区（Offscreen Buffer zone），待绘制结束之后，系统将缓冲区绘制的结果渲染到帧缓冲区，进行图像展示。</p>
+<h2 id="一、CPU-与-GPU"><a href="#一、CPU-与-GPU" class="headerlink" title="一、CPU 与 GPU"></a>一、CPU 与 GPU</h2><h3 id="1-1-名词解释"><a href="#1-1-名词解释" class="headerlink" title="1.1 名词解释"></a>1.1 名词解释</h3><blockquote>
+<p><strong>CPU</strong>(<strong>C</strong>entral <strong>P</strong>rocessing <strong>U</strong>nit): 是计算机的主要设备之一，功能主要是解释计算机指令以及处理计算机软件中的数据。</p>
+<p><strong>GPU</strong>（<strong>G</strong>raphics <strong>P</strong>rocessing <strong>U</strong>nit）：又称为显示核心、视觉处理器、显示芯片，是一种专门在个人电脑、工作站、游戏机和一些移动设备上运行绘图运算工作的微处理器。</p>
+</blockquote>
+<h3 id="1-2-组织架构："><a href="#1-2-组织架构：" class="headerlink" title="1.2 组织架构："></a>1.2 组织架构：</h3><h4 id="1-2-1-CPU-组织架构"><a href="#1-2-1-CPU-组织架构" class="headerlink" title="1.2.1 CPU 组织架构"></a>1.2.1 CPU 组织架构</h4><p>CPU 主要有以下组织：</p>
+<ul>
+<li>Control：控制器</li>
+<li>ALU： 算术逻辑单元</li>
+<li>CACHE：缓存区</li>
+<li>DRAM：动态随机存储器</li>
+</ul>
+<p>示意图如下：</p>
+<p><img src="/p/7f336030/0.gif" alt="CPU 输入输出逻辑结构"></p>
+<p><img src="/p/7f336030/6.png" alt="CPU 的组织架构"></p>
+<h4 id="1-2-2-GPU组织架构"><a href="#1-2-2-GPU组织架构" class="headerlink" title="1.2.2 GPU组织架构"></a>1.2.2 GPU组织架构</h4><p>GPU有如下组织构成：</p>
+<ol>
+<li><strong>BIF</strong>（Bus Interface）：总线接口</li>
+<li><strong>PMU</strong>（Power Management Unit）: 电源管理单元</li>
+<li><strong>VPU</strong>（Video Processing Unit）：视频处理单元</li>
+<li><strong>DIF</strong>（Display Interface）：显示接口</li>
+<li><strong>GMC</strong>（Graphic Memory Controller）：图像内存控制器</li>
+<li><strong>GCA</strong>（Graphic and Compute Array）：图形和计算数组</li>
+</ol>
+<p>如下：</p>
+<p><img src="/p/7f336030/5.png" alt="GPU 组织架构"></p>
+<h3 id="1-3-特点"><a href="#1-3-特点" class="headerlink" title="1.3 特点"></a>1.3 特点</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>身份与作用</th>
+<th>特点</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CPU</td>
+<td>运算核心&#x2F;控制</td>
+<td>逻辑复杂，处理数据</td>
+<td>依赖性非常高，假并发</td>
+</tr>
+<tr>
+<td>GPU</td>
+<td>绘图运算的微处理器</td>
+<td>逻辑简单，绘制图形</td>
+<td>依赖性低，多核真正并发</td>
+</tr>
+</tbody></table>
+<h2 id="二、计算机渲染原理"><a href="#二、计算机渲染原理" class="headerlink" title="二、计算机渲染原理"></a>二、计算机渲染原理</h2><h3 id="2-1-计算机扫描方式"><a href="#2-1-计算机扫描方式" class="headerlink" title="2.1 计算机扫描方式"></a>2.1 计算机扫描方式</h3><h4 id="2-1-1-随机扫描显示"><a href="#2-1-1-随机扫描显示" class="headerlink" title="2.1.1 随机扫描显示"></a>2.1.1 随机扫描显示</h4><p>随机扫描显示，常见于老的CRT 显示器，通过固定的线段来画出图形的线段，流程是从屏幕中的一个点移动到下一个点。在画完图后，系统会循环回到第一行，重复绘制下一个图形。</p>
+<p>该过程如图所示：<br><img src="http://www.srcmini.com/wp-content/uploads/2020/03/random-scan-display.png"></p>
+<p><strong>优点如下：</strong></p>
+<ul>
+<li>电子束仅仅指向绘制图形的部分区域屏幕</li>
+<li>产生的线条是平滑的</li>
+<li>分辨率较高</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<p>无法绘制较为复杂的阴影场景</p>
+<h4 id="2-1-2-光栅扫描显示"><a href="#2-1-2-光栅扫描显示" class="headerlink" title="2.1.2 光栅扫描显示"></a>2.1.2 光栅扫描显示</h4><p><img src="/p/7f336030/41.png"></p>
+<h5 id="2-1-2-1-概念"><a href="#2-1-2-1-概念" class="headerlink" title="2.1.2.1 概念"></a>2.1.2.1 概念</h5><p>光栅扫描效果如下图所示，它是由电极发射电子束从上到下，从左到右依次扫描，形成图形。</p>
+<h5 id="2-1-2-2-特点"><a href="#2-1-2-2-特点" class="headerlink" title="2.1.2.2 特点"></a>2.1.2.2 特点</h5><ul>
+<li><p>左上角开始横向扫描</p>
+</li>
+<li><p>依次纵向扫描</p>
+</li>
+<li><p>由像素阵列组成</p>
+</li>
+<li><p>显示整个光栅所需的时间</p>
+</li>
+<li><p>扫描只与屏幕像素油管，而和图像<strong>无关</strong></p>
+</li>
+<li><p>扫描会产生视觉暂留</p>
+<ul>
+<li>16帧-保证连贯</li>
+</ul>
+</li>
+</ul>
+<h5 id="2-1-2-3-优点如下："><a href="#2-1-2-3-优点如下：" class="headerlink" title="2.1.2.3 优点如下："></a>2.1.2.3 优点如下：</h5><ol>
+<li>逼真的形象</li>
+<li>数百万种将生成的颜色</li>
+<li>阴影场景是可能的。</li>
+</ol>
+<h5 id="2-1-2-4-缺点如下："><a href="#2-1-2-4-缺点如下：" class="headerlink" title="2.1.2.4 缺点如下："></a>2.1.2.4 缺点如下：</h5><ol>
+<li>低解析度</li>
+<li>昂贵</li>
+</ol>
+<h4 id="2-1-3-光栅扫描结构"><a href="#2-1-3-光栅扫描结构" class="headerlink" title="2.1.3 光栅扫描结构"></a>2.1.3 光栅扫描结构</h4><ul>
+<li><p>显示器</p>
+</li>
+<li><p>视频控制器 - </p>
+<ul>
+<li>负责控制刷新 - 管理帧缓冲区与缓冲器</li>
+<li>负责将帧缓冲区的内容绘制到显示器</li>
+</ul>
+</li>
+<li><p>帧缓冲区</p>
+<ul>
+<li>由阵列组成</li>
+<li>存储颜色值（黑白值）</li>
+<li>又名：显存</li>
+<li>连续的计算机存储空间，存储即将显示的渲染数据</li>
+<li>计算：大小 60 * 60 的图片 &#x3D; 60 * 60 * 4 （RGBA） &#x3D; 14400bit</li>
+</ul>
+</li>
+<li><p>简单光栅扫描显示系统结构</p>
+<ul>
+<li>系统总线<ul>
+<li>CPU</li>
+<li>系统内存</li>
+<li>显示处理器  <ul>
+<li>显示处理器存储区</li>
+<li>帧缓冲区</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>显示控制器</li>
+<li>显示器</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-计算机渲染流程"><a href="#2-2-计算机渲染流程" class="headerlink" title="2.2 计算机渲染流程"></a>2.2 计算机渲染流程</h3><p><img src="/p/7f336030/31.png" alt="计算机渲染流程"></p>
+<h2 id="三、iOS-环境下渲染原理"><a href="#三、iOS-环境下渲染原理" class="headerlink" title="三、iOS 环境下渲染原理"></a>三、iOS 环境下渲染原理</h2><h3 id="3-1-渲染流程"><a href="#3-1-渲染流程" class="headerlink" title="3.1 渲染流程"></a>3.1 渲染流程</h3><p>iOS 下的流程如下图所示，总结为一下几个步骤：</p>
+<ol>
+<li>App 配置图形代码。如生成一个 UIImageView 或 CoreAnimation动画的生成</li>
+<li>iOS 框架代码的调用。通常有CoreGraphics、CoreAnimation和CoreImage。</li>
+<li>系统底层引擎的调用与图形绘制计算。这部分工作交由OpenGL ES 或者原生的Metal 来完成。</li>
+<li>调用系统显存GPU驱动器。</li>
+<li>通过GPU 驱动器，将绘制计算好的数据存入GPU 也就是帧缓冲区。</li>
+<li>通过视频控制器将GPU 内绘制好的数据，按照每帧的方式显示在显示器上面。</li>
+</ol>
+<p><img src="/p/7f336030/4.png" alt="计算机渲染流程"></p>
+<h3 id="3-2-iOS-下的CoreAnimation"><a href="#3-2-iOS-下的CoreAnimation" class="headerlink" title="3.2 iOS 下的CoreAnimation"></a>3.2 iOS 下的CoreAnimation</h3><h4 id="3-2-1-结构"><a href="#3-2-1-结构" class="headerlink" title="3.2.1 结构"></a>3.2.1 结构</h4><p>UIKit&#x2F;AppKit为表层，来驱动 CoreAnimation 驱动 Metal&#x2F;CoreGraphic 来驱动图形硬件</p>
+<blockquote>
+<p>Render, compose, and animate visual elements –Apple</p>
+<p>渲染，构建，和将视觉组件构成动画 —— Apple</p>
+</blockquote>
+<h4 id="3-2-2-layer"><a href="#3-2-2-layer" class="headerlink" title="3.2.2 layer"></a>3.2.2 layer</h4><blockquote>
+<h1 id="CALayer"><a href="#CALayer" class="headerlink" title="CALayer"></a>CALayer</h1><p>An object that manages image-based content and allows you to perform animations on that content.</p>
+</blockquote>
+<p>用来显示位图，比如有<code>content</code> 属性</p>
+<ul>
+<li><p>UIView</p>
+<ul>
+<li>绘制和动画</li>
+<li>布局和子View 的管理</li>
+<li>点击事件管理</li>
+</ul>
+</li>
+<li><p>CALayer </p>
+<ul>
+<li>渲染</li>
+<li>动画</li>
+</ul>
+</li>
+</ul>
+<h2 id="四、CoreAnimation-渲染"><a href="#四、CoreAnimation-渲染" class="headerlink" title="四、CoreAnimation 渲染"></a>四、CoreAnimation 渲染</h2><h3 id="4-1-Application-应用"><a href="#4-1-Application-应用" class="headerlink" title="4.1 Application - 应用"></a>4.1 Application - 应用</h3><ul>
+<li>HandleEvents - 处理事件</li>
+<li>Commit Transaction - 提交事件，如（图片解码）</li>
+</ul>
+<h3 id="4-2-RenderServer-渲染服务"><a href="#4-2-RenderServer-渲染服务" class="headerlink" title="4.2 RenderServer - 渲染服务"></a>4.2 RenderServer - 渲染服务</h3><p>主要做以下两组工作：</p>
+<ul>
+<li>Decode - 解码</li>
+<li>Draw Calls - 显示调用（需要等待下一个Runloop）</li>
+</ul>
+<h3 id="4-3-GPU-内的操作"><a href="#4-3-GPU-内的操作" class="headerlink" title="4.3 GPU 内的操作"></a>4.3 GPU 内的操作</h3><ul>
+<li>会将 CoreAnimation 提交OpenGL</li>
+<li>调用GPU 开启渲染流程<ul>
+<li>顶点数据</li>
+<li>顶点着色器</li>
+<li>偏远着色器</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-4-显示"><a href="#4-4-显示" class="headerlink" title="4.4 显示"></a>4.4 显示</h3><p>在下一个Runloop，从帧缓冲区提取数据，显示到屏幕</p>
+<h2 id="五、画面撕裂卡顿与掉帧"><a href="#五、画面撕裂卡顿与掉帧" class="headerlink" title="五、画面撕裂卡顿与掉帧"></a>五、画面撕裂卡顿与掉帧</h2><h3 id="5-1-画面撕裂"><a href="#5-1-画面撕裂" class="headerlink" title="5.1 画面撕裂"></a>5.1 画面撕裂</h3><ul>
+<li><p>定义</p>
+<p>在G-SYNC中有一个很重要的关键词，那就是“屏幕刷新率”。对于传统显示屏来说，它的屏幕刷新率是固定的，例如60Hz的刷新率，就是指每秒钟固定刷新60帧图像。如果说显卡输出图像的速度与刷新率刚好吻合，那意味着每一张图像都可以显示在用户面前，形成一个连贯、流畅影像。</p>
+<p><img src="http://img.expreview.com/review/2015/07/G-sync/G-Sync-1.jpg"></p>
+<p>但是在现实中显卡输出的图像帧率并不是固定的，它输出一帧图像的时间可能会高于1&#x2F;60秒，也能会低于1&#x2F;60秒，这样显卡的输出帧率与屏幕刷新率就不同步了。当输出帧率高于屏幕刷新率的时候，显卡输出的图像就不一定每一帧都能显示在屏幕上，如果画面恰好处于动态变换的过程中，这样的影像就不连贯了，有可能会产生“图像上半部分是前一帧，下半部分是后一帧”的问题，通俗来说就是图像撕裂。</p>
+</li>
+<li><p>效果图</p>
+<p> <img src="/p/7f336030/005.jpg" alt="分裂成3段的图片"></p>
+</li>
+<li><p>原因</p>
+<p>在60Hz 的扫描率下，在1&#x2F;60秒周期过后，CPU 交互给GPU 的计算工作未完成，无法给予最新的图片，故帧缓冲区未及时更新，还是上一帧的内容。</p>
+</li>
+<li><p>苹果解决方案</p>
+<ol>
+<li><p>垂直同步 Vsync （Vertical sync）</p>
+<ul>
+<li>帧缓冲区加锁</li>
+<li>扫描未完成，显示图片全是上一帧的图片</li>
+<li>保证图片的扫描是完整的</li>
+</ul>
+</li>
+<li><p>双缓冲区</p>
+<p>两个缓冲区，一个展示时，另一个在做准备</p>
+<p>&#x2F;&#x2F; 图片</p>
+</li>
+<li><p>缺点：<strong>掉帧</strong></p>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="5-2-卡顿与掉帧"><a href="#5-2-卡顿与掉帧" class="headerlink" title="5.2 卡顿与掉帧"></a>5.2 卡顿与掉帧</h3><h4 id="5-2-1-掉帧："><a href="#5-2-1-掉帧：" class="headerlink" title="5.2.1 掉帧："></a>5.2.1 掉帧：</h4><ul>
+<li><p>原因：当接受到Vsync 垂直信号时，CPU&#x2F;GPU 的 计算还未完成（准备好），控制器会从帧缓冲区取出并显示上一帧的图像，从而本帧为正确显示，成为掉帧</p>
+</li>
+<li><p>三缓冲区：</p>
+<ul>
+<li>CPU&#x2F;GPU运算时，还有个缓冲区可以存储数据</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-2-2-屏幕卡顿"><a href="#5-2-2-屏幕卡顿" class="headerlink" title="5.2.2 屏幕卡顿"></a>5.2.2 屏幕卡顿</h4><ul>
+<li>CPU&#x2F;GPU 渲染流水线耗时过长，导致<strong>掉帧</strong></li>
+<li>Vsync + doubleBuffering 为了解决屏幕撕裂，会付出掉帧的代价</li>
+<li><strong>三缓冲区时</strong>：合理使用CPU&#x2F;GPU，仅仅是减少了掉帧的次数</li>
+</ul>
+<h2 id="六、产生原因"><a href="#六、产生原因" class="headerlink" title="六、产生原因"></a>六、产生原因</h2><h3 id="6-1-垂直同步Vsync-与双缓冲区"><a href="#6-1-垂直同步Vsync-与双缓冲区" class="headerlink" title="6.1 垂直同步Vsync 与双缓冲区"></a>6.1 垂直同步Vsync 与双缓冲区</h3><h4 id="6-1-1-垂直同步"><a href="#6-1-1-垂直同步" class="headerlink" title="6.1.1 垂直同步"></a>6.1.1 垂直同步</h4><p>苹果对移动设备采用的是垂直同步Vsync + 双缓冲区的策略：计算机发出<strong>垂直信号</strong>，向显存——也就是帧缓冲区（Frame Buffer Zone）索取计CPU和GPU 绘制好的帧图像，从而由视频控制器显示到屏幕中，接下来发出下一次垂直信号。</p>
+<p>这个周期由刷新频率而定，一般来说屏幕刷新频率是60Hz，这样每个刷新周期，就是16.666ms（1 &#x2F;60 * 1000）。</p>
+<p><img src="/p/7f336030/007.png" alt="iOS正常的渲染流程"></p>
+<h3 id="6-2-离屏缓冲区最终由来"><a href="#6-2-离屏缓冲区最终由来" class="headerlink" title="6.2 离屏缓冲区最终由来"></a>6.2 离屏缓冲区最终由来</h3><ol>
+<li>一旦绘制的图层较多，以及对图层绘制较为复杂（设置圆角、透明度以及阴影等），由于帧缓冲区对绘制的图层使用完毕会之后都会丢弃，就无法满足保存临时结果。</li>
+<li>为了使得多个图层的绘制结果能再处理过程中得以保留，系统会自动开辟一个缓冲区——离屏缓冲区，用来保存临时生成的结果。</li>
+<li>当所有的图层运算完毕，系统将礼品缓冲区的绘制结果放入帧缓冲区，由帧缓冲区交付结果，显示到屏幕中。</li>
+</ol>
+<p><img src="/p/7f336030/008.png" alt="iOS离屏渲染下的渲染流程"></p>
+<h3 id="6-3-渲染举例"><a href="#6-3-渲染举例" class="headerlink" title="6.3 渲染举例"></a>6.3 渲染举例</h3><h3 id="6-3-1-代码"><a href="#6-3-1-代码" class="headerlink" title="6.3.1 代码"></a>6.3.1 代码</h3><p>我们举例，一个视图上放一张图片视图，代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)addContentView&#123;</span><br><span class="line">    UIView *contentView = [[UIView alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">50</span>, <span class="number">50</span>, <span class="number">300</span>, <span class="number">300</span>)];</span><br><span class="line">    contentView.backgroundColor = [UIColor redColor];</span><br><span class="line">    contentView.layer.cornerRadius = <span class="number">20</span>;</span><br><span class="line">    contentView.layer.masksToBounds = YES;</span><br><span class="line">    [self.view addSubview:contentView];</span><br><span class="line">    </span><br><span class="line">    UIImageView *iv = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@<span class="string">&quot;saga.jpg&quot;</span>]];</span><br><span class="line">    iv.backgroundColor = [UIColor blueColor];</span><br><span class="line">    iv.layer.cornerRadius = <span class="number">20</span>;</span><br><span class="line">    iv.layer.masksToBounds = YES;</span><br><span class="line">    iv.frame = <span class="built_in">CGRectMake</span>(<span class="number">30</span>, <span class="number">30</span>, <span class="number">200</span>, <span class="number">150</span>);</span><br><span class="line">    [contentView addSubview:iv];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行后，打开模拟器，在Device 中打开 离屏渲染检测按钮—— Color off-screen Rendered ，即</p>
+<img src="/p/7f336030/011.png" style="zoom:50%;">
+
+
+
+<p>可以得到如下的图片，四周的黄色区域显示——设置过背景和圆角的这张图片，已经参与了离屏渲染了：<img src="/p/7f336030/010.png" style="zoom:50%;"></p>
+<img src="/p/7f336030/009.png" alt="图层示意图" style="zoom: 25%;">
+
+<p><strong>原因：</strong>两个图层进行了绘制并融合，需要开辟离屏渲染区域。</p>
+<h2 id="七、优点、缺点与特性"><a href="#七、优点、缺点与特性" class="headerlink" title="七、优点、缺点与特性"></a>七、优点、缺点与特性</h2><h3 id="7-1-优点："><a href="#7-1-优点：" class="headerlink" title="7.1 优点："></a>7.1 优点：</h3><ul>
+<li>可以解决复杂图层渲染</li>
+<li>复用复杂图形：如果图像多次出现，可以保存在离屏渲染缓冲区，达到<strong>复用</strong>的优点。</li>
+</ul>
+<h3 id="7-2-缺点："><a href="#7-2-缺点：" class="headerlink" title="7.2 缺点："></a>7.2 缺点：</h3><ul>
+<li><p>性能问题——掉帧</p>
+<p>由于离屏渲染往往是要承担较为复杂的绘制过程，通常是超过1个图层的复杂绘制，当硬件性能低下，以及绘制图层复杂双重压力下，CPU 往往无法在一个扫描周期——也就是16.67ms 内完成绘制工作并交付GPU，为了维护图片的完整性，系统会选用上一帧的图片来显示，虽然只是1帧图像的滞后，肉眼还是能察觉到图片的滞后——尤其是在视图滚动时，更为明显，这就是我们常常提到的掉帧。</p>
+</li>
+</ul>
+<h3 id="7-3-特性"><a href="#7-3-特性" class="headerlink" title="7.3 特性"></a>7.3 特性</h3><ul>
+<li><strong>自动触发</strong></li>
+<li>空间有限制：大小为屏幕像素的2.5倍</li>
+</ul>
+<h3 id="8-4-离屏渲染的模式"><a href="#8-4-离屏渲染的模式" class="headerlink" title="8.4 离屏渲染的模式"></a>8.4 离屏渲染的模式</h3><ol>
+<li>拿到第一个图层，结果放入离屏渲染区</li>
+<li>拿到第二个图层，结果放入离屏渲染区</li>
+<li>拿到第三个图层，结果放入离屏渲染区</li>
+<li>从离屏渲染区，获取第一个图层，添加圆角</li>
+<li>从离屏渲染区，获取第二个图层，添加圆角</li>
+<li>从离屏渲染区，获取第三个图层，添加圆角</li>
+<li>3个图层，进行组合，放入帧缓冲区</li>
+<li>进行显示到屏幕</li>
+</ol>
+<p>小结： 多个图层特殊处理，每一步都需要临时的存出结果</p>
+<h2 id="八、产生的场景"><a href="#八、产生的场景" class="headerlink" title="八、产生的场景"></a>八、产生的场景</h2><h3 id="8-1-圆角"><a href="#8-1-圆角" class="headerlink" title="8.1 圆角"></a>8.1 圆角</h3><p>对，就是圆角，可能印象中，设置了圆角就会带来离屏渲染，真的是这样吗？</p>
+<p>先看看苹果对圆角（cornerRadius）的定义：</p>
+<blockquote>
+<p>Setting the radius to a value greater than <code>0.0</code> causes the layer to begin drawing rounded corners on its background. By default, the corner radius does not apply to the image in the layer’s <a href="apple-reference-documentation://hc8wq1-J90"><code>contents</code></a> property; it applies only to the background color and border of the layer. However, setting the <a href="apple-reference-documentation://hciTGlVHPz"><code>masksToBounds</code></a> property to <code>YES</code> causes the content to be clipped to the rounded corners. </p>
+</blockquote>
+<p>简单的翻一下：</p>
+<blockquote>
+<p>当给定radius 超过0.0 会导致图层（layer）开始在<strong>其背景</strong>中绘制圆角。默认下，圆角半径不会应用到图层的内容属性的图像中；它只会应用到其背景和自身的边界线中。因此，将<code>maskToBounds</code>设置成<code>YES</code>，会导致内容切成圆角。</p>
+</blockquote>
+<p>由此可以得到两个结论</p>
+<ul>
+<li>设置 cornerRadius 不会渲染该图层的内容图像</li>
+<li>设置 corner Radius 只会渲染 layer 的边框及背景</li>
+<li>属性 maskToBounds 设置YES，会切成圆角</li>
+</ul>
+<h3 id="8-2-开启了光栅化-shouldRasterize"><a href="#8-2-开启了光栅化-shouldRasterize" class="headerlink" title="8.2 开启了光栅化 shouldRasterize"></a>8.2 开启了光栅化 shouldRasterize</h3><ul>
+<li>如果layer 不能被复用，则没有必要打开光栅化</li>
+<li>如果layer 不是静态的，需要被频繁修改，比如处于动画之中，那么开启离屏渲染反而影响效率</li>
+<li>离屏渲染缓存内容有时间限制，缓存内容100ms 内容如果没有被使用，那么它就会丢弃；无法进行复用了</li>
+<li>离屏渲染缓存空间有限，超过2.5 倍屏幕像素大小，也会失效，且无法进行复用</li>
+</ul>
+<h3 id="8-3-常见的触发场景"><a href="#8-3-常见的触发场景" class="headerlink" title="8.3 常见的触发场景"></a>8.3 常见的触发场景</h3><ul>
+<li>使用了 mask 的layer layer.mask</li>
+<li>需要进行裁剪的layer —— layer.maskToBound &#x2F; view.clipToBounds</li>
+<li>设置了组透明为YES， 且透明度部位1 的layer —— layer.allowsGroupOpacity&#x2F;layer.opacity</li>
+<li>添加了投影的layer —— layer.shadow</li>
+<li>采用了光栅化的 layer —— layer.shouldRasterize</li>
+<li>绘制了文字的 layer —— UILabel 、CATextLayer、 CoreText等</li>
+</ul>
+<h2 id="九、解决方案"><a href="#九、解决方案" class="headerlink" title="九、解决方案"></a>九、解决方案</h2><h3 id="10-1-方案一：单一图片圆角"><a href="#10-1-方案一：单一图片圆角" class="headerlink" title="10.1 方案一：单一图片圆角"></a>10.1 方案一：单一图片圆角</h3><p>设置切歌边角，以及圆角半径</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">imageView.clipToBounds = YES;</span><br><span class="line">imageView.layer.cornerRadius = <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-3-方案二：将圆角图片绘制成位图（YYImage）"><a href="#9-3-方案二：将圆角图片绘制成位图（YYImage）" class="headerlink" title="9.3 方案二：将圆角图片绘制成位图（YYImage）"></a>9.3 方案二：将圆角图片绘制成位图（YYImage）</h3><p>这个方案在YYImaage 中已经做得非常好了，主要的原理是，根据传入的圆角，CPU进行上下文重绘制，得到UIImage 图片，由于最终得到的图像只有一张图片，自然不会离屏渲染了，相关代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">- (UIImage *)imageByRoundCornerRadius:(CGFloat)radius</span><br><span class="line">                              corners:(UIRectCorner)corners</span><br><span class="line">                          borderWidth:(CGFloat)borderWidth</span><br><span class="line">                          borderColor:(UIColor *)borderColor</span><br><span class="line">                       borderLineJoin:(CGLineJoin)borderLineJoin &#123;</span><br><span class="line">    </span><br><span class="line">    if (corners != UIRectCornerAllCorners) &#123;</span><br><span class="line">        UIRectCorner tmp = 0;</span><br><span class="line">        if (corners &amp; UIRectCornerTopLeft) tmp |= UIRectCornerBottomLeft;</span><br><span class="line">        if (corners &amp; UIRectCornerTopRight) tmp |= UIRectCornerBottomRight;</span><br><span class="line">        if (corners &amp; UIRectCornerBottomLeft) tmp |= UIRectCornerTopLeft;</span><br><span class="line">        if (corners &amp; UIRectCornerBottomRight) tmp |= UIRectCornerTopRight;</span><br><span class="line">        corners = tmp;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    UIGraphicsBeginImageContextWithOptions(self.size, NO, self.scale);</span><br><span class="line">    CGContextRef context = UIGraphicsGetCurrentContext();</span><br><span class="line">    CGRect rect = CGRectMake(0, 0, self.size.width, self.size.height);</span><br><span class="line">    CGContextScaleCTM(context, 1, -1);</span><br><span class="line">    CGContextTranslateCTM(context, 0, -rect.size.height);</span><br><span class="line">    </span><br><span class="line">    CGFloat minSize = MIN(self.size.width, self.size.height);</span><br><span class="line">    if (borderWidth &lt; minSize / 2) &#123;</span><br><span class="line">        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(rect, borderWidth, borderWidth) byRoundingCorners:corners cornerRadii:CGSizeMake(radius, borderWidth)];</span><br><span class="line">        [path closePath];</span><br><span class="line">        </span><br><span class="line">        CGContextSaveGState(context);</span><br><span class="line">        [path addClip];</span><br><span class="line">        CGContextDrawImage(context, rect, self.CGImage);</span><br><span class="line">        CGContextRestoreGState(context);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    if (borderColor &amp;&amp; borderWidth &lt; minSize / 2 &amp;&amp; borderWidth &gt; 0) &#123;</span><br><span class="line">        CGFloat strokeInset = (floor(borderWidth * self.scale) + 0.5) / self.scale;</span><br><span class="line">        CGRect strokeRect = CGRectInset(rect, strokeInset, strokeInset);</span><br><span class="line">        CGFloat strokeRadius = radius &gt; self.scale / 2 ? radius - self.scale / 2 : 0;</span><br><span class="line">        UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:strokeRect byRoundingCorners:corners cornerRadii:CGSizeMake(strokeRadius, borderWidth)];</span><br><span class="line">        [path closePath];</span><br><span class="line">        </span><br><span class="line">        path.lineWidth = borderWidth;</span><br><span class="line">        path.lineJoinStyle = borderLineJoin;</span><br><span class="line">        [borderColor setStroke];</span><br><span class="line">        [path stroke];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();</span><br><span class="line">    UIGraphicsEndImageContext();</span><br><span class="line">    return image;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="10-3-方案三：-在现有图层上方遮罩图片"><a href="#10-3-方案三：-在现有图层上方遮罩图片" class="headerlink" title="10.3 方案三： 在现有图层上方遮罩图片"></a>10.3 方案三： 在现有图层上方遮罩图片</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">@<span class="function">interface <span class="title">RoundImageView</span><span class="params">()</span></span></span><br><span class="line"><span class="function">@<span class="title">property</span> <span class="params">(strong, nonatomic)</span> UIImageView *maskView</span>;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation RoundImageView</span><br><span class="line"></span><br><span class="line">- (instancetype)init&#123;</span><br><span class="line">    <span class="keyword">if</span> (self = [super init]) &#123;</span><br><span class="line">        _maskView = [[UIImageView alloc] initWithFrame:CGRectZero];</span><br><span class="line">        _maskView.image = [UIImage imageNamed:@<span class="string">&quot;maskIV&quot;</span>];</span><br><span class="line">        [self addSubview:_maskView];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)layoutSubviews&#123;</span><br><span class="line">    [super layoutSubviews];</span><br><span class="line">    CGRect bounds = self.bounds;</span><br><span class="line">    _maskView.frame = bounds;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>从上文得知，离屏渲染是苹果为较为复杂的图像效果做出的一种妥协方案，作为一种空间换时间的方案，必然会损失一些性能，为了挽回这些损失，我们只有在深入理解背后的原理后，方能做到较为理想的结果。</p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/7f336030.html">http://nilsli.com/p/7f336030.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E7%A6%BB%E5%B1%8F%E6%B8%B2%E6%9F%93/">
+                                    <span class="chip bg-color">离屏渲染</span>
+                                </a>
+                            
+                                <a href="/tags/offscreen/">
+                                    <span class="chip bg-color">offscreen</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-07-07T23-55-43',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/7b6be80a.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/3.jpg" class="responsive-img" alt="计算机视觉【01-搭建OpenGL开发环境】">
+                        
+                        <span class="card-title">计算机视觉【01-搭建OpenGL开发环境】</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            一、搭建环境1.1 环境准备：
+开发环境：Mac OS、Xcode 11+
+OpenGL 工具包（会在本文末尾提供）
+include 文件夹
+libGLTools.a 静态文件
+
+
+
+1.2创建项目注意，我们使用Mac 应用来熟悉OpenG
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-07-14
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E8%BF%9B%E9%98%B6/">
+                        <span class="chip bg-color">进阶</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">
+                        <span class="chip bg-color">计算机视觉</span>
+                    </a>
+                    
+                    <a href="/tags/OpenGL/">
+                        <span class="chip bg-color">OpenGL</span>
+                    </a>
+                    
+                    <a href="/tags/iOS/">
+                        <span class="chip bg-color">iOS</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/7fad6178.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/10.jpg" class="responsive-img" alt="计算机视觉【02-OpenGL概念篇】">
+                        
+                        <span class="card-title">计算机视觉【02-OpenGL概念篇】</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            一、计算机视觉简介1.1 概念:计算机视觉（Computer Vision）是一门跨学科科学，用于处理计算机如何从数码相片或视频中获取高层次理解。从工程学的角度来讲，它的目的是理解并将人类视觉系统的工作任务自动化。
+
+计算机视觉（Compu
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-07-06
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/opengl/">
+                        <span class="chip bg-color">opengl</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%9F%B3%E9%A2%91/">
+                        <span class="chip bg-color">音频</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%A7%86%E9%A2%91/">
+                        <span class="chip bg-color">视频</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%9F%B3%E8%A7%86%E9%A2%91/">
+                        <span class="chip bg-color">音视频</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%BF%9B%E9%98%B6/">
+                        <span class="chip bg-color">进阶</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

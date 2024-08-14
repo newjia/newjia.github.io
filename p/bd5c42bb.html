@@ -1,0 +1,1346 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="【底层探索】- 多线程(二)GCD应用, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【底层探索】- 多线程(二)GCD应用 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/18.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【底层探索】- 多线程(二)GCD应用</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+                                <span class="chip bg-color">多线程</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%BA%BF%E7%A8%8B/">
+                                <span class="chip bg-color">线程</span>
+                            </a>
+                        
+                            <a href="/tags/GCD/">
+                                <span class="chip bg-color">GCD</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-04-05
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2.8k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    10 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h2 id="一、面试题解析"><a href="#一、面试题解析" class="headerlink" title="一、面试题解析"></a>一、面试题解析</h2><h3 id="1-1-第一题"><a href="#1-1-第一题" class="headerlink" title="1.1 第一题"></a>1.1 第一题</h3><h4 id="A、提问："><a href="#A、提问：" class="headerlink" title="A、提问："></a>A、提问：</h4><p>以下代码，会打印什么？</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="type">dispatch_queue_t</span> queue = <span class="built_in">dispatch_queue_create</span>(<span class="string">&quot;lj&quot;</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line"><span class="built_in">NSLog</span>(@<span class="string">&quot;1&quot;</span>);</span><br><span class="line"><span class="built_in">dispatch_async</span>(queue, ^&#123;<span class="comment">//block1</span></span><br><span class="line">    <span class="built_in">NSLog</span>(@<span class="string">&quot;2&quot;</span>);</span><br><span class="line">    <span class="built_in">dispatch_sync</span>(queue, ^&#123;<span class="comment">//block2</span></span><br><span class="line">        <span class="built_in">NSLog</span>(@<span class="string">&quot;3&quot;</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="built_in">NSLog</span>(@<span class="string">&quot;4&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">NSLog</span>(@<span class="string">&quot;5&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="B、思路："><a href="#B、思路：" class="headerlink" title="B、思路："></a>B、思路：</h4><ol>
+<li>创建的事串行队列，所以队列依次进行</li>
+<li>先执行 <code>NSLog(@&quot;1&quot;);</code>，<strong>打印1</strong></li>
+<li>接下来的异步函数<code>dispatch_async(queue, ^&#123;//block1&#125;);</code> 需要耗时，所以先跳过</li>
+<li>执行 <code>NSLog(@&quot;5&quot;);</code>，<strong>打印5</strong></li>
+<li>回头来执行第3步<strong>异步函数</strong>内部的代码。<ol>
+<li>先执行<code>NSLog(@&quot;2&quot;);</code>， <strong>打印2</strong></li>
+<li>接下来执行<strong>同步函数</strong> <code>dispatch_sync(queue, ^&#123;xxx&#125;);</code>， 此时<strong>阻塞</strong>线程。</li>
+<li>后面的<code>NSLog(@&quot;4&quot;);</code> 需等待上一步同步函数执行完才能执行，无法执行打印。</li>
+<li>异步函数内部<code>NSLog(@&quot;3&quot;);</code> 新创建，但是属于好事操作，需等待外部流程——即<code>NSLog(@&quot;4&quot;);</code> 这一代码执行完。</li>
+<li>上面两部互为等待，形成死锁。无法执行，会导致崩溃。</li>
+</ol>
+</li>
+</ol>
+<p>原理图可以这样看待：</p>
+<p><img src="/p/bd5c42bb/002.png"></p>
+<h4 id="C、回答："><a href="#C、回答：" class="headerlink" title="C、回答："></a>C、回答：</h4><p><strong>打印1,5,2。以及崩溃</strong></p>
+<h4 id="D、验证："><a href="#D、验证：" class="headerlink" title="D、验证："></a>D、验证：</h4><p><img src="/p/bd5c42bb/001.png"></p>
+<h3 id="1-2-第二题（美团）"><a href="#1-2-第二题（美团）" class="headerlink" title="1.2 第二题（美团）"></a>1.2 第二题（美团）</h3><h4 id="A、提问：-1"><a href="#A、提问：-1" class="headerlink" title="A、提问："></a>A、提问：</h4><p>以下代码，会打印什么</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">__block <span class="type">int</span> a = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">while</span> (a &lt; <span class="number">10</span>) &#123;</span><br><span class="line">    <span class="built_in">dispatch_async</span>(<span class="built_in">dispatch_get_global_queue</span>(<span class="number">0</span>, <span class="number">0</span>), ^&#123;</span><br><span class="line">        a++;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">NSLog</span>(@<span class="string">&quot;a = %d \n&quot;</span>, a);</span><br></pre></td></tr></table></figure>
+
+<h4 id="B、思路：-1"><a href="#B、思路：-1" class="headerlink" title="B、思路："></a>B、思路：</h4><ol>
+<li>首先执行的是异步函数，决定了每个任务都是<strong>独立</strong>、无<strong>线程阻塞</strong>、<del>放飞自我的</del></li>
+<li>执行在全局并发队列里，即各自分别执行，会频繁读取<code>a++</code>，线程并不安全</li>
+<li>上面第1、第2步决定了，当a自增到10时，跳出while 循环，但是打印的时候，很可能某1个或者多个任务还在异步执行，此时有两种情况<ol>
+<li>打印前a++ ：此时很能有1个或多个任务在抢占资源，进行<code>a++</code>， 那么多次打印后<strong>打印 大于10</strong></li>
+<li>打印后a++ ：即此时打印函数这个任务，成功抢占资源，先打印成功 则<strong>打印了10</strong></li>
+</ol>
+</li>
+</ol>
+<p>流程请参考图</p>
+<p><img src="/p/bd5c42bb/004.png"></p>
+<h4 id="C、回答：-1"><a href="#C、回答：-1" class="headerlink" title="C、回答："></a>C、回答：</h4><p>打印结果 &gt;&#x3D; 10</p>
+<h4 id="D、验证"><a href="#D、验证" class="headerlink" title="D、验证"></a>D、验证</h4><p><img src="/p/bd5c42bb/003.png"></p>
+<h2 id="二、GCD-简介"><a href="#二、GCD-简介" class="headerlink" title="二、GCD 简介"></a>二、GCD 简介</h2><h3 id="2-1-概念"><a href="#2-1-概念" class="headerlink" title="2.1 概念"></a>2.1 概念</h3><blockquote>
+<p>GCD 全称是Grand Central Dispatch，是苹果公司为多核的并行运算提出的解决方案，一种纯C 语言写成的框架，提供了非常多强大的函数</p>
+</blockquote>
+<h3 id="2-2-GCD-的优点"><a href="#2-2-GCD-的优点" class="headerlink" title="2.2 GCD 的优点"></a>2.2 GCD 的优点</h3><p>主要有以下几点</p>
+<ul>
+<li>GCD 会自动利用更多的CPU 内核（双核、四核等）</li>
+<li>GCD 会自动管理线程的生命周期（创建线程、调度任务、销毁线程）。程序员只需要告诉GCD 执行的任务，不需要编写任何线程管理代码。</li>
+</ul>
+<h3 id="2-3-GCD-的函数"><a href="#2-3-GCD-的函数" class="headerlink" title="2.3 GCD 的函数"></a>2.3 GCD 的函数</h3><p>GCD 的函数使用过程为：将任务添加到队列，并且制定执行任务的函数</p>
+<ul>
+<li>任务使用 <code>block</code> 封装</li>
+<li>任务的<code>block</code> 没有参数也没有返回值</li>
+<li>函数的类型有异步函数和同步函数</li>
+</ul>
+<h4 id="2-3-1-异步函数-dispatch-async"><a href="#2-3-1-异步函数-dispatch-async" class="headerlink" title="2.3.1 异步函数 dispatch_async"></a>2.3.1 异步函数 dispatch_async</h4><ul>
+<li>不用等当前语句执行完毕，就可以执行下一条语句</li>
+<li>会开启线程执行 block 的任务</li>
+<li>异步是多线程的代名词</li>
+</ul>
+<h4 id="2-3-2-同步函数-dispatch-sync"><a href="#2-3-2-同步函数-dispatch-sync" class="headerlink" title="2.3.2 同步函数 dispatch_sync"></a>2.3.2 同步函数 dispatch_sync</h4><ul>
+<li>必须等待当前语句执行完毕，才会执行下一条语句（俗称<strong>阻塞线程</strong>）</li>
+<li>不会开启线程</li>
+<li>在当前执行block 的任务</li>
+</ul>
+<h3 id="2-4-队列"><a href="#2-4-队列" class="headerlink" title="2.4. 队列"></a>2.4. 队列</h3><p>队列通常有并行队列和串行队列，顾名思义，并行队列队列宽度足够，互不干扰，各自为政；串行队列宽度只有1，每次只能执行同一个任务。</p>
+<ul>
+<li><p>串行队列（Seiral Dispatch Queue）:</p>
+<p>每次只有一个任务被执行，任务一个接一个地执行。（只开启1个线程，一个任务执行完毕后，在执行下一个任务）</p>
+</li>
+<li><p>并发队列（Concurrent Dispatch Queue）：</p>
+<p>可以多个任务并发（同时）执行。（可以开启多个线程，并且同时执行任务）。</p>
+</li>
+</ul>
+<p><strong>注意：</strong>并发队列的并发功能只有在<strong>异步函数（async）</strong>下有效。</p>
+<p>如下图所示</p>
+<p><img src="/p/bd5c42bb/006.png"></p>
+<p>队列的概念主要两个重要的队列：</p>
+<h4 id="2-4-1-主队列"><a href="#2-4-1-主队列" class="headerlink" title="2.4.1 主队列"></a>2.4.1 主队列</h4><ul>
+<li>主队列专门用来在主线程上调度任务的队列，并不会开启线程</li>
+<li>才用先进先出（FIFO）原则，主线程空闲时才会呆㷣度队列中的任务在主线程中执行</li>
+<li>如果当前主线程正在有任务执行，那么无论主队列中当前被添加了什么任务，都<strong>不会被调度</strong>。</li>
+</ul>
+<p>主队列的获取代码为：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="type">dispatch_queue_t</span> queue = <span class="built_in">dispatch_get_main_queue</span>();</span><br></pre></td></tr></table></figure>
+
+<p>平时开发中的 UI 操作，都必须在主线程的主队列中进行。</p>
+<h4 id="2-4-2-全局队列"><a href="#2-4-2-全局队列" class="headerlink" title="2.4.2 全局队列"></a>2.4.2 全局队列</h4><p>为了方便程序员自行使用其他队列，苹果提供了全局队列：<code>dispatch_get_global_queue(0, 0)</code>，</p>
+<p>而且<strong>全局队列是一个并发队列</strong>。</p>
+<p>在使用多线程开发时，如果对队列没有特殊需求，在执行异步任务时，可以直接使用全局队列。</p>
+<h3 id="2-5-函数与队列"><a href="#2-5-函数与队列" class="headerlink" title="2.5 函数与队列"></a>2.5 函数与队列</h3><p>函数（同步、异步）和队列（串行、并发）的组合一共有4种，主要有以下特点：</p>
+<ul>
+<li>同步函数串行队列：<ul>
+<li>不会开启线程，在当前线程执行任务</li>
+<li>任务串行执行，one by one</li>
+<li>会产生<strong>线程阻塞</strong></li>
+</ul>
+</li>
+<li>同步函数并发队列<ul>
+<li>不会开启线程，在当前线程执行任务</li>
+<li>任务一个接一个，<strong>无阻塞</strong></li>
+</ul>
+</li>
+<li>异步函数串行队列<ul>
+<li>开启一条新线程</li>
+<li>任务一个接一个</li>
+</ul>
+</li>
+<li>异步函数并发队列<ul>
+<li>开启<strong>多个</strong>线程，在当前新线程执行任务</li>
+<li>任务异步执行，没有顺序，由CPU 调度</li>
+</ul>
+</li>
+</ul>
+<p><img src="/p/bd5c42bb/009.png"></p>
+<h3 id="2-6-死锁"><a href="#2-6-死锁" class="headerlink" title="2.6 死锁"></a>2.6 死锁</h3><p>主线程因为同步函数强制执行当前任务的特性，会让后面的任务等待。</p>
+<p>而主队列等待主线程的任务执行完毕，才能执行自己的任务，最后导致主队列和主线程相互等待，造成死锁</p>
+<p>举例如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)test</span><br><span class="line">&#123;</span><br><span class="line">   <span class="type">dispatch_queue_t</span> q = <span class="built_in">dispatch_get_main_queue</span>();</span><br><span class="line"></span><br><span class="line">    <span class="built_in">NSLog</span>(@<span class="string">&quot;!!!!&quot;</span>);</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">dispatch_sync</span>(q, ^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(@<span class="string">&quot;%@&quot;</span>,[NSThread currentThread]);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上文中代码，主队列必须执行<code>dispatch_sync</code>了之后 才能继续执行后面的代码  但是主线程有任务在执行——正在执行<code>test</code></p>
+<p>解决方案：将任务同步添加到主队列当中：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)test</span><br><span class="line">&#123;</span><br><span class="line">   <span class="type">dispatch_queue_t</span> q = <span class="built_in">dispatch_get_main_queue</span>();</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">dispatch_async</span>(<span class="built_in">dispatch_get_global_queue</span>(<span class="number">0</span>, <span class="number">0</span>), ^&#123;</span><br><span class="line">        <span class="built_in">dispatch_sync</span>(q, ^&#123;</span><br><span class="line">                   <span class="built_in">NSLog</span>(@<span class="string">&quot;%@&quot;</span>,[NSThread currentThread]);</span><br><span class="line">               &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="三、GCD-栅栏函数"><a href="#三、GCD-栅栏函数" class="headerlink" title="三、GCD 栅栏函数"></a>三、GCD 栅栏函数</h2><h3 id="3-1-概念"><a href="#3-1-概念" class="headerlink" title="3.1 概念"></a>3.1 概念</h3><p>栅栏函数的作用，是控制任务执行的顺序，它是一种同步函数。</p>
+<h3 id="3-2-使用"><a href="#3-2-使用" class="headerlink" title="3.2 使用"></a>3.2 使用</h3><p>一般有同步和异步两种</p>
+<ul>
+<li>异步： 	<code>dispatch_barrier_async</code> 代码以前的任务执行完，才会执行以后的任务</li>
+<li>同步：<code>dispatch_barrier_sync</code> 作用相同，但是执行这个会阻塞线程，影响后面的任务执行。</li>
+</ul>
+<p>可见，同步的栅栏函数，也是另一种<strong>加锁</strong>的方式</p>
+<h3 id="3-3-举例"><a href="#3-3-举例" class="headerlink" title="3.3 举例"></a>3.3 举例</h3><ul>
+<li><p>同步栅栏函数</p>
+<p><img src="/p/bd5c42bb/007.png"></p>
+</li>
+<li><p>异步栅栏函数</p>
+<p><img src="/p/bd5c42bb/008.png"></p>
+</li>
+</ul>
+<h3 id="3-4-注意点"><a href="#3-4-注意点" class="headerlink" title="3.4 注意点"></a>3.4 注意点</h3><ul>
+<li><p>栅栏函数主要作用是同步效果</p>
+</li>
+<li><p>提高代码的安全性能，线程安全</p>
+</li>
+<li><p>基本原理是阻塞队列</p>
+</li>
+<li><p>使用自定义的队列，不可使用全局的，否则进程都会阻塞</p>
+</li>
+<li><p>使用同一并发队列，即目标与栅栏函数在同一个队列里。</p>
+<p>比如AFN ，他会自行实现了一个内部的队列，保证代码的内聚。</p>
+</li>
+</ul>
+<h2 id="四、GCD-调度组"><a href="#四、GCD-调度组" class="headerlink" title="四、GCD 调度组"></a>四、GCD 调度组</h2><h3 id="4-1-概念"><a href="#4-1-概念" class="headerlink" title="4.1 概念"></a>4.1 概念</h3><p>调度组的作用是：控制任务的执行顺序</p>
+<h3 id="4-2-调度"><a href="#4-2-调度" class="headerlink" title="4.2 调度"></a>4.2 调度</h3><ol>
+<li>创建组：<code>dispatch_group_create</code></li>
+<li>进组任务： <code>dispatch_group_async</code>。规则为先进组、后出组<ol>
+<li>进组：<code>dispatch_group_enter</code></li>
+<li>出组：<code>dispatch_group_leave</code></li>
+</ol>
+</li>
+<li>进组任务执行完毕通知：<code>dispatch_group_notify</code></li>
+<li>进组任务执行等待时机：<code>dispatch_group_wait</code></li>
+</ol>
+<h3 id="4-3-使用"><a href="#4-3-使用" class="headerlink" title="4.3 使用"></a>4.3 使用</h3><p>在日常业务开发中，可以将多个异步进行的事件放入<code>group</code> 中( 进组)，待各自完成（出组）后，实现最终结果——是不是很熟悉，有时候多个token 进行拼接获取，最终得到可以使用的，这个流程就可以通过调度组实现。</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)test3&#123;</span><br><span class="line">    <span class="type">dispatch_group_t</span> group = <span class="built_in">dispatch_group_create</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="type">dispatch_queue_t</span> queue = <span class="built_in">dispatch_get_global_queue</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    __block <span class="type">int</span> a = <span class="number">0</span>;</span><br><span class="line">    __block <span class="type">int</span> b = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">dispatch_group_async</span>(group, queue, ^&#123;</span><br><span class="line">        a += <span class="number">2</span>;</span><br><span class="line">        <span class="built_in">dispatch_group_enter</span>(group);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="built_in">dispatch_group_leave</span>(group);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">dispatch_group_async</span>(group, queue, ^&#123;</span><br><span class="line">        b += <span class="number">2</span>;</span><br><span class="line">        <span class="built_in">dispatch_group_enter</span>(group);</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="built_in">dispatch_group_leave</span>(group);</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">dispatch_group_notify</span>(group, queue, ^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(@<span class="string">&quot;当前a + b = %d&quot;</span>, a + b);</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终打印结果为：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="number">2020</span><span class="number">-05</span><span class="number">-12</span> <span class="number">14</span>:<span class="number">58</span>:<span class="number">02.479083</span>+<span class="number">0800</span> ttttt[<span class="number">12127</span>:<span class="number">739541</span>] 当前a + b = <span class="number">4</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="五、信号量"><a href="#五、信号量" class="headerlink" title="五、信号量"></a>五、信号量</h2><p>如何准确的打印第一题的数值，达到10的结果呢？</p>
+<p>可以使用信号量，可以有效的避免异步函数造成任务不可控。主要流程有如下几点</p>
+<ul>
+<li>创建信号量  </li>
+<li>信号等待，即锁住线程。信号量–</li>
+<li>执行业务，解锁开关，即业务不执行完，线程无法往后走。信号量++</li>
+</ul>
+<p>如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">  <span class="comment">// 1. 创建信号量</span></span><br><span class="line"><span class="type">dispatch_semaphore_t</span> sem = dispatch_semaphore_create(<span class="number">1</span>);</span><br><span class="line">  </span><br><span class="line">  __block <span class="type">int</span> a = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span> (a &lt; <span class="number">10</span>) &#123;</span><br><span class="line">      dispatch_async(dispatch_get_global_queue(<span class="number">0</span>, <span class="number">0</span>), ^&#123;</span><br><span class="line">          a++;</span><br><span class="line">          NSLog(@<span class="string">&quot;a = %d \n&quot;</span>, a);</span><br><span class="line">          <span class="comment">// 解锁线程</span></span><br><span class="line">          dispatch_semaphore_signal(sem);</span><br><span class="line">      &#125;);</span><br><span class="line">      <span class="comment">// 等待信号、锁住线程</span></span><br><span class="line">      dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>成功打印结果如下：</p>
+<p><img src="/p/bd5c42bb/005.png"></p>
+<h2 id="五、GCD-的Dispatch-source"><a href="#五、GCD-的Dispatch-source" class="headerlink" title="五、GCD 的Dispatch_source"></a>五、GCD 的Dispatch_source</h2><h3 id="5-1-概念"><a href="#5-1-概念" class="headerlink" title="5.1 概念"></a>5.1 概念</h3><blockquote>
+<p>An object that coordinates the processing of specific low-level system events, such as file-system events, timers, and UNIX signals.</p>
+<p>Gispatch source 是一种协调特定的低级别系统事件，如文件系统事件、Timer以及UNIX 信号。</p>
+</blockquote>
+<h3 id="5-2-特点"><a href="#5-2-特点" class="headerlink" title="5.2 特点"></a>5.2 特点</h3><ul>
+<li><p>CPU 符合非常小，不占用资源</p>
+</li>
+<li><p>联合体，结构简洁，使用更高效</p>
+</li>
+</ul>
+<h3 id="5-3-使用"><a href="#5-3-使用" class="headerlink" title="5.3 使用"></a>5.3 使用</h3><ol>
+<li><p><strong>创建源</strong> : 创建一个dispatch source 来监测低级别的系统事件。具体实现为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">dispatch_source_t</span> <span class="title function_">dispatch_source_create</span><span class="params">(<span class="type">dispatch_source_type_t</span> type, <span class="type">uintptr_t</span> handle, <span class="type">unsigned</span> <span class="type">long</span> mask, <span class="type">dispatch_queue_t</span> <span class="built_in">queue</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>type - dispatch source 的类型。举个例子，创建 定时器source，指定为  <a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/dispatch/dispatch_source_type_timer?language=objc"><code>DISPATCH_SOURCE_TYPE_TIMER</code></a></li>
+<li>handle - 监控回调的句柄</li>
+<li>mask - 决定哪些事件是需要的flags 的掩码。</li>
+<li>queue - 事件回调block 需要提交的目标队列</li>
+</ul>
+</li>
+<li><p>管理事件回调 </p>
+<p>代码水岸为：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">dispatch_source_set_event_handler</span><span class="params">(<span class="type">dispatch_source_t</span> source, <span class="type">dispatch_block_t</span> handler)</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取源 属性</p>
+<p>合并数据到一个分发的源，并提交它的事件回调block 到自己的目标队列中。</p>
+<p>代码实现为：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">dispatch_source_merge_data</span><span class="params">(<span class="type">dispatch_source_t</span> source, <span class="type">unsigned</span> <span class="type">long</span> value)</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>取消源</p>
+<p>使用方式为</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">dispatch_source_cancel</span><span class="params">(<span class="type">dispatch_source_t</span> source)</span>;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="5-4-应用"><a href="#5-4-应用" class="headerlink" title="5.4 应用"></a>5.4 应用</h3><h4 id="5-4-1-代码实现"><a href="#5-4-1-代码实现" class="headerlink" title="5.4.1 代码实现"></a>5.4.1 代码实现</h4><ol>
+<li><p>创建队列</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">self.<span class="built_in">queue</span> = dispatch_queue_create(<span class="string">&quot;lj&quot;</span>, <span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建源</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">self.source = dispatch_source_create(DISPATCH_SOURCE_TYPE_DATA_ADD, <span class="number">0</span>, <span class="number">0</span>, dispatch_get_main_queue());</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置事件回调</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">dispatch_source_set_event_handler(self.source, ^&#123;</span><br><span class="line">    NSUInteger value = dispatch_source_get_data(self.source);</span><br><span class="line">    NSLog(@<span class="string">&quot;获取到       %lu&quot;</span>, (<span class="type">unsigned</span> <span class="type">long</span>)value);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>激活源</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">dispatch_resume(self.source);</span><br></pre></td></tr></table></figure>
+
+
+</li>
+<li><p>提交时间回调到目标队列中</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event&#123;</span><br><span class="line">    self.value += <span class="number">1</span>;</span><br><span class="line">    dispatch_source_merge_data(self.source, self.value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="5-4-2-运行查看"><a href="#5-4-2-运行查看" class="headerlink" title="5.4.2 运行查看"></a>5.4.2 运行查看</h4><p>由于是点击事件触发，所以依次增加，结果为:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">2020-05-12 15:37:25.606845+0800 ttttt[12489:768578] 获取到       1</span><br><span class="line">2020-05-12 15:37:26.336439+0800 ttttt[12489:768578] 获取到       2</span><br><span class="line">2020-05-12 15:37:26.936856+0800 ttttt[12489:768578] 获取到       3</span><br><span class="line">2020-05-12 15:37:27.689042+0800 ttttt[12489:768578] 获取到       4</span><br><span class="line">2020-05-12 15:37:29.186446+0800 ttttt[12489:768578] 获取到       5</span><br><span class="line"></span><br><span class="line">**</span><br></pre></td></tr></table></figure>
+
+<h2 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h2><p>在这一章节，主要复习了GCD 的各种应用，认识了队列与函数，以及各种加锁的方式（栅栏函数等），这里有个小小的练习：自定义的source 写的Timer，供参考。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/newjia/LJTimer">Github Demo地址</a></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/bd5c42bb.html">http://nilsli.com/p/bd5c42bb.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+                                    <span class="chip bg-color">多线程</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%BA%BF%E7%A8%8B/">
+                                    <span class="chip bg-color">线程</span>
+                                </a>
+                            
+                                <a href="/tags/GCD/">
+                                    <span class="chip bg-color">GCD</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-04-05T09-09-43',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/e318a7b3.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/10.jpg" class="responsive-img" alt="【底层探索】- 多线程(一)">
+                        
+                        <span class="card-title">【底层探索】- 多线程(一)</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            一、线程定义1.1 基本概念
+线程（Thread），有时被称为轻量级进程（Lightweight Progress, LWP），是程序执行流的最小单位。
+
+一个标准的线程由线程ID、当前指令指针（PC）、寄存器集合和堆栈组成。通常意义上，一
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-06
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+                        <span class="chip bg-color">多线程</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BA%BF%E7%A8%8B/">
+                        <span class="chip bg-color">线程</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%BF%9B%E7%A8%8B/">
+                        <span class="chip bg-color">进程</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/fe949d29.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg" class="responsive-img" alt="【底层探索】- KVO（下）自定义KVO">
+                        
+                        <span class="card-title">【底层探索】- KVO（下）自定义KVO</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            序上文中，初步探索了KVO的使用以及背后的实现原理，这次来自己实现一个KVO，一方面在过程中加深理解，另一方面可以感受一下使用场景。
+根据上文总结，KVO的实现一共有3部分：
+
+添加KVO监听方法
+KVO 通知实现方法
+KVO 移除方法
+
+
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-04
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%BA%95%E5%B1%82/">
+                        <span class="chip bg-color">底层</span>
+                    </a>
+                    
+                    <a href="/tags/KVO/">
+                        <span class="chip bg-color">KVO</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

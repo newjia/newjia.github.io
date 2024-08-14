@@ -1,0 +1,1319 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="【iOS进阶】-启动优化, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【iOS进阶】-启动优化 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/3.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【iOS进阶】-启动优化</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96/">
+                                <span class="chip bg-color">启动优化</span>
+                            </a>
+                        
+                            <a href="/tags/%E8%B0%83%E4%BC%98/">
+                                <span class="chip bg-color">调优</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-04-19
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    4.6k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    16 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h4 id="零、引言"><a href="#零、引言" class="headerlink" title="零、引言"></a>零、引言</h4><p>用户在移动应用的世界里，第一印象至关重要。对于iOS应用而言，这意味着启动时间必须迅速且流畅。启动优化不仅是提升用户体验的关键，也是展示技术实力的窗口。本文将深入探讨iOS应用的启动过程，分析启动时间的重要性，并提供一系列实用的优化策略和技巧。</p>
+<h4 id="一、iOS应用启动过程概述"><a href="#一、iOS应用启动过程概述" class="headerlink" title="一、iOS应用启动过程概述"></a>一、iOS应用启动过程概述</h4><h5 id="1-1-iOS应用启动的基本流程。"><a href="#1-1-iOS应用启动的基本流程。" class="headerlink" title="1.1 iOS应用启动的基本流程。"></a>1.1 iOS应用启动的基本流程。</h5><ol>
+<li><strong>用户触发启动</strong>：<br> 当用户点击应用图标时，iOS系统开始启动过程。</li>
+<li><strong>加载可执行文件</strong>：<br> 系统首先加载应用的可执行文件。这个阶段包括验证应用签名的安全性，以及将应用的可执行文件加载到内存中。</li>
+<li><strong>运行时环境设置</strong>：<br> 接下来，系统为应用设置运行时环境。这包括分配必要的内存资源和设置应用所需的环境变量。</li>
+<li><strong>调用main()函数</strong>：<br> 启动过程的下一个步骤是调用应用的main()函数。在标准iOS应用中，main()函数通常很简单，它的主要任务是调用UIApplicationMain()函数。</li>
+<li>**执行UIApplicationMain()**：<br> UIApplicationMain()函数是启动过程中的关键部分。它创建了应用的UIApplication对象和应用的主UIWindow，并设置了应用的委托（AppDelegate）。</li>
+<li><strong>加载和设置AppDelegate</strong>：<br> UIApplicationMain()会根据Info.plist文件中的设置，实例化AppDelegate类，并将其设置为UIApplication对象的代理。AppDelegate负责处理应用生命周期和UI事件。</li>
+<li><strong>调用application:didFinishLaunchingWithOptions</strong>:<br> 一旦AppDelegate被创建和设置，application:didFinishLaunchingWithOptions:方法会被调用。这个方法是开发者自定义代码的主要入口点，用于设置应用的初始状态、创建UI界面、连接到数据库或执行其他必要的启动任务。</li>
+<li><strong>渲染初始界面</strong>：<br> <code>application:didFinishLaunchingWithOptions</code>:执行完毕后，应用的初始界面（通常在Storyboard或通过代码设置）被加载和渲染，此时用户开始看到应用的UI。</li>
+<li><strong>应用准备就绪</strong>：<br> 完成上述步骤后，应用变为活动状态，用户可以开始与其交互。</li>
+</ol>
+<h5 id="1-2-main-函数和UIApplicationMain的作用"><a href="#1-2-main-函数和UIApplicationMain的作用" class="headerlink" title="1.2 main()函数和UIApplicationMain的作用"></a>1.2 main()函数和UIApplicationMain的作用</h5><ul>
+<li>main()函数<ul>
+<li><strong>启动点</strong>：main()函数是iOS应用的入口点，是程序执行的第一站。它是每个C或Objective-C程序的标准入口点。</li>
+<li><strong>简洁性</strong>：在标准的iOS应用中，main()函数通常非常简洁。它的主要任务是调用UIApplicationMain()函数。</li>
+<li><strong>桥接角色</strong>：它作为程序运行和iOS应用框架之间的桥接，确保了iOS特有的应用生命周期和事件处理能夔正确启动。</li>
+</ul>
+</li>
+<li>UIApplicationMain()函数<ul>
+<li><strong>核心作用</strong>：UIApplicationMain()函数是iOS应用启动流程的核心。它负责创建应用的UIApplication对象和应用的主UIWindow。</li>
+<li><strong>设置AppDelegate</strong>：此函数还设置应用的AppDelegate，并将其作为UIApplication对象的代理。这一步是关键，因为AppDelegate负责响应应用生命周期事件，如应用启动、进入后台等。</li>
+<li><strong>运行循环</strong>：UIApplicationMain()还启动了主运行循环（main run loop），这对于处理用户界面事件和各种输入至关重要。</li>
+<li><strong>事件处理</strong>：它处理用户的触摸事件、系统事件等，并将它们分发到应用中相应的处理程序。</li>
+</ul>
+</li>
+</ul>
+<p>总的来说，main()函数是应用启动的起点，而UIApplicationMain()是应用启动过程中最关键的函数，负责创建和设置应用的基础结构，并启动事件处理循环。这两个函数共同确保了iOS应用能够按照期望的方式启动和运行。</p>
+<h5 id="1-3-didFinishLaunchingWithOptions方法的作用"><a href="#1-3-didFinishLaunchingWithOptions方法的作用" class="headerlink" title="1.3 didFinishLaunchingWithOptions方法的作用"></a>1.3 didFinishLaunchingWithOptions方法的作用</h5><ul>
+<li><p><strong>应用初始化</strong>：<br>这个方法是在应用启动后首先被调用的点，用于执行应用级别的初始化操作。在这里，开发者可以设置应用的初始状态，配置全局变量等。</p>
+</li>
+<li><p><strong>界面设置</strong>：<br>  在application:didFinishLaunchingWithOptions:中，开发者通常会建立和配置应用的初始用户界面。这包括创建窗口（UIWindow），设置根视图控制器，以及可能的其他界面相关配置。</p>
+</li>
+<li><p><strong>集成服务</strong>：<br>这个方法也是集成各种服务和第三方库的理想位置。例如，可以在这里初始化数据库、配置分析工具、集成社交媒体SDK等。</p>
+</li>
+<li><p><strong>处理启动选项</strong>：<br>  该方法的参数launchOptions提供了应用启动的上下文信息，比如用户是通过点击通知、URL或者是从其他应用中启动的。这使得开发者可以根据不同的启动情况，执行相应的操作。</p>
+</li>
+<li><p><strong>性能优化</strong>：<br>  由于这个方法是在应用启动时调用的，因此在这里进行的所有操作都会直接影响应用的启动时间。因此，开发者需要谨慎处理这里的代码，避免执行耗时操作，以确保应用启动快速。</p>
+</li>
+<li><p>返回值：<br>  该方法最终返回一个布尔值，指示应用是否成功启动并准备好运行。通常在所有初始化操作成功完成后，返回true。</p>
+</li>
+</ul>
+<h4 id="二、测量启动时间"><a href="#二、测量启动时间" class="headerlink" title="二、测量启动时间"></a>二、测量启动时间</h4><h5 id="2-1-Xcode-设置"><a href="#2-1-Xcode-设置" class="headerlink" title="2.1 Xcode 设置"></a>2.1 Xcode 设置</h5><ol>
+<li>设置启动参数：<ul>
+<li>在弹出的窗口中，选择“Run”（运行）选项卡。</li>
+<li>导航到“Arguments”（参数）部分。</li>
+<li>在“<code>Environment Variables</code>”（环境变量）区域中添加一个新的变量。名称设置为<code>DYLD_PRINT_STATISTICS</code>，值设置为<code>1</code>。这会在应用启动时打印出详细的加载统计信息。</li>
+</ul>
+</li>
+<li>运行应用：<br>观察Xcode控制台输出。它会显示应用启动的时间统计，包括总启动时间和主要阶段的时间（例如，动态库加载时间）。</li>
+</ol>
+<h5 id="2-2-使用Instruments"><a href="#2-2-使用Instruments" class="headerlink" title="2.2 使用Instruments"></a>2.2 使用Instruments</h5><ol>
+<li><p>打开Instruments：</p>
+<ul>
+<li>在Xcode中，选择“Xcode”菜单中的“Open Developer Tool”（打开开发者工具），然后选择“Instruments”。</li>
+</ul>
+</li>
+<li><p>选择适当的模板：</p>
+<ul>
+<li>在Instruments中，选择“Time Profiler”（时间分析器）工具。</li>
+</ul>
+</li>
+<li><p>配置记录设置：</p>
+<ul>
+<li>选择你的应用和目标设备。</li>
+<li>设置适当的记录选项，例如记录的时间长度。</li>
+</ul>
+</li>
+<li><p>开始记录：</p>
+<ul>
+<li>点击“Record”（记录）按钮开始捕捉数据。</li>
+<li>启动你的应用。</li>
+<li>让应用运行一段时间，然后停止记录。</li>
+</ul>
+</li>
+<li><p>分析数据：</p>
+<ul>
+<li>查看捕获的数据，特别注意应用启动期间的CPU使用情况和函数调用时间。</li>
+<li>使用Instruments的详细视图和过滤功能来定位可能导致延迟的代码。</li>
+</ul>
+</li>
+</ol>
+<h5 id="1-3-冷启动与热启动"><a href="#1-3-冷启动与热启动" class="headerlink" title="1.3 冷启动与热启动"></a>1.3 冷启动与热启动</h5><ol>
+<li><p><strong>冷启动（Cold Launch）</strong></p>
+<ul>
+<li>场景：应用从完全关闭状态启动，不在内存中。</li>
+<li>过程：包括加载应用到内存、初始化运行环境和设置。</li>
+<li>性能影响：通常耗时更长，因为需要完整的加载和初始化过程。</li>
+<li>优化焦点：减少初始化代码量，优化资源加载和应用大小。</li>
+</ul>
+</li>
+<li><p><strong>热启动（Warm Launch</strong>）</p>
+<ul>
+<li>场景：应用已在内存中或之前运行过，但不在前台。</li>
+<li>过程：主要涉及恢复到前台，部分资源可能仍在内存中。</li>
+<li>性能影响：通常比冷启动快，因为省去了一些初始化步骤。</li>
+<li>优化焦点：确保快速恢复和有效的状态管理。</li>
+</ul>
+<p> 总结来说，冷启动涉及完整的应用启动过程，而热启动则是从一种“休眠”状态恢复，两者在优化策略上有所不同。</p>
+</li>
+</ol>
+<h4 id="三、优化启动时间的技巧和策略"><a href="#三、优化启动时间的技巧和策略" class="headerlink" title="三、优化启动时间的技巧和策略"></a>三、优化启动时间的技巧和策略</h4><ol>
+<li>减少初始化代码：优化AppDelegate中的代码，延迟加载不必要的服务。<br><strong>举个例子：</strong> 假设我们有一个名为MyService的服务，需要在应用启动时初始化，但不是立即必需的。我们可以在AppDelegate中进行延迟加载。<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import UIKit</span><br><span class="line"></span><br><span class="line">class AppDelegate: UIResponder, UIApplicationDelegate &#123;</span><br><span class="line"></span><br><span class="line">    var window: UIWindow?</span><br><span class="line">    var myService: MyService?</span><br><span class="line"></span><br><span class="line">    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -&gt; Bool &#123;</span><br><span class="line">        // 设置UI和其他初始化代码...</span><br><span class="line"></span><br><span class="line">        // 延迟加载MyService</span><br><span class="line">        DispatchQueue.global(qos: .background).async &#123;</span><br><span class="line">            self.myService = MyService()</span><br><span class="line">            self.myService?.setup()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return true</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 其他AppDelegate方法...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class MyService &#123;</span><br><span class="line">    func setup() &#123;</span><br><span class="line">        // 长时间运行的设置或初始化代码...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>静态资源和资源预加载：管理静态资源的有效方法，以及预加载技巧。</li>
+</ol>
+<ul>
+<li><strong>举例：</strong><br>假设我们有一组图像资源需要在应用中使用，但不需要在应用启动时立即加载。我们可以实现一个预加载机制，让这些资源在后台逐渐加载，以便在需要时立即使用。<figure class="highlight plaintext"><figcaption><span>UIKit</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">class ResourcePreloader &#123;</span><br><span class="line">    private var images: [String: UIImage] = [:]</span><br><span class="line"></span><br><span class="line">    // 异步预加载图像</span><br><span class="line">    func preloadImages(named imageNames: [String]) &#123;</span><br><span class="line">        DispatchQueue.global(qos: .background).async &#123;</span><br><span class="line">            for imageName in imageNames &#123;</span><br><span class="line">                if let image = UIImage(named: imageName) &#123;</span><br><span class="line">                    self.images[imageName] = image</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 获取预加载的图像</span><br><span class="line">    func getPreloadedImage(named imageName: String) -&gt; UIImage? &#123;</span><br><span class="line">        return images[imageName]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class AppDelegate: UIResponder, UIApplicationDelegate &#123;</span><br><span class="line">    var window: UIWindow?</span><br><span class="line">    let preloader = ResourcePreloader()</span><br><span class="line"></span><br><span class="line">    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -&gt; Bool &#123;</span><br><span class="line">        // 预加载图像资源</span><br><span class="line">        preloader.preloadImages(named: [&quot;image1&quot;, &quot;image2&quot;, &quot;image3&quot;])</span><br><span class="line">        </span><br><span class="line">        return true</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 其他AppDelegate方法...</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li><strong>代码解释</strong>：<ul>
+<li><strong>资源预加载</strong>：ResourcePreloader类负责预加载和存储图像资源。preloadImages方法在后台线程中加载图像，这样就不会阻塞主线程。</li>
+<li><strong>后台线程加载</strong>：使用DispatchQueue.global(qos: .background).async确保资源加载在后台进行，以减少对主线程和应用启动性能的影响。</li>
+<li><strong>资源访问</strong>：getPreloadedImage方法提供了对预加载图像的访问。这使得在应用的其他部分中可以快速获取这些图像。</li>
+<li><strong>启动时预加载</strong>：在AppDelegate的application(_:didFinishLaunchingWithOptions:)方法中调用预加载，以确保在应用启动时开始加载资源。</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>并行和异步执行：利用并行编程和异步执行来加快启动速度。<ul>
+<li>假设我们的应用需要在启动时执行两个耗时任务：一个是数据加载（loadData），另一个是复杂计算（performComplexCalculation）。我们将这些任务放在不同的后台线程上执行，以提高效率。<figure class="highlight plaintext"><figcaption><span>UIKit</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">class AppDelegate: UIResponder, UIApplicationDelegate &#123;</span><br><span class="line"></span><br><span class="line">    var window: UIWindow?</span><br><span class="line"></span><br><span class="line">    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -&gt; Bool &#123;</span><br><span class="line">        // 设置UI和其他初始化代码...</span><br><span class="line"></span><br><span class="line">        // 异步加载数据</span><br><span class="line">        DispatchQueue.global(qos: .userInitiated).async &#123;</span><br><span class="line">            self.loadData()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 异步执行复杂计算</span><br><span class="line">        DispatchQueue.global(qos: .userInitiated).async &#123;</span><br><span class="line">            self.performComplexCalculation()</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return true</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 模拟耗时的数据加载</span><br><span class="line">    private func loadData() &#123;</span><br><span class="line">        // 数据加载逻辑...</span><br><span class="line">        print(&quot;Data loaded.&quot;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 模拟复杂计算</span><br><span class="line">    private func performComplexCalculation() &#123;</span><br><span class="line">        // 复杂计算逻辑...</span><br><span class="line">        print(&quot;Complex calculation performed.&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 其他AppDelegate方法...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>代码解释</strong>：<ul>
+<li><p><strong>异步任务</strong>：在<code>application(_:didFinishLaunchingWithOptions:)</code>方法中，我们使用<code>DispatchQueue.global(qos: .userInitiated).async</code>来异步执行<code>loadData</code>和<code>performComplexCalculation</code>方法。这使得这些任务在后台线程上并行运行。</p>
+</li>
+<li><p><strong>质量服务等级</strong>：通过设置<code>qos: .userInitiated</code>，我们告诉系统这些任务虽然是后台任务，但对用户体验有显著影响，因此应该较快处理。</p>
+</li>
+<li><p><strong>主线程保护</strong>：通过将耗时任务放在后台执行，我们避免了阻塞主线程，这对于保持应用的响应性至关重要，特别是在启动阶段。</p>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="4">
+<li>优化Storyboard和XIB文件：减少和优化界面资源的加载时间。</li>
+</ol>
+<ul>
+<li><p>拆分复杂的Storyboard：<br> 如果你的Storyboard非常庞大和复杂，它可能会显著增加加载时间。拆分成多个较小的Storyboard可以加快加载速度。</p>
+<ul>
+<li>在Xcode中，可以通过创建新的Storyboard文件并将现有Storyboard中的一部分视图控制器移动到新的Storyboard来完成这一过程。</li>
+<li>使用Storyboard Reference来在Storyboard之间进行导航。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><strong>优化视图层次结构</strong>    <ul>
+<li>减少视图层次的深度可以减少渲染时间。</li>
+<li>尽量使用较少的容器视图。</li>
+<li>避免不必要的嵌套。例如，如果可以直接在父视图上实现所需的布局，则不需要额外的容器视图。</li>
+</ul>
+</li>
+<li><strong>使用轻量级的视图和控件</strong><ul>
+<li>某些视图和控件比其他的更加消耗资源。</li>
+<li>当可能时，使用更简单的控件。例如，使用UILabel而不是UITextView来显示不可编辑的文本。</li>
+<li>避免过度使用高成本的UI元素，如阴影、透明度和复杂的形状。</li>
+</ul>
+</li>
+<li>延迟加载非关键内容<ul>
+<li>对于不立即显示的视图和数据，可以考虑延迟加载。</li>
+<li>使用代码而不是Storyboard来创建这些视图，并在需要时才加载它们。</li>
+<li>对于TableView和CollectionView，使用惰性加载数据。</li>
+</ul>
+</li>
+<li>精简资源文件<ul>
+<li>减小Storyboard或XIB文件的大小也能提高加载速度。</li>
+<li>移除不使用的视图控制器、视图和资源。</li>
+<li>使用向量图形（如PDF）而不是位图图像，可以减少应用的大小，并且在不同屏幕尺寸上看起来更清晰。</li>
+</ul>
+</li>
+<li>逐步特性加载：实现逐步加载应用特性的方法。<ul>
+<li>假设我们的应用有多个功能模块，比如“用户资料”、“消息”和“设置”。我们将实现一个机制，在应用启动时不立即加载这些模块，而是根据用户的交互逐步加载它们,示例代码如下：<figure class="highlight plaintext"><figcaption><span>UIKit</span></figcaption><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">class AppModuleManager &#123;</span><br><span class="line">    static let shared = AppModuleManager()</span><br><span class="line"></span><br><span class="line">    private(set) var userProfileModule: UserProfileModule?</span><br><span class="line">    private(set) var messagesModule: MessagesModule?</span><br><span class="line">    private(set) var settingsModule: SettingsModule?</span><br><span class="line"></span><br><span class="line">    private init() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    func loadUserProfileModule() &#123;</span><br><span class="line">        if userProfileModule == nil &#123;</span><br><span class="line">            userProfileModule = UserProfileModule()</span><br><span class="line">            userProfileModule?.loadModule()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    func loadMessagesModule() &#123;</span><br><span class="line">        if messagesModule == nil &#123;</span><br><span class="line">            messagesModule = MessagesModule()</span><br><span class="line">            messagesModule?.loadModule()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    func loadSettingsModule() &#123;</span><br><span class="line">        if settingsModule == nil &#123;</span><br><span class="line">            settingsModule = SettingsModule()</span><br><span class="line">            settingsModule?.loadModule()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 示例模块类</span><br><span class="line">class UserProfileModule &#123;</span><br><span class="line">    func loadModule() &#123;</span><br><span class="line">        // 加载用户资料模块的相关资源和设置</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class MessagesModule &#123;</span><br><span class="line">    func loadModule() &#123;</span><br><span class="line">        // 加载消息模块的相关资源和设置</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class SettingsModule &#123;</span><br><span class="line">    func loadModule() &#123;</span><br><span class="line">        // 加载设置模块的相关资源和设置</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 在AppDelegate或其他合适的地方调用</span><br><span class="line">let moduleManager = AppModuleManager.shared</span><br><span class="line">moduleManager.loadUserProfileModule()  // 根据需要调用</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>代码解释</strong>：<ul>
+<li>模块化管理：创建AppModuleManager类来管理不同的功能模块。这个类用于加载和保存对应的模块实例。</li>
+<li>延迟实例化：每个模块的加载方法首先检查相应模块是否已经实例化。如果尚未实例化，则创建并加载该模块。</li>
+<li>按需加载：应用的其他部分可以根据需要调用这些加载方法，例如在用户点击某个功能的导航标签时。</li>
+<li>资源和设置的加载：每个模块类有一个loadModule方法，用于执行该模块所需的资源加载和配置设置。</li>
+</ul>
+</li>
+<li>通过这种逐步加载模块的方式，应用可以在启动时保持轻量级，同时按需加载所需的功能，从而提高整体性能和用户体验。</li>
+</ul>
+<h4 id="四、最佳实践和常见陷阱"><a href="#四、最佳实践和常见陷阱" class="headerlink" title="四、最佳实践和常见陷阱"></a>四、最佳实践和常见陷阱</h4><h5 id="4-1-最佳实践"><a href="#4-1-最佳实践" class="headerlink" title="4.1 最佳实践"></a>4.1 最佳实践</h5><ol>
+<li><p>iOS应用启动优化的最佳实践包括一系列技术和策略，旨在提高应用的启动速度和用户体验。以下是一些关键的最佳实践：</p>
+</li>
+<li><p>精简AppDelegate的逻辑：在AppDelegate中仅执行必要的启动逻辑，避免过度拥挤和复杂的初始化代码。</p>
+</li>
+<li><p>延迟加载非关键服务：将不影响首次用户体验的服务和任务延迟加载，例如在后台线程中初始化数据库或第三方服务。</p>
+</li>
+<li><p>优化Storyboard和XIB文件：简化视图层次结构，移除不必要的视图和控件，减少Storyboard的复杂性。</p>
+</li>
+<li><p>使用代码而非Storyboard创建视图：当可能时，通过代码创建视图而不是Storyboard，以减少加载时间。</p>
+</li>
+<li><p>异步加载和并行处理：使用Grand Central Dispatch (GCD) 或其他并行编程技术来异步执行耗时操作。</p>
+</li>
+<li><p>资源预加载和缓存：提前加载和缓存关键资源，如图像和数据，以减少实际使用时的加载时间。</p>
+</li>
+<li><p>避免在启动时阻塞主线程：确保主线程专注于UI渲染和用户交互，避免在其中执行耗时操作。</p>
+</li>
+<li><p>逐步加载特性和模块：根据用户的交互逐步加载应用的特性，而不是一次性加载所有功能。</p>
+</li>
+<li><p>监控和分析启动性能：定期使用Xcode的性能分析工具（如Instruments）来监控启动时间，并识别优化机会。</p>
+</li>
+<li><p>精简应用大小：减少应用的总大小，包括可执行文件、资源和依赖库，以加快下载和加载速度。</p>
+</li>
+<li><p>利用新的API和技术：随着iOS系统的更新，利用最新的API和技术来优化启动时间，例如使用SwiftUI来创建更高效的界面。</p>
+</li>
+<li><p>避免不必要的网络请求：在启动过程中避免或推迟网络请求，尤其是在用户体验上不是立即必需的请求。</p>
+</li>
+</ol>
+<h5 id="4-2-常见问题和陷阱。"><a href="#4-2-常见问题和陷阱。" class="headerlink" title="4.2 常见问题和陷阱。"></a>4.2 常见问题和陷阱。</h5><ol>
+<li><p>过度优化：在追求启动速度时过度优化，可能会导致代码复杂度上升，降低可维护性。</p>
+</li>
+<li><p>忽视线程安全：在并行和异步执行代码时，忽略线程安全可能导致数据竞争和不稳定的应用行为。</p>
+</li>
+<li><p>滥用后台线程：过多地在后台线程执行任务可能会导致系统资源紧张，反而影响性能。</p>
+</li>
+<li><p>忽视用户体验：在优化过程中过分关注启动速度而牺牲用户体验，如延迟加载重要功能，可能会导致用户不满。</p>
+</li>
+<li><p>忽视内存使用：在启动时预加载大量资源可能会导致内存使用激增，从而影响应用性能。</p>
+</li>
+<li><p>依赖外部资源：在启动时依赖外部资源，如网络请求，可能会因为网络条件差导致启动延迟。</p>
+</li>
+<li><p>未适当处理冷启动和热启动：没有区分对待冷启动和热启动，可能会错过针对性的优化机会。</p>
+</li>
+<li><p>忽略测试和监控：没有定期进行性能测试和监控可能会导致优化效果不明显或引入新的性能问题。</p>
+</li>
+</ol>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><p>上面是总结得来的所有可行的方法，总的来说，优化iOS应用的启动时间对于提升用户体验至关重要。通过有效的策略和技巧，如逐步加载、并行处理和资源优化，可以显著加快启动速度，从而提升用户满意度。</p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/7bfd68ea.html">http://nilsli.com/p/7bfd68ea.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E5%90%AF%E5%8A%A8%E4%BC%98%E5%8C%96/">
+                                    <span class="chip bg-color">启动优化</span>
+                                </a>
+                            
+                                <a href="/tags/%E8%B0%83%E4%BC%98/">
+                                    <span class="chip bg-color">调优</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-04-19T00-27-05',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/b0e10b1c.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/23.jpg" class="responsive-img" alt="【数据结构与算法】-（8）栈之算法题">
+                        
+                        <span class="card-title">【数据结构与算法】-（8）栈之算法题</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+【数据结构与算法】-（1）基础篇
+【数据结构与算法】-（2）线性表基础
+【数据结构与算法】-（3）循环链表（单向）
+【数据结构与算法】-（4）双向链表和双向循环链表
+【数据结构与算法】-（5）链表面试题解析
+【数据结构与算法】-（6）栈
+
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-20
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/c0a767bd.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/9.jpg" class="responsive-img" alt="【数据结构与算法】-（7）队列">
+                        
+                        <span class="card-title">【数据结构与算法】-（7）队列</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            队列 (queue) 是只允许在一端进行插入操作、而在另一端进行删除操作的线性表
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-14
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%98%9F%E5%88%97/">
+                        <span class="chip bg-color">队列</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

@@ -1,0 +1,1292 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="OC底层研究4--类的结构分析, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>OC底层研究4--类的结构分析 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/19.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">OC底层研究4--类的结构分析</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E5%BA%95%E5%B1%82/">
+                                <span class="chip bg-color">底层</span>
+                            </a>
+                        
+                            <a href="/tags/ios/">
+                                <span class="chip bg-color">ios</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%BA%90%E7%A0%81/">
+                                <span class="chip bg-color">源码</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%B1%BB/">
+                                <span class="chip bg-color">类</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%BB%93%E6%9E%84/">
+                                <span class="chip bg-color">结构</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-01-12
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    2k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    9 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>本页所使用的objc runtime 756.2，来自<a target="_blank" rel="noopener" href="https://github.com/RetVal/objc-runtime">GITHUB</a></p>
+</blockquote>
+<h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h3><h4 id="1-1-类Class-的类型"><a href="#1-1-类Class-的类型" class="headerlink" title="1.1 类Class 的类型"></a>1.1 类<strong>Class</strong> 的类型</h4><blockquote>
+<p>Class在源码里的真正类型为<strong>objc_class</strong>的<strong>结构体</strong>。</p>
+</blockquote>
+<p>先查看源码——在Xcode按下<strong>Shift+Command+O</strong>，选择<strong>objc-runtime-new.h</strong>，搜索objc_class，可以得知，Class底层编译实现的前4行如下：</p>
+<p><img src="/p/8549/01.png"></p>
+<p>可知类结构如下：</p>
+<ul>
+<li><p>A. &#x2F;&#x2F;<strong>Class ISA</strong>								</p>
+<p>​	继承自父类 <strong>objc_class</strong> 的 <strong>isa</strong> ，指向类的指针不需显示（内存占8位），这里它返回一个<strong>nonpointer</strong>的指针，相关源码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">/// Represents an instance of a class.</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">objc_object</span> &#123;</span><br><span class="line">    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>B. <strong>Class superclass;</strong>                    </p>
+<p>​	指向本类的父类（内存占8位）</p>
+</li>
+<li><p>C. <strong>cache_t cache;</strong>                        </p>
+<p>​	存储指针和vtable，加速方法调用（内存占8位）</p>
+</li>
+<li><p>D. <strong>class_data_bits_t bits;</strong>             </p>
+<p>​	存储类的方法、属性、遵循的协议等信息的地方（内存占8位） </p>
+</li>
+<li><p>E. 其他方法&#x2F;函数 – <strong>不占内存</strong></p>
+</li>
+</ul>
+<p>为何cache_t cache 这个变量占位位16，而不是8？</p>
+<p>原因是因为这里的<strong>cache_t</strong>是结构体，其占内存为根据内部属性结构而定，为防止溢出，给予<strong>16位字节</strong>，而不是指针所需的8位。</p>
+<p>Talk is cheap, show me the code, 伸伸手指，点开cache_t 的内部结构</p>
+<p><img src="/p/8549/02.png"></p>
+<span id="more"></span>
+
+<p>我们来看看属性：</p>
+<ul>
+<li>bucket_t， 结构体，占8位字节</li>
+<li>mask_t，点开后具体实现为如下：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">uint32_t</span> <span class="type">mask_t</span>; </span><br></pre></td></tr></table></figure>
+
+<p>​	为整型，占4个字节</p>
+<ul>
+<li>mask_t</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">uint32_t</span> <span class="type">mask_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>​	也是整形，占4个字节</p>
+<p>共计8+4+4 &#x3D; <strong>16个字节</strong></p>
+<h4 id="1-2-objc-class继承"><a href="#1-2-objc-class继承" class="headerlink" title="1.2 objc_class继承"></a>1.2 objc_class继承</h4><p>在底层实现里，<strong>objc_class</strong> 继承自<strong>objc_object</strong> 的<strong>结构体</strong></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">/// Represents an instance of a class.</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">objc_object</span> &#123;</span><br><span class="line">    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-关于NSobject"><a href="#1-3-关于NSobject" class="headerlink" title="1.3 关于NSobject"></a>1.3 关于<strong>NSobject</strong></h4><p> 万物皆对象 - Class 继承自NSObject</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">@interface NSObject &lt;NSObject&gt; &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> clang diagnostic push</span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> clang diagnostic ignored <span class="string">&quot;-Wobjc-interface-ivars&quot;</span></span></span><br><span class="line">    Class isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> clang diagnostic pop</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-类的属性与成员变量"><a href="#2-类的属性与成员变量" class="headerlink" title="2. 类的属性与成员变量"></a>2. 类的属性与成员变量</h3><ol>
+<li><h4 id="属性的存储"><a href="#属性的存储" class="headerlink" title="属性的存储"></a>属性的存储</h4><p>上面提到了类对象的结构原理，我们知道了类结构里，类型位<strong>class_data_bits_t</strong> 的<strong>bits</strong>下面我们来探寻一下，类里面的属性上怎么保存的。</p>
+<p>我们在代码里生成一个类，分别有成员变量<strong>hobby</strong>，以及属性<strong>nickName</strong></p>
+<p>代码如下:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">@interface Person : NSObject&#123;</span><br><span class="line">    NSString *hobby;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@<span class="built_in">property</span> (nonatomic, copy) NSString *nickName;</span><br></pre></td></tr></table></figure>
+
+<p>在主线代码引入:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">        LGPerson *person = [LGPerson alloc];</span><br><span class="line">        Class pClass     = <span class="built_in">object_getClass</span>(person);</span><br><span class="line">        <span class="built_in">NSLog</span>(@<span class="string">&quot;%@ -- %p&quot;</span>, person, pClass);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后打印得到的类<strong>pClass</strong>，通过x&#x2F;4gx 获取类结构如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) x/<span class="number">4</span>gx pClass</span><br><span class="line"><span class="number">0x1000023d0</span>: <span class="number">0x001d8001000023a9</span> <span class="number">0x0000000100b37140</span></span><br><span class="line"><span class="number">0x1000023e0</span>: <span class="number">0x00000001003da280</span> <span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure>
+
+<p>观察结果得知<strong>0x1000023d0</strong> 位<strong>pClass</strong>在内存中的首地址，根据内存偏移原则，加上16+8+8共32位，即可得到<strong>bits</strong>的结构。</p>
+<p>0x1000023d0，偏移32位，得到0x1000023f0。<strong>注意</strong>，这里要用<strong>p</strong>打印指针，而非打印值用的po</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p <span class="number">0x1000023f0</span></span><br><span class="line"><span class="number">4294976496</span></span><br></pre></td></tr></table></figure>
+
+<p>oh NO！得到的是具体的值，这里需要强转一下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) <span class="built_in">p</span> (<span class="type">class_data_bits_t</span> *)<span class="number">0x1000023f0</span></span><br><span class="line">(<span class="type">class_data_bits_t</span> *) $<span class="number">3</span> = <span class="number">0x00000001000023f0</span></span><br></pre></td></tr></table></figure>
+
+<p>得到$3  的值，并不是我们想要的结构，留意到<strong>objc_class</strong>里的方法 data() 方法:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">objc_class</span> : objc_object &#123;</span><br><span class="line">    <span class="comment">// Class ISA; // 8</span></span><br><span class="line">    Class superclass; <span class="comment">// 8</span></span><br><span class="line">    <span class="type">cache_t</span> cache;    <span class="comment">// 16 不是8         // formerly cache pointer and vtable</span></span><br><span class="line">    <span class="type">class_data_bits_t</span> bits;    <span class="comment">// class_rw_t * plus custom rr/alloc flags</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">class_rw_t</span> *<span class="title">data</span><span class="params">()</span> </span>&#123; </span><br><span class="line">        <span class="keyword">return</span> bits.<span class="built_in">data</span>();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>data() 返回是<strong>class_rw_t</strong>，点进去看看，</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">class_rw_t</span> &#123;</span><br><span class="line">    <span class="comment">// Be warned that Symbolication knows the layout of this structure.</span></span><br><span class="line">    <span class="type">uint32_t</span> flags;</span><br><span class="line">    <span class="type">uint32_t</span> version;</span><br><span class="line"></span><br><span class="line">    <span class="type">const</span> <span class="type">class_ro_t</span> *ro;</span><br><span class="line"></span><br><span class="line">    <span class="type">method_array_t</span> methods;</span><br><span class="line">    <span class="type">property_array_t</span> properties;</span><br><span class="line">    <span class="type">protocol_array_t</span> protocols;</span><br><span class="line"></span><br><span class="line">    Class firstSubclass;</span><br><span class="line">    Class nextSiblingClass;</span><br><span class="line"></span><br><span class="line">    <span class="type">char</span> *demangledName;</span><br></pre></td></tr></table></figure>
+
+<p>留意到里面有 <strong>methods</strong>、<strong>properties</strong>、<strong>protocols</strong>等，原来这里等值便是类的相关属性方法等等结构。</p>
+<p>现在对$3 执行data() 方法:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p $<span class="number">3</span>-&gt;<span class="built_in">data</span>()</span><br><span class="line">(<span class="type">class_rw_t</span> *) $<span class="number">5</span> = <span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure>
+
+<p>对得到的$5 进行值打印:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p *$<span class="number">5</span></span><br><span class="line">(<span class="type">class_rw_t</span>) $<span class="number">5</span> = &#123;</span><br><span class="line">  flags = <span class="number">2148139008</span></span><br><span class="line">  version = <span class="number">0</span></span><br><span class="line">  ro = <span class="number">0x0000000100002308</span></span><br><span class="line">  methods = &#123;</span><br><span class="line">    list_array_tt&lt;<span class="type">method_t</span>, <span class="type">method_list_t</span>&gt; = &#123;</span><br><span class="line">       = &#123;</span><br><span class="line">        list = <span class="number">0x0000000100002240</span></span><br><span class="line">        arrayAndFlag = <span class="number">4294976064</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  properties = &#123;</span><br><span class="line">    list_array_tt&lt;<span class="type">property_t</span>, <span class="type">property_list_t</span>&gt; = &#123;</span><br><span class="line">       = &#123;</span><br><span class="line">        list = <span class="number">0x00000001000022f0</span></span><br><span class="line">        arrayAndFlag = <span class="number">4294976240</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  protocols = &#123;</span><br><span class="line">    list_array_tt&lt;<span class="type">unsigned</span> <span class="type">long</span>, <span class="type">protocol_list_t</span>&gt; = &#123;</span><br><span class="line">       = &#123;</span><br><span class="line">        list = <span class="number">0x0000000000000000</span></span><br><span class="line">        arrayAndFlag = <span class="number">0</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  firstSubclass = nil</span><br><span class="line">  nextSiblingClass = NSUUID</span><br><span class="line">  demangledName = <span class="number">0x0000000000000000</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上所示，$5 内结构一目了然，方法，属性，协议都显示了。</p>
+<p>继续获取属性值:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p $<span class="number">5.</span><span class="built_in">properties</span></span><br><span class="line">(<span class="type">property_array_t</span>) $<span class="number">7</span> = &#123;</span><br><span class="line">  list_array_tt&lt;<span class="type">property_t</span>, <span class="type">property_list_t</span>&gt; = &#123;</span><br><span class="line">     = &#123;</span><br><span class="line">      list = <span class="number">0x00000001000022f0</span></span><br><span class="line">      arrayAndFlag = <span class="number">4294976240</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>得到一个二维数组的$7，观察属性列表的类型为<strong>property_array_t</strong>，继承自<strong>list_array_tt</strong>，内部拥有</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p $<span class="number">7.l</span>ist</span><br><span class="line">(<span class="type">property_list_t</span> *) $<span class="number">8</span> = <span class="number">0x00000001000022f0</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>再次对$8 进行* 取值，得到如下结果：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p *$<span class="number">8</span></span><br><span class="line">(<span class="type">property_list_t</span>) $<span class="number">9</span> = &#123;</span><br><span class="line">  entsize_list_tt&lt;<span class="type">property_t</span>, <span class="type">property_list_t</span>, <span class="number">0</span>&gt; = &#123;</span><br><span class="line">    entsizeAndFlags = <span class="number">16</span></span><br><span class="line">    count = <span class="number">1</span></span><br><span class="line">    first = (name = <span class="string">&quot;nickName&quot;</span>, attributes = <span class="string">&quot;T@\&quot;NSString\&quot;,C,N,V_nickName&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从结果可以看出，我们的<strong>属性</strong>，就<strong>保存在properties</strong> 里中。</p>
+</li>
+<li><h4 id="成员变量的存储"><a href="#成员变量的存储" class="headerlink" title="成员变量的存储"></a>成员变量的存储</h4><p>上面分析了属性的存储，但是我们没有看到成员变量 <strong>hobby</strong>,我们在properties 属性里，没有看到它，到底在哪里呢?下面我们继续查找。</p>
+<p>既然不在properties 里，那尝试一下在$5 的 <strong>ro</strong> 里进行取值</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p $<span class="number">5.</span><span class="built_in">ro</span></span><br><span class="line">(<span class="type">const</span> <span class="type">class_ro_t</span> *) $<span class="number">10</span> = <span class="number">0x0000000100002308</span></span><br></pre></td></tr></table></figure>
+
+<p>得到<strong>class_ro_t</strong> 类型的结构体，继续对他取值</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p *$<span class="number">10</span></span><br><span class="line">(<span class="type">const</span> <span class="type">class_ro_t</span>) $<span class="number">11</span> = &#123;</span><br><span class="line">  flags = <span class="number">388</span></span><br><span class="line">  instanceStart = <span class="number">8</span></span><br><span class="line">  instanceSize = <span class="number">24</span></span><br><span class="line">  reserved = <span class="number">0</span></span><br><span class="line">  ivarLayout = <span class="number">0x0000000100001f8a</span> <span class="string">&quot;\x02&quot;</span></span><br><span class="line">  name = <span class="number">0x0000000100001f81</span> <span class="string">&quot;LGPerson&quot;</span></span><br><span class="line">  baseMethodList = <span class="number">0x0000000100002240</span></span><br><span class="line">  baseProtocols = <span class="number">0x0000000000000000</span></span><br><span class="line">  ivars = <span class="number">0x00000001000022a8</span></span><br><span class="line">  weakIvarLayout = <span class="number">0x0000000000000000</span></span><br><span class="line">  baseProperties = <span class="number">0x00000001000022f0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>值这里可以看到ivars，就是我们需要的变量列表，打印一下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p $<span class="number">11.</span><span class="built_in">ivars</span></span><br><span class="line">(<span class="type">const</span> <span class="type">ivar_list_t</span> *<span class="type">const</span>) $<span class="number">12</span> = <span class="number">0x00000001000022a8</span></span><br></pre></td></tr></table></figure>
+
+<p>继续对 ivar_list_t 类型的$12 取值:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p *$<span class="number">12</span></span><br><span class="line">(<span class="type">const</span> <span class="type">ivar_list_t</span>) $<span class="number">13</span> = &#123;</span><br><span class="line">  entsize_list_tt&lt;<span class="type">ivar_t</span>, <span class="type">ivar_list_t</span>, <span class="number">0</span>&gt; = &#123;</span><br><span class="line">    entsizeAndFlags = <span class="number">32</span></span><br><span class="line">    count = <span class="number">2</span></span><br><span class="line">    first = &#123;</span><br><span class="line">      offset = <span class="number">0x0000000100002378</span></span><br><span class="line">      name = <span class="number">0x0000000100001e64</span> <span class="string">&quot;hobby&quot;</span></span><br><span class="line">      type = <span class="number">0x0000000100001fa7</span> <span class="string">&quot;@\&quot;NSString\&quot;&quot;</span></span><br><span class="line">      alignment_raw = <span class="number">3</span></span><br><span class="line">      size = <span class="number">8</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">(lldb) p $.<span class="built_in">first</span></span><br><span class="line">(<span class="type">const</span> <span class="type">ivar_t</span>) $<span class="number">13</span> = &#123;</span><br><span class="line">  offset = <span class="number">0x0000000100002378</span></span><br><span class="line">  name = <span class="number">0x0000000100001e64</span> <span class="string">&quot;hobby&quot;</span></span><br><span class="line">  type = <span class="number">0x0000000100001fa7</span> <span class="string">&quot;@\&quot;NSString\&quot;&quot;</span></span><br><span class="line">  alignment_raw = <span class="number">3</span></span><br><span class="line">  size = <span class="number">8</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到<strong>成员变量</strong>存在类的 <strong>ivars 属性</strong>里</p>
+</li>
+</ol>
+<h3 id="3-类的方法"><a href="#3-类的方法" class="headerlink" title="3. 类的方法"></a>3. 类的方法</h3><h4 id="3-1-类的实例方法"><a href="#3-1-类的实例方法" class="headerlink" title="3.1 类的实例方法"></a>3.1 类的实例方法</h4><p>我们继续对类进行代码编辑，对<code>Person</code>类添加实例方法和类方法</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">- (<span class="type">void</span>)sayHello;		<span class="comment">// 实例方法</span></span><br><span class="line">+ (<span class="type">void</span>)sayHappy;		<span class="comment">// 类方法</span></span><br></pre></td></tr></table></figure>
+
+<p>还是对类结构$5 进行解析，这次我们打印它的 <strong>methods</strong> 属性</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p $<span class="number">5.</span><span class="built_in">methods</span></span><br><span class="line">(<span class="type">method_array_t</span>) $<span class="number">14</span> = &#123;</span><br><span class="line">  list_array_tt&lt;<span class="type">method_t</span>, <span class="type">method_list_t</span>&gt; = &#123;</span><br><span class="line">     = &#123;</span><br><span class="line">      list = <span class="number">0x0000000100002240</span></span><br><span class="line">      arrayAndFlag = <span class="number">4294976064</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>得到的是<strong>method_array_t</strong> 类型的$14, 是个数组类型，继续打印:</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p $<span class="number">14.l</span>ist</span><br><span class="line">(<span class="type">method_list_t</span> *) $<span class="number">15</span> = <span class="number">0x0000000100002240</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p *$<span class="number">15</span></span><br><span class="line">(<span class="type">method_list_t</span>) $<span class="number">16</span> = &#123;</span><br><span class="line">  entsize_list_tt&lt;<span class="type">method_t</span>, <span class="type">method_list_t</span>, <span class="number">3</span>&gt; = &#123;</span><br><span class="line">    entsizeAndFlags = <span class="number">26</span></span><br><span class="line">    count = <span class="number">4</span></span><br><span class="line">    first = &#123;</span><br><span class="line">      name = <span class="string">&quot;sayHello&quot;</span></span><br><span class="line">      types = <span class="number">0x0000000100001f8c</span> <span class="string">&quot;v16@0:8&quot;</span></span><br><span class="line">      imp = <span class="number">0x0000000100001b90</span> (LGTest`-[LGPerson sayHello] at LGPerson.m:<span class="number">13</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可见，<strong>实例方法</strong><code>sayHello</code> 方法，存储在类的methods属性里</p>
+<h4 id="3-2-类的类方法存储"><a href="#3-2-类的类方法存储" class="headerlink" title="3.2 类的类方法存储"></a>3.2 类的类方法存储</h4><p>类方法在上述的过程中没有看到，那么它会在哪里呢?</p>
+<p>为了找到它，我们重新回到最初的<strong>pClass</strong></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) x/<span class="number">4</span>gx pClass</span><br><span class="line"><span class="number">0x1000023b0</span>: <span class="number">0x001d800100002389</span> <span class="number">0x0000000100b37140</span></span><br><span class="line"><span class="number">0x1000023c0</span>: <span class="number">0x00000001003da280</span> <span class="number">0x0000000000000000</span></span><br></pre></td></tr></table></figure>
+
+<p>得到<strong>isa</strong>值为<strong>0x001d800100002389</strong>，这时，唤出它的掩码 <strong>ISA_MASK</strong> 来获取它的元类</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p/x <span class="number">0x001d800100002389</span> &amp; <span class="number">0x0000000ffffffff8</span></span><br><span class="line">(<span class="type">long</span>) $<span class="number">1</span> = <span class="number">0x0000000100002388</span></span><br></pre></td></tr></table></figure>
+
+<p>继续对元类**$1**的结构进行解析：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) x/<span class="number">4</span>gx <span class="number">0x0000000100002388</span></span><br><span class="line"><span class="number">0x100002388</span>: <span class="number">0x001d800100b370f1</span> <span class="number">0x0000000100b370f0</span></span><br><span class="line"><span class="number">0x100002398</span>: <span class="number">0x0000000100f946c0</span> <span class="number">0x0000000100000003</span></span><br></pre></td></tr></table></figure>
+
+<p>可知<strong>0x100002388</strong>是这个元类的地址，根据上文提到的内存便宜，我们继续加上2个16进制位，得到0x1000023a8，p一下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) <span class="built_in">p</span> (<span class="type">class_data_bits_t</span> *)$<span class="number">2</span></span><br><span class="line">(<span class="type">class_data_bits_t</span> *) $<span class="number">3</span> = <span class="number">0x00000001000023a8</span></span><br></pre></td></tr></table></figure>
+
+<p>继续执行上文实例方法类似的方案，执行data() — 取值 – 获取methods 的思路，具体代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">(lldb) p $<span class="number">3</span>-&gt;<span class="built_in">data</span>()</span><br><span class="line">(<span class="type">class_rw_t</span> *) $<span class="number">4</span> = <span class="number">0x0000000100f94620</span></span><br><span class="line">(lldb) p *$<span class="number">4</span></span><br><span class="line">(<span class="type">class_rw_t</span>) $<span class="number">5</span> = &#123;</span><br><span class="line">  flags = <span class="number">2685075456</span></span><br><span class="line">  version = <span class="number">7</span></span><br><span class="line">  ro = <span class="number">0x00000001000021f8</span></span><br><span class="line">  methods = &#123;</span><br><span class="line">    list_array_tt&lt;<span class="type">method_t</span>, <span class="type">method_list_t</span>&gt; = &#123;</span><br><span class="line">       = &#123;</span><br><span class="line">        list = <span class="number">0x00000001000021d8</span></span><br><span class="line">        arrayAndFlag = <span class="number">4294975960</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  properties = &#123;</span><br><span class="line">    list_array_tt&lt;<span class="type">property_t</span>, <span class="type">property_list_t</span>&gt; = &#123;</span><br><span class="line">       = &#123;</span><br><span class="line">        list = <span class="number">0x0000000000000000</span></span><br><span class="line">        arrayAndFlag = <span class="number">0</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  protocols = &#123;</span><br><span class="line">    list_array_tt&lt;<span class="type">unsigned</span> <span class="type">long</span>, <span class="type">protocol_list_t</span>&gt; = &#123;</span><br><span class="line">       = &#123;</span><br><span class="line">        list = <span class="number">0x0000000000000000</span></span><br><span class="line">        arrayAndFlag = <span class="number">0</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  firstSubclass = nil</span><br><span class="line">  nextSiblingClass = <span class="number">0x00007fff942e6990</span></span><br><span class="line">  demangledName = <span class="number">0x0000000000000000</span></span><br><span class="line">&#125;</span><br><span class="line">(lldb) p $<span class="number">5.</span><span class="built_in">methods</span></span><br><span class="line">(<span class="type">method_array_t</span>) $<span class="number">10</span> = &#123;</span><br><span class="line">  list_array_tt&lt;<span class="type">method_t</span>, <span class="type">method_list_t</span>&gt; = &#123;</span><br><span class="line">     = &#123;</span><br><span class="line">      list = <span class="number">0x00000001000021d8</span></span><br><span class="line">      arrayAndFlag = <span class="number">4294975960</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">(lldb) p $<span class="number">10.l</span>ist</span><br><span class="line">(<span class="type">method_list_t</span> *) $<span class="number">11</span> = <span class="number">0x00000001000021d8</span></span><br><span class="line">(lldb) p *$<span class="number">11</span></span><br><span class="line">(<span class="type">method_list_t</span>) $<span class="number">12</span> = &#123;</span><br><span class="line">  entsize_list_tt&lt;<span class="type">method_t</span>, <span class="type">method_list_t</span>, <span class="number">3</span>&gt; = &#123;</span><br><span class="line">    entsizeAndFlags = <span class="number">26</span></span><br><span class="line">    count = <span class="number">1</span></span><br><span class="line">    first = &#123;</span><br><span class="line">      name = <span class="string">&quot;sayHappy&quot;</span></span><br><span class="line">      types = <span class="number">0x0000000100001f8c</span> <span class="string">&quot;v16@0:8&quot;</span></span><br><span class="line">      imp = <span class="number">0x0000000100001bc0</span> (LGTest`+[LGPerson sayHappy] at LGPerson.m:<span class="number">17</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">(lldb) </span><br></pre></td></tr></table></figure>
+
+<p>可见，<strong>类方法</strong><code>sayHappy</code> 方法，存储在类的<strong>元类</strong> methods属性里</p>
+<h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h3><ul>
+<li>类的本质上一个类型为<strong>objc_class</strong>的结构体，包含有isa、父类、属性、成员变量及方法列表等</li>
+<li>类属性存在结构体的properties里</li>
+<li>类的成员变量存在结构体的 ivars里</li>
+<li>类的实例方法，存在结构体 的methods 属性里</li>
+<li>类的类方法，存在父类的class_ro_t 里的methods里</li>
+</ul>
+<p>如下图示：</p>
+<p><img src="/p/8549/03.png"></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/8549.html">http://nilsli.com/p/8549.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E5%BA%95%E5%B1%82/">
+                                    <span class="chip bg-color">底层</span>
+                                </a>
+                            
+                                <a href="/tags/ios/">
+                                    <span class="chip bg-color">ios</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%BA%90%E7%A0%81/">
+                                    <span class="chip bg-color">源码</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%B1%BB/">
+                                    <span class="chip bg-color">类</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%BB%93%E6%9E%84/">
+                                    <span class="chip bg-color">结构</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-01-12T14-00-53',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/40097.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/5.jpg" class="responsive-img" alt="方法的本质1--cache_t方法缓存分析">
+                        
+                        <span class="card-title">方法的本质1--cache_t方法缓存分析</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+本页所使用的objc runtime 756.2，来自GITHUB
+
+1.概念1.1 objc_class 结构前面探索了类的结构，知道了类的结构本质上是objc_class的结构体，而在 C 源码例， objc_class 结构体的结构
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-01-21
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%BA%95%E5%B1%82/">
+                        <span class="chip bg-color">底层</span>
+                    </a>
+                    
+                    <a href="/tags/ios/">
+                        <span class="chip bg-color">ios</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%B1%BB/">
+                        <span class="chip bg-color">类</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BB%93%E6%9E%84/">
+                        <span class="chip bg-color">结构</span>
+                    </a>
+                    
+                    <a href="/tags/cache-t/">
+                        <span class="chip bg-color">cache_t</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/63353.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/12.jpg" class="responsive-img" alt="2020新年感想">
+                        
+                        <span class="card-title">2020新年感想</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+2020年是一个闰年，第一天从星期三开始。
+
+
+今天看了小羊肖恩大电影，故事讲得真好看，小朋友全程开心，全情投入，大朋友也觉得耳目一新，深受感动。
+这是我们带他看的第一部电影，新的一年，从第一开始。
+用一句涂鸦来鼓舞自己
+
+宁愿最后徒劳无
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-01-02
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/2020/">
+                        <span class="chip bg-color">2020</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%84%9F%E6%83%B3/">
+                        <span class="chip bg-color">感想</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

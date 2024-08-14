@@ -1,0 +1,1268 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="【数据结构与算法】-（5）链表面试题解析, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【数据结构与算法】-（5）链表面试题解析 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/19.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【数据结构与算法】-（5）链表面试题解析</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E7%AE%97%E6%B3%95/">
+                                <span class="chip bg-color">算法</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%BA%BF%E6%80%A7%E8%A1%A8/">
+                                <span class="chip bg-color">线性表</span>
+                            </a>
+                        
+                            <a href="/tags/%E9%93%BE%E8%A1%A8/">
+                                <span class="chip bg-color">链表</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-04-09
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    3.1k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    13 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p> <a href="https://nilsli.com/p/43384.html">【数据结构与算法】-（1）基础篇</a></p>
+<p> <a href="https://nilsli.com/p/43366.html">【数据结构与算法】-（2）线性表基础</a></p>
+<p> <a href="https://nilsli.com/p/54688.html">【数据结构与算法】-（3）循环链表（单向）</a></p>
+<p> <a href="https://nilsli.com/p/56790.html">【数据结构与算法】-（4）双向链表和双向循环链表</a></p>
+<p> <a href="https://nilsli.com/p/50518edc.html">【数据结构与算法】-（5）链表面试题解析</a></p>
+<p> <a href="https://nilsli.com/p/7914b7d0.html">【数据结构与算法】-（6）栈</a></p>
+<p> <a href="https://nilsli.com/p/c0a767bd.html">【数据结构与算法】-（7）队列</a></p>
+</blockquote>
+<h3 id="序言"><a href="#序言" class="headerlink" title="序言"></a>序言</h3><p>之前复习了一下数据结构以及线性表的基础，继续来做一些习题，巩固一下。</p>
+<h3 id="Q1-链表合并"><a href="#Q1-链表合并" class="headerlink" title="Q1 链表合并"></a>Q1 链表合并</h3><h4 id="1-题目："><a href="#1-题目：" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>将两个递增的有序链表合并为一个有序链表；要求结果链表仍然是用两个链表的存储空间，不另外占用其他的存储空间；表中不允许有重复的数据</p>
+<p>如<strong>La{1 ,2, 3}</strong>, <strong>Lb{3, 6, 9}</strong>, 合并成为 <strong>Lc{1, 2, 3, 6, 9}</strong></p>
+<p><img src="/p/50518edc/001.png"></p>
+<h4 id="2-分析："><a href="#2-分析：" class="headerlink" title="2. 分析："></a>2. 分析：</h4><p>本题要求如下：</p>
+<ul>
+<li>两个都是递增有序链表</li>
+<li>不允许重复数据</li>
+<li>结果要求保持递增关系，可以考虑后插法</li>
+<li><strong>不占用额外空间</strong>，也不允许新建维持逻辑</li>
+</ul>
+<h4 id="3-算法思路："><a href="#3-算法思路：" class="headerlink" title="3. 算法思路："></a>3. 算法思路：</h4><ol>
+<li>准备临时变量：头指针<code>Lc</code>——由于要求不占用额外空间，<code>Lc</code>指向（借用）<code>La</code> 的头结点</li>
+<li>依次循环<code>La</code>、<code>Lb</code> ，<ol>
+<li>比较<code>pa</code>、<code>pb</code>两者的 <code>data</code> 值大小，取较小者存到<code>Lc</code>里</li>
+<li>比较较小者剩余链表，与较大者的<code>data</code>，循环往复</li>
+</ol>
+</li>
+</ol>
+<h4 id="4-代码实现："><a href="#4-代码实现：" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line">ListNode* <span class="title function_">mergeTwoLists</span><span class="params">(ListNode* La, ListNode* Lb)</span> &#123;</span><br><span class="line">       <span class="keyword">if</span>(La == <span class="literal">NULL</span>)</span><br><span class="line">            <span class="keyword">return</span> Lb;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(Lb == <span class="literal">NULL</span>)</span><br><span class="line">            <span class="keyword">return</span> La;</span><br><span class="line">        </span><br><span class="line">        ListNode *Lc = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">if</span>(La-&gt; data &lt; Lb-&gt; data)&#123;</span><br><span class="line">            Lc = La;</span><br><span class="line">            Lc-&gt;next = mergeTwoLists(La-&gt;next, Lb);</span><br><span class="line"></span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            Lc = Lb;</span><br><span class="line">            Lc-&gt;next = mergeTwoLists(La, Lb-&gt;next);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> Lc;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-流程图解"><a href="#5-流程图解" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><p><img src="/p/50518edc/002.png">  </p>
+<h3 id="Q2-链表：求重"><a href="#Q2-链表：求重" class="headerlink" title="Q2 链表：求重"></a>Q2 链表：求重</h3><h4 id="1-题目：-1"><a href="#1-题目：-1" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>已知两个链表A和B分别表示两个集合.其元素递增排列. 设计一个算法,用于求出A与B的交集,并存储在A链表中;</p>
+<p>例如:</p>
+<p> La &#x3D; {2,4,6,8}; Lb &#x3D; {4,6,8,10};</p>
+<p> Lc &#x3D; {4,6,8}</p>
+<h4 id="2-分析：-1"><a href="#2-分析：-1" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
+<li>需要比较相同元素，予以保留</li>
+<li>比较后不同的元素，予以删除</li>
+</ul>
+<h4 id="3-算法思路"><a href="#3-算法思路" class="headerlink" title="3. 算法思路"></a>3. 算法思路</h4><p>这道题目与上道题恰恰相反，在依次循环后，<strong>留下相同的元素</strong>。</p>
+<ol>
+<li>准备临时变量：<ol>
+<li>原始链表<code>La</code>、<code>Lb</code>、</li>
+<li>链表 <code>La</code> 和 <code>Lb</code> 各自的首元结点指针<code>pa</code>、  <code>pb</code>、</li>
+<li>头指针<code>Lc</code>——由于要求不占用额外空间，<code>Lc</code>指向（借用）<code>La</code> 的头结点</li>
+</ol>
+</li>
+<li>依次循环<code>La</code>、<code>Lb</code> ，<ol>
+<li>比较<code>pa</code>、<code>pb</code>两者的 <code>data</code> 值大小</li>
+<li>若相等，把<code>pa</code>存到<code>Lc</code>里，释放<code>pb</code>指定结点</li>
+<li>若不相等，释放掉较小的元素</li>
+</ol>
+</li>
+<li>若循环至某一方为空，删除&#x2F;释放非空表所有元素</li>
+</ol>
+<h4 id="4-代码实现"><a href="#4-代码实现" class="headerlink" title="4. 代码实现"></a>4. 代码实现</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">Intersection</span><span class="params">(LinkList *La, LinkList *Lb, LinkList *Lc)</span>&#123;</span><br><span class="line">    <span class="comment">//目标: 求2个递增的有序链表La,Lb的交集, 使用头指针Lc指向带回;</span></span><br><span class="line">    LinkList pa,pb,pc,temp;</span><br><span class="line">    <span class="comment">//pa 是链表La的工作指针,pb 是链表Lb的工作指针, 初始化为首元结点;La的头结点作为Lc的头结点;</span></span><br><span class="line">    pa = (*La)-&gt;next;</span><br><span class="line">    pb = (*Lb)-&gt;next;</span><br><span class="line">    *Lc = pc = *La;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (pa &amp;&amp; pb) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (pa-&gt;data == pb-&gt;data) &#123;</span><br><span class="line">            <span class="comment">//相等,交集并入结果链表中;</span></span><br><span class="line">            <span class="comment">//(1).取La中的元素,将pa链接到pc的后面,pa指针后移;</span></span><br><span class="line">            pc-&gt;next = pa;</span><br><span class="line">            pc = pa;</span><br><span class="line">            pa = pa-&gt;next;</span><br><span class="line">            <span class="comment">//(2)删除Lb中对应相等的元素</span></span><br><span class="line">            temp = pb;</span><br><span class="line">            pb = pb-&gt;next;</span><br><span class="line">            <span class="built_in">free</span>(temp);</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(pa-&gt;data &lt; pb-&gt;data)&#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">//删除较小值La的元素;</span></span><br><span class="line">            temp = pa;</span><br><span class="line">            pa = pa-&gt;next;</span><br><span class="line">            <span class="built_in">free</span>(temp);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//删除较小值Lb中的元素</span></span><br><span class="line">            temp = pb;</span><br><span class="line">            pb = pb-&gt;next;</span><br><span class="line">            <span class="built_in">free</span>(temp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//Lb为空,删除非空表La中的所有元素</span></span><br><span class="line">    <span class="keyword">while</span> (pa) &#123;</span><br><span class="line">       </span><br><span class="line">        temp = pa;</span><br><span class="line">        pa = pa-&gt;next;</span><br><span class="line">        <span class="built_in">free</span>(temp);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//La为空,删除非空表Lb中的所有元素</span></span><br><span class="line">    <span class="keyword">while</span> (pb) &#123;</span><br><span class="line">        temp = pb;</span><br><span class="line">        pb = pb-&gt;next;</span><br><span class="line">        <span class="built_in">free</span>(temp);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    pc-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="built_in">free</span>(*Lb);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-流程图解-1"><a href="#5-流程图解-1" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><h3 id="Q3-链表原地旋转【面试常有】"><a href="#Q3-链表原地旋转【面试常有】" class="headerlink" title="Q3 链表原地旋转【面试常有】"></a>Q3 链表原地旋转【面试常有】</h3><h4 id="1-题目：-2"><a href="#1-题目：-2" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>设计一个算法,将链表中所有节点的链接方向”原地旋转”，即要求<strong>仅仅利用原表的存储空间</strong>。换句话说,要求算法空间复杂度为O(1);</p>
+<p>例如:L &#x3D; <em>{0,2,4,6,8,10}</em>, 逆转后: L &#x3D; <em>{10,8,6,4,2,0}</em>;</p>
+<h4 id="2-分析：-2"><a href="#2-分析：-2" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
+<li>不可以开辟空间</li>
+<li>只能移动指针</li>
+<li>首选<strong>头插法</strong></li>
+</ul>
+<h4 id="3-算法思路：-1"><a href="#3-算法思路：-1" class="headerlink" title="3. 算法思路："></a>3. 算法思路：</h4><ol>
+<li>保持当前头结点的下个结点 </li>
+<li>将当前头结点的指向指到上一个结点</li>
+<li>把当前头结点保存为上一个结点</li>
+<li>将头结点的下一个结点，设定为头结点</li>
+</ol>
+<h4 id="4-代码实现：-1"><a href="#4-代码实现：-1" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">struct</span> LinkList* <span class="title function_">reverseList</span><span class="params">(<span class="keyword">struct</span> LinkList* head)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(head == <span class="literal">NULL</span> || head-&gt;next == <span class="literal">NULL</span>)</span><br><span class="line">        <span class="keyword">return</span> head;</span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">LinkList</span> *<span class="title">preNode</span> =</span> reverseList(head-&gt;next);</span><br><span class="line">    </span><br><span class="line">    head-&gt;next-&gt;next = head;</span><br><span class="line">    head-&gt;next = <span class="literal">NULL</span>;</span><br><span class="line">     </span><br><span class="line">    <span class="keyword">return</span> preNode;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="5-流程图解-2"><a href="#5-流程图解-2" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><p><img src="/p/50518edc/003.png"></p>
+<h3 id="Q4-链表删除指定元素"><a href="#Q4-链表删除指定元素" class="headerlink" title="Q4 链表删除指定元素"></a>Q4 链表删除指定元素</h3><h4 id="1-题目：-3"><a href="#1-题目：-3" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>设计一个算法，删除递增有序链表中值大于等于<code>mink</code>且小于等于<code>maxk</code>（<code>mink, maxk</code>是给定的两个参数,其值可以和表中的元素相同,也可以不同）的所有元素;</p>
+<h4 id="2-分析：-3"><a href="#2-分析：-3" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
+<li>链表递增</li>
+<li>给定上边界、下边界</li>
+<li>上下边界找到后，桥接起来</li>
+<li>边界中其他元素删除</li>
+</ul>
+<h4 id="3-算法思路：-2"><a href="#3-算法思路：-2" class="headerlink" title="3. 算法思路："></a>3. 算法思路：</h4><ol>
+<li><code>mink</code>：循环链表1次，找到第一个大于<code>mink</code>的结点，记住其前驱结点<code>pre</code></li>
+<li><code>maxk</code>：循环链表2次，找到大于等于maxk 的结点，用<code>p</code>标记</li>
+<li>桥接：把 <code>pre -&gt; next</code> 指向结点<code>p</code></li>
+<li>循环释放，释放<code>pre</code>、<code>p</code> 中间的结点</li>
+</ol>
+<h4 id="4-代码实现：-2"><a href="#4-代码实现：-2" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">DeleteMinMax</span><span class="params">(LinkList *L, <span class="type">int</span> mink, <span class="type">int</span> maxk)</span>&#123;</span><br><span class="line">    <span class="comment">//目标: 删除递增有序链表L中值大于等于mink 和小于等于maxk的所有元素</span></span><br><span class="line">    </span><br><span class="line">    LinkList p,q,pre;</span><br><span class="line">    pre = *L;</span><br><span class="line">    LinkList temp;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//p指向首元结点</span></span><br><span class="line">    p = (*L)-&gt;next;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//1.查找第一值大于mink的结点</span></span><br><span class="line">    <span class="keyword">while</span> (p &amp;&amp; p-&gt;data &lt; mink) &#123;</span><br><span class="line">        <span class="comment">//指向前驱结点</span></span><br><span class="line">        pre = p;</span><br><span class="line">        p = p-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//2.查找第一个值大于等于maxk的结点</span></span><br><span class="line">    <span class="keyword">while</span> (p &amp;&amp; p-&gt;data&lt;=maxk) &#123;</span><br><span class="line">        p = p-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//3.修改待删除的结点指针</span></span><br><span class="line">    q = pre-&gt;next;</span><br><span class="line">    pre-&gt;next = p;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (q != p) &#123;</span><br><span class="line">        temp = q-&gt;next;</span><br><span class="line">        <span class="built_in">free</span>(q);</span><br><span class="line">        q = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-流程图解-3"><a href="#5-流程图解-3" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><h3 id="Q5-数组平移"><a href="#Q5-数组平移" class="headerlink" title="Q5 数组平移"></a>Q5 数组平移</h3><h4 id="1-题目：-4"><a href="#1-题目：-4" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>设将n(n&gt;1)个整数存放到一维数组R中, 试设计一个在时间和空间两方面都尽可能高效的算法;将R中保存的序列循环左移p个位置 <em>(0&lt;p&lt;n)</em> 个位置， 即将R中的数据由 <em>(x0,x1,……,xn-1)</em> 变换为*(xp,xp+1,…,xn-1,x0,x1,…,xp-1)*.</p>
+<p> 例如: </p>
+<blockquote>
+<p>   pre[10] &#x3D; <em>{0,1,2,3,4,5,6,7,8,9},</em></p>
+<p>   n &#x3D; 10,p &#x3D; 3;</p>
+<p>   pre[10] &#x3D; <em>{3,4,5,6,7,8,9,0,1,2}</em></p>
+</blockquote>
+<h4 id="2-分析：-4"><a href="#2-分析：-4" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
+<li>数组而非链表</li>
+<li>往左移动，原左边的元素依次推到右边</li>
+<li>本质上两个区块元素交换，可考虑先原地旋转</li>
+<li>再将两个区块元素各自原地旋转</li>
+</ul>
+<h4 id="3-算法思路：-3"><a href="#3-算法思路：-3" class="headerlink" title="3. 算法思路："></a>3. 算法思路：</h4><ol>
+<li>将原数组原地旋转，成为*[9, 8, 7, 6, 5, 4, 3, 2, 1, 0]*</li>
+<li>从后面第<code>p</code>位，将原数组断成为*[9, 8, 7, 6, 5, 4, 3]*, [2, 1, 0]</li>
+<li>再将新的两个数组原地旋转*[3, 4, 5, 6, 7, 8, 9]*, <em>[0, 1, 2]</em></li>
+<li>合并成为目标数组 <em>[3, 4, 5, 6, 7, 8, 9, 0, 1, 2]</em></li>
+</ol>
+<h4 id="4-代码实现：-3"><a href="#4-代码实现：-3" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">Reverse</span><span class="params">(<span class="type">int</span> *pre,<span class="type">int</span> left ,<span class="type">int</span> right)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//将数组R中的数据原地逆置</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//i等于左边界left,j等于右边界right;</span></span><br><span class="line">    <span class="type">int</span> i = left,j = right;</span><br><span class="line">    <span class="type">int</span> temp;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//交换pre[i] 和 pre[j] 的值</span></span><br><span class="line">    <span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//交换</span></span><br><span class="line">        temp = pre[i];</span><br><span class="line">        pre[i] = pre[j];</span><br><span class="line">        pre[j] = temp;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//i右移,j左移</span></span><br><span class="line">        i++;</span><br><span class="line">        j--;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">LeftShift</span><span class="params">(<span class="type">int</span> *pre,<span class="type">int</span> n,<span class="type">int</span> p)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//将长度为n的数组pre 中的数据循环左移p个位置</span></span><br><span class="line">    <span class="keyword">if</span> (p&gt;<span class="number">0</span> &amp;&amp; p&lt;n) &#123;</span><br><span class="line">        <span class="comment">//1. 将数组中所有元素全部逆置</span></span><br><span class="line">        Reverse(pre, <span class="number">0</span>, n<span class="number">-1</span>);</span><br><span class="line">        <span class="comment">//2. 将前n-p个数据逆置</span></span><br><span class="line">        Reverse(pre, <span class="number">0</span>, n-p<span class="number">-1</span>);</span><br><span class="line">        <span class="comment">//3. 将后p个数据逆置</span></span><br><span class="line">        Reverse(pre, n-p, n<span class="number">-1</span>);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-流程图解-4"><a href="#5-流程图解-4" class="headerlink" title="5. 流程图解"></a>5. 流程图解</h4><h3 id="Q6-链表查主元素"><a href="#Q6-链表查主元素" class="headerlink" title="Q6 链表查主元素"></a>Q6 链表查主元素</h3><h4 id="1-题目：-5"><a href="#1-题目：-5" class="headerlink" title="1. 题目："></a>1. 题目：</h4><p>已知一个整数序列A &#x3D; (a0,a1,a2,…an-1)，其中(0&lt;&#x3D; ai &lt;&#x3D;n),(0&lt;&#x3D; i&lt;&#x3D;n)。</p>
+<p>若存在ap1&#x3D; ap2 &#x3D; …&#x3D; apm &#x3D; x，且m&gt;n&#x2F;2(0&lt;&#x3D;pk&lt;n,1&lt;&#x3D;k&lt;&#x3D;m)，则称x 为 A的主元素。</p>
+<p>例如,A &#x3D; (0,5,5,3,5,7,5,5)，则5是主元素；若B &#x3D; (0,5,5,3,5,1,5,7)，则A 中没有主元素，假设A中的n个元素保存在一个一维数组中，请设计一个尽可能高效的算法,找出数组元素中的主元素，若存在主元素则输出该元素，否则输出-1.</p>
+<h4 id="2-分析：-5"><a href="#2-分析：-5" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
+<li>递增数组</li>
+<li>数组中可能有多次出现的元素</li>
+<li>出现次数超过一半 &gt; <code>n/2</code> ，即为目标元素</li>
+</ul>
+<h4 id="3-算法思路：-4"><a href="#3-算法思路：-4" class="headerlink" title="3. 算法思路："></a>3. 算法思路：</h4><ol>
+<li>假定一个<strong>候选主元素</strong> <code>key</code> </li>
+<li>依次遍历循环数组，将<code>key</code> 与数组元素对比，记录其与其他元素相同的次数，记作<code>count</code>，<code>count</code> 初始值为<code>1</code></li>
+<li>如果遇到相同元素，<code>count++</code> ，否则 <code>count++</code></li>
+<li>循环中，如遇到<code>count</code> 为0，即重复次数达不到一半，将遇到的下一个元素设定为<code>key</code>, <code>count</code> 置<code>1</code>， 重新循环</li>
+<li>再次循环数组，计算数组中元素与<code>key</code> 重合次数，如大于 <code>n/2</code>， 即为主元素，否则无主元素。</li>
+</ol>
+<h4 id="4-代码实现：-4"><a href="#4-代码实现：-4" class="headerlink" title="4. 代码实现："></a>4. 代码实现：</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">MainElement</span><span class="params">(<span class="type">int</span> *A, <span class="type">int</span> n)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//目标: 求整数序列A中的主元素;</span></span><br><span class="line">    <span class="comment">//count 用来计数</span></span><br><span class="line">    <span class="type">int</span> count = <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//key 用来保存候选主元素, 初始A[0]</span></span><br><span class="line">    <span class="type">int</span> key = A[<span class="number">0</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//(1) 扫描数组,选取候选主元素</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//(2) 如果A[i]元素值 == key ,则候选主元素计数加1;</span></span><br><span class="line">        <span class="keyword">if</span> (A[i] == key) &#123;</span><br><span class="line">            count++;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//(3) 当前元素A[i] 非候选主元素,计数减1;</span></span><br><span class="line">            <span class="keyword">if</span>(count &gt;<span class="number">0</span>)&#123;</span><br><span class="line">                count--;</span><br><span class="line">                </span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">               <span class="comment">//(4) 如果count 等于0,则更换候选主元素,重新计数</span></span><br><span class="line">                key = A[i];</span><br><span class="line">                count = <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//如果count &gt;0</span></span><br><span class="line">    <span class="keyword">if</span> (count &gt;<span class="number">0</span>)&#123;</span><br><span class="line">        <span class="comment">//(5)统计候选主元素的实际出现次数</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = count = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">            <span class="keyword">if</span> (A[i] == key) count++;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//(6)判断count&gt;n/2, 确认key是不是主元素</span></span><br><span class="line">    <span class="keyword">if</span> (count &gt; n/<span class="number">2</span>) <span class="keyword">return</span> key;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">-1</span>; <span class="comment">//不存在主元素</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Q7-链表的元素删除"><a href="#Q7-链表的元素删除" class="headerlink" title="Q7 链表的元素删除"></a>Q7 链表的元素删除</h3><h4 id="1-题目"><a href="#1-题目" class="headerlink" title="1. 题目"></a>1. 题目</h4><p>用单链表保存m个整数, 结点的结构为*(data,link)<em>,且</em>|data|&lt;&#x3D;n*(n为正整数)。</p>
+<p>现在要去设计一个时间复杂度尽可能高效的算法。对于链表中的data 绝对值相等的结点, 仅保留第一次出现的结点,而删除其余绝对值相等的结点。例如,链表A &#x3D; <em>{21,-15,15,-7,15}</em>, 删除后的链表 A &#x3D; <em>{21,-15,-7}</em>;</p>
+<h4 id="2-分析：-6"><a href="#2-分析：-6" class="headerlink" title="2. 分析："></a>2. 分析：</h4><ul>
+<li>时间复杂度高效</li>
+<li>可用空间换时间——即开辟更多空间</li>
+<li>循环原链表，若元素已经出现过，保存第一个，删除其他绝对值相等的元素</li>
+</ul>
+<h4 id="3-算法思路：-5"><a href="#3-算法思路：-5" class="headerlink" title="3. 算法思路："></a>3. 算法思路：</h4><ol>
+<li>可额外开辟大小为 <code>n + 1</code> 的辅助数组，初始值为 0</li>
+<li>从首元结点开始遍历链表，检查元素值，用<code>t[|data|]</code> 计算链表元素出现的次数：<ol>
+<li>若元素<code>[｜data｜]</code> 为0，即首次出现，保留结点，使得 t[|data|] &#x3D; 1</li>
+<li>若 <code>[|data|]</code> 不为 0， 则将该结点从链表中删除。</li>
+</ol>
+</li>
+</ol>
+<h4 id="x"><a href="#x" class="headerlink" title="x"></a>x</h4><figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">DeleteEqualNode</span><span class="params">(LinkList *L,<span class="type">int</span> n)</span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//目标: 删除单链表中绝对值相等的结点;</span></span><br><span class="line">    <span class="comment">//1. 开辟辅助数组p.</span></span><br><span class="line">    <span class="type">int</span> *p = alloca(<span class="keyword">sizeof</span>(<span class="type">int</span>)*n);</span><br><span class="line">    LinkList r = *L;</span><br><span class="line">   </span><br><span class="line">    <span class="comment">//2.数组元素初始值置空</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">        *(p+i) = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//3.指针temp 指向首元结点</span></span><br><span class="line">    LinkList temp = (*L)-&gt;next;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//4.遍历链表,直到temp = NULL;</span></span><br><span class="line">    <span class="keyword">while</span> (temp!= <span class="literal">NULL</span>) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//5.如果该绝对值已经在结点上出现过,则删除该结点</span></span><br><span class="line">        <span class="keyword">if</span> (p[<span class="built_in">abs</span>(temp-&gt;data)] == <span class="number">1</span>) &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">//临时指针指向temp-&gt;next</span></span><br><span class="line">            r-&gt;next = temp-&gt;next;</span><br><span class="line">            <span class="comment">//删除temp指向的结点</span></span><br><span class="line">            <span class="built_in">free</span>(temp);</span><br><span class="line">            <span class="comment">//temp 指向删除结点下一个结点</span></span><br><span class="line">            temp = r-&gt;next;</span><br><span class="line">        &#125;<span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">//6. 未出现过的结点,则将数组中对应位置置为1;</span></span><br><span class="line">            p[<span class="built_in">abs</span>(temp-&gt;data)] = <span class="number">1</span>;</span><br><span class="line">            r = temp;</span><br><span class="line">            <span class="comment">//继续向后遍历结点</span></span><br><span class="line">            temp = temp-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-复杂度"><a href="#5-复杂度" class="headerlink" title="5. 复杂度"></a>5. 复杂度</h4><ul>
+<li>时间复杂度: O(m), 对长度为m的链表进行一趟遍历,则算法时间复杂度为O(m);</li>
+<li>空间复杂度: O(n)</li>
+</ul>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/50518edc.html">http://nilsli.com/p/50518edc.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E7%AE%97%E6%B3%95/">
+                                    <span class="chip bg-color">算法</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%BA%BF%E6%80%A7%E8%A1%A8/">
+                                    <span class="chip bg-color">线性表</span>
+                                </a>
+                            
+                                <a href="/tags/%E9%93%BE%E8%A1%A8/">
+                                    <span class="chip bg-color">链表</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-04-09T11-28-58',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/7914b7d0.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/2.jpg" class="responsive-img" alt="【数据结构与算法】-（6）栈">
+                        
+                        <span class="card-title">【数据结构与算法】-（6）栈</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+ 【数据结构与算法】-（1）基础篇
+ 【数据结构与算法】-（2）线性表基础
+ 【数据结构与算法】-（3）循环链表（单向）
+ 【数据结构与算法】-（4）双向链表和双向循环链表
+ 【数据结构与算法】-（5）链表面试题解析
+ 【数据结构与算法】
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-11
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%A0%88/">
+                        <span class="chip bg-color">栈</span>
+                    </a>
+                    
+                    <a href="/tags/%E9%98%9F%E5%88%97/">
+                        <span class="chip bg-color">队列</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/e318a7b3.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/10.jpg" class="responsive-img" alt="【底层探索】- 多线程(一)">
+                        
+                        <span class="card-title">【底层探索】- 多线程(一)</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            一、线程定义1.1 基本概念
+线程（Thread），有时被称为轻量级进程（Lightweight Progress, LWP），是程序执行流的最小单位。
+
+一个标准的线程由线程ID、当前指令指针（PC）、寄存器集合和堆栈组成。通常意义上，一
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-06
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/">
+                        <span class="chip bg-color">多线程</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BA%BF%E7%A8%8B/">
+                        <span class="chip bg-color">线程</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%BF%9B%E7%A8%8B/">
+                        <span class="chip bg-color">进程</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

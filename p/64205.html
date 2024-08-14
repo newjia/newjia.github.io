@@ -1,0 +1,1234 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="方法的本质3_消息查找流程, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>方法的本质3_消息查找流程 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/22.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">方法的本质3_消息查找流程</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E5%BA%95%E5%B1%82/">
+                                <span class="chip bg-color">底层</span>
+                            </a>
+                        
+                            <a href="/tags/ios/">
+                                <span class="chip bg-color">ios</span>
+                            </a>
+                        
+                            <a href="/tags/%E6%BA%90%E7%A0%81/">
+                                <span class="chip bg-color">源码</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%B1%BB/">
+                                <span class="chip bg-color">类</span>
+                            </a>
+                        
+                            <a href="/tags/%E7%BB%93%E6%9E%84/">
+                                <span class="chip bg-color">结构</span>
+                            </a>
+                        
+                            <a href="/tags/objc/">
+                                <span class="chip bg-color">objc</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-03-06
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    1.1k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    5 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p>本页所使用的objc runtime 756.2，来自<a target="_blank" rel="noopener" href="https://github.com/RetVal/objc-runtime">GITHUB</a></p>
+</blockquote>
+<h2 id="1-概念"><a href="#1-概念" class="headerlink" title="1. 概念"></a>1. 概念</h2><p>在前文中，已经总结了方法查找的流程，今天从代码层面上继续阐述。</p>
+<p>isa 的指向图如下所示：</p>
+<p>   <img src="/p/64205/001.png" alt="消息的查找流程图"></p>
+<h2 id="2-方法查找流程"><a href="#2-方法查找流程" class="headerlink" title="2. 方法查找流程"></a>2. 方法查找流程</h2><h3 id="2-1-从业务代码分析"><a href="#2-1-从业务代码分析" class="headerlink" title="2.1 从业务代码分析"></a>2.1 从业务代码分析</h3><p><strong>配置代码环境：</strong>，先从子类父类方法查找说起，先创建几个类，有:</p>
+<ul>
+<li><p>父类 <strong>Person</strong> 继承自<strong>NSObject</strong>，有方法<code>talk</code></p>
+</li>
+<li><p>子类 <strong>Student</strong> 继承自 <strong>Person</strong>，有方法 <code>sayEnglish</code></p>
+</li>
+<li><p>扩展 <strong>NSObject + sayGerman</strong>，有方法 <code>sayGerman</code></p>
+</li>
+</ul>
+<p>具体代码如下所示</p>
+<p><img src="/p/64205/003.png" alt="业务代码类结构"></p>
+<p>主业务代码图：</p>
+<p><img src="/p/64205/004.png" alt="业务执行方法图"></p>
+<p>由上图可以看出，我们生成的子类<code>Student</code> 对象，既可以执行自己的对象方法<code>sayEnglish</code>，也可以执行父类方法<code>talk</code>，当需要执行的方法——子类和父类都没有之后，也可以执行根类扩展方法<code>sayGerman</code>。</p>
+<blockquote>
+<p>查找逻辑图可以初步理解为：子类——&gt; 父类——&gt; 父类的父类 ——&gt;根元类(NSObject)</p>
+</blockquote>
+<p>类方法也是类似的，就不赘述</p>
+<h3 id="2-2-源码分析"><a href="#2-2-源码分析" class="headerlink" title="2.2 源码分析"></a>2.2 源码分析</h3><h4 id="2-2-1-class-lookupMethodAndLoadCache3-慢速查找开启"><a href="#2-2-1-class-lookupMethodAndLoadCache3-慢速查找开启" class="headerlink" title="2.2.1 class_lookupMethodAndLoadCache3 - 慢速查找开启"></a>2.2.1 <strong>class_lookupMethodAndLoadCache3</strong> - 慢速查找开启</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">/***********************************************************************</span></span><br><span class="line"><span class="comment">* _class_lookupMethodAndLoadCache.</span></span><br><span class="line"><span class="comment">* Method lookup for dispatchers ONLY. OTHER CODE SHOULD USE lookUpImp().</span></span><br><span class="line"><span class="comment">* This lookup avoids optimistic cache scan because the dispatcher </span></span><br><span class="line"><span class="comment">* already tried that.</span></span><br><span class="line"><span class="comment">**********************************************************************/</span></span><br><span class="line">IMP _class_lookupMethodAndLoadCache3(id obj, SEL sel, Class cls)</span><br><span class="line">&#123;        </span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">lookUpImpOrForward</span>(cls, sel, obj, </span><br><span class="line">                              YES<span class="comment">/*initialize*/</span>, NO<span class="comment">/*cache*/</span>, YES<span class="comment">/*resolver*/</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>原来上文留下的<strong>class_lookupMethodAndLoadCache3</strong> 方法，最终执行的方法是<strong>lookUpImpOrForward</strong>，继续探究一下！</p>
+<h4 id="lookUpImpOrForward-查找Imp-或转发消息"><a href="#lookUpImpOrForward-查找Imp-或转发消息" class="headerlink" title="lookUpImpOrForward - 查找Imp 或转发消息"></a><strong>lookUpImpOrForward</strong> - 查找Imp 或转发消息</h4><h5 id="乐观检查是否有缓存"><a href="#乐观检查是否有缓存" class="headerlink" title="乐观检查是否有缓存"></a>乐观检查是否有缓存</h5><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Optimistic cache lookup</span></span><br><span class="line"><span class="keyword">if</span> (cache) &#123;</span><br><span class="line">   imp = <span class="built_in">cache_getImp</span>(cls, sel);</span><br><span class="line">   <span class="keyword">if</span> (imp) <span class="keyword">return</span> imp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="查找类是否缓存过"><a href="#查找类是否缓存过" class="headerlink" title="查找类是否缓存过"></a>查找类是否缓存过</h5><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// runtimeLock is held during isRealized and isInitialized checking</span></span><br><span class="line"><span class="comment">// to prevent races against concurrent realization.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// runtimeLock is held during method search to make</span></span><br><span class="line"><span class="comment">// method-lookup + cache-fill atomic with respect to method addition.</span></span><br><span class="line"><span class="comment">// Otherwise, a category could be added but ignored indefinitely because</span></span><br><span class="line"><span class="comment">// the cache was re-filled with the old value after the cache flush on</span></span><br><span class="line"><span class="comment">// behalf of the category.</span></span><br><span class="line"></span><br><span class="line">runtimeLock.<span class="built_in">lock</span>();</span><br><span class="line"><span class="built_in">checkIsKnownClass</span>(cls);</span><br></pre></td></tr></table></figure>
+
+<p>这里通过<code>runtimeLock</code> 锁住该部分内存，进行查找，执行了<code>isKnownClass</code>的方法，具体实现在这里</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">/***********************************************************************</span></span><br><span class="line"><span class="comment">* isKnownClass</span></span><br><span class="line"><span class="comment">* Return true if the class is known to the runtime (located within the</span></span><br><span class="line"><span class="comment">* shared cache, within the data segment of a loaded image, or has been</span></span><br><span class="line"><span class="comment">* allocated with obj_allocateClassPair).</span></span><br><span class="line"><span class="comment">**********************************************************************/</span></span><br><span class="line"><span class="function"><span class="type">static</span> <span class="type">bool</span> <span class="title">isKnownClass</span><span class="params">(Class cls)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// The order of conditionals here is important for speed. We want to</span></span><br><span class="line">    <span class="comment">// put the most common cases first, but also the fastest cases</span></span><br><span class="line">    <span class="comment">// first. Checking the shared region is both fast and common.</span></span><br><span class="line">    <span class="comment">// Checking allocatedClasses is fast, but may not be common,</span></span><br><span class="line">    <span class="comment">// depending on what the program is doing. Checking if data segments</span></span><br><span class="line">    <span class="comment">// contain the address is slow, so do it last.</span></span><br><span class="line">    <span class="keyword">return</span> (<span class="built_in">sharedRegionContains</span>(cls) ||</span><br><span class="line">            <span class="built_in">NXHashMember</span>(allocatedClasses, cls) ||</span><br><span class="line">            <span class="built_in">dataSegmentsContain</span>(cls));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="在类的缓存（cache-t）找"><a href="#在类的缓存（cache-t）找" class="headerlink" title="在类的缓存（cache_t）找"></a>在类的缓存（cache_t）找</h5><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Try this class&#x27;s cache.</span></span><br><span class="line"></span><br><span class="line"> imp = <span class="built_in">cache_getImp</span>(cls, sel);</span><br><span class="line"> <span class="keyword">if</span> (imp) <span class="keyword">goto</span> done;</span><br></pre></td></tr></table></figure>
+
+<h5 id="在类的方法列表里寻找"><a href="#在类的方法列表里寻找" class="headerlink" title="在类的方法列表里寻找"></a>在类的方法列表里寻找</h5><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Try this class&#x27;s method lists.</span></span><br><span class="line">&#123;</span><br><span class="line">    Method meth = <span class="built_in">getMethodNoSuper_nolock</span>(cls, sel);</span><br><span class="line">    <span class="keyword">if</span> (meth) &#123;</span><br><span class="line">        <span class="built_in">log_and_fill_cache</span>(cls, meth-&gt;imp, sel, inst, cls);</span><br><span class="line">        imp = meth-&gt;imp;</span><br><span class="line">        <span class="keyword">goto</span> done;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="在父类的缓存和方法列表寻找"><a href="#在父类的缓存和方法列表寻找" class="headerlink" title="在父类的缓存和方法列表寻找"></a>在父类的缓存和方法列表寻找</h5><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Try superclass caches and method lists.</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">unsigned</span> attempts = <span class="built_in">unreasonableClassCount</span>();</span><br><span class="line">    <span class="keyword">for</span> (Class curClass = cls-&gt;superclass;</span><br><span class="line">         curClass != nil;</span><br><span class="line">         curClass = curClass-&gt;superclass)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// Halt if there is a cycle in the superclass chain.</span></span><br><span class="line">        <span class="keyword">if</span> (--attempts == <span class="number">0</span>) &#123;</span><br><span class="line">            _objc_fatal(<span class="string">&quot;Memory corruption in class list.&quot;</span>);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>父类缓存（Cache）找</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Superclass cache.</span></span><br><span class="line"> imp = <span class="built_in">cache_getImp</span>(curClass, sel);</span><br><span class="line"> <span class="keyword">if</span> (imp) &#123;</span><br><span class="line">     <span class="keyword">if</span> (imp != (IMP)_objc_msgForward_impcache) &#123;</span><br><span class="line">         <span class="comment">// Found the method in a superclass. Cache it in this class.</span></span><br><span class="line">         <span class="built_in">log_and_fill_cache</span>(cls, imp, sel, inst, curClass);</span><br><span class="line">         <span class="keyword">goto</span> done;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">else</span> &#123;</span><br><span class="line">         <span class="comment">// Found a forward:: entry in a superclass.</span></span><br><span class="line">         <span class="comment">// Stop searching, but don&#x27;t cache yet; call method </span></span><br><span class="line">         <span class="comment">// resolver for this class first.</span></span><br><span class="line">         <span class="keyword">break</span>;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>父类方法列表找</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Superclass method list.</span></span><br><span class="line">Method meth = <span class="built_in">getMethodNoSuper_nolock</span>(curClass, sel);</span><br><span class="line"><span class="keyword">if</span> (meth) &#123;</span><br><span class="line">    <span class="built_in">log_and_fill_cache</span>(cls, meth-&gt;imp, sel, inst, curClass);</span><br><span class="line">    imp = meth-&gt;imp;</span><br><span class="line">    <span class="keyword">goto</span> done;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h5 id="有可能内存覆盖，再给一次查找"><a href="#有可能内存覆盖，再给一次查找" class="headerlink" title="有可能内存覆盖，再给一次查找"></a>有可能内存覆盖，再给一次查找</h5><p>这里的核心方法是</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// No implementation found. Try method resolver once.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (resolver  &amp;&amp;  !triedResolver) &#123;</span><br><span class="line">    runtimeLock.<span class="built_in">unlock</span>();</span><br><span class="line">    <span class="built_in">resolveMethod</span>(cls, sel, inst);</span><br><span class="line">    runtimeLock.<span class="built_in">lock</span>();</span><br><span class="line">    <span class="comment">// Don&#x27;t cache the result; we don&#x27;t hold the lock so it may have </span></span><br><span class="line">    <span class="comment">// changed already. Re-do the search from scratch instead.</span></span><br><span class="line">    triedResolver = YES;</span><br><span class="line">    <span class="keyword">goto</span> retry;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="父类也没有——查找失败——报错"><a href="#父类也没有——查找失败——报错" class="headerlink" title="父类也没有——查找失败——报错"></a>父类也没有——查找失败——报错</h5><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// No implementation found, and method resolver didn&#x27;t help. </span></span><br><span class="line"><span class="comment">// Use forwarding.</span></span><br><span class="line"></span><br><span class="line">imp = (IMP)_objc_msgForward_impcache;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>但是这个<code>_objc_msgForward_impcache</code> 的实现可不好找，在源码里只看到了这些：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">if</span> !OBJC_OLD_DISPATCH_PROTOTYPES</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">void</span> _objc_msgForward_impcache(<span class="type">void</span>);</span><br></pre></td></tr></table></figure>
+
+<p>最终通过搜索查找**_objc_msgForward_impcache**，在汇编源码找到了类似的代码<img src="/p/64205/005.png" alt="消息转发流程"><br>得到这个叫做__objc_forward_handler 的代码块，搜索得知它继承自objc_defaultForwardHandler，</p>
+<p>继续查找，得到最终的源码如下：</p>
+<p><img src="/p/64205/006.png" alt="消息查找失败报错"></p>
+<p>OH MY GOD! 原来这就是传说中——让程序员捶胸顿足的方法查找失败的代码</p>
+<p><img src="/p/64205/007.png" alt="消息查找失败报错"></p>
+<p>至此，方法查找的流程已经捋完。</p>
+<h2 id="3-小结"><a href="#3-小结" class="headerlink" title="3. 小结"></a>3. 小结</h2><p>方法查找的流程，就是在类里查找缓存与方法列表里挖掘的过程。</p>
+<p>如上文阐述：</p>
+<blockquote>
+<p>方法查找：缓存查找 —— <strong>类</strong>的方法列表 —— 父类的方法列表 （递归）—— 动态方法解析 —— 结束</p>
+</blockquote>
+<p><img src="/p/64205/002.png" alt="消息转发流程"></p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/64205.html">http://nilsli.com/p/64205.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E5%BA%95%E5%B1%82/">
+                                    <span class="chip bg-color">底层</span>
+                                </a>
+                            
+                                <a href="/tags/ios/">
+                                    <span class="chip bg-color">ios</span>
+                                </a>
+                            
+                                <a href="/tags/%E6%BA%90%E7%A0%81/">
+                                    <span class="chip bg-color">源码</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%B1%BB/">
+                                    <span class="chip bg-color">类</span>
+                                </a>
+                            
+                                <a href="/tags/%E7%BB%93%E6%9E%84/">
+                                    <span class="chip bg-color">结构</span>
+                                </a>
+                            
+                                <a href="/tags/objc/">
+                                    <span class="chip bg-color">objc</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-03-06T16-33-26',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/37569.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/20.jpg" class="responsive-img" alt="【休闲】西湖一瞥">
+                        
+                        <span class="card-title">【休闲】西湖一瞥</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            逛次逛次的西湖今天过来平海路的Apple 直营店给电脑做大保健，顺便看了一眼西湖。
+湖边景色依旧宜人，可惜游人寥寥。
+期待一切顺利，然后恢复到游人如织的景色。
+
+
+
+
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-03-09
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E4%BC%91%E9%97%B2/">
+                        <span class="chip bg-color">休闲</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%9D%AD%E5%B7%9E/">
+                        <span class="chip bg-color">杭州</span>
+                    </a>
+                    
+                    <a href="/tags/%E8%A5%BF%E6%B9%96/">
+                        <span class="chip bg-color">西湖</span>
+                    </a>
+                    
+                    <a href="/tags/Apple/">
+                        <span class="chip bg-color">Apple</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/23281.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/14.jpg" class="responsive-img" alt="方法的本质2_从objc_msgSend谈起">
+                        
+                        <span class="card-title">方法的本质2_从objc_msgSend谈起</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+方法的本质，就是消息传递…
+
+
+本页所使用的objc runtime 756.2，来自GITHUB
+
+一、引子：Runtime概念我们都知道，在运行OC代码时，类或者对象在调用方法时会用到runtime，那么，到底什么是运行时呢？
+寻找一
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-02-24
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E5%BA%95%E5%B1%82/">
+                        <span class="chip bg-color">底层</span>
+                    </a>
+                    
+                    <a href="/tags/ios/">
+                        <span class="chip bg-color">ios</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%BA%90%E7%A0%81/">
+                        <span class="chip bg-color">源码</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%B1%BB/">
+                        <span class="chip bg-color">类</span>
+                    </a>
+                    
+                    <a href="/tags/%E7%BB%93%E6%9E%84/">
+                        <span class="chip bg-color">结构</span>
+                    </a>
+                    
+                    <a href="/tags/objc/">
+                        <span class="chip bg-color">objc</span>
+                    </a>
+                    
+                    <a href="/tags/msgSend/">
+                        <span class="chip bg-color">msgSend</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>

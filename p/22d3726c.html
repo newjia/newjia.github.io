@@ -1,0 +1,1435 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="【数据结构与算法】-（8.3）KMP算法, 李佳的技术博客">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+    <title>【数据结构与算法】-（8.3）KMP算法 | 李佳的技术博客</title>
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/awesome/css/all.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my.css">
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/jquery/jquery.min.js"></script>
+    
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="李佳的技术博客" type="application/atom+xml">
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css">
+<link rel="stylesheet" href="/css/prism-line-numbers.css" type="text/css"></head>
+
+
+<body>
+    <header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">李佳的技术博客</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fas fa-bars"></i></a>
+<ul class="right nav-menu">
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/" class="waves-effect waves-light">
+      
+      <i class="fas fa-home" style="zoom: 0.6;"></i>
+      
+      <span>首页</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/tags" class="waves-effect waves-light">
+      
+      <i class="fas fa-tags" style="zoom: 0.6;"></i>
+      
+      <span>标签</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/categories" class="waves-effect waves-light">
+      
+      <i class="fas fa-bookmark" style="zoom: 0.6;"></i>
+      
+      <span>分类</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/archives" class="waves-effect waves-light">
+      
+      <i class="fas fa-archive" style="zoom: 0.6;"></i>
+      
+      <span>归档</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/about" class="waves-effect waves-light">
+      
+      <i class="fas fa-user-circle" style="zoom: 0.6;"></i>
+      
+      <span>关于</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/contact" class="waves-effect waves-light">
+      
+      <i class="fas fa-comments" style="zoom: 0.6;"></i>
+      
+      <span>留言板</span>
+    </a>
+    
+  </li>
+  
+  <li class="hide-on-med-and-down nav-item">
+    
+    <a href="/friends" class="waves-effect waves-light">
+      
+      <i class="fas fa-address-book" style="zoom: 0.6;"></i>
+      
+      <span>友情链接</span>
+    </a>
+    
+  </li>
+  
+  <li>
+    <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+      <i id="searchIcon" class="fas fa-search" title="搜索" style="zoom: 0.85;"></i>
+    </a>
+  </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">李佳的技术博客</div>
+        <div class="logo-desc">
+            
+            Never really desperate, only the lost of the soul.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li class="m-nav-item">
+	  
+		<a href="/" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-home"></i>
+			
+			首页
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/tags" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-tags"></i>
+			
+			标签
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/categories" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-bookmark"></i>
+			
+			分类
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/archives" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-archive"></i>
+			
+			归档
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/about" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-user-circle"></i>
+			
+			关于
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/contact" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-comments"></i>
+			
+			留言板
+		</a>
+          
+        </li>
+        
+        <li class="m-nav-item">
+	  
+		<a href="/friends" class="waves-effect waves-light">
+			
+			    <i class="fa-fw fas fa-address-book"></i>
+			
+			友情链接
+		</a>
+          
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+    
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/7.jpg')">
+    <div class="container" style="right: 0px;left: 0px;">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <h1 class="description center-align post-title">【数据结构与算法】-（8.3）KMP算法</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        width: 345px;
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content {
+        height: calc(100vh - 250px);
+        overflow: auto;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 15px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E7%AE%97%E6%B3%95/">
+                                <span class="chip bg-color">算法</span>
+                            </a>
+                        
+                            <a href="/tags/KMP/">
+                                <span class="chip bg-color">KMP</span>
+                            </a>
+                        
+                            <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9F%A5%E6%89%BE/">
+                                <span class="chip bg-color">字符串查找</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                
+                <div class="post-date info-break-policy">
+                    <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-04-23
+                </div>
+                
+
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
+                    4.1k
+                </div>
+                
+
+                
+                <div class="info-break-policy">
+                    <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                    17 分
+                </div>
+                
+
+                
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="far fa-eye fa-fw"></i>阅读次数:&nbsp;&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <blockquote>
+<p><a href="https://nilsli.com/p/43384.html">【数据结构与算法】-（1）基础篇</a></p>
+<p><a href="https://nilsli.com/p/43366.html">【数据结构与算法】-（2）线性表基础</a></p>
+<p><a href="https://nilsli.com/p/54688.html">【数据结构与算法】-（3）循环链表（单向）</a></p>
+<p><a href="https://nilsli.com/p/56790.html">【数据结构与算法】-（4）双向链表和双向循环链表</a></p>
+<p><a href="https://nilsli.com/p/50518edc.html">【数据结构与算法】-（5）链表面试题解析</a></p>
+<p><a href="https://nilsli.com/p/7914b7d0.html">【数据结构与算法】-（6）栈</a></p>
+<p><a href="https://nilsli.com/p/c0a767bd.html">【数据结构与算法】-（7）队列</a></p>
+<p><a href="https://nilsli.com/p/b0e10b1c.html">【数据结构与算法】-（8）栈之算法题</a></p>
+<p><a href="https://nilsli.com/p/cc625709.html">【数据结构与算法】-（8.1）字符串去重算法</a></p>
+<p><a href="https://nilsli.com/p/8a586c1e.html">【数据结构与算法】-（8.2）字符串搜索算法和RK&amp;BP算法</a></p>
+</blockquote>
+<h2 id="〇、引言"><a href="#〇、引言" class="headerlink" title="〇、引言"></a>〇、引言</h2><p>在上篇文章中，我们着重介绍了朴素算法（BF算法）以及RK算法，是否还有更优的选择呢，</p>
+<h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><blockquote>
+<p><strong>克努斯-莫里斯-普拉特算法</strong></p>
+<p>在计算机科学中，Knuth-Morris-Pratt字符串查找算法（简称为KMP算法）可在一个主文本字符串S内查找一个词W的出现位置。此算法通过运用对这个词在不匹配时本身就包含足够的信息来确定下一个匹配将在哪里开始的发现，从而避免重新检查先前匹配的字符。</p>
+</blockquote>
+<p>这个算法是由高德纳和沃恩·普拉特在1974年构思，同年詹姆斯·H·莫里斯也独立地设计出该算法，最终由三人于1977年联合发表。</p>
+<h2 id="二、原理"><a href="#二、原理" class="headerlink" title="二、原理"></a>二、原理</h2><h3 id="2-1-回顾BF-算法"><a href="#2-1-回顾BF-算法" class="headerlink" title="2.1 回顾BF 算法"></a>2.1 回顾BF 算法</h3><p>再次回顾一下字符串查找的题目，给定一个字符串<code>S = &#39;abcdbdacd&#39;</code> ，模式串<code>T = &#39;abcdz&#39;&#39;</code> ，在这个场景下，S 和 T 的前4个字符都相等，从第5个字符开始不等。查找流程，如果所示</p>
+<p><img src="/p/22d3726c/001.png"></p>
+<p><img src="/p/22d3726c/002.png"></p>
+<p><img src="/p/22d3726c/003.png"></p>
+<p><img src="/p/22d3726c/004.png"></p>
+<h3 id="2-2-弊端：无用回溯"><a href="#2-2-弊端：无用回溯" class="headerlink" title="2.2 弊端：无用回溯"></a>2.2 弊端：无用回溯</h3><p>从上面可以看到，按照之前的 <strong>BF</strong> 算法， 也就是朴素算法， 当模式串T 与主串S不一致时候，会将主串的起始序号<code>i</code> 回溯至2，模式串j回溯至1，重新开始匹配。</p>
+<p>这样看起来非常有条理，代码写起来也容易看懂，但是是不是有些冗余呢？</p>
+<p>这么说吧，给出的条件模式串<code>T</code> 中的 <code>abcdz</code>，第一位<code>a</code>与其他位的字符均不相，那么对比结果后，主串中的<code>S</code> 的首字符<code>a</code> 同样与不相等呢? 那么此时拿T中的首字符<code>a</code> 与<code>S</code> 中前2-5位字符，可以得知，必然都不相等。</p>
+<p>那么，是不是可以，将主串<code>S</code>中，确定与模式串<code>T</code>匹配过的那一部分字符跳过——也就是主串的 <code>i</code> 不再进行回溯，而只移动模式串<code>T</code>呢？答案是可以的，不过要分两种情况。</p>
+<h3 id="2-3-场景A：模式串T-无重复"><a href="#2-3-场景A：模式串T-无重复" class="headerlink" title="2.3 场景A：模式串T 无重复"></a>2.3 场景A：模式串<code>T</code> 无重复</h3><p>看看图所示。</p>
+<p>在<code>S</code> 和 <code>T</code>模式串 <code>T</code> 中前4位均匹配，第5位匹配失败。</p>
+<p>由于的<code>abcd</code> 均不相等，而第5位失败后，我们可以轻易得知，模式串首位<code>a</code> 与主串的前4位均不相等，故可以直接将主串的 <code>i</code> 移动到第5位与模式串相比。</p>
+<p>此时 <code>i</code> 不变，<code>j</code> 回归到1</p>
+<p><img src="/p/22d3726c/006.png"> </p>
+<h3 id="2-4-场景B：模式串T有重复"><a href="#2-4-场景B：模式串T有重复" class="headerlink" title="2.4 场景B：模式串T有重复"></a>2.4 场景B：模式串<code>T</code>有重复</h3><p>那么，如果模式串中，如果有其他字符与<code>a</code> 重复，是不是也可以全部跳过呢？</p>
+<p>当然不是。</p>
+<p>我们设定一个场景，主串S &#x3D; <code>abcabd</code>，模式串为T &#x3D; <code>abcabz</code></p>
+<p>我们通过BF 朴素算法再次排列一下，如图所示</p>
+<p><img src="/p/22d3726c/007.png"></p>
+<p>可见，由于模式串中首位<code>a</code> 与第二、三位的<code>b</code>、<code>c</code> 均不相等，所以第2、3步均为多余步骤，可以跳过。</p>
+<p>而来到第4步时，由于模式串<code>T</code> 自身有重复的字符，即第1位&#x3D;第4位，第2位&#x3D;第5位。</p>
+<p>在第1步中，模式串<code>T</code> 的第4位、第5位的<code>a</code>、<code>b</code> 均与 主串的第4、5位匹配过，是一一对应相等的。</p>
+<p>那么等于说，第4步中，模式串的首字符<code>a</code>、<code>b</code>，被移动与<code>S</code> 的第4、5位去匹配，也可以省略。</p>
+<p>汇总一下：<strong>模式串中有与首字符相同的字符，可以跳过一些重复判断步骤</strong>。</p>
+<p>如下图所示，这样的步骤就可以跳过：</p>
+<p><img src="/p/22d3726c/008.png"></p>
+<p>从上图中可以看到，主串的 <code>i</code>是不会像BF算法一样，反复的回溯的， 这也是KMP算法的重要的一点，这样可以省掉一部分的时间复杂度。</p>
+<h3 id="2-5-思考归纳"><a href="#2-5-思考归纳" class="headerlink" title="2.5 思考归纳"></a>2.5 思考归纳</h3><p>另外，<code>j</code>值的变化也值得寻味。</p>
+<p>场景A中，由于模式串没有重复元素，j 从5回到了1 （重复数0）</p>
+<p>而在场景B中，由于模式串中的 T &#x3D; <u>ab</u>c<u>ab</u>z，ab 是重复的，此时 j 跳到了3（重复数2）。</p>
+<p>这里根据反复的思考，得出 j 值变化多少，与重复数量——也就是前缀，后缀相似度有关。</p>
+<p>这里<strong>KMP算法</strong>，引入了一个next 数组，专门用来保管 <code>j</code>值的变化，数组结果如下</p>
+<p><img src="/p/22d3726c/009.png"></p>
+<p>究竟是怎么来的，继续探索</p>
+<h3 id="2-5-逆推next-数组"><a href="#2-5-逆推next-数组" class="headerlink" title="2.5 逆推next 数组"></a>2.5 逆推next 数组</h3><p>探索之前，要牢记一句话：<strong>next数组用来保存 <code>j</code> 的变化后的位置</strong>。</p>
+<h4 id="2-5-1-模式串为：abcdef"><a href="#2-5-1-模式串为：abcdef" class="headerlink" title="2.5.1 模式串为：abcdef"></a>2.5.1 模式串为：abcdef</h4><table>
+<thead>
+<tr>
+<th align="center">j</th>
+<th align="center">123456</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">模式串T</td>
+<td align="center">abcdef</td>
+</tr>
+</tbody></table>
+<ol>
+<li>当 j &#x3D; 1 时，next[j] &#x3D; 1 ，属第一种情况</li>
+<li>当 j &#x3D; 2 时，此时 j 从1位（a）到 j - 1 （b）位中，只有一个字符 ‘a’， 属于其他情况，此时 next[2] &#x3D; 1</li>
+<li>当 j &#x3D; 3 时，此时 j 从1位（a）到 j - 1 （ab）位中，有2个字符 ‘ab’，但是a、b并不相等，第二种情况并不满足，所以此时 next[3] &#x3D; 1</li>
+<li>当 j &#x3D; 4 时，此时 j 从1位（a）到 j - 1 （ab）位中，有3个字符 ‘abc’，但是a、b、c并不相等，第二种情况并不满足，所以此时 next[4] &#x3D; 1</li>
+<li>当 j &#x3D; 5 时，此时 j 从1位（a）到 j - 1 （abcde）位中，有4个字符 ‘abcd’，但是a、b、c、d并不相等，第二种情况并不满足，所以此时 next[5] &#x3D; 1</li>
+<li>于是总结一下得出next 数组为 <strong>01111</strong>。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th align="center">j</th>
+<th align="center">12345</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">模式串T</td>
+<td align="center">abcde</td>
+</tr>
+<tr>
+<td align="center">next[j]</td>
+<td align="center">01111</td>
+</tr>
+</tbody></table>
+<h4 id="2-5-2-模式串为：abcabf"><a href="#2-5-2-模式串为：abcabf" class="headerlink" title="2.5.2 模式串为：abcabf"></a>2.5.2 模式串为：abcabf</h4><table>
+<thead>
+<tr>
+<th align="center">j</th>
+<th align="center">123456</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">模式串</td>
+<td align="center">abcabf</td>
+</tr>
+</tbody></table>
+<ol>
+<li>当 j &#x3D; 1 时，next[j] &#x3D; 1 ，属第一种情况</li>
+<li>当 j &#x3D; 2 时，此时 j 从1位（a）到 j - 1 （b）位中，只有一个字符 ‘a’， 属于其他情况，此时 next[2] &#x3D; 1</li>
+<li>当 j &#x3D; 3 时，此时 j 从1位（a）到 j - 1 （ab）位中，有2个字符 ‘ab’，但是a、b并不相等，第二种情况并不满足，所以此时 next[3] &#x3D; 1</li>
+<li>当 j &#x3D; 4 时，此时 j 从1位（a）到 j - 1 （ab）位中，有3个字符 ‘abc’，但是a、b、c并不相等，第二种情况并不满足，所以此时 next[4] &#x3D; 1</li>
+<li>当 j &#x3D; 5 时，此时 j 从1位（a）到 j - 1 （abcde）位中，有4个字符 ‘abcd’，第1位、第4位的a相等，所以此时k &#x3D; 5，即next[5] &#x3D; 2</li>
+<li>当 j &#x3D; 6 时，此时 j 从1位（a）到 j - 1 （abcde）位中，有4个字符 ‘abcd’，第1位、第4位的a相等，所以此时k &#x3D; 5，即next[5] &#x3D; 2</li>
+<li>于是总结一下得出next 数组为 <strong>011123</strong>。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th align="center">j</th>
+<th align="center">123456</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">模式串</td>
+<td align="center">abcabf</td>
+</tr>
+<tr>
+<td align="center">next[j]</td>
+<td align="center">011123</td>
+</tr>
+</tbody></table>
+<h4 id="2-5-3-模式串为：abcbbabc"><a href="#2-5-3-模式串为：abcbbabc" class="headerlink" title="2.5.3 模式串为：abcbbabc"></a>2.5.3 模式串为：abcbbabc</h4><table>
+<thead>
+<tr>
+<th align="center">j</th>
+<th align="center">12345678</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">模式串</td>
+<td align="center">abcbbabc</td>
+</tr>
+</tbody></table>
+<ol>
+<li>当 j &#x3D; 1 时，next[j] &#x3D; 1 ，属第一种情况</li>
+<li>当 j &#x3D; 2 时，此时 j 从1位（a）到 j - 1 （b）位中，只有一个字符 ‘a’， 属于其他情况，此时 next[2] &#x3D; 1</li>
+<li>当 j &#x3D; 3 时，此时 j 从1位（a）到 j - 1 （ab）位中，有2个字符 ‘ab’，但是a、b并不相等，第二种情况并不满足，所以此时 next[3] &#x3D; 1</li>
+<li>当 j &#x3D; 4 时，此时 j 从1位（a）到 j - 1 （ab）位中，有3个字符 ‘abc’，但是a、b、c并不相等，第二种情况并不满足，所以此时 next[4] &#x3D; 1</li>
+<li>当 j &#x3D; 5 时，此时 j 从1位（a）到 j - 1 （abcb）位中，有4个字符 ‘abcb’，虽然第2、第4相等，但是并不满足前缀相等，所以此时k &#x3D; 5，即next[5] &#x3D; 1</li>
+<li>当 j &#x3D; 6 时，此时 j 从1位（a）到 j - 1 （abcba）位中，<u>a</u>bcb<u>a</u>，首位相等，取第一位 + 1，所以此时k &#x3D; 2，即next[6]] &#x3D; 2</li>
+<li>当 j &#x3D; 7 时，此时 j 从1位（a）到 j - 1 （abcbab）位中，<u>ab</u>cb<u>ab</u>，首位相等，取第2位 + 1，所以此时k &#x3D; 3，即next[7] &#x3D; 3</li>
+<li>当 j &#x3D; 8 时，此时 j 从1位（a）到 j - 1 （abcbab）位中，<u>ab</u>cb<u>ab</u>，首位相等，取第3位 + 1，所以此时k &#x3D; 4，即next[8] &#x3D; 4</li>
+</ol>
+<p>综上所述，这时的next数组为 <strong>01111234</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">j</th>
+<th align="center">12345678</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">模式串</td>
+<td align="center">abcbbabc</td>
+</tr>
+<tr>
+<td align="center">next[j]</td>
+<td align="center">01111234</td>
+</tr>
+</tbody></table>
+<h4 id="2-5-4-模式串为：aaaaab"><a href="#2-5-4-模式串为：aaaaab" class="headerlink" title="2.5.4 模式串为：aaaaab"></a>2.5.4 模式串为：aaaaab</h4><table>
+<thead>
+<tr>
+<th>j</th>
+<th>123456</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>模式串</td>
+<td>aaaaab</td>
+</tr>
+</tbody></table>
+<p>分析如下：</p>
+<ol>
+<li>当 j &#x3D; 1 时，next[j] &#x3D; 1 ，属第一种情况</li>
+<li>当 j &#x3D; 2 时，当 j &#x3D; 2 时，此时 j 从1位（a）到 j - 1 （b）位中，只有一个字符 ‘a’， 属于其他情况，此时 next[2] &#x3D; 1</li>
+<li>当 j &#x3D; 3 时，此时 j 从1位（a）到 j - 1 （aa）位中，有<u>aa</u> 相等，取前面出现的序号+1，得k &#x3D; 1+1&#x3D;2，即 next[3] &#x3D; 2</li>
+<li>当 j &#x3D; 4 时，此时 j 从1位（a）到 j - 1 （aaa）位中，前缀为 <u>aa</u>，后缀也为 <u>aa</u>， 取前面出现的序号+1，得k &#x3D; 2+1&#x3D;2，即 next[3] &#x3D; 3</li>
+<li>当 j &#x3D; 5 时，此时 j 从1位（a）到 j - 1 （aaaa）位中，有<u>aaa</u> ，后缀 <u>aaa</u>，后缀也是 <u>aaa</u> 取前面出现的序号+1，得k &#x3D; 3+1&#x3D;4，即 next[3] &#x3D; 4</li>
+<li>当 j &#x3D; 6 时，此时 j 从1位（a）到 j - 1 （aaaaa）位中，有<u>aaaaa</u> ，后缀 <u>aaaa</u>，后缀也是 <u>aaa</u> 取前面出现的序号+1，得k &#x3D; 4+1&#x3D;4，即 next[3] &#x3D; 5</li>
+</ol>
+<p>综上所述，此时的 next 数组为 <strong>0123456</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">j</th>
+<th align="center">123456</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">模式串</td>
+<td align="center">aaaaab</td>
+</tr>
+<tr>
+<td align="center">next[j]</td>
+<td align="center">012345</td>
+</tr>
+</tbody></table>
+<h2 id="三、代码实现"><a href="#三、代码实现" class="headerlink" title="三、代码实现"></a>三、代码实现</h2><h3 id="3-1-获取next-数组"><a href="#3-1-获取next-数组" class="headerlink" title="3.1 获取next 数组"></a>3.1 获取next 数组</h3><p>总结了半天next 数组，现在先来用代码创建一下</p>
+<p>先定义一个特定的String 数组，用来装字符数组</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">char</span> String[MAXSIZE+<span class="number">1</span>]; <span class="comment">/*  0号单元存放串的长度 */</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">get_nextArray</span><span class="params">(String T, <span class="type">int</span> *next)</span></span><br><span class="line">&#123;</span><br><span class="line">  	<span class="type">int</span> i, j;</span><br><span class="line">  	i = <span class="number">1</span>;</span><br><span class="line">  	j = <span class="number">0</span>;</span><br><span class="line">  	next[<span class="number">1</span>] = <span class="number">0</span>;		<span class="comment">// 这是第一种情况，初始为0</span></span><br><span class="line">  </span><br><span class="line">  	<span class="keyword">while</span> ( i &lt; T[<span class="number">0</span>]) 	<span class="comment">// 循环上限为模式串的长度</span></span><br><span class="line">    &#123;</span><br><span class="line">      	<span class="comment">// 比较模式串 T 的前缀后缀俩字符, </span></span><br><span class="line">        <span class="comment">//若相等，分别递增</span></span><br><span class="line">      	<span class="keyword">if</span>( j == <span class="number">0</span> || T[i] == T[j])	</span><br><span class="line">        &#123;</span><br><span class="line">           ++i;</span><br><span class="line">           ++j;</span><br><span class="line">          next[i] = j;</span><br><span class="line">        &#125;</span><br><span class="line">   			<span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">          <span class="comment">// 如果不相等， j 回溯回当前</span></span><br><span class="line">          j = next[j]	;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-获取匹配的字符串"><a href="#3-2-获取匹配的字符串" class="headerlink" title="3.2 获取匹配的字符串"></a>3.2 获取匹配的字符串</h3><p>拿到了当前的next 数组，现在就把它用起来吧</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">getIndexKMP</span><span class="params">(String S, String T, <span class="type">int</span> pos)</span></span><br><span class="line">&#123;</span><br><span class="line">  	<span class="comment">// s 		= 主串</span></span><br><span class="line">		<span class="comment">// T 		= 模式串</span></span><br><span class="line">		<span class="comment">// pos 	= 最终符合需求的位置</span></span><br><span class="line">		<span class="type">int</span> i = pos;</span><br><span class="line">  	<span class="type">int</span> j = <span class="number">1</span>;</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// next 数组的初始化</span></span><br><span class="line">  	<span class="type">int</span> next[<span class="number">255</span>];</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// 根据模式串，定义出next</span></span><br><span class="line">  	get_nextArray(T, next);</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// 开始判断</span></span><br><span class="line">  	<span class="keyword">while</span> (i &lt;= S[<span class="number">0</span>] &amp;&amp; j &lt;= T[<span class="number">0</span>]) </span><br><span class="line">    &#123;</span><br><span class="line">      	<span class="comment">// 主串与字串如果相等，继续</span></span><br><span class="line">      	<span class="keyword">if</span> (j == <span class="number">0</span> || S[i] == T[j])</span><br><span class="line">        &#123;</span><br><span class="line">          	++i;</span><br><span class="line">          	++j;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">          </span><br><span class="line">          	<span class="comment">// 两者不相等， j 回溯，具体位置为数组中的值</span></span><br><span class="line">          	j = next[j];</span><br><span class="line">        &#125;</span><br><span class="line">		&#125;</span><br><span class="line">  </span><br><span class="line">  	<span class="comment">// 如果 j 的长度大于模式串长度，即已经取得成功</span></span><br><span class="line">  	<span class="keyword">if</span> (j &gt; T[<span class="number">0</span>]) </span><br><span class="line">      	<span class="keyword">return</span> i - T[<span class="number">0</span>];</span><br><span class="line">  	<span class="keyword">else</span></span><br><span class="line">      	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-运行检验"><a href="#3-3-运行检验" class="headerlink" title="3.3 运行检验"></a>3.3 运行检验</h3><p>IDE 里操作一下，奥利给！</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">const</span> <span class="type">char</span> * argv[])</span> &#123;</span><br><span class="line">    <span class="comment">// insert code here...</span></span><br><span class="line">    </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;第一次查询&quot;</span>);</span><br><span class="line">    String S, T;</span><br><span class="line">    StrAssign(S, <span class="string">&quot;cccaababcabc&quot;</span>);</span><br><span class="line">    StrAssign(T, <span class="string">&quot;abc&quot;</span>);</span><br><span class="line">    <span class="type">int</span> result = getIndexKMP(S, T, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (result &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;在里面的序号为:     %d\n\n&quot;</span>, result);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;查找失败，主串并无匹配的模式串!\n\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结果如下：</p>
+<p><img src="/p/22d3726c/010.png" alt="010"></p>
+<p>给出的 <code>S = cccaababcabc</code> ， <code>T = abc</code> ，结果是从第7位开始重复，命中！</p>
+<h2 id="四、优化改进"><a href="#四、优化改进" class="headerlink" title="四、优化改进"></a>四、优化改进</h2><h3 id="4-1-分析不足"><a href="#4-1-分析不足" class="headerlink" title="4.1 分析不足"></a>4.1 分析不足</h3><p>上面已经基本实现了KMP算法的时间部分，但是——有些场景还是会有些不理想。</p>
+<p>假设给出<code>S = aaaaabcdefgh</code>， 给出的 <code>T = aaaaad</code> </p>
+<p><img src="/p/22d3726c/011.png"></p>
+<p>如上图所示，当前4位匹配已知，对比到第5位时，会对 j 进行回溯。</p>
+<p>此时 <code>T</code> 的next 数组位 01234，所以j 回溯到 next[5] &#x3D; 4，即第4位，如<strong>第2张图</strong>所示。</p>
+<p>而此时a 不等于 b，再次回溯，以此类推，一直到第5步，发现回溯完后，<code>T</code> 中的<code>a</code> 一直不等于b，不得不放弃回溯，直接将<code>S</code> 中的 i 增加，跳到下一个字符。</p>
+<p>而我们明明看到了，a 中的前5位都是一致的，本来第1步时，模式串中<code>a</code> 不等于主串 中的<code>b</code>， 完全可以放弃2，3，4，5这几部的比较。</p>
+<h3 id="4-2-新的nextVal-数组"><a href="#4-2-新的nextVal-数组" class="headerlink" title="4.2 新的nextVal 数组"></a>4.2 新的nextVal 数组</h3><p>根据上面的总结，说明之前的next数组有可以改进的地方，改进如下:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">get_nextVal</span><span class="params">(String T, <span class="type">int</span> *nextVal)</span></span><br><span class="line">&#123;</span><br><span class="line">      <span class="type">int</span> i, j;</span><br><span class="line">      i = <span class="number">1</span>;</span><br><span class="line">      j = <span class="number">0</span>;</span><br><span class="line">      nextVal[<span class="number">1</span>] = <span class="number">0</span>;        <span class="comment">// 这是第一种情况，初始为0</span></span><br><span class="line">  </span><br><span class="line">      <span class="keyword">while</span> ( i &lt; T[<span class="number">0</span>])     <span class="comment">// 循环上限为模式串的长度</span></span><br><span class="line">    &#123;</span><br><span class="line">          <span class="comment">// 比较模式串 T 的前缀后缀俩字符,</span></span><br><span class="line">        <span class="comment">//若相等，分别递增</span></span><br><span class="line">          <span class="keyword">if</span>( j == <span class="number">0</span> || T[i] == T[j])</span><br><span class="line">        &#123;</span><br><span class="line">           ++i;</span><br><span class="line">           ++j;</span><br><span class="line">            <span class="keyword">if</span> (T[i] == T[j]) &#123;</span><br><span class="line">                nextVal[i] =  nextVal[j];</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                nextVal[i] = j;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">               <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">          <span class="comment">// 如果不相等， j 回溯回当前</span></span><br><span class="line">          j = nextVal[j] ;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，在判断前后缀相同的时候，添加了这一段判断</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (T[i] == T[j]) </span><br><span class="line">    nextVal[i] = nextVal[j];</span><br></pre></td></tr></table></figure>
+
+<p>这里的的意思是：</p>
+<p>判断——如果当前 T 中的i 位字符与 T 的i位字符相等，且两串的各自下一个字符还是一一相等，把<code>T</code>中前缀的值——即上一次匹配 的的next 值，放入新的nextVal 数组中。</p>
+<h3 id="4-3逆推nextVal数组"><a href="#4-3逆推nextVal数组" class="headerlink" title="4.3逆推nextVal数组"></a>4.3逆推nextVal数组</h3><p>声明比较的规则，即拿 </p>
+<p>左边 &#x3D; T[j]   </p>
+<p>右边 &#x3D;  T [next[j]] </p>
+<p><strong>两者相比较！</strong></p>
+<h4 id="4-3-1-模式串为：ababaaaba"><a href="#4-3-1-模式串为：ababaaaba" class="headerlink" title="4.3.1 模式串为：ababaaaba"></a>4.3.1 模式串为：ababaaaba</h4><table>
+<thead>
+<tr>
+<th align="center">j</th>
+<th align="center">123456789</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">模式串</td>
+<td align="center">ababaaaba</td>
+</tr>
+<tr>
+<td align="center">next[j]</td>
+<td align="center">011234223</td>
+</tr>
+<tr>
+<td align="center">nextVal[j]</td>
+<td align="center">010104210</td>
+</tr>
+</tbody></table>
+<ol>
+<li>j &#x3D; 1, nextVal[1]	&#x3D; 0;</li>
+<li>j &#x3D; 2, <strong>照旧</strong>。左边为T [2] &#x3D; b，右边 T[next[2]] &#x3D; T[1] &#x3D; a 这种前后字符<strong>不相等</strong>，还是沿用之前next[i] 的逻辑，即 &#x3D; 1；</li>
+<li>j &#x3D; 3，此时为<strong>新情况</strong>，左边为T [3] &#x3D; a，右边 T[next[3]] &#x3D; T[1] &#x3D; a 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[3] &#x3D; nextVal[1] &#x3D; 0；</li>
+<li>j &#x3D; 4 ，此时为<strong>新情况</strong>，左边为T [4] &#x3D; b，右边 T[next[4]] &#x3D; T[2] &#x3D; b 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[4] &#x3D; nextVal[2] &#x3D; 1；</li>
+<li>j &#x3D; 5，此时为<strong>新情况</strong>，左边为T [5] &#x3D; a，右边 T[next[5]] &#x3D; T[3] &#x3D; a 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[5] &#x3D; nextVal[3] &#x3D; 0；</li>
+<li>j &#x3D; 6，<strong>照旧</strong>。左边为T [6] &#x3D; a，右边 T[next[6]] &#x3D; T[4] &#x3D; b 这种前后字符<strong>不相等</strong>，还是沿用之前next[i] 的逻辑，即 &#x3D; 4；</li>
+<li>j &#x3D; 7，<strong>照旧</strong>。左边为T [7] &#x3D; a，右边 T[next[7]] &#x3D; T[2] &#x3D; b 这种前后字符<strong>不相等</strong>，还是沿用之前next[i] 的逻辑，即 &#x3D; 2；</li>
+<li>j &#x3D; 8，此时为<strong>新情况</strong>，左边为T [8] &#x3D; b，右边 T[next[8]] &#x3D; T[2] &#x3D; b 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[8] &#x3D; nextVal[2] &#x3D; 1；</li>
+<li>j &#x3D; 9，此时为<strong>新情况</strong>，左边为T [9] &#x3D; a，右边 T[next[9]] &#x3D; T[3] &#x3D; a 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[9] &#x3D; nextVal[3] &#x3D; 0；</li>
+</ol>
+<h4 id="4-3-2-模式串为：aaaacd"><a href="#4-3-2-模式串为：aaaacd" class="headerlink" title="4.3.2 模式串为：aaaacd"></a>4.3.2 模式串为：aaaacd</h4><table>
+<thead>
+<tr>
+<th align="center">j</th>
+<th align="center">123456</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">模式串</td>
+<td align="center">aaaaad</td>
+</tr>
+<tr>
+<td align="center">next[j]</td>
+<td align="center">012345</td>
+</tr>
+<tr>
+<td align="center">nextValue[j]</td>
+<td align="center">000005</td>
+</tr>
+</tbody></table>
+<p>现在回到引起需要改进的字符串里面来，aaaaad，依次分析</p>
+<ol>
+<li><p>j &#x3D; 1, nextVal[1]	&#x3D; 0;</p>
+</li>
+<li><p>j &#x3D; 2, 此时为<strong>新情况</strong>，左边为T [2] &#x3D; a，右边 T[next[2]] &#x3D; T[1] &#x3D; a 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[2] &#x3D; nextVal[1] &#x3D; 0；</p>
+</li>
+<li><p>j &#x3D; 3，此时为<strong>新情况</strong>，左边为T [3] &#x3D; a，右边 T[next[3]] &#x3D; T[2] &#x3D; a 这种前后字符<strong>相等</strong>，使用新逻辑：nextVal[3] &#x3D; nextVal[2] &#x3D; 0；</p>
+</li>
+<li><p>同上累加</p>
+</li>
+<li><p>同上累加</p>
+</li>
+<li><p>同上累加</p>
+</li>
+<li><p>j &#x3D; 6，<strong>此时照旧</strong>。左边T[6] &#x3D; d， 右边 T [next[6]] &#x3D; T [5] &#x3D; a， 两者并不相等，沿用之前的next，即 nextVal[6] &#x3D; 5</p>
+</li>
+</ol>
+<h3 id="4-4-改进小结"><a href="#4-4-改进小结" class="headerlink" title="4.4 改进小结"></a>4.4 改进小结</h3><p>总之，这里改进了的一句代码</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (T[i] == T[j]) &#123; nextVal[i] = nextVal[j];&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终的含义：</p>
+<p>是如果存在某个字符a，如果它当前next位指向的字符相等—— 它的偏移值nextVal 数组当前的值，就使用会沿用指向的那个值的nextVal值。其他情况的逻辑照旧。</p>
+<p>画了个图解释一下：</p>
+<p><img src="/p/22d3726c/012.png"></p>
+<h3 id><a href="#" class="headerlink" title></a></h3><p>相关实现代码，放在<a target="_blank" rel="noopener" href="https://github.com/newjia/kmp">GITHUB</a> 上，欢迎食用 XD!</p>
+
+            </div>
+            <hr/>
+
+            
+
+    <div class="reprint" id="reprint-statement">
+        
+            <div class="reprint__author">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-user">
+                        文章作者:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com" rel="external nofollow noreferrer">李佳</a>
+                </span>
+            </div>
+            <div class="reprint__type">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-link">
+                        文章链接:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    <a href="http://nilsli.com/p/22d3726c.html">http://nilsli.com/p/22d3726c.html</a>
+                </span>
+            </div>
+            <div class="reprint__notice">
+                <span class="reprint-meta" style="font-weight: bold;">
+                    <i class="fas fa-copyright">
+                        版权声明:
+                    </i>
+                </span>
+                <span class="reprint-info">
+                    本博客所有文章除特別声明外，均采用
+                    <a href="https://creativecommons.org/licenses/by/4.0/deed.zh" rel="external nofollow noreferrer" target="_blank">CC BY 4.0</a>
+                    许可协议。转载请注明来源
+                    <a href="http://nilsli.com" target="_blank">李佳</a>
+                    !
+                </span>
+            </div>
+        
+    </div>
+
+    <script async defer>
+      document.addEventListener("copy", function (e) {
+        let toastHTML = '<span>复制成功，请遵循本文的转载规则</span><button class="btn-flat toast-action" onclick="navToReprintStatement()" style="font-size: smaller">查看</a>';
+        M.toast({html: toastHTML})
+      });
+
+      function navToReprintStatement() {
+        $("html, body").animate({scrollTop: $("#reprint-statement").offset().top - 80}, 800);
+      }
+    </script>
+
+
+
+            <div class="tag_share" style="display: block;">
+                <div class="post-meta__tag-list" style="display: inline-block;">
+                    
+                        <div class="article-tag">
+                            
+                                <a href="/tags/%E7%AE%97%E6%B3%95/">
+                                    <span class="chip bg-color">算法</span>
+                                </a>
+                            
+                                <a href="/tags/KMP/">
+                                    <span class="chip bg-color">KMP</span>
+                                </a>
+                            
+                                <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9F%A5%E6%89%BE/">
+                                    <span class="chip bg-color">字符串查找</span>
+                                </a>
+                            
+                        </div>
+                    
+                </div>
+                <div class="post_share" style="zoom: 80%; width: fit-content; display: inline-block; float: right; margin: -0.15rem 0;">
+                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    
+    <div class="social-share" data-sites="twitter,facebook,google,qq,qzone,wechat,weibo,douban,linkedin" data-wechat-qrcode-helper="<p>微信扫一扫即可分享！</p>"></div>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/share/js/social-share.min.js"></script>
+    
+
+    
+
+</div>
+
+                </div>
+            </div>
+            
+                <style>
+    #reward {
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    #reward .reward-link {
+        font-size: 1.4rem;
+        line-height: 38px;
+    }
+
+    #reward .btn-floating:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    #rewardModal {
+        width: 320px;
+        height: 350px;
+    }
+
+    #rewardModal .reward-title {
+        margin: 15px auto;
+        padding-bottom: 5px;
+    }
+
+    #rewardModal .modal-content {
+        padding: 10px;
+    }
+
+    #rewardModal .close {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 1.3rem;
+        line-height: 20px;
+        cursor: pointer;
+    }
+
+    #rewardModal .close:hover {
+        color: #ef5350;
+        transform: scale(1.3);
+        -moz-transform:scale(1.3);
+        -webkit-transform:scale(1.3);
+        -o-transform:scale(1.3);
+    }
+
+    #rewardModal .reward-tabs {
+        margin: 0 auto;
+        width: 210px;
+    }
+
+    .reward-tabs .tabs {
+        height: 38px;
+        margin: 10px auto;
+        padding-left: 0;
+    }
+
+    .reward-content ul {
+        padding-left: 0 !important;
+    }
+
+    .reward-tabs .tabs .tab {
+        height: 38px;
+        line-height: 38px;
+    }
+
+    .reward-tabs .tab a {
+        color: #fff;
+        background-color: #ccc;
+    }
+
+    .reward-tabs .tab a:hover {
+        background-color: #ccc;
+        color: #fff;
+    }
+
+    .reward-tabs .wechat-tab .active {
+        color: #fff !important;
+        background-color: #22AB38 !important;
+    }
+
+    .reward-tabs .alipay-tab .active {
+        color: #fff !important;
+        background-color: #019FE8 !important;
+    }
+
+    .reward-tabs .reward-img {
+        width: 210px;
+        height: 210px;
+    }
+</style>
+
+<div id="reward">
+    <a href="#rewardModal" class="reward-link modal-trigger btn-floating btn-medium waves-effect waves-light red">赏</a>
+
+    <!-- Modal Structure -->
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <a class="close modal-close"><i class="fas fa-times"></i></a>
+            <h4 class="reward-title">你的赏识是我前进的动力</h4>
+            <div class="reward-content">
+                <div class="reward-tabs">
+                    <ul class="tabs row">
+                        <li class="tab col s6 alipay-tab waves-effect waves-light"><a href="#alipay">支付宝</a></li>
+                        <li class="tab col s6 wechat-tab waves-effect waves-light"><a href="#wechat">微 信</a></li>
+                    </ul>
+                    <div id="alipay">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/alipay.png" class="reward-img" alt="支付宝打赏二维码">
+                    </div>
+                    <div id="wechat">
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/reward/wechat1.png" class="reward-img" alt="微信打赏二维码">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs();
+    });
+</script>
+            
+        </div>
+    </div>
+
+    
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/css/my-gitalk.css">
+
+<div class="card gitalk-card" data-aos="fade-up">
+    <div class="comment_headling" style="font-size: 20px; font-weight: 700; position: relative; left: 20px; top: 15px; padding-bottom: 5px;">
+        <i class="fas fa-comments fa-fw" aria-hidden="true"></i>
+        <span>评论</span>
+    </div>
+    <div id="gitalk-container" class="card-content"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/gitalk/gitalk.min.js"></script>
+<script>
+    let gitalk = new Gitalk({
+        clientID: 'c25a11d8acc74f474f13',
+        clientSecret: '80e827ca486e6f4908978320c91b1a6c0d29a1d4',
+        repo: 'newjia.github.io',
+        owner: 'newjia',
+        admin: "newjia",
+        id: '2020-04-23T18-09-33',
+        distractionFreeMode: false  // Facebook-like distraction free mode
+    });
+
+    gitalk.render('gitalk-container');
+</script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/p/919af6b6.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/4.jpg" class="responsive-img" alt="【数据结构与算法】-（9）二叉树与顺序表实现">
+                        
+                        <span class="card-title">【数据结构与算法】-（9）二叉树与顺序表实现</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+【数据结构与算法】-（1）基础篇
+【数据结构与算法】-（2）线性表基础
+【数据结构与算法】-（3）循环链表（单向）
+【数据结构与算法】-（4）双向链表和双向循环链表
+【数据结构与算法】-（5）链表面试题解析
+【数据结构与算法】-（6）栈
+
+                        
+                    </div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-04-26
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                    <a href="/tags/%E6%A0%91/">
+                        <span class="chip bg-color">树</span>
+                    </a>
+                    
+                    <a href="/tags/%E4%BA%8C%E5%8F%89%E6%A0%91/">
+                        <span class="chip bg-color">二叉树</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/p/8a586c1e.html">
+                    <div class="card-image">
+                        
+                        
+                        <img src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/medias/featureimages/8.jpg" class="responsive-img" alt="【数据结构与算法】-（8.2）字符串搜索算法和RK&BP算法">
+                        
+                        <span class="card-title">【数据结构与算法】-（8.2）字符串搜索算法和RK&BP算法</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">
+                        
+                            
+【数据结构与算法】-（1）基础篇
+【数据结构与算法】-（2）线性表基础
+【数据结构与算法】-（3）循环链表（单向）
+【数据结构与算法】-（4）双向链表和双向循环链表
+【数据结构与算法】-（5）链表面试题解析
+【数据结构与算法】-（6）栈
+
+                        
+                    </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-04-22
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fas fa-user fa-fw"></i>
+                            李佳
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E7%AE%97%E6%B3%95/">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/RK/">
+                        <span class="chip bg-color">RK</span>
+                    </a>
+                    
+                    <a href="/tags/BF/">
+                        <span class="chip bg-color">BF</span>
+                    </a>
+                    
+                    <a href="/tags/%E5%AD%97%E7%AC%A6%E6%9F%A5%E6%89%BE/">
+                        <span class="chip bg-color">字符查找</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+
+</div>
+
+
+
+<!-- 代码块功能依赖 -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeBlockFuction.js"></script>
+
+<!-- 代码语言 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeLang.js"></script>
+
+
+<!-- 代码块复制 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeCopy.js"></script>
+
+
+<!-- 代码块收缩 -->
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/codeBlock/codeShrink.js"></script>
+
+
+<!-- 代码块折行 -->
+
+<style type="text/css">
+code[class*="language-"], pre[class*="language-"] { white-space: pre !important; }
+</style>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="far fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fas fa-list-ul"></i>
+    </a>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            collapseDepth: Number('0'),
+            headingSelector: 'h2, h3, h4'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h2, h3, h4').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).hide();
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).show();
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+
+    
+
+</main>
+
+
+
+    <footer class="page-footer bg-color">
+    
+    <div class="container row center-align" style="margin-bottom: 15px !important;">
+        <div class="col s12 m8 l8 copy-right">
+            Copyright&nbsp;&copy;
+            <span id="year">2018</span>
+            <a href="http://nilsli.com" target="_blank">李佳</a>
+            |&nbsp;Powered by&nbsp;<a href="https://hexo.io/" target="_blank">Hexo</a>
+            |&nbsp;Theme&nbsp;<a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">Matery</a>
+            <br>
+            
+            
+            
+            
+            
+            
+            <span id="busuanzi_container_site_pv">
+                |&nbsp;<i class="far fa-eye"></i>&nbsp;总访问量:&nbsp;<span id="busuanzi_value_site_pv"
+                    class="white-color"></span>&nbsp;次
+            </span>
+            
+            
+            <span id="busuanzi_container_site_uv">
+                |&nbsp;<i class="fas fa-users"></i>&nbsp;总访问人数:&nbsp;<span id="busuanzi_value_site_uv"
+                    class="white-color"></span>&nbsp;人
+            </span>
+            
+            <br>
+            
+            <span id="sitetime">载入运行时间...</span>
+            <script>
+                function siteTime() {
+                    var seconds = 1000;
+                    var minutes = seconds * 60;
+                    var hours = minutes * 60;
+                    var days = hours * 24;
+                    var years = days * 365;
+                    var today = new Date();
+                    var startYear = "2018";
+                    var startMonth = "6";
+                    var startDate = "28";
+                    var startHour = "0";
+                    var startMinute = "0";
+                    var startSecond = "0";
+                    var todayYear = today.getFullYear();
+                    var todayMonth = today.getMonth() + 1;
+                    var todayDate = today.getDate();
+                    var todayHour = today.getHours();
+                    var todayMinute = today.getMinutes();
+                    var todaySecond = today.getSeconds();
+                    var t1 = Date.UTC(startYear, startMonth, startDate, startHour, startMinute, startSecond);
+                    var t2 = Date.UTC(todayYear, todayMonth, todayDate, todayHour, todayMinute, todaySecond);
+                    var diff = t2 - t1;
+                    var diffYears = Math.floor(diff / years);
+                    var diffDays = Math.floor((diff / days) - diffYears * 365);
+                    var diffHours = Math.floor((diff - (diffYears * 365 + diffDays) * days) / hours);
+                    var diffMinutes = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours) /
+                        minutes);
+                    var diffSeconds = Math.floor((diff - (diffYears * 365 + diffDays) * days - diffHours * hours -
+                        diffMinutes * minutes) / seconds);
+                    if (startYear == todayYear) {
+                        document.getElementById("year").innerHTML = todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffDays + " 天 " + diffHours +
+                            " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    } else {
+                        document.getElementById("year").innerHTML = startYear + " - " + todayYear;
+                        document.getElementById("sitetime").innerHTML = "本站已安全运行 " + diffYears + " 年 " + diffDays +
+                            " 天 " + diffHours + " 小时 " + diffMinutes + " 分钟 " + diffSeconds + " 秒";
+                    }
+                }
+                setInterval(siteTime, 1000);
+            </script>
+            
+            <br>
+            
+        </div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/newjia" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fab fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:fatin@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fas fa-envelope-open"></i>
+    </a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+
+    <!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fas fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+    <!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+</div>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/materialize/materialize.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/masonry/masonry.pkgd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/aos/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/scrollprogress/scrollProgress.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/lightGallery/js/lightgallery-all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/js/matery.js"></script>
+
+    <!-- Baidu Analytics -->
+
+    <!-- Baidu Push -->
+
+<script>
+    (function () {
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        } else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/clicklove.js" async="async"></script>
+    
+    
+    <script async src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/others/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/gh/newjia/newjia.github.io/libs/instantpage/instantpage.js" type="module"></script>
+    
+
+</body>
+
+</html>
